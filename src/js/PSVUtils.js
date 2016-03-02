@@ -28,12 +28,38 @@ PSVUtils.isCanvasSupported = function() {
 };
 
 /**
+ * Tries to return a canvas webgl context
+ * @return (ctx) if canvas is supported, undefined otherwise
+ */
+PSVUtils.getWebGLCtx = function () {
+    var canvas = document.createElement("canvas"),
+    names = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"];
+    var context = undefined;
+    for (var i = 0; i < 4; i++) {
+        try {
+            context = canvas.getContext(names[i]);
+            if (context && typeof context.getParameter == "function") {
+                return context;
+            }
+        } catch (e) { }
+    }
+    return context;
+}
+
+/**
  * Detects whether WebGL is supported
  * @return (boolean) true if WebGL is supported, false otherwise
  */
 PSVUtils.isWebGLSupported = function() {
-  var canvas = document.createElement('canvas');
-  return !!(window.WebGLRenderingContext && canvas.getContext('webgl'));
+        if (!!window.WebGLRenderingContext) {
+
+            if (PSVUtils.getWebGLCtx() != undefined)
+                return true;
+            else
+                return false;
+        }
+        // WebGL not supported
+        return false;
 };
 
 /**
@@ -41,9 +67,8 @@ PSVUtils.isWebGLSupported = function() {
  * @return (int)
  */
 PSVUtils.getMaxTextureWidth = function() {
-  var canvas = document.createElement('canvas');
-  var ctx = canvas.getContext('webgl');
-  return ctx.getParameter(ctx.MAX_TEXTURE_SIZE);
+        var ctx = PSVUtils.getWebGLCtx();
+        return ctx.getParameter(ctx.MAX_TEXTURE_SIZE);
 };
 
 /**
