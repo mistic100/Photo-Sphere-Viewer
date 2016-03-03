@@ -36,16 +36,19 @@ PSVUtils.getWebGLCtx = function() {
   names = ['webgl', 'experimental-webgl', 'moz-webgl', 'webkit-3d'],
   context;
 
-  names.some(function(name) {
+  if (names.some(function(name) {
     try {
       context = canvas.getContext(name);
       return (context && typeof context.getParameter == 'function');
     } catch (e) {
       return false;
     }
-  });
-
-  return context;
+  })) {
+    return context;
+  }
+  else {
+    return undefined;
+  }
 };
 
 /**
