@@ -221,10 +221,15 @@ PSVUtils.parsePosition = function(value) {
   var parsed = PSVUtils.getStyle(e, 'background-position').match(/^([0-9.]+)% ([0-9.]+)%$/);
   document.body.removeChild(e);
 
-  return {
-    left: parsed[1] / 100,
-    top: parsed[2] / 100
-  };
+  if (!parsed) {
+    return { top: 0.5, left: 0.5 };
+  }
+  else {
+    return {
+      left: parsed[1] / 100,
+      top: parsed[2] / 100
+    };
+  }
 };
 
 /**
