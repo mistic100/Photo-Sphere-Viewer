@@ -36,7 +36,7 @@ module.exports = function(grunt) {
           process: function(src, path) {
             if (path.match(/\.svg$/)) {
               var filename = path.split('/').pop();
-              src = src.replace(/[\r\n]/, '');
+              src = src.replace(/[\r\n]{2,}/, '');
               return 'PhotoSphereViewer.ICONS[\'' + filename + '\'] = \'' + src + '\';';
             }
             else {
