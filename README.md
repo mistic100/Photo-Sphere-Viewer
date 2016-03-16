@@ -6,6 +6,10 @@ Photo Sphere Viewer is a JavaScript library that allows you to display 360×180 
 
 Photo Sphere Viewer uses the [Three.js](http://threejs.org) library, so nothing is required for your visitors except for a browser compatible with canvas or, better, WebGL.
 
+## New features
+#### PSV.removeAllMarker
+#### mobile Device Orientation Controls
+
 ## Documentation
 http://photo-sphere-viewer.js.org
 
