@@ -161,6 +161,7 @@ function PhotoSphereViewer(options) {
     usexmpdata: false, // most panoramas doesnt have xmpdata, and checking for them require to download the image twice (???)
     loadedXMP: {},
     loadedTextures: {},
+    _loadingTextures: [],
     cacheTextures: true
   };
 

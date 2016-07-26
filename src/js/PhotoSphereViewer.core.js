@@ -152,6 +152,8 @@ PhotoSphereViewer.prototype._loadTexture = function() {
       texture.generateMipmaps = false;
       if(true === self.prop.cacheTextures){
         self.prop.loadedTextures[self.config.panorama] = texture;
+        self.prop._loadingTextures.splice(self.prop._loadingTextures.indexOf(self.config.panorama), 1);
+        self.trigger('pano-preloaded', self.config.panorama);
       }
       defer.resolve(texture);
     };
@@ -174,6 +176,9 @@ PhotoSphereViewer.prototype._loadTexture = function() {
     if(true === self.prop.cacheTextures && 'undefined' != typeof self.prop.loadedTextures[self.config.panorama]){
       defer.resolve(self.prop.loadedTextures[self.config.panorama]);
     } else {
+      if(true === self.prop.cacheTextures){
+        self.prop._loadingTextures.push(self.config.panorama);
+      }
       loader.load(self.config.panorama, onload, onprogress, onerror);
     }
 
@@ -186,7 +191,7 @@ PhotoSphereViewer.prototype._loadTexture = function() {
  * @returns {promise}
  * @private
  */
-PhotoSphereViewer.prototype._preloadPanorama = function(pano) {
+PhotoSphereViewer.prototype._preloadPanorama = function(pano, progressCallback) {
   var self = this;
   var defer = D();
   var loader = new THREE.ImageLoader();
@@ -234,16 +239,14 @@ PhotoSphereViewer.prototype._preloadPanorama = function(pano) {
     texture.minFilter = THREE.LinearFilter;
     texture.generateMipmaps = false;
     self.prop.loadedTextures[pano] = texture;
+    self.prop._loadingTextures.splice(self.prop._loadingTextures.indexOf(pano), 1);
+    self.trigger('pano-preloaded', pano);
     defer.resolve(texture);
   };
 
   var onprogress = function(e) {
-    if (e.lengthComputable && self.loader) {
-      var new_progress = parseInt(e.loaded / e.total * 100);
-      if (new_progress > progress) {
-        progress = new_progress;
-        self.loader.setProgress(progress);
-      }
+    if('function' == typeof progressCallback){
+      progressCallback(parseInt(e.loaded / e.total * 100));
     }
   };
 
@@ -255,6 +258,7 @@ PhotoSphereViewer.prototype._preloadPanorama = function(pano) {
   if(true === self.prop.cacheTextures && 'undefined' != typeof self.prop.loadedTextures[pano]){
     defer.resolve(self.prop.loadedTextures[pano]);
   } else {
+    self.prop._loadingTextures.push(pano);
     loader.load(pano, onload, onprogress, onerror);
   }
 
