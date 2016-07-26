@@ -234,3 +234,16 @@ PhotoSphereViewer.prototype.getShortestArc = function(from, to) {
     return Math.abs(candidate) < Math.abs(value) ? candidate : value;
   }, Infinity);
 };
+
+
+/**
+ * Preload a panorama image and save it into internal cache.
+ * @param {string} the file path
+ */
+PhotoSphereViewer.prototype.preloadPano = function(pano) {
+  if(false === this.prop.cacheTextures){
+    console.warn('The cache is disabled. Please use cacheTextures: true.');
+    return false;
+  }
+  return this._preloadPanorama(pano);
+};

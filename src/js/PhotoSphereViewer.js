@@ -157,7 +157,11 @@ function PhotoSphereViewer(options) {
       cropped_height: 0,
       cropped_x: 0,
       cropped_y: 0
-    }
+    },
+    usexmpdata: false, // most panoramas doesnt have xmpdata, and checking for them require to download the image twice (???)
+    loadedXMP: {},
+    loadedTextures: {},
+    cacheTextures: true
   };
 
   // init templates

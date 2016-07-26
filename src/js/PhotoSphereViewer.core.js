@@ -74,9 +74,12 @@ PhotoSphereViewer.prototype._loadXMP = function() {
     throw new PSVError('Cannot load image');
   };
 
-  xhr.open('GET', this.config.panorama, true);
-  xhr.send(null);
-
+  if(true === this.prop.cacheTextures && 'undefined' != typeof this.prop.loadedXMP[this.config.panorama]){
+    defer.resolve(this.prop.loadedXMP[this.config.panorama]);
+  } else {
+    xhr.open('GET', this.config.panorama, true);
+    xhr.send(null);
+  }
   return defer.promise;
 };
 
@@ -89,6 +92,9 @@ PhotoSphereViewer.prototype._loadTexture = function() {
   var self = this;
 
   return this._loadXMP().then(function(pano_data) {
+    if(true === self.prop.cacheTextures){
+      self.prop.loadedXMP[self.config.panorama] = pano_data;
+    }
     var defer = D();
     var loader = new THREE.ImageLoader();
     var progress = pano_data ? 100 : 0;
@@ -144,7 +150,9 @@ PhotoSphereViewer.prototype._loadTexture = function() {
       texture.needsUpdate = true;
       texture.minFilter = THREE.LinearFilter;
       texture.generateMipmaps = false;
-
+      if(true === self.prop.cacheTextures){
+        self.prop.loadedTextures[self.config.panorama] = texture;
+      }
       defer.resolve(texture);
     };
 
@@ -163,10 +171,94 @@ PhotoSphereViewer.prototype._loadTexture = function() {
       throw new PSVError('Cannot load image');
     };
 
-    loader.load(self.config.panorama, onload, onprogress, onerror);
+    if(true === self.prop.cacheTextures && 'undefined' != typeof self.prop.loadedTextures[self.config.panorama]){
+      defer.resolve(self.prop.loadedTextures[self.config.panorama]);
+    } else {
+      loader.load(self.config.panorama, onload, onprogress, onerror);
+    }
 
     return defer.promise;
   });
+};
+
+/**
+ * Loads the sphere texture
+ * @returns {promise}
+ * @private
+ */
+PhotoSphereViewer.prototype._preloadPanorama = function(pano) {
+  var self = this;
+  var defer = D();
+  var loader = new THREE.ImageLoader();
+  var progress = 0;
+
+  loader.setCrossOrigin('anonymous');
+
+  var onload = function(img) {
+    if (self.loader) {
+      self.loader.setProgress(100);
+    }
+
+    var pano_data = {
+        full_width: img.width,
+        full_height: img.height,
+        cropped_width: img.width,
+        cropped_height: img.height,
+        cropped_x: 0,
+        cropped_y: 0
+    };
+
+    var r = Math.min(pano_data.full_width, PhotoSphereViewer.SYSTEM.maxTextureWidth) / pano_data.full_width;
+    var resized_pano_data = PSVUtils.clone(pano_data);
+
+    resized_pano_data.full_width *= r;
+    resized_pano_data.full_height *= r;
+    resized_pano_data.cropped_width *= r;
+    resized_pano_data.cropped_height *= r;
+    resized_pano_data.cropped_x *= r;
+    resized_pano_data.cropped_y *= r;
+
+    img.width = resized_pano_data.cropped_width;
+    img.height = resized_pano_data.cropped_height;
+
+   // create a new image containing the source image and black for cropped parts
+    var buffer = document.createElement('canvas');
+    buffer.width = resized_pano_data.full_width;
+    buffer.height = resized_pano_data.full_height;
+
+    var ctx = buffer.getContext('2d');
+    ctx.drawImage(img, resized_pano_data.cropped_x, resized_pano_data.cropped_y, resized_pano_data.cropped_width, resized_pano_data.cropped_height);
+
+    var texture = new THREE.Texture(buffer);
+    texture.needsUpdate = true;
+    texture.minFilter = THREE.LinearFilter;
+    texture.generateMipmaps = false;
+    self.prop.loadedTextures[pano] = texture;
+    defer.resolve(texture);
+  };
+
+  var onprogress = function(e) {
+    if (e.lengthComputable && self.loader) {
+      var new_progress = parseInt(e.loaded / e.total * 100);
+      if (new_progress > progress) {
+        progress = new_progress;
+        self.loader.setProgress(progress);
+      }
+    }
+  };
+
+  var onerror = function() {
+    self.container.textContent = 'Cannot preload image';
+    throw new PSVError('Cannot preload image');
+  };
+
+  if(true === self.prop.cacheTextures && 'undefined' != typeof self.prop.loadedTextures[pano]){
+    defer.resolve(self.prop.loadedTextures[pano]);
+  } else {
+    loader.load(pano, onload, onprogress, onerror);
+  }
+
+  return defer.promise;
 };
 
 /**
