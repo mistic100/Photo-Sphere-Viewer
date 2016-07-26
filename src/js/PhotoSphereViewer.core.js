@@ -74,9 +74,10 @@ PhotoSphereViewer.prototype._loadXMP = function() {
     throw new PSVError('Cannot load image');
   };
 
-  if(true === this.prop.cacheTextures && 'undefined' != typeof this.prop.loadedXMP[this.config.panorama]){
+  if (true === this.prop.cacheTextures && 'undefined' != typeof this.prop.loadedXMP[this.config.panorama]) {
     defer.resolve(this.prop.loadedXMP[this.config.panorama]);
-  } else {
+  }
+  else {
     xhr.open('GET', this.config.panorama, true);
     xhr.send(null);
   }
@@ -92,7 +93,7 @@ PhotoSphereViewer.prototype._loadTexture = function() {
   var self = this;
 
   return this._loadXMP().then(function(pano_data) {
-    if(true === self.prop.cacheTextures){
+    if (true === self.prop.cacheTextures) {
       self.prop.loadedXMP[self.config.panorama] = pano_data;
     }
     var defer = D();
@@ -150,7 +151,7 @@ PhotoSphereViewer.prototype._loadTexture = function() {
       texture.needsUpdate = true;
       texture.minFilter = THREE.LinearFilter;
       texture.generateMipmaps = false;
-      if(true === self.prop.cacheTextures){
+      if (true === self.prop.cacheTextures) {
         self.prop.loadedTextures[self.config.panorama] = texture;
         self.prop._loadingTextures.splice(self.prop._loadingTextures.indexOf(self.config.panorama), 1);
         self.trigger('pano-preloaded', self.config.panorama);
@@ -173,10 +174,11 @@ PhotoSphereViewer.prototype._loadTexture = function() {
       throw new PSVError('Cannot load image');
     };
 
-    if(true === self.prop.cacheTextures && 'undefined' != typeof self.prop.loadedTextures[self.config.panorama]){
+    if (true === self.prop.cacheTextures && 'undefined' != typeof self.prop.loadedTextures[self.config.panorama]) {
       defer.resolve(self.prop.loadedTextures[self.config.panorama]);
-    } else {
-      if(true === self.prop.cacheTextures){
+    }
+    else {
+      if (true === self.prop.cacheTextures) {
         self.prop._loadingTextures.push(self.config.panorama);
       }
       loader.load(self.config.panorama, onload, onprogress, onerror);
@@ -205,12 +207,12 @@ PhotoSphereViewer.prototype._preloadPanorama = function(pano, progressCallback) 
     }
 
     var pano_data = {
-        full_width: img.width,
-        full_height: img.height,
-        cropped_width: img.width,
-        cropped_height: img.height,
-        cropped_x: 0,
-        cropped_y: 0
+      full_width: img.width,
+      full_height: img.height,
+      cropped_width: img.width,
+      cropped_height: img.height,
+      cropped_x: 0,
+      cropped_y: 0
     };
 
     var r = Math.min(pano_data.full_width, PhotoSphereViewer.SYSTEM.maxTextureWidth) / pano_data.full_width;
@@ -226,7 +228,7 @@ PhotoSphereViewer.prototype._preloadPanorama = function(pano, progressCallback) 
     img.width = resized_pano_data.cropped_width;
     img.height = resized_pano_data.cropped_height;
 
-   // create a new image containing the source image and black for cropped parts
+    // create a new image containing the source image and black for cropped parts
     var buffer = document.createElement('canvas');
     buffer.width = resized_pano_data.full_width;
     buffer.height = resized_pano_data.full_height;
@@ -245,7 +247,7 @@ PhotoSphereViewer.prototype._preloadPanorama = function(pano, progressCallback) 
   };
 
   var onprogress = function(e) {
-    if('function' == typeof progressCallback){
+    if ('function' == typeof progressCallback) {
       progressCallback(parseInt(e.loaded / e.total * 100));
     }
   };
@@ -255,9 +257,10 @@ PhotoSphereViewer.prototype._preloadPanorama = function(pano, progressCallback) 
     throw new PSVError('Cannot preload image');
   };
 
-  if(true === self.prop.cacheTextures && 'undefined' != typeof self.prop.loadedTextures[pano]){
+  if (true === self.prop.cacheTextures && 'undefined' != typeof self.prop.loadedTextures[pano]) {
     defer.resolve(self.prop.loadedTextures[pano]);
-  } else {
+  }
+  else {
     self.prop._loadingTextures.push(pano);
     loader.load(pano, onload, onprogress, onerror);
   }

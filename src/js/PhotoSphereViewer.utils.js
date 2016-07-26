@@ -242,7 +242,7 @@ PhotoSphereViewer.prototype.getShortestArc = function(from, to) {
  */
 PhotoSphereViewer.prototype.preloadPano = function(pano, callback) {
   var progressCallback = callback || null;
-  if(false === this.prop.cacheTextures){
+  if (false === this.prop.cacheTextures) {
     console.warn('The cache is disabled. Please use cacheTextures: true.');
     return false;
   }
