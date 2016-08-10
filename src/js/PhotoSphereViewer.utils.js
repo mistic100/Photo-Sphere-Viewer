@@ -234,3 +234,33 @@ PhotoSphereViewer.prototype.getShortestArc = function(from, to) {
     return Math.abs(candidate) < Math.abs(value) ? candidate : value;
   }, Infinity);
 };
+
+
+/**
+ * Preload a panorama image and save it into internal cache.
+ * @param {string} the file path
+ */
+PhotoSphereViewer.prototype.preloadPano = function(pano, callback) {
+  var progressCallback = callback || null;
+  if (false === this.prop.cacheTextures) {
+    console.warn('The cache is disabled. Please use cacheTextures: true.');
+    return false;
+  }
+  return this._preloadPanorama(pano, progressCallback);
+};
+
+/**
+ * Return true if the panorama has been loaded.
+ * @param {string} the panorama file path.
+ */
+PhotoSphereViewer.prototype.panoHasLoaded = function(pano) {
+  return Boolean(this.prop.loadedTextures[pano]);
+};
+
+/**
+ * Return true if the panorama is in loading state.
+ * @param {string} the panorama file path.
+ */
+PhotoSphereViewer.prototype.panoIsLoading = function(pano) {
+  return this.prop._loadingTextures.indexOf(pano) != -1;
+};
