@@ -490,7 +490,8 @@ PhotoSphereViewer.prototype.stopKeyboardControl = function() {
 
 /**
  * Preload a panorama image and save it into internal cache.
- * @param {string} the file path
+ * @param {String} pano - the file path
+ * @param {Function} callback - Progress callback, will receive the percentage as argument.
  */
 PhotoSphereViewer.prototype.preloadPano = function(pano, callback) {
   var progressCallback = callback || null;
@@ -499,6 +500,18 @@ PhotoSphereViewer.prototype.preloadPano = function(pano, callback) {
     return false;
   }
   return this._loadTexture(pano, progressCallback);
+};
+
+/**
+ * Remove a panorama image from the cache.
+ * @param {string} the file path
+ */
+PhotoSphereViewer.prototype.clearPano = function(pano) {
+  if (false === this.prop.cacheTextures) {
+    console.warn('The cache is disabled.');
+    return true;
+  }
+  return this._clearTexture(pano);
 };
 
 /**

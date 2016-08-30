@@ -90,6 +90,7 @@ PhotoSphereViewer.prototype._loadXMP = function() {
  * @param {Function} progressCallback - The callback that will be invoked while loading the panorama image, with the percentage as argument.
  * @returns {promise}
  * @private
+ * @todo Cache limit (number of objects || kb) with autoclean when exceeded?
  */
 PhotoSphereViewer.prototype._loadTexture = function(pano, progressCallback) {
   var self = this;
@@ -439,4 +440,17 @@ PhotoSphereViewer.prototype._reverseAutorotate = function() {
       self.config.longitude_range = range;
       self.config.anim_speed = newSpeed;
     });
+};
+
+/**
+ * Remove a panorama image from the internal cache.
+ * @param {String} panorama - The panorama uri.
+ * @private
+ */
+PhotoSphereViewer.prototype._clearTexture = function(panorama) {
+  if (true === this.prop.cacheTextures && 'undefined' != typeof this.prop.loadedTextures[panorama]) {
+    delete this.prop.loadedTextures[panorama];
+    return true;
+  }
+  return false;
 };
