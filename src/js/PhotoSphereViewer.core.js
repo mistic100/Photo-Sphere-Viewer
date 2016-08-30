@@ -206,6 +206,12 @@ PhotoSphereViewer.prototype._preloadPanorama = function(pano, progressCallback) 
       self.loader.setProgress(100);
     }
 
+    // Config XMP data
+    if (!pano_data && self.config.pano_data) {
+      pano_data = PSVUtils.clone(self.config.pano_data);
+    }
+
+    // Default XMP data
     var pano_data = {
       full_width: img.width,
       full_height: img.height,

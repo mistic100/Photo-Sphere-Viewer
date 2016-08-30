@@ -243,7 +243,7 @@ module.exports = function(grunt) {
   /**
    * Development server
    */
-  grunt.registerTask('serve', [
+  grunt.registerTask('server', [
     'default',
     'connect',
     'open',
