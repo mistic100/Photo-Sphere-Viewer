@@ -134,7 +134,7 @@
         className: 'custom-button',
         content: '&eng;',
         onClick: function(){
-          PSV.clearPano('Bryce-Canyon-By-Jess-Beauchemin.jpg');
+          PSV.clearCachedPanoramas('Bryce-Canyon-By-Jess-Beauchemin.jpg');
         },
       },
       'caption',
@@ -151,7 +151,8 @@
     time_anim: false,
     gyroscope: true,
     webgl: true,
-    usexmpdata: false,
+    usexmpdata: true,
+    cacheTextures: true,
     transition: {
       duration: 1000,
       loader: true,

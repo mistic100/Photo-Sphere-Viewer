@@ -492,10 +492,11 @@ PhotoSphereViewer.prototype.stopKeyboardControl = function() {
  * Preload a panorama image and save it into internal cache.
  * @param {String} pano - the file path
  * @param {Function} callback - Progress callback, will receive the percentage as argument.
+ * @return {promise|false}
  */
 PhotoSphereViewer.prototype.preloadPano = function(pano, callback) {
   var progressCallback = callback || null;
-  if (false === this.prop.cacheTextures) {
+  if (false === this.config.cacheTextures) {
     console.warn('The cache is disabled. Please use cacheTextures: true.');
     return false;
   }
@@ -506,8 +507,8 @@ PhotoSphereViewer.prototype.preloadPano = function(pano, callback) {
  * Remove a panorama image from the cache.
  * @param {string} the file path
  */
-PhotoSphereViewer.prototype.clearPano = function(pano) {
-  if (false === this.prop.cacheTextures) {
+PhotoSphereViewer.prototype.clearCachedPanoramas = function(pano) {
+  if (false === this.config.cacheTextures) {
     console.warn('The cache is disabled.');
     return true;
   }
@@ -518,8 +519,8 @@ PhotoSphereViewer.prototype.clearPano = function(pano) {
  * Return true if the panorama has been loaded.
  * @param {string} the panorama file path.
  */
-PhotoSphereViewer.prototype.panoHasLoaded = function(pano) {
-  return Boolean(this.prop.loadedTextures[pano]);
+PhotoSphereViewer.prototype.isPanoramaLoaded = function(pano) {
+  return Boolean(this.config.loadedTextures[pano]);
 };
 
 /**
@@ -527,5 +528,5 @@ PhotoSphereViewer.prototype.panoHasLoaded = function(pano) {
  * @param {string} the panorama file path.
  */
 PhotoSphereViewer.prototype.panoIsLoading = function(pano) {
-  return this.prop._loadingTextures.indexOf(pano) != -1;
+  return this.config._loadingTextures.indexOf(pano) != -1;
 };

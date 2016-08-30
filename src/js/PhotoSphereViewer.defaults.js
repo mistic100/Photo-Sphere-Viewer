@@ -116,7 +116,11 @@ PhotoSphereViewer.DEFAULTS = {
   loading_txt: 'Loading...',
   size: null,
   templates: {},
-  markers: []
+  markers: [],
+  loadedXMP: {},
+  loadedTextures: {},
+  _loadingTextures: [],
+  cacheTextures: false
 };
 
 /**
