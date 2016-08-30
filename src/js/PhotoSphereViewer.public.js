@@ -498,7 +498,7 @@ PhotoSphereViewer.prototype.preloadPano = function(pano, callback) {
     console.warn('The cache is disabled. Please use cacheTextures: true.');
     return false;
   }
-  return this._preloadPanorama(pano, progressCallback);
+  return this._loadTexture(pano, progressCallback);
 };
 
 /**

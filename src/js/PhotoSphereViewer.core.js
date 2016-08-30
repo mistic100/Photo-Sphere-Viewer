@@ -86,15 +86,18 @@ PhotoSphereViewer.prototype._loadXMP = function() {
 
 /**
  * Loads the sphere texture
+ * @param {String} pano - The panorama image uri - if not set, use config.panorama
+ * @param {Function} progressCallback - The callback that will be invoked while loading the panorama image, with the percentage as argument.
  * @returns {promise}
  * @private
  */
-PhotoSphereViewer.prototype._loadTexture = function() {
+PhotoSphereViewer.prototype._loadTexture = function(pano, progressCallback) {
   var self = this;
+  var targetPano = pano || self.config.panorama;
 
   return this._loadXMP().then(function(pano_data) {
     if (true === self.prop.cacheTextures) {
-      self.prop.loadedXMP[self.config.panorama] = pano_data;
+      self.prop.loadedXMP[targetPano] = pano_data;
     }
     var defer = D();
     var loader = new THREE.ImageLoader();
@@ -152,9 +155,9 @@ PhotoSphereViewer.prototype._loadTexture = function() {
       texture.minFilter = THREE.LinearFilter;
       texture.generateMipmaps = false;
       if (true === self.prop.cacheTextures) {
-        self.prop.loadedTextures[self.config.panorama] = texture;
-        self.prop._loadingTextures.splice(self.prop._loadingTextures.indexOf(self.config.panorama), 1);
-        self.trigger('pano-preloaded', self.config.panorama);
+        self.prop.loadedTextures[targetPano] = texture;
+        self.prop._loadingTextures.splice(self.prop._loadingTextures.indexOf(targetPano), 1);
+        self.trigger('pano-preloaded', targetPano);
       }
       defer.resolve(texture);
     };
@@ -166,6 +169,9 @@ PhotoSphereViewer.prototype._loadTexture = function() {
           progress = new_progress;
           self.loader.setProgress(progress);
         }
+        if (progressCallback instanceof Function) {
+          progressCallback(new_progress);
+        }
       }
     };
 
@@ -174,104 +180,18 @@ PhotoSphereViewer.prototype._loadTexture = function() {
       throw new PSVError('Cannot load image');
     };
 
-    if (true === self.prop.cacheTextures && 'undefined' != typeof self.prop.loadedTextures[self.config.panorama]) {
-      defer.resolve(self.prop.loadedTextures[self.config.panorama]);
+    if (true === self.prop.cacheTextures && 'undefined' != typeof self.prop.loadedTextures[targetPano]) {
+      defer.resolve(self.prop.loadedTextures[targetPano]);
     }
     else {
       if (true === self.prop.cacheTextures) {
-        self.prop._loadingTextures.push(self.config.panorama);
+        self.prop._loadingTextures.push(targetPano);
       }
-      loader.load(self.config.panorama, onload, onprogress, onerror);
+      loader.load(targetPano, onload, onprogress, onerror);
     }
 
     return defer.promise;
   });
-};
-
-/**
- * Loads the sphere texture
- * @returns {promise}
- * @private
- */
-PhotoSphereViewer.prototype._preloadPanorama = function(pano, progressCallback) {
-  var self = this;
-  var defer = D();
-  var loader = new THREE.ImageLoader();
-  var progress = 0;
-
-  loader.setCrossOrigin('anonymous');
-
-  var onload = function(img) {
-    if (self.loader) {
-      self.loader.setProgress(100);
-    }
-
-    // Config XMP data
-    if (!pano_data && self.config.pano_data) {
-      pano_data = PSVUtils.clone(self.config.pano_data);
-    }
-
-    // Default XMP data
-    var pano_data = {
-      full_width: img.width,
-      full_height: img.height,
-      cropped_width: img.width,
-      cropped_height: img.height,
-      cropped_x: 0,
-      cropped_y: 0
-    };
-
-    var r = Math.min(pano_data.full_width, PhotoSphereViewer.SYSTEM.maxTextureWidth) / pano_data.full_width;
-    var resized_pano_data = PSVUtils.clone(pano_data);
-
-    resized_pano_data.full_width *= r;
-    resized_pano_data.full_height *= r;
-    resized_pano_data.cropped_width *= r;
-    resized_pano_data.cropped_height *= r;
-    resized_pano_data.cropped_x *= r;
-    resized_pano_data.cropped_y *= r;
-
-    img.width = resized_pano_data.cropped_width;
-    img.height = resized_pano_data.cropped_height;
-
-    // create a new image containing the source image and black for cropped parts
-    var buffer = document.createElement('canvas');
-    buffer.width = resized_pano_data.full_width;
-    buffer.height = resized_pano_data.full_height;
-
-    var ctx = buffer.getContext('2d');
-    ctx.drawImage(img, resized_pano_data.cropped_x, resized_pano_data.cropped_y, resized_pano_data.cropped_width, resized_pano_data.cropped_height);
-
-    var texture = new THREE.Texture(buffer);
-    texture.needsUpdate = true;
-    texture.minFilter = THREE.LinearFilter;
-    texture.generateMipmaps = false;
-    self.prop.loadedTextures[pano] = texture;
-    self.prop._loadingTextures.splice(self.prop._loadingTextures.indexOf(pano), 1);
-    self.trigger('pano-preloaded', pano);
-    defer.resolve(texture);
-  };
-
-  var onprogress = function(e) {
-    if ('function' == typeof progressCallback) {
-      progressCallback(parseInt(e.loaded / e.total * 100));
-    }
-  };
-
-  var onerror = function() {
-    self.container.textContent = 'Cannot preload image';
-    throw new PSVError('Cannot preload image');
-  };
-
-  if (true === self.prop.cacheTextures && 'undefined' != typeof self.prop.loadedTextures[pano]) {
-    defer.resolve(self.prop.loadedTextures[pano]);
-  }
-  else {
-    self.prop._loadingTextures.push(pano);
-    loader.load(pano, onload, onprogress, onerror);
-  }
-
-  return defer.promise;
 };
 
 /**
