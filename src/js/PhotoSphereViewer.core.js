@@ -90,7 +90,6 @@ PhotoSphereViewer.prototype._loadXMP = function() {
  * @param {Function} progressCallback - The callback that will be invoked while loading the panorama image, with the percentage as argument.
  * @returns {promise}
  * @private
- * @todo Cache limit (number of objects || kb) with autoclean when exceeded?
  */
 PhotoSphereViewer.prototype._loadTexture = function(pano, progressCallback) {
   var self = this;
