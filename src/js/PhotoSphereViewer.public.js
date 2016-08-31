@@ -430,6 +430,7 @@ PhotoSphereViewer.prototype.animate = function(position, duration) {
     easing: 'inOutSine',
     onTick: this.rotate.bind(this)
   });
+  return this.prop.animation_promise;
 };
 
 /**
@@ -501,4 +502,61 @@ PhotoSphereViewer.prototype.startKeyboardControl = function() {
  */
 PhotoSphereViewer.prototype.stopKeyboardControl = function() {
   window.removeEventListener('keydown', this);
+};
+
+/**
+ * Manually preload a panorama image (without showing it) and save it into internal cache.
+ * @param {String} pano - the file path
+ * @param {Function} callback - Progress callback, will receive the percentage as argument.
+ * @return {promise|false}
+ */
+PhotoSphereViewer.prototype.preloadPano = function(pano, callback) {
+  if (false === this.config.caching.enabled) {
+    console.warn('The cache is disabled. Please use caching.enabled: true.');
+    return false;
+  }
+  var progressCallback = callback || null;
+  return this._loadTexture(pano, progressCallback);
+};
+
+/**
+ * Remove a panorama image from the cache.
+ * @param {string} the file path
+ * @return {Boolean}
+ */
+PhotoSphereViewer.prototype.clearCachedPanoramas = function(pano) {
+  if (false === this.config.caching.enabled) {
+    console.warn('The cache is disabled.');
+    return true;
+  }
+  return this._clearTexture(pano);
+};
+
+/**
+ * Return true if the panorama is present in the cache.
+ * @param {string} the panorama file path.
+ * @return {Boolean} True if the panorama is fully loaded, false otherwise.
+ */
+PhotoSphereViewer.prototype.isPanoCached = function(pano) {
+  if ('undefined' === typeof this.prop.cache.items[pano]) {
+    return false;
+  }
+  return true;
+};
+
+
+/**
+ * Return an estimated size of the cached panoramas.
+ * @return {integer} the aproximative cache size.
+ */
+PhotoSphereViewer.prototype.getCacheSize = function() {
+  return this.prop.cache.registry.length;
+};
+
+/**
+ * Return an estimated size of the cached panoramas.
+ * @return {integer} the aproximative cache size.
+ */
+PhotoSphereViewer.prototype.getCache = function() {
+  return this.prop.cache;
 };
