@@ -530,3 +530,12 @@ PhotoSphereViewer.prototype.isPanoramaLoaded = function(pano) {
 PhotoSphereViewer.prototype.panoIsLoading = function(pano) {
   return this.config._loadingTextures.indexOf(pano) != -1;
 };
+
+
+/**
+ * Return an estimated size of the cached panoramas.
+ * @return {integer} the aproximative cache size.
+ */
+PhotoSphereViewer.prototype.getCacheSize = function() {
+  return this.prop.cacheRegistry.length;
+};

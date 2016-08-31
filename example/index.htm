@@ -119,24 +119,6 @@
         content: '❌',
         enabled: false
       },
-      {
-        id: 'preload',
-        title: 'Preload Bryce-Canyon-By-Jess-Beauchemin.jpg',
-        className: 'custom-button',
-        content: '&infin;',
-        onClick: function(){
-          PSV.preloadPano('Bryce-Canyon-By-Jess-Beauchemin.jpg');
-        },
-      },
-      {
-        id: 'clearIt',
-        title: 'Remove Bryce-Canyon-By-Jess-Beauchemin.jpg from cache',
-        className: 'custom-button',
-        content: '&eng;',
-        onClick: function(){
-          PSV.clearCachedPanoramas('Bryce-Canyon-By-Jess-Beauchemin.jpg');
-        },
-      },
       'caption',
       'gyroscope',
       'fullscreen'
@@ -151,8 +133,6 @@
     time_anim: false,
     gyroscope: true,
     webgl: true,
-    usexmpdata: true,
-    cacheTextures: true,
     transition: {
       duration: 1000,
       loader: true,
