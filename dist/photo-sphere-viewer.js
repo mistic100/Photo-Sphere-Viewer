@@ -1773,6 +1773,7 @@ PhotoSphereViewer.prototype.animate = function(position, duration) {
     easing: 'inOutSine',
     onTick: this.rotate.bind(this)
   });
+  return this.prop.animation_promise;
 };
 
 /**
