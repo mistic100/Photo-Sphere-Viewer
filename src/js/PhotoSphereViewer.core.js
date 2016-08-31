@@ -74,8 +74,9 @@ PhotoSphereViewer.prototype._loadXMP = function() {
     throw new PSVError('Cannot load image');
   };
 
-  if (true === this.config.cacheTextures && 'undefined' != typeof this.prop.loadedXMP[this.config.panorama]) {
-    defer.resolve(this.prop.loadedXMP[this.config.panorama]);
+  if (true === this.config.caching.enabled && true === this.isPanoCached(this.config.panorama)) {
+    var cachedPano = self._getPanoCache(this.config.panorama);
+    defer.resolve(cachedPano.xmpdata);
   }
   else {
     xhr.open('GET', this.config.panorama, true);
@@ -94,13 +95,8 @@ PhotoSphereViewer.prototype._loadXMP = function() {
 PhotoSphereViewer.prototype._loadTexture = function(pano, progressCallback) {
   var self = this;
   var targetPano = pano || self.config.panorama;
-  if (true === this.config.cacheTextures) {
-    this._normalizeCacheSize();
-  }
+
   return this._loadXMP().then(function(pano_data) {
-    if (true === self.config.cacheTextures) {
-      self.prop.loadedXMP[targetPano] = pano_data;
-    }
     var defer = D();
     var loader = new THREE.ImageLoader();
     var progress = pano_data ? 100 : 0;
@@ -156,13 +152,19 @@ PhotoSphereViewer.prototype._loadTexture = function(pano, progressCallback) {
       texture.needsUpdate = true;
       texture.minFilter = THREE.LinearFilter;
       texture.generateMipmaps = false;
-      if (true === self.config.cacheTextures) {
-        self.prop.cacheRegistry.push(targetPano);
-        self.prop.loadedTextures[targetPano] = texture;
-        self.prop._loadingTextures.splice(self.prop._loadingTextures.indexOf(targetPano), 1);
-        self.trigger('pano-preloaded', targetPano);
+
+      // Cache handling.
+      if (true === self.config.caching.enabled) {
+        var tmpCacheItem = {
+          path: targetPano,
+          xmpdata: pano_data,
+          texture: texture
+        };
+        self._savePanoCache(targetPano, tmpCacheItem).then(function() {
+          self.trigger('pano-preloaded', targetPano);
+        });
       }
-      defer.resolve(texture);
+      defer.resolve(texture, pano_data);
     };
 
     var onprogress = function(e) {
@@ -183,16 +185,13 @@ PhotoSphereViewer.prototype._loadTexture = function(pano, progressCallback) {
       throw new PSVError('Cannot load image');
     };
 
-    if (true === self.config.cacheTextures && 'undefined' != typeof self.prop.loadedTextures[targetPano]) {
-      defer.resolve(self.prop.loadedTextures[targetPano]);
+    if (true === self.config.caching.enabled && true === self.isPanoCached(targetPano)) {
+      var cachedPano = self._getPanoCache(targetPano);
+      defer.resolve(cachedPano.texture);
     }
     else {
-      if (true === self.config.cacheTextures) {
-        self.prop._loadingTextures.push(targetPano);
-      }
       loader.load(targetPano, onload, onprogress, onerror);
     }
-
     return defer.promise;
   });
 };
@@ -448,16 +447,20 @@ PhotoSphereViewer.prototype._reverseAutorotate = function() {
  * Remove a panorama image from the internal cache.
  * @param {String} panorama - The panorama uri, if missing, all the cache will bhe cleared.
  * @private
- * @return {Boolean} False if cache is disabled, else otherwise.
+ * @return {Boolean} False if cache is disabled, true otherwise.
  */
 PhotoSphereViewer.prototype._clearTexture = function(panorama) {
-  if (true === this.config.cacheTextures) {
-    if (panorama && 'undefined' != typeof this.prop.loadedTextures[panorama]) {
-      delete this.prop.loadedTextures[panorama];
+  if (true === this.config.caching.enabled) {
+    if (panorama) {
+      if ('undefined' != typeof this.prop.cache.items[panorama]) {
+        delete this.prop.cache.items[panorama];
+        this.prop.cache.registry.splice(this.prop.cache.registry.indexOf(panorama), 1);
+      }
     }
     else {
-      delete this.prop.loadedTextures[panorama];
-      this.prop.loadedTextures = {};
+      delete this.prop.cache.items;
+      this.prop.cache.items = {};
+      this.prop.cache.registry = [];
     }
     return true;
   }
@@ -467,15 +470,57 @@ PhotoSphereViewer.prototype._clearTexture = function(panorama) {
 /**
  * Check if the cache size has reached the limit
  * @private
- * @return null
+ * @return {Promise}
  */
-PhotoSphereViewer.prototype._normalizeCacheSize = function(pano, progressCallback) {
-  // Unlimited cache?
-  if (0 === this.config.maxCacheSize) {
-    return;
+PhotoSphereViewer.prototype._normalizeCacheSize = function() {
+  var defer = D();
+  if (true === this.config.caching.enabled) {
+    // Unlimited cache?
+    if (0 === this.config.caching.maxSize) {
+      defer.resolve(true);
+    }
+    else if (this.prop.cache.registry.length >= this.config.caching.maxSize) {
+      // Always remove the older item to make room for the next one.
+      defer.resolve(this._clearTexture(this.prop.cache.registry[0]));
+    }
+    else {
+      defer.resolve(true);
+    }
   }
-  if (this.prop.cacheRegistry.length >= this.config.maxCacheSize) {
-    var olderItem = this.prop.cacheRegistry.shift();
-    this._clearTexture(olderItem);
+  else {
+    defer.resolve(false);
+  }
+  return defer.promise;
+};
+
+/**
+ * Save a panorama into the internal cache.
+ * @param {String} pano - The panorama path
+ * @param {Object} item - The panorama cache item.
+ * @return {Promise}
+ */
+PhotoSphereViewer.prototype._savePanoCache = function(pano, item) {
+  var defer = D();
+  var self = this;
+  this._normalizeCacheSize().then(function() {
+    self.prop.cache.registry.push(pano);
+    self.prop.cache.items[pano] = item;
+    defer.resolve(pano);
+  });
+  return defer.promise;
+};
+
+/**
+ * Retrieve a panorama cached item.
+ * @param {String} pano - The panorama path
+ * @return {Object|null} - The panorama Object, null if not present.
+ */
+PhotoSphereViewer.prototype._getPanoCache = function(pano) {
+  if ('undefined' !== typeof this.prop.cache.items[pano]) {
+    return this.prop.cache.items[pano];
+  }
+  else {
+    // May be worth throwing an exception?
+    return null;
   }
 };

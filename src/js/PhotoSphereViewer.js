@@ -158,10 +158,10 @@ function PhotoSphereViewer(options) {
       cropped_x: 0,
       cropped_y: 0
     },
-    cacheRegistry: [],
-    loadedXMP: {},
-    loadedTextures: {},
-    _loadingTextures: []
+    cache: {
+      items: {},
+      registry: []
+    }
   };
 
   // init templates
