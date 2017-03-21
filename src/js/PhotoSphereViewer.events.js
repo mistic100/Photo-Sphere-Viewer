@@ -193,11 +193,8 @@ PhotoSphereViewer.prototype._onTouchMove = function(evt) {
  * @private
  */
 PhotoSphereViewer.prototype._startMove = function(evt) {
-  if (this.isGyroscopeEnabled()) {
-    return;
-  }
-
-  this._stopAll();
+  this.stopAutorotate();
+  this.stopAnimation();
 
   this.prop.mouse_x = this.prop.start_mouse_x = parseInt(evt.clientX);
   this.prop.mouse_y = this.prop.start_mouse_y = parseInt(evt.clientY);
@@ -231,11 +228,6 @@ PhotoSphereViewer.prototype._startZoom = function(evt) {
  * @private
  */
 PhotoSphereViewer.prototype._stopMove = function(evt) {
-  if (this.isGyroscopeEnabled()) {
-    this._click(evt);
-    return;
-  }
-
   if (this.prop.moving) {
     // move threshold to trigger a click
     if (Math.abs(evt.clientX - this.prop.start_mouse_x) < PhotoSphereViewer.MOVE_THRESHOLD && Math.abs(evt.clientY - this.prop.start_mouse_y) < PhotoSphereViewer.MOVE_THRESHOLD) {
@@ -364,10 +356,17 @@ PhotoSphereViewer.prototype._move = function(evt, log) {
     var x = parseInt(evt.clientX);
     var y = parseInt(evt.clientY);
 
-    this.rotate({
-      longitude: this.prop.longitude - (x - this.prop.mouse_x) / this.prop.size.width * this.prop.move_speed * this.prop.hFov,
-      latitude: this.prop.latitude + (y - this.prop.mouse_y) / this.prop.size.height * this.prop.move_speed * this.prop.vFov
-    });
+    // If the the gyroscope tick is running, only save the offset angle
+    if (this.isGyroscopeEnabled()) {
+      this.prop.gyro_angle_alpha += (x - this.prop.mouse_x) / this.prop.size.width * this.prop.move_speed * this.prop.hFov;
+      this.prop.gyro_angle_beta += (y - this.prop.mouse_y) / this.prop.size.width * this.prop.move_speed * this.prop.hFov;
+    }
+    else {
+      this.rotate({
+        longitude: this.prop.longitude - (x - this.prop.mouse_x) / this.prop.size.width * this.prop.move_speed * this.prop.hFov,
+        latitude: this.prop.latitude + (y - this.prop.mouse_y) / this.prop.size.height * this.prop.move_speed * this.prop.vFov
+      });
+    }
 
     this.prop.mouse_x = x;
     this.prop.mouse_y = y;

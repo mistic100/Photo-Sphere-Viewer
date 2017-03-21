@@ -330,6 +330,9 @@ PhotoSphereViewer.prototype.startGyroscopeControl = function() {
 
   (function run() {
     self.doControls.update();
+    self.doControls.updateAlphaOffsetAngle(self.prop.gyro_angle_alpha);
+    self.doControls.updateBetaOffsetAngle(self.prop.gyro_angle_beta);
+
     self.prop.direction = self.camera.getWorldDirection();
 
     var sphericalCoords = self.vector3ToSphericalCoords(self.prop.direction);
