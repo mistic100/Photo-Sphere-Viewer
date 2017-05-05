@@ -73,8 +73,8 @@ PSVNavBarZoomButton.prototype.create = function() {
 
   this.zoom_range.addEventListener('mousedown', this);
   this.zoom_range.addEventListener('touchstart', this);
-  this.zoom_range.addEventListener('mousemove', this);
-  this.zoom_range.addEventListener('touchmove', this);
+  this.psv.container.addEventListener('mousemove', this);
+  this.psv.container.addEventListener('touchmove', this);
   this.psv.container.addEventListener('mouseup', this);
   this.psv.container.addEventListener('touchend', this);
   zoom_minus.addEventListener('mousedown', this._zoomOut.bind(this));
@@ -91,6 +91,8 @@ PSVNavBarZoomButton.prototype.create = function() {
  * @override
  */
 PSVNavBarZoomButton.prototype.destroy = function() {
+  this.psv.container.removeEventListener('mousemove', this);
+  this.psv.container.removeEventListener('touchmove', this);
   this.psv.container.removeEventListener('mouseup', this);
   this.psv.container.removeEventListener('touchend', this);
 
