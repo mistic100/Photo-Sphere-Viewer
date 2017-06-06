@@ -63,18 +63,16 @@ PSVPanel.prototype.create = function() {
   var resizer = this.container.querySelector('.psv-panel-resizer');
   resizer.addEventListener('mousedown', this);
   resizer.addEventListener('touchstart', this);
+  resizer.addEventListener('mousemove', this);
+  resizer.addEventListener('touchmove', this);
   this.psv.container.addEventListener('mouseup', this);
   this.psv.container.addEventListener('touchend', this);
-  this.psv.container.addEventListener('mousemove', this);
-  this.psv.container.addEventListener('touchmove', this);
 };
 
 /**
  * @override
  */
 PSVPanel.prototype.destroy = function() {
-  this.psv.container.removeEventListener('mousemove', this);
-  this.psv.container.removeEventListener('touchmove', this);
   this.psv.container.removeEventListener('mouseup', this);
   this.psv.container.removeEventListener('touchend', this);
 
