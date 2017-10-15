@@ -2,6 +2,7 @@
 
 [![Bower version](https://img.shields.io/bower/v/Photo-Sphere-Viewer.svg?style=flat-square)](http://photo-sphere-viewer.js.org)
 [![NPM version](https://img.shields.io/npm/v/photo-sphere-viewer.svg?style=flat-square)](https://www.npmjs.com/package/photo-sphere-viewer)
+[![jsDelivr Hits](https://data.jsdelivr.com/v1/package/npm/photo-sphere-viewer/badge)](https://www.jsdelivr.com/package/npm/photo-sphere-viewer)
 [![Build Status](https://img.shields.io/travis/mistic100/Photo-Sphere-Viewer/master.svg?style=flat-square)](https://travis-ci.org/mistic100/Photo-Sphere-Viewer)
 [![Dependencies Status](https://david-dm.org/mistic100/Photo-Sphere-Viewer/status.svg?style=flat-square)](https://david-dm.org/mistic100/Photo-Sphere-Viewer)
 
