@@ -51,6 +51,7 @@
     "threejs"
   ],
   "license": "MIT",
+  "main": "dist/photo-sphere-viewer.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/mistic100/Photo-Sphere-Viewer.git"
