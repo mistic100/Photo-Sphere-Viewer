@@ -331,6 +331,8 @@ function PhotoSphereViewer(options) {
    * @property {int} start_mouse_y - start y position of the click/touch
    * @property {int} mouse_x - current x position of the cursor
    * @property {int} mouse_y - current y position of the cursor
+   * @property {int} gyro_angle_alpha - current angle alpha offset value
+   * @property {int} gyro_angle_beta - current angle beta offset value
    * @property {Array[]} mouse_history - list of latest positions of the cursor, [time, x, y]
    * @property {int} pinch_dist - distance between fingers when zooming
    * @property orientation_reqid - animationRequest id of the device orientation
@@ -362,6 +364,8 @@ function PhotoSphereViewer(options) {
     mouse_x: 0,
     mouse_y: 0,
     mouse_history: [],
+    gyro_angle_alpha: 0,
+    gyro_angle_beta: 0,
     pinch_dist: 0,
     orientation_reqid: null,
     autorotate_reqid: null,
