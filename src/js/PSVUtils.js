@@ -220,7 +220,7 @@ PSVUtils.fullscreenEvent = function() {
     'exitFullscreen': 'fullscreenchange',
     'webkitExitFullscreen': 'webkitfullscreenchange',
     'mozCancelFullScreen': 'mozfullscreenchange',
-    'msExitFullscreen': 'msFullscreenEnabled'
+    'msExitFullscreen': 'MSFullscreenChange'
   };
 
   for (var exit in map) {
