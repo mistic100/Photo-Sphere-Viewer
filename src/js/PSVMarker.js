@@ -114,6 +114,9 @@ function PSVMarker(properties, psv) {
   else if (this.isPolygon()) {
     $el = document.createElementNS(PSVUtils.svgNS, 'polygon');
   }
+  else if (this.isPolyline()) {
+    $el = document.createElementNS(PSVUtils.svgNS, 'polyline');
+  }
   else {
     $el = document.createElementNS(PSVUtils.svgNS, this.type);
   }
@@ -129,7 +132,7 @@ function PSVMarker(properties, psv) {
  * @type {string[]}
  * @readonly
  */
-PSVMarker.types = ['image', 'html', 'polygon_px', 'polygon_rad', 'rect', 'circle', 'ellipse', 'path'];
+PSVMarker.types = ['image', 'html', 'polygon_px', 'polygon_rad', 'polyline_px', 'polyline_rad', 'rect', 'circle', 'ellipse', 'path'];
 
 /**
  * @summary Determines the type of a marker by the available properties
@@ -173,11 +176,27 @@ PSVMarker.prototype.isNormal = function() {
 };
 
 /**
+ * @summary Checks if it is a polygon/polyline marker
+ * @returns {boolean}
+ */
+PSVMarker.prototype.isPoly = function() {
+  return this.isPolygon() || this.isPolyline();
+};
+
+/**
  * @summary Checks if it is a polygon marker
  * @returns {boolean}
  */
 PSVMarker.prototype.isPolygon = function() {
   return this.type == 'polygon_px' || this.type == 'polygon_rad';
+};
+
+/**
+ * @summary Checks if it is a polyline marker
+ * @returns {boolean}
+ */
+PSVMarker.prototype.isPolyline = function() {
+  return this.type == 'polyline_px' || this.type == 'polyline_rad';
 };
 
 /**
@@ -236,7 +255,10 @@ PSVMarker.prototype.update = function(properties) {
     this._updateNormal();
   }
   else if (this.isPolygon()) {
-    this._updatePolygon();
+    this._updatePoly('polygon_rad', 'polygon_px');
+  }
+  else if (this.isPolyline()) {
+    this._updatePoly('polyline_rad', 'polyline_px');
   }
   else {
     this._updateSvg();
@@ -377,9 +399,11 @@ PSVMarker.prototype._updateSvg = function() {
 
 /**
  * @summary Updates a polygon marker
+ * @param {'polygon_rad'|'polyline_rad'} key_rad
+ * @param {'polygon_px'|'polyline_px'} key_px
  * @private
  */
-PSVMarker.prototype._updatePolygon = function() {
+PSVMarker.prototype._updatePoly = function(key_rad, key_px) {
   this._dynamicSize = true;
 
   // set style
@@ -387,13 +411,21 @@ PSVMarker.prototype._updatePolygon = function() {
     Object.getOwnPropertyNames(this.svgStyle).forEach(function(prop) {
       this.$el.setAttributeNS(null, prop, this.svgStyle[prop]);
     }, this);
+
+    if (this.isPolyline() && !this.svgStyle.fill) {
+      this.$el.setAttributeNS(null, 'fill', 'none');
+    }
   }
-  else {
+  else if (this.isPolygon()) {
     this.$el.setAttributeNS(null, 'fill', 'rgba(0,0,0,0.5)');
+  }
+  else if (this.isPolyline()) {
+    this.$el.setAttributeNS(null, 'fill', 'none');
+    this.$el.setAttributeNS(null, 'stroke', 'rgb(0,0,0)');
   }
 
   // fold arrays: [1,2,3,4] => [[1,2],[3,4]]
-  [this.polygon_rad, this.polygon_px].forEach(function(polygon) {
+  [this[key_rad], this[key_px]].forEach(function(polygon) {
     if (polygon && typeof polygon[0] != 'object') {
       for (var i = 0; i < polygon.length; i++) {
         polygon.splice(i, 2, [polygon[i], polygon[i + 1]]);
@@ -402,15 +434,15 @@ PSVMarker.prototype._updatePolygon = function() {
   });
 
   // convert texture coordinates to spherical coordinates
-  if (this.polygon_px) {
-    this.polygon_rad = this.polygon_px.map(function(coord) {
+  if (this[key_px]) {
+    this[key_rad] = this[key_px].map(function(coord) {
       var sphericalCoords = this.psv.textureCoordsToSphericalCoords({ x: coord[0], y: coord[1] });
       return [sphericalCoords.longitude, sphericalCoords.latitude];
     }, this);
   }
   // clean angles
   else {
-    this.polygon_rad = this.polygon_rad.map(function(coord) {
+    this[key_rad] = this[key_rad].map(function(coord) {
       return [
         PSVUtils.parseAngle(coord[0]),
         PSVUtils.parseAngle(coord[1], true)
@@ -419,11 +451,11 @@ PSVMarker.prototype._updatePolygon = function() {
   }
 
   // TODO : compute the center of the polygon
-  this.longitude = this.polygon_rad[0][0];
-  this.latitude = this.polygon_rad[0][1];
+  this.longitude = this[key_rad][0][0];
+  this.latitude = this[key_rad][0][1];
 
   // compute x/y/z positions
-  this.positions3D = this.polygon_rad.map(function(coord) {
+  this.positions3D = this[key_rad].map(function(coord) {
     return this.psv.sphericalCoordsToVector3({ longitude: coord[0], latitude: coord[1] });
   }, this);
 };

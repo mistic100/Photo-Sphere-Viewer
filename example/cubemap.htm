@@ -131,7 +131,7 @@
   });
 
   PSV.on('click', function(e) {
-    if (e.marker && !e.marker.isPolygon()) {
+    if (e.marker && !e.marker.isPoly()) {
       return;
     }
     PSV.addMarker({

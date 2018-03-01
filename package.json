@@ -57,6 +57,8 @@
     "url": "git://github.com/mistic100/Photo-Sphere-Viewer.git"
   },
   "scripts": {
-    "test": "grunt test"
+    "postinstall": "bower install",
+    "test": "grunt test",
+    "start": "grunt serve"
   }
 }
