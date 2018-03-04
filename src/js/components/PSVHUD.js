@@ -358,7 +358,7 @@ PSVHUD.prototype.renderMarkers = function() {
 
     if (isVisible && marker.isPoly()) {
       var positions = this._getPolyPositions(marker);
-      isVisible = positions.length > 2;
+      isVisible = positions.length > (marker.isPolygon() ? 2 : 1);
 
       if (isVisible) {
         marker.position2D = this._getPolyDimensions(marker, positions);

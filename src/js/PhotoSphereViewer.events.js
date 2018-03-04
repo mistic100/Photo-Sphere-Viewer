@@ -231,6 +231,10 @@ PhotoSphereViewer.prototype._startZoom = function(evt) {
  * @private
  */
 PhotoSphereViewer.prototype._stopMove = function(evt) {
+  if (!PSVUtils.getClosest(evt.target, '.psv-hud')) {
+    return;
+  }
+
   if (this.isGyroscopeEnabled()) {
     this._click(evt);
     return;
@@ -250,9 +254,10 @@ PhotoSphereViewer.prototype._stopMove = function(evt) {
     else {
       this.prop.moving = false;
     }
+
+    this.prop.mouse_history.length = 0;
   }
 
-  this.prop.mouse_history.length = 0;
   this.prop.zooming = false;
 };
 
