@@ -253,6 +253,7 @@ PSVHUD.prototype.clearMarkers = function(render) {
  * @summary Rotate the view to face the marker
  * @param {*} marker
  * @param {string|int} [duration] - rotates smoothy, see {@link PhotoSphereViewer#animate}
+ * @fires module:components.PSVHUD.goto-marker-done
  * @return {Promise}  A promise that will be resolved when the animation finishes
  */
 PSVHUD.prototype.gotoMarker = function(marker, duration) {
@@ -378,14 +379,19 @@ PSVHUD.prototype.renderMarkers = function() {
       if (isVisible) {
         marker.position2D = position;
 
-        if (marker.$el instanceof SVGElement) {
-          marker.$el.setAttribute('transform', 'translate(' + position.x + ' ' + position.y + ')' +
-            (!marker.lockRotation && rotation ? ' rotate(' + rotation + ' ' + (marker.anchor.left * marker.width) + ' ' + (marker.anchor.top * marker.height) + ')' : ''));
+        var scale = marker.getScale(this.psv.getZoomLevel());
+
+        if (marker.isSvg()) {
+          marker.$el.setAttributeNS(null, 'transform',
+            'translate(' + position.x + ', ' + position.y + ')' +
+            (scale !== 1 ? ' scale(' + scale + ', ' + scale + ')' : '') +
+            (!marker.lockRotation && rotation ? ' rotate(' + rotation + ')' : '')
+          );
         }
         else {
-          marker.$el.style.transform = 'translate3D(' + position.x + 'px, ' + position.y + 'px, ' + '0px)' +
+          marker.$el.style.transform = 'translate3D(' + position.x + 'px, ' + position.y + 'px, 0px)' +
+            (scale !== 1 ? ' scale(' + scale + ', ' + scale + ')' : '') +
             (!marker.lockRotation && rotation ? ' rotateZ(' + rotation + 'deg)' : '');
-          marker.$el.style.transformOrigin = marker.anchor.left * 100 + '% ' + marker.anchor.top * 100 + '%';
         }
       }
     }
@@ -420,7 +426,12 @@ PSVHUD.prototype._getMarkerPosition = function(marker) {
   if (marker._dynamicSize) {
     // make the marker visible to get it's size
     PSVUtils.toggleClass(marker.$el, 'psv-marker--transparent', true);
+    var transform = marker.$el.style.transform;
+    marker.$el.style.transform = null;
+
     var rect = marker.$el.getBoundingClientRect();
+
+    marker.$el.style.transform = transform;
     PSVUtils.toggleClass(marker.$el, 'psv-marker--transparent', false);
 
     marker.width = rect.right - rect.left;
@@ -704,6 +715,7 @@ PSVHUD.prototype._onClick = function(data, e, dblclick) {
 /**
  * @summary Clicks on an item
  * @param {MouseEvent} e
+ * @fires module:components.PSVHUD.select-marker-list
  * @private
  */
 PSVHUD.prototype._onClickItem = function(e) {

@@ -208,6 +208,26 @@ PSVMarker.prototype.isSvg = function() {
 };
 
 /**
+ * @summary Computes marker scale from zoom level
+ * @param {float} zoomLevel
+ * @returns {float}
+ */
+PSVMarker.prototype.getScale = function(zoomLevel) {
+  if (Array.isArray(this.scale)) {
+    return this.scale[0] + (this.scale[1] - this.scale[0]) * PSVUtils.animation.easings.inQuad(zoomLevel / 100);
+  }
+  else if (typeof this.scale == 'function') {
+    return this.scale(zoomLevel);
+  }
+  else if (typeof this.scale == 'number') {
+    return this.scale * PSVUtils.animation.easings.inQuad(zoomLevel / 100);
+  }
+  else {
+    return 1;
+  }
+};
+
+/**
  * @summary Updates the marker with new properties
  * @param {object} [properties]
  * @throws {PSVError} when trying to change the marker's type
@@ -285,6 +305,9 @@ PSVMarker.prototype._updateNormal = function() {
   else {
     this.$el.innerHTML = this.html;
   }
+
+  // set anchor
+  this.$el.style.transformOrigin = this.anchor.left * 100 + '% ' + this.anchor.top * 100 + '%';
 
   // convert texture coordinates to spherical coordinates
   this.psv.cleanPosition(this);

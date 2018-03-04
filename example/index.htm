@@ -24,6 +24,16 @@
       font-size: 22px;
       line-height: 20px;
     }
+
+    .demo-label {
+      color: white;
+      font-size: 20px;
+      font-family: Helvetica, sans-serif;
+      text-align: center;
+      padding: 5px;
+      border: 1px solid white;
+      background: rgba(0,0,0,0.4);
+    }
   </style>
 </head>
 <body>
@@ -67,6 +77,8 @@
     <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
     <li>Aliquam tincidunt mauris eu risus.</li>
   </ul>
+
+  <img src="pin2.png" style="width:100%"/>
 
   <pre><code>
 #header h1 a {
@@ -181,18 +193,6 @@
       }
 
       a.push({
-        id: 'the-path',
-        name: 'The path',
-        content: '<img src="pin2.png" style="width:100%"/><img src="pin.png" style="width:100%"/>',
-        x: 3900,
-        y: 1650,
-        image: 'pin2.png',
-        width: 32,
-        height: 32,
-        anchor: 'bottom center'
-      });
-
-      a.push({
         id: 'lorem',
         tooltip: {
           content: 'Lorem ipsum dolor ist amet et consecturo.',
@@ -205,29 +205,6 @@
         width: 32,
         height: 32,
         anchor: 'bottom center'
-      });
-
-      a.push({
-        id: 'gif',
-        image: 'http://strangeplanet.fr/files/avatars/sleep-round.gif',
-        width: 100,
-        height: 100,
-        x: 2060,
-        y: 960
-      });
-
-      a.push({
-        id: 'text',
-        html: 'This <b>is</b> text <img src="pin3.png" style="height: 24px; vertical-align: top;"/>',
-        anchor: 'bottom right',
-        style: {
-          color: 'white',
-          fontSize: '20px',
-          fontFamily: 'Helvetica, sans-serif',
-          textAlign: 'center'
-        },
-        latitude: -0.2,
-        longitude: 0.5
       });
 
       a.push({
@@ -275,6 +252,47 @@
       });
 
       a.push({
+        id: 'html-img-demo',
+        html: 'HTML & Image',
+        scale: [0.5, 1.5],
+        className: 'demo-label',
+        longitude: 0.5,
+        latitude: -0.48
+      });
+
+      a.push({
+        id: 'gif',
+        image: 'http://strangeplanet.fr/files/avatars/sleep-round.gif',
+        width: 100,
+        height: 100,
+        longitude: 0.60,
+        latitude: -0.35
+      });
+
+      a.push({
+        id: 'text',
+        html: 'This <b>is</b> text <img src="pin3.png" style="height: 24px; vertical-align: top;"/>',
+        anchor: 'bottom right',
+        style: {
+          color: 'white',
+          fontSize: '20px',
+          fontFamily: 'Helvetica, sans-serif',
+          textAlign: 'center'
+        },
+        longitude: 0.45,
+        latitude: -0.4
+      });
+
+      a.push({
+        id: 'svg-demo',
+        html: 'SVG marker demo',
+        scale: [0.5, 1.5],
+        className: 'demo-label',
+        longitude: -0.5,
+        latitude: -0.48
+      });
+
+      a.push({
         id: 'circle',
         tooltip: 'A circle of radius 30',
         circle: 30,
@@ -283,8 +301,8 @@
           stroke: 'yellow',
           'stroke-width': '2px'
         },
-        longitude: 0,
-        latitude: -0.1,
+        longitude: -0.5,
+        latitude: -0.28,
         anchor: 'center right'
       });
 
@@ -297,8 +315,8 @@
           stroke: 'yellow',
           'stroke-width': '2px'
         },
-        longitude: 0,
-        latitude: -0.1,
+        longitude: -0.5,
+        latitude: -0.28,
         anchor: 'center left'
       });
 
@@ -311,8 +329,8 @@
           stroke: 'yellow',
           'stroke-width': '2px'
         },
-        longitude: 0,
-        latitude: -0.2,
+        longitude: -0.5,
+        latitude: -0.38,
         anchor: 'center right'
       });
 
@@ -325,9 +343,54 @@
           stroke: 'yellow',
           'stroke-width': '2px'
         },
-        longitude: 0,
-        latitude: -0.2,
+        longitude: -0.5,
+        latitude: -0.38,
         anchor: 'center left'
+      });
+
+      a.push({
+        id: 'scale-demo',
+        html: 'Marker scale demo',
+        scale: [0.5, 1.5],
+        className: 'demo-label',
+        longitude: 0,
+        latitude: -0.48
+      });
+
+      a.push({
+        id: 'scale-0',
+        tooltip: 'No scale',
+        scale: false,
+        circle: 20,
+        svgStyle: {
+          fill: 'rgba(0, 0, 0, 0.5)'
+        },
+        longitude: -0.1,
+        latitude: -0.4
+      });
+
+      a.push({
+        id: 'scale-1',
+        tooltip: '<code>zoom x2</code>',
+        scale: 2,
+        circle: 20,
+        svgStyle: {
+          fill: 'rgba(0, 0, 0, 0.5)'
+        },
+        longitude: 0,
+        latitude: -0.4
+      });
+
+      a.push({
+        id: 'scale-2',
+        tooltip: '<code>zoom x0.5 ; zoom x1.5</code>',
+        scale: [0.5, 1.5],
+        circle: 20,
+        svgStyle: {
+          fill: 'rgba(0, 0, 0, 0.5)'
+        },
+        longitude: 0.1,
+        latitude: -0.4
       });
 
       return a;
