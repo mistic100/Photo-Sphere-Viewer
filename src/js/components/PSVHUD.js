@@ -257,7 +257,17 @@ PSVHUD.prototype.clearMarkers = function(render) {
  */
 PSVHUD.prototype.gotoMarker = function(marker, duration) {
   marker = this.getMarker(marker);
-  return this.psv.animate(marker, duration);
+
+  return this.psv.animate(marker, duration)
+    .then(function() {
+      /**
+       * @event goto-marker-done
+       * @memberof module:components.PSVHUD
+       * @summary Triggered when the animation to a marker is done
+       * @param {PSVMarker} marker
+       */
+      this.psv.trigger('goto-marker-done', marker);
+    }.bind(this));
 };
 
 /**
@@ -699,7 +709,17 @@ PSVHUD.prototype._onClick = function(data, e, dblclick) {
 PSVHUD.prototype._onClickItem = function(e) {
   var li;
   if (e.target && (li = PSVUtils.getClosest(e.target, 'li')) && li.dataset.psvMarker) {
-    this.gotoMarker(li.dataset.psvMarker, 1000);
+    var marker = this.getMarker(li.dataset.psvMarker);
+
+    /**
+     * @event select-marker-list
+     * @memberof module:components.PSVHUD
+     * @summary Triggered when a marker is selected from the side panel
+     * @param {PSVMarker} marker
+     */
+    this.psv.trigger('select-marker-list', marker);
+
+    this.gotoMarker(marker, 1000);
     this.psv.panel.hidePanel();
   }
 };

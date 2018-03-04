@@ -371,6 +371,14 @@
   PSV.on('leave-marker', function(marker) {
     console.log('leave', marker.id);
   });
+
+  PSV.on('select-marker-list', function(marker) {
+    console.log('select-list', marker.id);
+  });
+
+  PSV.on('goto-marker-done', function(marker) {
+    console.log('goto-done', marker.id);
+  });
 </script>
 
 <script>

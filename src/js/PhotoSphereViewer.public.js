@@ -426,13 +426,14 @@ PhotoSphereViewer.prototype.rotate = function(position, render) {
 PhotoSphereViewer.prototype.animate = function(position, duration) {
   this._stopAll();
 
-  if (!duration) {
+  this.cleanPosition(position);
+
+  if (!duration || Math.abs(position.longitude - this.prop.longitude) < PhotoSphereViewer.ANGLE_THRESHOLD && Math.abs(position.latitude - this.prop.latitude) < PhotoSphereViewer.ANGLE_THRESHOLD) {
     this.rotate(position);
 
     return D.resolved();
   }
 
-  this.cleanPosition(position);
   this.applyRanges(position).forEach(
     this.trigger.bind(this, '_side-reached')
   );

@@ -7,6 +7,14 @@
 PhotoSphereViewer.MOVE_THRESHOLD = 4;
 
 /**
+ * @summary Angle in radians bellow which two angles are considered identical
+ * @type {float}
+ * @readonly
+ * @private
+ */
+PhotoSphereViewer.ANGLE_THRESHOLD = 0.003;
+
+/**
  * @summary Delay in milliseconds between two clicks to consider a double click
  * @type {int}
  * @readonly
