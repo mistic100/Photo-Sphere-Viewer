@@ -444,7 +444,7 @@ function PhotoSphereViewer(options) {
   this._bindEvents();
 
   // load panorama
-  if (this.config.autoload) {
+  if (this.config.panorama) {
     this.load();
   }
 
