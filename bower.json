@@ -24,9 +24,6 @@
     "uevent": "~1.0.0",
     "doT": ">=1.0.3"
   },
-  "devDependencies": {
-    "three.js-examples": "master"
-  },
   "keywords": [
     "photosphere",
     "panorama",
