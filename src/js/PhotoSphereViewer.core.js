@@ -472,7 +472,7 @@ PhotoSphereViewer.prototype._createSphere = function() {
   );
 
   var material = new THREE.MeshBasicMaterial({
-    side: THREE.BackSide,
+    side: THREE.DoubleSide, // needs to be DoubleSide for CanvasRenderer
     overdraw: PhotoSphereViewer.SYSTEM.isWebGLSupported && this.config.webgl ? 0 : 1
   });
 
