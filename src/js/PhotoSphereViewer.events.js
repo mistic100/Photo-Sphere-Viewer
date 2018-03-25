@@ -8,10 +8,19 @@ PhotoSphereViewer.prototype._bindEvents = function() {
   // all interation events are binded to the HUD only
   if (this.config.mousemove) {
     this.hud.container.style.cursor = 'move';
-    this.hud.container.addEventListener('mousedown', this);
+
+    if (this.config.mousemove_hover) {
+      this.hud.container.addEventListener('mouseenter', this);
+      this.hud.container.addEventListener('mouseleave', this);
+    }
+    else {
+      this.hud.container.addEventListener('mousedown', this);
+      window.addEventListener('mouseup', this);
+    }
+
     this.hud.container.addEventListener('touchstart', this);
-    window.addEventListener('mouseup', this);
     window.addEventListener('touchend', this);
+
     this.hud.container.addEventListener('mousemove', this);
     this.hud.container.addEventListener('touchmove', this);
   }
@@ -34,6 +43,35 @@ PhotoSphereViewer.prototype._bindEvents = function() {
 };
 
 /**
+ * @summary Removes all event listeners
+ * @private
+ */
+PhotoSphereViewer.prototype._unbindEvents = function() {
+  window.removeEventListener('resize', this);
+
+  if (this.config.mousemove) {
+    this.hud.container.removeEventListener('mousedown', this);
+    this.hud.container.removeEventListener('mouseenter', this);
+    this.hud.container.removeEventListener('touchstart', this);
+    window.removeEventListener('mouseup', this);
+    window.removeEventListener('touchend', this);
+    this.hud.container.removeEventListener('mouseleave', this);
+    this.hud.container.removeEventListener('mousemove', this);
+    this.hud.container.removeEventListener('touchmove', this);
+  }
+
+  if (PhotoSphereViewer.SYSTEM.fullscreenEvent) {
+    document.removeEventListener(PhotoSphereViewer.SYSTEM.fullscreenEvent, this);
+  }
+
+  if (this.config.mousewheel) {
+    this.hud.container.removeEventListener(PhotoSphereViewer.SYSTEM.mouseWheelEvent, this);
+  }
+
+  this.off('_side-reached');
+};
+
+/**
  * @summary Handles events
  * @param {Event} evt
  * @private
@@ -44,8 +82,10 @@ PhotoSphereViewer.prototype.handleEvent = function(evt) {
     case 'resize': PSVUtils.throttle(this._onResize(), 50); break;
     case 'keydown':     this._onKeyDown(evt);     break;
     case 'mousedown':   this._onMouseDown(evt);   break;
+    case 'mouseenter':  this._onMouseDown(evt);   break;
     case 'touchstart':  this._onTouchStart(evt);  break;
     case 'mouseup':     this._onMouseUp(evt);     break;
+    case 'mouseleave':  this._onMouseUp(evt);     break;
     case 'touchend':    this._onTouchEnd(evt);    break;
     case 'mousemove':   this._onMouseMove(evt);   break;
     case 'touchmove':   this._onTouchMove(evt);   break;
@@ -142,6 +182,9 @@ PhotoSphereViewer.prototype._onMouseMove = function(evt) {
   if (evt.buttons !== 0) {
     evt.preventDefault();
     this._move(evt);
+  }
+  else if (this.config.mousemove_hover) {
+    this._moveAbsolute(evt);
   }
 };
 
@@ -379,6 +422,20 @@ PhotoSphereViewer.prototype._move = function(evt, log) {
     if (log !== false) {
       this._logMouseMove(evt);
     }
+  }
+};
+
+/**
+ * @summary Performs movement absolute to cursor position in viewer
+ * @param {MouseEvent} evt
+ * @private
+ */
+PhotoSphereViewer.prototype._moveAbsolute = function(evt) {
+  if (this.prop.moving) {
+    this.rotate({
+      longitude: ((evt.clientX - this.container.offsetLeft) / this.container.offsetWidth - 0.5) * PSVUtils.TwoPI,
+      latitude: -((evt.clientY - this.container.offsetTop) / this.container.offsetHeight - 0.5) * Math.PI
+    });
   }
 };
 

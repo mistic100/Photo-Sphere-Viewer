@@ -109,24 +109,7 @@ PhotoSphereViewer.prototype.destroy = function() {
   }
 
   // remove listeners
-  window.removeEventListener('resize', this);
-
-  if (this.config.mousemove) {
-    this.hud.container.removeEventListener('mousedown', this);
-    this.hud.container.removeEventListener('touchstart', this);
-    window.removeEventListener('mouseup', this);
-    window.removeEventListener('touchend', this);
-    this.hud.container.removeEventListener('mousemove', this);
-    this.hud.container.removeEventListener('touchmove', this);
-  }
-
-  if (PhotoSphereViewer.SYSTEM.fullscreenEvent) {
-    document.removeEventListener(PhotoSphereViewer.SYSTEM.fullscreenEvent, this);
-  }
-
-  if (this.config.mousewheel) {
-    this.hud.container.removeEventListener(PhotoSphereViewer.SYSTEM.mouseWheelEvent, this);
-  }
+  this._unbindEvents();
 
   // destroy components
   if (this.tooltip) this.tooltip.destroy();
