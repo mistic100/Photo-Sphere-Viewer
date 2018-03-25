@@ -245,8 +245,6 @@ PSVNavBarZoomButton.prototype._changeZoomByTouch = function(evt) {
   if (!this.enabled) {
     return;
   }
-
-  evt.preventDefault();
   this._changeZoom(evt.changedTouches[0].clientX);
 };
 

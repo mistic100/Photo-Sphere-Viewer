@@ -194,7 +194,6 @@ PSVPanel.prototype._onMouseMove = function(evt) {
  */
 PSVPanel.prototype._onTouchMove = function(evt) {
   if (this.prop.mousedown) {
-    evt.stopPropagation();
     this._resize(evt.touches[0]);
   }
 };
