@@ -73,10 +73,10 @@ PhotoSphereViewer.prototype.isFullscreenEnabled = function() {
 PhotoSphereViewer.prototype.render = function(updateDirection) {
   if (updateDirection !== false) {
     this.prop.direction = this.sphericalCoordsToVector3(this.prop);
-
-    this.camera.position.set(0, 0, 0);
-    this.camera.lookAt(this.prop.direction);
   }
+
+  this.camera.position.set(0, 0, 0);
+  this.camera.lookAt(this.prop.direction);
 
   if (this.config.fisheye) {
     this.camera.position.copy(this.prop.direction).multiplyScalar(this.config.fisheye / 2).negate();
@@ -324,20 +324,32 @@ PhotoSphereViewer.prototype.startGyroscopeControl = function() {
 
   this._stopAll();
 
-  var self = this;
+  // compute the alpha offset to keep the current orientation
+  this.doControls.alphaOffset = this.prop.longitude;
+  this.doControls.update();
 
-  (function run() {
-    self.doControls.update();
-    self.prop.direction = self.camera.getWorldDirection();
+  var direction = this.camera.getWorldDirection(new THREE.Vector3());
+  var sphericalCoords = this.vector3ToSphericalCoords(direction);
 
-    var sphericalCoords = self.vector3ToSphericalCoords(self.prop.direction);
-    self.prop.longitude = sphericalCoords.longitude;
-    self.prop.latitude = sphericalCoords.latitude;
+  this.prop.gyro_alpha_offset = sphericalCoords.longitude;
 
-    self.render(false);
+  var run = function() {
+    this.doControls.alphaOffset = this.prop.gyro_alpha_offset;
+    this.doControls.update();
 
-    self.prop.orientation_reqid = window.requestAnimationFrame(run);
-  }());
+    this.camera.getWorldDirection(this.prop.direction);
+    this.prop.direction.multiplyScalar(PhotoSphereViewer.SPHERE_RADIUS);
+
+    var sphericalCoords = this.vector3ToSphericalCoords(this.prop.direction);
+    this.prop.longitude = sphericalCoords.longitude;
+    this.prop.latitude = sphericalCoords.latitude;
+
+    this.render(false);
+
+    this.prop.orientation_reqid = window.requestAnimationFrame(run);
+  }.bind(this);
+
+  run();
 
   /**
    * @event gyroscope-updated
