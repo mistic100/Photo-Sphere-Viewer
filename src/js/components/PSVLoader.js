@@ -38,6 +38,8 @@ PSVLoader.className = 'psv-loader-container';
 PSVLoader.prototype.create = function() {
   PSVComponent.prototype.create.call(this);
 
+  var pixelRatio = PhotoSphereViewer.SYSTEM.pixelRatio;
+
   this.loader = document.createElement('div');
   this.loader.className = 'psv-loader';
   this.container.appendChild(this.loader);
@@ -45,11 +47,11 @@ PSVLoader.prototype.create = function() {
   this.canvas = document.createElement('canvas');
   this.canvas.className = 'psv-loader-canvas';
 
-  this.canvas.width = this.loader.clientWidth;
-  this.canvas.height = this.loader.clientWidth;
+  this.canvas.width = this.loader.clientWidth * pixelRatio;
+  this.canvas.height = this.loader.clientWidth * pixelRatio;
   this.loader.appendChild(this.canvas);
 
-  this.tickness = (this.loader.offsetWidth - this.loader.clientWidth) / 2;
+  this.tickness = (this.loader.offsetWidth - this.loader.clientWidth) / 2 * pixelRatio;
 
   var inner;
   if (this.psv.config.loading_img) {
@@ -63,7 +65,7 @@ PSVLoader.prototype.create = function() {
     inner.innerHTML = this.psv.config.loading_txt;
   }
   if (inner) {
-    var a = Math.round(Math.sqrt(2 * Math.pow(this.canvas.width / 2 - this.tickness / 2, 2)));
+    var a = Math.round(Math.sqrt(2 * Math.pow((this.canvas.width / 2 - this.tickness / 2) / pixelRatio, 2)));
     inner.style.maxWidth = a + 'px';
     inner.style.maxHeight = a + 'px';
     this.loader.appendChild(inner);

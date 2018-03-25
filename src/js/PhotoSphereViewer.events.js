@@ -68,9 +68,6 @@ PhotoSphereViewer.prototype._onResize = function() {
 
     if (this.renderer) {
       this.renderer.setSize(this.prop.size.width, this.prop.size.height);
-      if (this.composer) {
-        this.composer.reset(new THREE.WebGLRenderTarget(this.prop.size.width, this.prop.size.height));
-      }
       this.render();
     }
 

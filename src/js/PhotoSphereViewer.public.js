@@ -86,12 +86,7 @@ PhotoSphereViewer.prototype.render = function(updateDirection) {
   this.camera.fov = this.prop.vFov;
   this.camera.updateProjectionMatrix();
 
-  if (this.composer) {
-    this.composer.render();
-  }
-  else {
-    this.renderer.render(this.scene, this.camera);
-  }
+  this.renderer.render(this.scene, this.camera);
 
   /**
    * @event render
@@ -164,7 +159,6 @@ PhotoSphereViewer.prototype.destroy = function() {
   delete this.tooltip;
   delete this.canvas_container;
   delete this.renderer;
-  delete this.composer;
   delete this.scene;
   delete this.camera;
   delete this.mesh;
