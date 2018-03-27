@@ -112,12 +112,24 @@ PhotoSphereViewer.prototype.destroy = function() {
   this._unbindEvents();
 
   // destroy components
-  if (this.tooltip) this.tooltip.destroy();
-  if (this.hud) this.hud.destroy();
-  if (this.loader) this.loader.destroy();
-  if (this.navbar) this.navbar.destroy();
-  if (this.panel) this.panel.destroy();
-  if (this.doControls) this.doControls.disconnect();
+  if (this.tooltip) {
+    this.tooltip.destroy();
+  }
+  if (this.hud) {
+    this.hud.destroy();
+  }
+  if (this.loader) {
+    this.loader.destroy();
+  }
+  if (this.navbar) {
+    this.navbar.destroy();
+  }
+  if (this.panel) {
+    this.panel.destroy();
+  }
+  if (this.doControls) {
+    this.doControls.disconnect();
+  }
 
   // destroy ThreeJS view
   if (this.scene) {
@@ -168,7 +180,7 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
     throw new PSVError('Loading already in progress');
   }
 
-  if (typeof position == 'boolean') {
+  if (typeof position === 'boolean') {
     transition = position;
     position = undefined;
   }
@@ -185,8 +197,6 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
 
   this.config.panorama = path;
 
-  var self = this;
-
   if (!transition || !this.config.transition || !this.scene) {
     this.loader.show();
     if (this.canvas_container) {
@@ -195,18 +205,18 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
 
     this.prop.loading_promise = this._loadTexture(this.config.panorama)
       .then(function(texture) {
-        self._setTexture(texture);
+        this._setTexture(texture);
 
         if (position) {
-          self.rotate(position);
+          this.rotate(position);
         }
-      })
+      }.bind(this))
       .ensure(function() {
-        self.loader.hide();
-        self.canvas_container.style.opacity = 1;
+        this.loader.hide();
+        this.canvas_container.style.opacity = 1;
 
-        self.prop.loading_promise = null;
-      })
+        this.prop.loading_promise = null;
+      }.bind(this))
       .rethrow();
   }
   else {
@@ -216,15 +226,15 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
 
     this.prop.loading_promise = this._loadTexture(this.config.panorama)
       .then(function(texture) {
-        self.loader.hide();
+        this.loader.hide();
 
-        return self._transition(texture, position);
-      })
+        return this._transition(texture, position);
+      }.bind(this))
       .ensure(function() {
-        self.loader.hide();
+        this.loader.hide();
 
-        self.prop.loading_promise = null;
-      })
+        this.prop.loading_promise = null;
+      }.bind(this))
       .rethrow();
   }
 
@@ -238,23 +248,24 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
 PhotoSphereViewer.prototype.startAutorotate = function() {
   this._stopAll();
 
-  var self = this;
-  var last = null;
-  var elapsed = null;
+  var last;
+  var elapsed;
 
-  (function run(timestamp) {
+  var run = function run(timestamp) {
     if (timestamp) {
-      elapsed = last === null ? 0 : timestamp - last;
+      elapsed = last === undefined ? 0 : timestamp - last;
       last = timestamp;
 
-      self.rotate({
-        longitude: self.prop.longitude + self.config.anim_speed * elapsed / 1000,
-        latitude: self.prop.latitude - (self.prop.latitude - self.config.anim_lat) / 200
+      this.rotate({
+        longitude: this.prop.longitude + this.config.anim_speed * elapsed / 1000,
+        latitude: this.prop.latitude - (this.prop.latitude - this.config.anim_lat) / 200
       });
     }
 
-    self.prop.autorotate_reqid = window.requestAnimationFrame(run);
-  }(null));
+    this.prop.autorotate_reqid = window.requestAnimationFrame(run);
+  }.bind(this);
+
+  run();
 
   /**
    * @event autorotate
@@ -427,7 +438,7 @@ PhotoSphereViewer.prototype.animate = function(position, duration) {
     this.trigger.bind(this, '_side-reached')
   );
 
-  if (!duration && typeof duration != 'number') {
+  if (!duration && typeof duration !== 'number') {
     // desired radial speed
     duration = duration ? PSVUtils.parseSpeed(duration) : this.config.anim_speed;
     // get the angle between current position and target

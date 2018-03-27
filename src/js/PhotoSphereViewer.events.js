@@ -101,7 +101,7 @@ PhotoSphereViewer.prototype.handleEvent = function(evt) {
  * @private
  */
 PhotoSphereViewer.prototype._onResize = function() {
-  if (this.container.clientWidth != this.prop.size.width || this.container.clientHeight != this.prop.size.height) {
+  if (this.container.clientWidth !== this.prop.size.width || this.container.clientHeight !== this.prop.size.height) {
     this.prop.size.width = parseInt(this.container.clientWidth);
     this.prop.size.height = parseInt(this.container.clientHeight);
     this.prop.aspect = this.prop.size.width / this.prop.size.height;
@@ -299,8 +299,6 @@ PhotoSphereViewer.prototype._stopMove = function(evt) {
  * @private
  */
 PhotoSphereViewer.prototype._stopMoveInertia = function(evt) {
-  var self = this;
-
   var direction = {
     x: evt.clientX - this.prop.mouse_history[0][1],
     y: evt.clientY - this.prop.mouse_history[0][2]
@@ -316,12 +314,12 @@ PhotoSphereViewer.prototype._stopMoveInertia = function(evt) {
     duration: norm * PhotoSphereViewer.INERTIA_WINDOW / 100,
     easing: 'outCirc',
     onTick: function(properties) {
-      self._move(properties, false);
-    }
+      this._move(properties, false);
+    }.bind(this)
   })
     .ensure(function() {
-      self.prop.moving = false;
-    });
+      this.prop.moving = false;
+    }.bind(this));
 };
 
 /**

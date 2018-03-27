@@ -27,7 +27,7 @@ function PSVNavBar(psv) {
     this.config = PSVUtils.clone(PhotoSphereViewer.DEFAULTS.navbar);
   }
   // space separated list
-  else if (typeof this.config == 'string') {
+  else if (typeof this.config === 'string') {
     this.config = this.config.split(' ');
   }
   // migration from object
@@ -36,11 +36,12 @@ function PSVNavBar(psv) {
 
     var config = this.config;
     this.config = [];
-    for (var key in config) {
-      if (config[key]) {
+
+    PSVUtils.forEach(config, function(enabled, key) {
+      if (enabled) {
         this.config.push(key);
       }
-    }
+    }.bind(this));
 
     this.config.sort(function(a, b) {
       return PhotoSphereViewer.DEFAULTS.navbar.indexOf(a) - PhotoSphereViewer.DEFAULTS.navbar.indexOf(b);
@@ -64,7 +65,7 @@ PSVNavBar.prototype.create = function() {
   PSVComponent.prototype.create.call(this);
 
   this.config.forEach(function(button) {
-    if (typeof button == 'object') {
+    if (typeof button === 'object') {
       this.items.push(new PSVNavBarCustomButton(this, button));
     }
     else {
@@ -143,6 +144,9 @@ PSVNavBar.prototype.getNavbarButton = function(id, silent) {
     if (item.id === id) {
       button = item;
       return true;
+    }
+    else {
+      return false;
     }
   });
 

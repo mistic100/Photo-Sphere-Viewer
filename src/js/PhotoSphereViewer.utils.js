@@ -46,7 +46,9 @@ PhotoSphereViewer._deviceOrientationListener = function(event) {
 PhotoSphereViewer.prototype._setViewerSize = function(size) {
   ['width', 'height'].forEach(function(dim) {
     if (size[dim]) {
-      if (/^[0-9.]+$/.test(size[dim])) size[dim] += 'px';
+      if (/^[0-9.]+$/.test(size[dim])) {
+        size[dim] += 'px';
+      }
       this.parent.style[dim] = size[dim];
     }
   }, this);

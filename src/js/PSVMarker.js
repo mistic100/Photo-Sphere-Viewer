@@ -57,7 +57,7 @@ function PSVMarker(properties, psv) {
       get: function() {
         return _id;
       },
-      set: function(value) {
+      set: function() {
       }
     },
     /**
@@ -72,7 +72,7 @@ function PSVMarker(properties, psv) {
       get: function() {
         return _type;
       },
-      set: function(value) {
+      set: function() {
       }
     },
     /**
@@ -86,7 +86,7 @@ function PSVMarker(properties, psv) {
       get: function() {
         return $el;
       },
-      set: function(value) {
+      set: function() {
       }
     },
     /**
@@ -172,7 +172,7 @@ PSVMarker.prototype.destroy = function() {
  * @returns {boolean}
  */
 PSVMarker.prototype.isNormal = function() {
-  return this.type == 'image' || this.type == 'html';
+  return this.type === 'image' || this.type === 'html';
 };
 
 /**
@@ -188,7 +188,7 @@ PSVMarker.prototype.isPoly = function() {
  * @returns {boolean}
  */
 PSVMarker.prototype.isPolygon = function() {
-  return this.type == 'polygon_px' || this.type == 'polygon_rad';
+  return this.type === 'polygon_px' || this.type === 'polygon_rad';
 };
 
 /**
@@ -196,7 +196,7 @@ PSVMarker.prototype.isPolygon = function() {
  * @returns {boolean}
  */
 PSVMarker.prototype.isPolyline = function() {
-  return this.type == 'polyline_px' || this.type == 'polyline_rad';
+  return this.type === 'polyline_px' || this.type === 'polyline_rad';
 };
 
 /**
@@ -204,7 +204,7 @@ PSVMarker.prototype.isPolyline = function() {
  * @returns {boolean}
  */
 PSVMarker.prototype.isSvg = function() {
-  return this.type == 'rect' || this.type == 'circle' || this.type == 'ellipse' || this.type == 'path';
+  return this.type === 'rect' || this.type === 'circle' || this.type === 'ellipse' || this.type === 'path';
 };
 
 /**
@@ -216,10 +216,10 @@ PSVMarker.prototype.getScale = function(zoomLevel) {
   if (Array.isArray(this.scale)) {
     return this.scale[0] + (this.scale[1] - this.scale[0]) * PSVUtils.animation.easings.inQuad(zoomLevel / 100);
   }
-  else if (typeof this.scale == 'function') {
+  else if (typeof this.scale === 'function') {
     return this.scale(zoomLevel);
   }
-  else if (typeof this.scale == 'number') {
+  else if (typeof this.scale === 'number') {
     return this.scale * PSVUtils.animation.easings.inQuad(zoomLevel / 100);
   }
   else {
@@ -326,7 +326,7 @@ PSVMarker.prototype._updateSvg = function() {
   // set content
   switch (this.type) {
     case 'rect':
-      if (typeof this._def == 'number') {
+      if (typeof this._def === 'number') {
         this._def = {
           x: 0,
           y: 0,
@@ -348,7 +348,7 @@ PSVMarker.prototype._updateSvg = function() {
       break;
 
     case 'circle':
-      if (typeof this._def == 'number') {
+      if (typeof this._def === 'number') {
         this._def = {
           cx: this._def,
           cy: this._def,
@@ -368,7 +368,7 @@ PSVMarker.prototype._updateSvg = function() {
       break;
 
     case 'ellipse':
-      if (typeof this._def == 'number') {
+      if (typeof this._def === 'number') {
         this._def = {
           cx: this._def,
           cy: this._def,
@@ -391,7 +391,7 @@ PSVMarker.prototype._updateSvg = function() {
       break;
 
     case 'path':
-      if (typeof this._def == 'string') {
+      if (typeof this._def === 'string') {
         this._def = {
           d: this._def
         };
@@ -449,7 +449,7 @@ PSVMarker.prototype._updatePoly = function(key_rad, key_px) {
 
   // fold arrays: [1,2,3,4] => [[1,2],[3,4]]
   [this[key_rad], this[key_px]].forEach(function(polygon) {
-    if (polygon && typeof polygon[0] != 'object') {
+    if (polygon && typeof polygon[0] !== 'object') {
       for (var i = 0; i < polygon.length; i++) {
         polygon.splice(i, 2, [polygon[i], polygon[i + 1]]);
       }

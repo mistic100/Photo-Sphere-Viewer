@@ -223,7 +223,7 @@ function PhotoSphereViewer(options) {
    * @member {HTMLElement}
    * @readonly
    */
-  this.parent = (typeof options.container == 'string') ? document.getElementById(options.container) : options.container;
+  this.parent = (typeof options.container === 'string') ? document.getElementById(options.container) : options.container;
 
   /**
    * @summary Main container
@@ -392,7 +392,7 @@ function PhotoSphereViewer(options) {
     if (!this.config.templates[tpl]) {
       this.config.templates[tpl] = PhotoSphereViewer.TEMPLATES[tpl];
     }
-    if (typeof this.config.templates[tpl] == 'string') {
+    if (typeof this.config.templates[tpl] === 'string') {
       this.config.templates[tpl] = doT.template(this.config.templates[tpl]);
     }
   }, this);

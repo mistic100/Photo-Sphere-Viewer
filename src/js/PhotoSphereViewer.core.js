@@ -12,13 +12,12 @@ PhotoSphereViewer.prototype._loadXMP = function(panorama) {
 
   var defer = D();
   var xhr = new XMLHttpRequest();
-  var self = this;
   var progress = 0;
 
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4) {
       if (xhr.status === 200 || xhr.status === 201 || xhr.status === 202 || xhr.status === 0) {
-        self.loader.setProgress(100);
+        this.loader.setProgress(100);
 
         var binary = xhr.responseText;
         var a = binary.indexOf('<x:xmpmeta'), b = binary.indexOf('</x:xmpmeta>');
@@ -48,29 +47,29 @@ PhotoSphereViewer.prototype._loadXMP = function(panorama) {
         }
       }
       else {
-        self.container.textContent = 'Cannot load image';
+        this.container.textContent = 'Cannot load image';
         throw new PSVError('Cannot load image');
       }
     }
     else if (xhr.readyState === 3) {
-      self.loader.setProgress(progress += 10);
+      this.loader.setProgress(progress += 10);
     }
-  };
+  }.bind(this);
 
   xhr.onprogress = function(e) {
     if (e.lengthComputable) {
       var new_progress = parseInt(e.loaded / e.total * 100);
       if (new_progress > progress) {
         progress = new_progress;
-        self.loader.setProgress(progress);
+        this.loader.setProgress(progress);
       }
     }
-  };
+  }.bind(this);
 
   xhr.onerror = function() {
-    self.container.textContent = 'Cannot load image';
+    this.container.textContent = 'Cannot load image';
     throw new PSVError('Cannot load image');
-  };
+  }.bind(this);
 
   xhr.open('GET', panorama, true);
   xhr.send(null);
@@ -100,7 +99,7 @@ PhotoSphereViewer.prototype._loadTexture = function(panorama) {
     }
     panorama = tempPanorama;
   }
-  else if (typeof panorama == 'object') {
+  else if (typeof panorama === 'object') {
     if (!PhotoSphereViewer.CUBE_HASHMAP.every(function(side) {
         return !!panorama[side];
       })) {
@@ -208,7 +207,7 @@ PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
       var ratio = Math.min(pano_data.full_width, PhotoSphereViewer.SYSTEM.maxTextureWidth) / pano_data.full_width;
 
       // resize image / fill cropped parts with black
-      if (ratio !== 1 || pano_data.cropped_width != pano_data.full_width || pano_data.cropped_height != pano_data.full_height) {
+      if (ratio !== 1 || pano_data.cropped_width !== pano_data.full_width || pano_data.cropped_height !== pano_data.full_height) {
         var resized_pano_data = PSVUtils.clone(pano_data);
 
         resized_pano_data.full_width *= ratio;
@@ -525,8 +524,6 @@ PhotoSphereViewer.prototype._transition = function(texture, position) {
     throw new PSVError('Transition is not available with cubemap.');
   }
 
-  var self = this;
-
   // create a new sphere with the new texture
   var geometry = new THREE.SphereGeometry(
     PhotoSphereViewer.SPHERE_RADIUS * 0.9,
@@ -564,20 +561,20 @@ PhotoSphereViewer.prototype._transition = function(texture, position) {
     properties: {
       opacity: { start: 0.0, end: 1.0 }
     },
-    duration: self.config.transition.duration,
+    duration: this.config.transition.duration,
     easing: 'outCubic',
     onTick: function(properties) {
       material.opacity = properties.opacity;
 
-      self.render();
-    }
+      this.render();
+    }.bind(this)
   })
     .then(function() {
       // remove temp sphere and transfer the texture to the main sphere
-      self.mesh.material.map.dispose();
-      self.mesh.material.map = texture;
+      this.mesh.material.map.dispose();
+      this.mesh.material.map = texture;
 
-      self.scene.remove(mesh);
+      this.scene.remove(mesh);
 
       mesh.geometry.dispose();
       mesh.geometry = null;
@@ -587,17 +584,17 @@ PhotoSphereViewer.prototype._transition = function(texture, position) {
       // actually rotate the camera
       if (position) {
         // FIXME: find a better way to handle ranges
-        if (self.config.latitude_range || self.config.longitude_range) {
-          self.config.longitude_range = self.config.latitude_range = null;
+        if (this.config.latitude_range || this.config.longitude_range) {
+          this.config.longitude_range = this.config.latitude_range = null;
           console.warn('PhotoSphereViewer: trying to perform transition with longitude_range and/or latitude_range, ranges cleared.');
         }
 
-        self.rotate(position);
+        this.rotate(position);
       }
       else {
-        self.render();
+        this.render();
       }
-    });
+    }.bind(this));
 };
 
 /**

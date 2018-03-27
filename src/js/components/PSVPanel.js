@@ -113,7 +113,7 @@ PSVPanel.prototype.showPanel = function(content, noMargin) {
   this.content.scrollTop = 0;
   this.container.classList.add('psv-panel--open');
 
-  PSVUtils.toggleClass(this.content, 'psv-panel-content--no-margin', !!noMargin);
+  PSVUtils.toggleClass(this.content, 'psv-panel-content--no-margin', noMargin === true);
 
   this.prop.opened = true;
 

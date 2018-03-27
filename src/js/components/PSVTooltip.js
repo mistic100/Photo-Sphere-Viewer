@@ -130,13 +130,13 @@ PSVTooltip.prototype.showTooltip = function(config) {
     var tempPos = PSVUtils.parsePosition(config.position);
 
     if (!(tempPos.left in PSVTooltip.leftMap) || !(tempPos.top in PSVTooltip.topMap)) {
-      throw new PSVError('unable to parse tooltip position "' + tooltip.position + '"');
+      throw new PSVError('unable to parse tooltip position "' + config.position + '"');
     }
 
     config.position = [PSVTooltip.topMap[tempPos.top], PSVTooltip.leftMap[tempPos.left]];
   }
 
-  if (config.position[0] == 'center' && config.position[1] == 'center') {
+  if (config.position[0] === 'center' && config.position[1] === 'center') {
     throw new PSVError('unable to parse tooltip position "center center"');
   }
 
@@ -144,7 +144,7 @@ PSVTooltip.prototype.showTooltip = function(config) {
     // Remove every other classes (Firefox does not implements forEach)
     for (var i = t.classList.length - 1; i >= 0; i--) {
       var item = t.classList.item(i);
-      if (item != 'psv-tooltip' && item != 'psv-tooltip--visible') {
+      if (item !== 'psv-tooltip' && item !== 'psv-tooltip--visible') {
         t.classList.remove(item);
       }
     }
@@ -209,18 +209,17 @@ PSVTooltip.prototype.showTooltip = function(config) {
 
   // delay for correct transition between the two classes
   if (!isUpdate) {
-    var self = this;
     this.prop.timeout = window.setTimeout(function() {
       t.classList.add('psv-tooltip--visible');
-      self.prop.timeout = null;
+      this.prop.timeout = null;
 
       /**
        * @event show-tooltip
        * @memberof module:components.PSVTooltip
        * @summary Trigered when the tooltip is shown
        */
-      self.psv.trigger('show-tooltip');
-    }, this.config.delay);
+      this.psv.trigger('show-tooltip');
+    }.bind(this), this.config.delay);
   }
 };
 
@@ -237,13 +236,12 @@ PSVTooltip.prototype.hideTooltip = function() {
   if (this.isTooltipVisible()) {
     this.container.classList.remove('psv-tooltip--visible');
 
-    var self = this;
     this.prop.timeout = window.setTimeout(function() {
-      self.content.innerHTML = null;
-      self.container.style.top = '-1000px';
-      self.container.style.left = '-1000px';
-      self.prop.timeout = null;
-    }, this.config.delay);
+      this.content.innerHTML = null;
+      this.container.style.top = '-1000px';
+      this.container.style.left = '-1000px';
+      this.prop.timeout = null;
+    }.bind(this), this.config.delay);
 
     /**
      * @event hide-tooltip

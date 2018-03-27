@@ -223,7 +223,7 @@ PSVHUD.prototype.removeMarker = function(marker, render) {
     this.svgContainer.removeChild(marker.$el);
   }
 
-  if (this.hoveringMarker == marker) {
+  if (this.hoveringMarker === marker) {
     this.psv.tooltip.hideTooltip();
   }
 
@@ -316,9 +316,9 @@ PSVHUD.prototype.toggleMarkersList = function() {
  */
 PSVHUD.prototype.showMarkersList = function() {
   var markers = [];
-  for (var id in this.markers) {
-    markers.push(this.markers[id]);
-  }
+  PSVUtils.forEach(this.markers, function(marker) {
+    markers.push(marker);
+  });
 
   /**
    * @event filter:render-markers-list
@@ -353,8 +353,7 @@ PSVHUD.prototype.hideMarkersList = function() {
 PSVHUD.prototype.renderMarkers = function() {
   var rotation = !this.psv.isGyroscopeEnabled() ? 0 : THREE.Math.radToDeg(this.psv.camera.rotation.z);
 
-  for (var id in this.markers) {
-    var marker = this.markers[id];
+  PSVUtils.forEach(this.markers, function(marker) {
     var isVisible = marker.visible;
 
     if (isVisible && marker.isPoly()) {
@@ -364,10 +363,9 @@ PSVHUD.prototype.renderMarkers = function() {
       if (isVisible) {
         marker.position2D = this._getPolyDimensions(marker, positions);
 
-        var points = '';
-        positions.forEach(function(pos) {
-          points += pos.x + ',' + pos.y + ' ';
-        });
+        var points = positions.map(function(pos) {
+          return pos.x + ',' + pos.y;
+        }).join(' ');
 
         marker.$el.setAttributeNS(null, 'points', points);
       }
@@ -397,7 +395,7 @@ PSVHUD.prototype.renderMarkers = function() {
     }
 
     PSVUtils.toggleClass(marker.$el, 'psv-marker--visible', isVisible);
-  }
+  }.bind(this));
 };
 
 /**
@@ -650,7 +648,7 @@ PSVHUD.prototype._onMouseMove = function(e) {
       }
     }
     else if (this.hoveringMarker && this.hoveringMarker.isPoly()) {
-      this.psv.trigger('leave-marker', marker);
+      this.psv.trigger('leave-marker', this.hoveringMarker);
 
       this.hoveringMarker = null;
 
