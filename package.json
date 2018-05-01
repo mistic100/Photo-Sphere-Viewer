@@ -22,7 +22,7 @@
     "dot": ">=1.0.3"
   },
   "devDependencies": {
-    "foodoc": "^0.0.8",
+    "foodoc": "^0.0.9",
     "grunt": "^1.0.0",
     "grunt-banner": "^0.6.0",
     "grunt-contrib-clean": "^1.0.0",
