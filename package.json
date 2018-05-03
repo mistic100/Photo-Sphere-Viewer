@@ -10,11 +10,11 @@
     {
       "name": "Damien \"Mistic\" Sorel",
       "email": "contact@git.strangeplanet.fr",
-      "homepage": "http://www.strangeplanet.fr"
+      "homepage": "https://www.strangeplanet.fr"
     }
   ],
   "description": "A JavaScript library to display Photo Sphere panoramas",
-  "homepage": "http://mistic100.github.io/Photo-Sphere-Viewer",
+  "homepage": "https://photo-sphere-viewer.js.org",
   "dependencies": {
     "three": ">= 0.85.0",
     "d.js": "~0.7.3",

@@ -28,7 +28,7 @@ module.exports = function(grunt) {
     ' * Photo Sphere Viewer <%= grunt.option("tag") || pkg.version %>\n' +
     ' * Copyright (c) 2014-2015 Jérémy Heleine\n' +
     ' * Copyright (c) 2015-<%= grunt.template.today("yyyy") %> Damien "Mistic" Sorel\n' +
-    ' * Licensed under MIT (http://opensource.org/licenses/MIT)\n' +
+    ' * Licensed under MIT (https://opensource.org/licenses/MIT)\n' +
     ' */',
 
     concat: {

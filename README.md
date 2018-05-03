@@ -1,6 +1,5 @@
 # Photo Sphere Viewer
 
-[![Bower version](https://img.shields.io/bower/v/Photo-Sphere-Viewer.svg?style=flat-square)](http://photo-sphere-viewer.js.org)
 [![NPM version](https://img.shields.io/npm/v/photo-sphere-viewer.svg?style=flat-square)](https://www.npmjs.com/package/photo-sphere-viewer)
 [![jsDelivr Hits](https://data.jsdelivr.com/v1/package/npm/photo-sphere-viewer/badge)](https://www.jsdelivr.com/package/npm/photo-sphere-viewer)
 [![Build Status](https://img.shields.io/travis/mistic100/Photo-Sphere-Viewer/master.svg?style=flat-square)](https://travis-ci.org/mistic100/Photo-Sphere-Viewer)
@@ -11,13 +10,13 @@ Photo Sphere Viewer is a JavaScript library that allows you to display 360×180 
 Forked from [JeremyHeleine/Photo-Sphere-Viewer](https://github.com/JeremyHeleine/Photo-Sphere-Viewer).
 
 ## Documentation
-[photo-sphere-viewer.js.org](http://photo-sphere-viewer.js.org)
+[photo-sphere-viewer.js.org](https://photo-sphere-viewer.js.org)
 
 ## Dependencies
- * [three.js](http://threejs.org)
- * [doT.js](http://olado.github.io/doT)
+ * [three.js](https://threejs.org)
+ * [doT.js](https://olado.github.io/doT)
  * [uEvent](https://github.com/mistic100/uEvent)
- * [D.js](http://malko.github.io/D.js)
+ * [D.js](https://malko.github.io/D.js)
 
 ## Install
 
