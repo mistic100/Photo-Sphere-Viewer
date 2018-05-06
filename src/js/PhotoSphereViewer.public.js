@@ -251,7 +251,7 @@ PhotoSphereViewer.prototype.startAutorotate = function() {
   var last;
   var elapsed;
 
-  var run = function run(timestamp) {
+  var run = function (timestamp) {
     if (timestamp) {
       elapsed = last === undefined ? 0 : timestamp - last;
       last = timestamp;
