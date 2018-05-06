@@ -477,7 +477,7 @@ function PhotoSphereViewer(options) {
      * @memberof PhotoSphereViewer
      * @summary Triggered when the panorama image has been loaded and the viewer is ready to perform the first render
      */
-    this.trigger('ready');
+    setTimeout(this.trigger.bind(this, 'ready'), 0);
   }.bind(this));
 }
 
