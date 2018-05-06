@@ -303,6 +303,18 @@ PSVUtils.sum = function(array) {
 };
 
 /**
+ * @summary Transforms a string to dash-case
+ * {@link https://github.com/shahata/dasherize}
+ * @param {string} str
+ * @returns {string}
+ */
+PSVUtils.dasherize = function(str) {
+  return str.replace(/[A-Z](?:(?=[^A-Z])|[A-Z]*(?=[A-Z][^A-Z]|$))/g, function(s, i) {
+    return (i > 0 ? '-' : '') + s.toLowerCase();
+  });
+};
+
+/**
  * @summary Returns the value of a given attribute in the panorama metadata
  * @param {string} data
  * @param {string} attr

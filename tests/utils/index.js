@@ -354,3 +354,13 @@ describe('PSVUtils::getXMPValue', function() {
   });
 
 });
+
+describe('PSVUtils::dasherize', function() {
+  it('should dasherize from camelCase', function() {
+    assert.equal(PSVUtils.dasherize('strokeWidth'), 'stroke-width');
+  });
+
+  it('should not change existing dash-case', function() {
+    assert.equal(PSVUtils.dasherize('stroke-width'), 'stroke-width');
+  });
+});

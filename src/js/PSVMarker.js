@@ -406,7 +406,7 @@ PSVMarker.prototype._updateSvg = function() {
   // set style
   if (this.svgStyle) {
     Object.getOwnPropertyNames(this.svgStyle).forEach(function(prop) {
-      this.$el.setAttributeNS(null, prop, this.svgStyle[prop]);
+      this.$el.setAttributeNS(null, PSVUtils.dasherize(prop), this.svgStyle[prop]);
     }, this);
   }
   else {
@@ -432,7 +432,7 @@ PSVMarker.prototype._updatePoly = function(key_rad, key_px) {
   // set style
   if (this.svgStyle) {
     Object.getOwnPropertyNames(this.svgStyle).forEach(function(prop) {
-      this.$el.setAttributeNS(null, prop, this.svgStyle[prop]);
+      this.$el.setAttributeNS(null, PSVUtils.dasherize(prop), this.svgStyle[prop]);
     }, this);
 
     if (this.isPolyline() && !this.svgStyle.fill) {
