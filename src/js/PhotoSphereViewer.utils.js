@@ -11,31 +11,7 @@ PhotoSphereViewer._loadSystem = function() {
   S.maxTextureWidth = S.isWebGLSupported ? PSVUtils.getMaxTextureWidth() : 4096;
   S.mouseWheelEvent = PSVUtils.mouseWheelEvent();
   S.fullscreenEvent = PSVUtils.fullscreenEvent();
-  S.deviceOrientationSupported = D();
-
-  if ('DeviceOrientationEvent' in window) {
-    window.addEventListener('deviceorientation', PhotoSphereViewer._deviceOrientationListener, false);
-  }
-  else {
-    S.deviceOrientationSupported.reject();
-  }
-};
-
-/**
- * @summary Resolve or reject SYSTEM.deviceOrientationSupported
- * @description We can only be sure device orientation is supported once received an event with coherent data
- * @param {DeviceOrientationEvent} event
- * @private
- */
-PhotoSphereViewer._deviceOrientationListener = function(event) {
-  if (event.alpha !== null && !isNaN(event.alpha)) {
-    PhotoSphereViewer.SYSTEM.deviceOrientationSupported.resolve();
-  }
-  else {
-    PhotoSphereViewer.SYSTEM.deviceOrientationSupported.reject();
-  }
-
-  window.removeEventListener('deviceorientation', PhotoSphereViewer._deviceOrientationListener);
+  S.deviceOrientationSupported = PSVUtils.isDeviceOrientationSupported();
 };
 
 /**

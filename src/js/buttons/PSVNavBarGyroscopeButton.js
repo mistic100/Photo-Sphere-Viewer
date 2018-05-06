@@ -25,7 +25,7 @@ PSVNavBarGyroscopeButton.icon = 'compass.svg';
 PSVNavBarGyroscopeButton.prototype.create = function() {
   PSVNavBarButton.prototype.create.call(this);
 
-  PhotoSphereViewer.SYSTEM.deviceOrientationSupported.promise.then(
+  PhotoSphereViewer.SYSTEM.deviceOrientationSupported.then(
     this._onAvailabilityChange.bind(this, true),
     this._onAvailabilityChange.bind(this, false)
   );

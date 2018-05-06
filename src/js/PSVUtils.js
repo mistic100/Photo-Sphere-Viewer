@@ -94,6 +94,41 @@ PSVUtils.isWebGLSupported = function() {
 };
 
 /**
+ * @summary Detects if device orientation is supported
+ * @description We can only be sure device orientation is supported once received an event with coherent data
+ * @returns {Promise}
+ */
+PSVUtils.isDeviceOrientationSupported = function() {
+  var defer = D();
+
+  if ('DeviceOrientationEvent' in window) {
+    var listener = function(event) {
+      if (event && event.alpha !== null && !isNaN(event.alpha)) {
+        defer.resolve();
+      }
+      else {
+        defer.reject();
+      }
+
+      window.removeEventListener('deviceorientation', listener);
+    };
+
+    window.addEventListener('deviceorientation', listener, false);
+
+    setTimeout(function() {
+      if (defer.promise.isPending()) {
+        listener(null);
+      }
+    }, 2000);
+  }
+  else {
+    defer.reject();
+  }
+
+  return defer.promise;
+};
+
+/**
  * @summary Gets max texture width in WebGL context
  * @returns {int}
  */

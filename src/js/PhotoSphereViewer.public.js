@@ -307,15 +307,30 @@ PhotoSphereViewer.prototype.toggleAutorotate = function() {
 };
 
 /**
- * @summary Enables the gyroscope navigation
+ * @summary Enables the gyroscope navigation if available
  * @fires PhotoSphereViewer.gyroscope-updated
  */
 PhotoSphereViewer.prototype.startGyroscopeControl = function() {
-  if (!this.doControls || !this.doControls.enabled || !this.doControls.deviceOrientation) {
+  if (!this.doControls || !this.doControls.enabled) {
     console.warn('PhotoSphereViewer: gyroscope disabled');
     return;
   }
 
+  PhotoSphereViewer.SYSTEM.deviceOrientationSupported.then(
+    PhotoSphereViewer.prototype._startGyroscopeControl.bind(this),
+    function() {
+      console.warn('PhotoSphereViewer: gyroscope not available');
+    }
+  );
+};
+
+/**
+ * @summary Immediately enables the gyroscope navigation
+ * @description Do not call this method directly, call `startGyroscopeControl` instead
+ * @fires PhotoSphereViewer.gyroscope-updated
+ * @private
+ */
+PhotoSphereViewer.prototype._startGyroscopeControl = function() {
   this._stopAll();
 
   // compute the alpha offset to keep the current orientation
