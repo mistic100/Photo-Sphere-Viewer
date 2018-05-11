@@ -1,12 +1,18 @@
 // scss-lint:disable ColorVariable
+
+/*** MAIN ***/
 $psv-main-background-stops: #fff 0%, #fdfdfd 16%, #fbfbfb 33%, #f8f8f8 49%, #efefef 66%, #dfdfdf 82%, #bfbfbf 100%;
 $psv-main-background: radial-gradient($psv-main-background-stops) !default;
 
+
+/*** LOADER ***/
 $psv-loader-color: rgba(61, 61, 61, .7) !default;
 $psv-loader-width: 150px !default;
 $psv-loader-tickness: 10px !default;
 $psv-loader-font: 14px sans-serif !default;
 
+
+/*** NAVBAR ***/
 $psv-navbar-height: 40px !default;
 $psv-navbar-background: rgba(61, 61, 61, .5) !default;
 
@@ -25,6 +31,8 @@ $psv-zoom-range-tickness: 1px !default;
 $psv-zoom-disk-diameter: 7px !default;
 $psv-zoom-buttons-width: 16px !default;
 
+
+/*** TOOLTIP ***/
 $psv-tooltip-background-color: rgba(61, 61, 61, .8) !default;
 
 // set tooltip.offset JS config to the same value
@@ -45,6 +53,8 @@ $psv-tooltip-shadow-color: rgba(90, 90, 90, .7) !default;
 // the shadow is always at the opposite side of the arrow
 $psv-tooltip-shadow-offset: 3px !default;
 
+
+/*** PANEL ***/
 $psv-panel-background: rgba(10, 10, 10, .7) !default;
 $psv-panel-text-color: rgb(220, 220, 220) !default;
 
@@ -63,6 +73,8 @@ $psv-panel-close-button-color: #fff !default;
 
 $psv-panel-font: 16px sans-serif !default;
 
+
+/*** MARKERS ***/
 $psv-markers-list-image-size: 20px !default;
 $psv-markers-list-padding: .5em 1em !default;
 $psv-markers-list-hover-translation: 10px !default;
@@ -73,6 +85,18 @@ $psv-markers-list-even-background: transparent !default;
 $psv-markers-list-title-shadow: 2px 1px #000 !default;
 $psv-markers-list-title-font: 24px sans-serif !default;
 
+
+/*** NOTIFICATION ***/
+$psv-notification-bottom: ($psv-navbar-height, $psv-navbar-height * 2) !default;
+$psv-notification-animate-delay: $psv-tooltip-animate-delay !default;
+$psv-notification-background-color: $psv-tooltip-background-color !default;
+$psv-notification-radius: $psv-tooltip-radius !default;
+$psv-notification-padding: $psv-tooltip-padding !default;
+$psv-notification-font: $psv-tooltip-font !default;
+$psv-notification-text-color: $psv-tooltip-text-color !default;
+
+
+/*** Z-INDEXES ***/
 $psv-canvas-zindex: 0 !default;
 $psv-hud-zindex: 10 !default;
 $psv-polygon-marker-zindex: 20 !default;
@@ -81,3 +105,4 @@ $psv-tooltip-zindex: 50 !default;
 $psv-panel-zindex: 90 !default;
 $psv-navbar-zindex: 90 !default;
 $psv-loader-zindex: 100 !default;
+$psv-notification-zindex: 100 !default;

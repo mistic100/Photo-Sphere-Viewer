@@ -44,9 +44,11 @@
 <script src="../node_modules/d.js/lib/D.js"></script>
 <script src="../node_modules/uevent/uevent.js"></script>
 <script src="../node_modules/dot/doT.js"></script>
+<script src="../node_modules/nosleep.js/dist/NoSleep.js"></script>
 <script src="../node_modules/three/examples/js/renderers/CanvasRenderer.js"></script>
 <script src="../node_modules/three/examples/js/renderers/Projector.js"></script>
 <script src="../node_modules/three/examples/js/controls/DeviceOrientationControls.js"></script>
+<script src="../node_modules/three/examples/js/effects/StereoEffect.js"></script>
 <script src="../dist/photo-sphere-viewer.js"></script>
 
 <!-- text used for the marker description -->
@@ -132,7 +134,6 @@
     fisheye: true,
     move_speed: 1.1,
     time_anim: false,
-    gyroscope: true,
 //    mousemove_hover: true,
 //    webgl: false,
     navbar: [
@@ -171,10 +172,12 @@
       },
       'caption',
       'gyroscope',
+      'stereo',
       'fullscreen'
     ],
     markers: (function() {
       var a = [];
+
       for (var i = 0; i < Math.PI * 2; i += Math.PI / 4) {
         for (var j = -Math.PI / 2 + Math.PI / 4; j < Math.PI / 2; j += Math.PI / 4) {
           a.push({

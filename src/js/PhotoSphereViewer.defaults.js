@@ -148,6 +148,7 @@ PhotoSphereViewer.DEFAULTS = {
     'markers',
     'caption',
     'gyroscope',
+    'stereo',
     'fullscreen'
   ],
   tooltip: {
@@ -163,14 +164,15 @@ PhotoSphereViewer.DEFAULTS = {
     download: 'Download',
     fullscreen: 'Fullscreen',
     markers: 'Markers',
-    gyroscope: 'Gyroscope'
+    gyroscope: 'Gyroscope',
+    stereo: 'Stereo view',
+    stereo_notification: 'Click anywhere to exit stereo view.'
   },
   mousewheel: true,
   mousewheel_factor: 1,
   mousemove: true,
   mousemove_hover: false,
   keyboard: true,
-  gyroscope: false,
   move_inertia: true,
   click_event_on_marker: false,
   transition: {

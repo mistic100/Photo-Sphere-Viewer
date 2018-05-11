@@ -155,6 +155,10 @@ function PhotoSphereViewer(options) {
     console.warn('PhotoSphereViewer: panorama_roll is deprecated, use sphere_correction.roll instead');
   }
 
+  if ('gyroscope' in this.config) {
+    console.warn('PhotoSphereViewer: gyroscope is deprecated, the control is automatically created if DeviceOrientationControls.js is loaded');
+  }
+
   // min_fov/max_fov between 1 and 179
   this.config.min_fov = PSVUtils.bound(this.config.min_fov, 1, 179);
   this.config.max_fov = PSVUtils.bound(this.config.max_fov, 1, 179);
@@ -263,6 +267,12 @@ function PhotoSphereViewer(options) {
   this.tooltip = null;
 
   /**
+   * @member {module:components.PSVNotification}
+   * @readonly
+   */
+  this.notification = null;
+
+  /**
    * @member {HTMLElement}
    * @readonly
    * @private
@@ -275,6 +285,18 @@ function PhotoSphereViewer(options) {
    * @private
    */
   this.renderer = null;
+
+  /**
+   * @member {THREE.StereoEffect}
+   * @private
+   */
+  this.stereoEffect = null;
+
+  /**
+   * @member {NoSleep}
+   * @private
+   */
+  this.noSleep = null;
 
   /**
    * @member {THREE.Scene}
@@ -441,6 +463,9 @@ function PhotoSphereViewer(options) {
 
   // load hud tooltip
   this.tooltip = new PSVTooltip(this.hud);
+
+  // load notification
+  this.notification = new PSVNotification(this);
 
   // attach event handlers
   this._bindEvents();

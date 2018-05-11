@@ -42,6 +42,7 @@
     "grunt-wrap": "^0.3.0",
     "jit-grunt": "^0.10.0",
     "mocha": "^5.0.0",
+    "nosleep.js": "^0.7.0",
     "simple-cli": "^5.0.0",
     "time-grunt": "^1.3.0"
   },

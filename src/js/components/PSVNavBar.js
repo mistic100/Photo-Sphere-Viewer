@@ -90,10 +90,12 @@ PSVNavBar.prototype.create = function() {
           this.items.push(new PSVNavBarFullscreenButton(this));
           break;
 
+        case PSVNavBarStereoButton.id:
+          this.items.push(new PSVNavBarStereoButton(this));
+          break;
+
         case PSVNavBarGyroscopeButton.id:
-          if (this.psv.config.gyroscope) {
-            this.items.push(new PSVNavBarGyroscopeButton(this));
-          }
+          this.items.push(new PSVNavBarGyroscopeButton(this));
           break;
 
         case 'caption':
@@ -125,7 +127,7 @@ PSVNavBar.prototype.destroy = function() {
     item.destroy();
   });
 
-  delete this.items;
+  this.items.length = 0;
   delete this.config;
 
   PSVComponent.prototype.destroy.call(this);

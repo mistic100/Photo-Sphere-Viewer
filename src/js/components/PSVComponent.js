@@ -27,6 +27,13 @@ function PSVComponent(parent) {
    */
   this.container = null;
 
+  /**
+   * @summary Visibility of the component
+   * @member {boolean}
+   * @readonly
+   */
+  this.visible = true;
+
   // expose some methods to the viewer
   if (this.constructor.publicMethods) {
     this.constructor.publicMethods.forEach(function(method) {
@@ -87,6 +94,7 @@ PSVComponent.prototype.destroy = function() {
  */
 PSVComponent.prototype.hide = function() {
   this.container.style.display = 'none';
+  this.visible = false;
 };
 
 /**
@@ -95,4 +103,5 @@ PSVComponent.prototype.hide = function() {
  */
 PSVComponent.prototype.show = function() {
   this.container.style.display = '';
+  this.visible = true;
 };

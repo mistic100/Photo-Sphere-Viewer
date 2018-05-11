@@ -5,24 +5,24 @@
  * @extends module:components/buttons.PSVNavBarButton
  * @memberof module:components/buttons
  */
-function PSVNavBarGyroscopeButton(navbar) {
+function PSVNavBarStereoButton(navbar) {
   PSVNavBarButton.call(this, navbar);
 
   this.create();
 }
 
-PSVNavBarGyroscopeButton.prototype = Object.create(PSVNavBarButton.prototype);
-PSVNavBarGyroscopeButton.prototype.constructor = PSVNavBarGyroscopeButton;
+PSVNavBarStereoButton.prototype = Object.create(PSVNavBarButton.prototype);
+PSVNavBarStereoButton.prototype.constructor = PSVNavBarStereoButton;
 
-PSVNavBarGyroscopeButton.id = 'gyroscope';
-PSVNavBarGyroscopeButton.className = 'psv-button psv-button--hover-scale psv-gyroscope-button';
-PSVNavBarGyroscopeButton.icon = 'compass.svg';
+PSVNavBarStereoButton.id = 'stereo';
+PSVNavBarStereoButton.className = 'psv-button psv-button--hover-scale psv-stereo-button';
+PSVNavBarStereoButton.icon = 'stereo.svg';
 
 /**
  * @override
  * @description The button gets visible once the gyroscope API is ready
  */
-PSVNavBarGyroscopeButton.prototype.create = function() {
+PSVNavBarStereoButton.prototype.create = function() {
   PSVNavBarButton.prototype.create.call(this);
 
   PhotoSphereViewer.SYSTEM.deviceOrientationSupported.then(
@@ -32,14 +32,14 @@ PSVNavBarGyroscopeButton.prototype.create = function() {
 
   this.hide();
 
-  this.psv.on('gyroscope-updated', this);
+  this.psv.on('stereo-updated', this);
 };
 
 /**
  * @override
  */
-PSVNavBarGyroscopeButton.prototype.destroy = function() {
-  this.psv.off('gyroscope-updated', this);
+PSVNavBarStereoButton.prototype.destroy = function() {
+  this.psv.off('stereo-updated', this);
 
   PSVNavBarButton.prototype.destroy.call(this);
 };
@@ -49,10 +49,10 @@ PSVNavBarGyroscopeButton.prototype.destroy = function() {
  * @param {Event} e
  * @private
  */
-PSVNavBarGyroscopeButton.prototype.handleEvent = function(e) {
+PSVNavBarStereoButton.prototype.handleEvent = function(e) {
   switch (e.type) {
     // @formatter:off
-    case 'gyroscope-updated': this.toggleActive(e.args[0]); break;
+    case 'stereo-updated': this.toggleActive(e.args[0]); break;
     // @formatter:on
   }
 };
@@ -61,8 +61,8 @@ PSVNavBarGyroscopeButton.prototype.handleEvent = function(e) {
  * @override
  * @description Toggles gyroscope control
  */
-PSVNavBarGyroscopeButton.prototype._onClick = function() {
-  this.psv.toggleGyroscopeControl();
+PSVNavBarStereoButton.prototype._onClick = function() {
+  this.psv.toggleStereoView();
 };
 
 /**
@@ -71,8 +71,9 @@ PSVNavBarGyroscopeButton.prototype._onClick = function() {
  * @private
  * @throws {PSVError} when {@link THREE.DeviceOrientationControls} is not loaded
  */
-PSVNavBarGyroscopeButton.prototype._onAvailabilityChange = function(available) {
-  if (available && PSVUtils.checkTHREE('DeviceOrientationControls')) {
+PSVNavBarStereoButton.prototype._onAvailabilityChange = function(available) {
+  if (available && PSVUtils.checkTHREE('DeviceOrientationControls', 'StereoEffect')) {
     this.show();
   }
 };
+

@@ -107,7 +107,7 @@ PhotoSphereViewer.prototype._onResize = function() {
     this.prop.aspect = this.prop.size.width / this.prop.size.height;
 
     if (this.renderer) {
-      this.renderer.setSize(this.prop.size.width, this.prop.size.height);
+      (this.stereoEffect || this.renderer).setSize(this.prop.size.width, this.prop.size.height);
       this.render();
     }
 
@@ -171,6 +171,10 @@ PhotoSphereViewer.prototype._onMouseDown = function(evt) {
  */
 PhotoSphereViewer.prototype._onMouseUp = function(evt) {
   this._stopMove(evt);
+
+  if (this.isStereoEnabled()) {
+    this.stopStereoView();
+  }
 };
 
 /**

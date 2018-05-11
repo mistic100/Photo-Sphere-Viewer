@@ -58,6 +58,14 @@ PhotoSphereViewer.prototype.isGyroscopeEnabled = function() {
 };
 
 /**
+ * @summary Checks if the stereo viewx is enabled
+ * @returns {boolean}
+ */
+PhotoSphereViewer.prototype.isStereoEnabled = function() {
+  return !!this.stereoEffect;
+};
+
+/**
  * @summary Checks if the viewer is in fullscreen
  * @returns {boolean}
  */
@@ -86,7 +94,7 @@ PhotoSphereViewer.prototype.render = function(updateDirection) {
   this.camera.fov = this.prop.vFov;
   this.camera.updateProjectionMatrix();
 
-  this.renderer.render(this.scene, this.camera);
+  (this.stereoEffect || this.renderer).render(this.scene, this.camera);
 
   /**
    * @event render
@@ -103,6 +111,7 @@ PhotoSphereViewer.prototype.render = function(updateDirection) {
 PhotoSphereViewer.prototype.destroy = function() {
   this._stopAll();
   this.stopKeyboardControl();
+  this.stopNoSleep();
 
   if (this.isFullscreenEnabled()) {
     PSVUtils.exitFullscreen();
@@ -115,6 +124,9 @@ PhotoSphereViewer.prototype.destroy = function() {
   if (this.tooltip) {
     this.tooltip.destroy();
   }
+  if (this.notification) {
+    this.notification.destroy();
+  }
   if (this.hud) {
     this.hud.destroy();
   }
@@ -126,9 +138,6 @@ PhotoSphereViewer.prototype.destroy = function() {
   }
   if (this.panel) {
     this.panel.destroy();
-  }
-  if (this.doControls) {
-    this.doControls.disconnect();
   }
 
   // destroy ThreeJS view
@@ -152,12 +161,13 @@ PhotoSphereViewer.prototype.destroy = function() {
   delete this.hud;
   delete this.panel;
   delete this.tooltip;
+  delete this.notification;
   delete this.canvas_container;
   delete this.renderer;
+  delete this.noSleep;
   delete this.scene;
   delete this.camera;
   delete this.mesh;
-  delete this.doControls;
   delete this.raycaster;
   delete this.passes;
   delete this.config;
@@ -251,7 +261,7 @@ PhotoSphereViewer.prototype.startAutorotate = function() {
   var last;
   var elapsed;
 
-  var run = function (timestamp) {
+  var run = function(timestamp) {
     if (timestamp) {
       elapsed = last === undefined ? 0 : timestamp - last;
       last = timestamp;
@@ -286,7 +296,7 @@ PhotoSphereViewer.prototype.stopAutorotate = function() {
     this.prop.start_timeout = null;
   }
 
-  if (this.prop.autorotate_reqid) {
+  if (this.isAutorotateEnabled()) {
     window.cancelAnimationFrame(this.prop.autorotate_reqid);
     this.prop.autorotate_reqid = null;
 
@@ -309,19 +319,21 @@ PhotoSphereViewer.prototype.toggleAutorotate = function() {
 /**
  * @summary Enables the gyroscope navigation if available
  * @fires PhotoSphereViewer.gyroscope-updated
+ * @throws {PSVError} if DeviceOrientationControls.js is missing
  */
 PhotoSphereViewer.prototype.startGyroscopeControl = function() {
-  if (!this.doControls || !this.doControls.enabled) {
-    console.warn('PhotoSphereViewer: gyroscope disabled');
-    return;
+  if (PSVUtils.checkTHREE('DeviceOrientationControls')) {
+    return PhotoSphereViewer.SYSTEM.deviceOrientationSupported.then(
+      PhotoSphereViewer.prototype._startGyroscopeControl.bind(this),
+      function() {
+        console.warn('PhotoSphereViewer: gyroscope not available');
+        return D.rejected();
+      }
+    );
   }
-
-  PhotoSphereViewer.SYSTEM.deviceOrientationSupported.then(
-    PhotoSphereViewer.prototype._startGyroscopeControl.bind(this),
-    function() {
-      console.warn('PhotoSphereViewer: gyroscope not available');
-    }
-  );
+  else {
+    throw new PSVError('Missing Three.js components: DeviceOrientationControls. Get them from three.js-examples package.');
+  }
 };
 
 /**
@@ -332,6 +344,8 @@ PhotoSphereViewer.prototype.startGyroscopeControl = function() {
  */
 PhotoSphereViewer.prototype._startGyroscopeControl = function() {
   this._stopAll();
+
+  this.doControls = new THREE.DeviceOrientationControls(this.camera);
 
   // compute the alpha offset to keep the current orientation
   this.doControls.alphaOffset = this.prop.longitude;
@@ -374,9 +388,12 @@ PhotoSphereViewer.prototype._startGyroscopeControl = function() {
  * @fires PhotoSphereViewer.gyroscope-updated
  */
 PhotoSphereViewer.prototype.stopGyroscopeControl = function() {
-  if (this.prop.orientation_reqid) {
+  if (this.isGyroscopeEnabled()) {
     window.cancelAnimationFrame(this.prop.orientation_reqid);
     this.prop.orientation_reqid = null;
+
+    this.doControls.disconnect();
+    this.doControls = null;
 
     this.trigger('gyroscope-updated', false);
 
@@ -393,6 +410,109 @@ PhotoSphereViewer.prototype.toggleGyroscopeControl = function() {
   }
   else {
     this.startGyroscopeControl();
+  }
+};
+
+/**
+ * @summary Enables NoSleep.js
+ */
+PhotoSphereViewer.prototype.startNoSleep = function() {
+  if (!('NoSleep' in window)) {
+    console.warn('PhotoSphereViewer: NoSleep is not available');
+    return;
+  }
+
+  if (!this.noSleep) {
+    this.noSleep = new NoSleep();
+  }
+
+  this.noSleep.enable();
+};
+
+/**
+ * @summary Disables NoSleep.js
+ */
+PhotoSphereViewer.prototype.stopNoSleep = function() {
+  if (this.noSleep) {
+    this.noSleep.disable();
+  }
+};
+
+/**
+ * @summary Enables the stereo view
+ * @description
+ *  - enables NoSleep.js
+ *  - enables full screen
+ *  - starts gyroscope controle
+ *  - hides hud, navbar and panel
+ *  - instanciate StereoEffect
+ * @throws {PSVError} if StereoEffect.js is not available
+ */
+PhotoSphereViewer.prototype.startStereoView = function() {
+  if (PSVUtils.checkTHREE('DeviceOrientationControls', 'StereoEffect')) {
+    // Need to be in the main event queue
+    this.startNoSleep();
+    this.enterFullscreen();
+
+    this.startGyroscopeControl().then(
+      function() {
+        this.stereoEffect = new THREE.StereoEffect(this.renderer);
+
+        this.hud.hide();
+        this.navbar.hide();
+        this.panel.hidePanel();
+
+        /**
+         * @event stereo-updated
+         * @memberof PhotoSphereViewer
+         * @summary Triggered when the stereo view is enabled/disabled
+         * @param {boolean} enabled
+         */
+        this.trigger('stereo-updated', true);
+
+        this.notification.showNotification({
+          content: this.config.lang.stereo_notification,
+          timeout: 3000
+        });
+      }.bind(this),
+      function() {
+        this.exitFullscreen();
+        this.stopNoSleep();
+      }.bind(this)
+    );
+  }
+  else {
+    throw new PSVError('Missing Three.js components: StereoEffect, DeviceOrientationControls. Get them from three.js-examples package.');
+  }
+};
+
+/**
+ * @summary Disables the stereo view
+ */
+PhotoSphereViewer.prototype.stopStereoView = function() {
+  if (this.isStereoEnabled()) {
+    this.stereoEffect = null;
+
+    this.hud.show();
+    this.navbar.show();
+
+    this.exitFullscreen();
+    this.stopNoSleep();
+    this.stopGyroscopeControl();
+
+    this.trigger('stereo-updated', false);
+  }
+};
+
+/**
+ * @summary Enables or disables the stereo view
+ */
+PhotoSphereViewer.prototype.toggleStereoView = function() {
+  if (this.isStereoEnabled()) {
+    this.stopStereoView();
+  }
+  else {
+    this.startStereoView();
   }
 };
 
@@ -548,15 +668,23 @@ PhotoSphereViewer.prototype.resize = function(size) {
   this._onResize();
 };
 
+PhotoSphereViewer.prototype.enterFullscreen = function() {
+  PSVUtils.requestFullscreen(this.container);
+};
+
+PhotoSphereViewer.prototype.exitFullscreen = function() {
+  PSVUtils.exitFullscreen();
+};
+
 /**
  * @summary Enters or exits the fullscreen mode
  */
 PhotoSphereViewer.prototype.toggleFullscreen = function() {
   if (!this.isFullscreenEnabled()) {
-    PSVUtils.requestFullscreen(this.container);
+    this.enterFullscreen();
   }
   else {
-    PSVUtils.exitFullscreen();
+    this.exitFullscreen();
   }
 };
 
