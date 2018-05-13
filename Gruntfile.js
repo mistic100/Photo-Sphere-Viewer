@@ -238,7 +238,7 @@ module.exports = function(grunt) {
      */
     open: {
       dev: {
-        path: 'http://localhost:<%= connect.dev.options.port%>/example/index.htm'
+        path: 'http://localhost:<%= connect.dev.options.port%>/example/equirectangular.html'
       }
     },
 

@@ -80,7 +80,7 @@
     <li>Aliquam tincidunt mauris eu risus.</li>
   </ul>
 
-  <img src="pin2.png" style="width:100%"/>
+  <img src="assets/pin2.png" style="width:100%"/>
 
   <pre><code>
 #header h1 a {
@@ -126,7 +126,7 @@
     container: 'photosphere',
     panorama: panos[0].url,
     caption: panos[0].desc,
-    loading_img: 'photosphere-logo.gif',
+    loading_img: 'assets/photosphere-logo.gif',
     longitude_range: [-7 * Math.PI / 8, 7 * Math.PI / 8],
     latitude_range: [-3 * Math.PI / 4, 3 * Math.PI / 4],
     anim_speed: '-2rpm',
@@ -170,10 +170,7 @@
         content: '❌',
         enabled: false
       },
-      'caption',
-      'gyroscope',
-      'stereo',
-      'fullscreen'
+      'caption', 'gyroscope', 'stereo', 'fullscreen'
     ],
     markers: (function() {
       var a = [];
@@ -185,7 +182,7 @@
             tooltip: '#' + a.length,
             latitude: j,
             longitude: i,
-            image: 'pin.png',
+            image: 'assets/pin1.png',
             width: 32,
             height: 32,
             anchor: 'bottom center',
@@ -205,7 +202,7 @@
         content: document.getElementById('pin-content').innerHTML,
         latitude: 0,
         longitude: 0.20,
-        image: 'pin2.png',
+        image: 'assets/pin2.png',
         width: 32,
         height: 32,
         anchor: 'bottom center'
@@ -266,7 +263,7 @@
 
       a.push({
         id: 'gif',
-        image: 'http://strangeplanet.fr/files/avatars/sleep-round.gif',
+        image: 'assets/photosphere-logo.gif',
         width: 100,
         height: 100,
         longitude: 0.60,
@@ -275,7 +272,7 @@
 
       a.push({
         id: 'text',
-        html: 'This <b>is</b> text <img src="pin3.png" style="height: 24px; vertical-align: top;"/>',
+        html: 'This <b>is</b> text <img src="assets/pin3.png" style="height: 24px; vertical-align: top;"/>',
         anchor: 'bottom right',
         style: {
           color: 'white',
@@ -407,7 +404,7 @@
       tooltip: 'Generated marker',
       longitude: e.longitude,
       latitude: e.latitude,
-      image: 'pin.png',
+      image: 'assets/pin1.png',
       width: 32,
       height: 32,
       anchor: 'bottom center',
@@ -425,7 +422,7 @@
       else {
         PSV.updateMarker({
           id: marker.id,
-          image: 'pin2.png'
+          image: 'assets/pin2.png'
         });
       }
     }

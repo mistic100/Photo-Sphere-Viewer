@@ -34,9 +34,11 @@
 <script src="../node_modules/d.js/lib/D.js"></script>
 <script src="../node_modules/uevent/uevent.js"></script>
 <script src="../node_modules/dot/doT.js"></script>
+<script src="../node_modules/nosleep.js/dist/NoSleep.js"></script>
 <script src="../node_modules/three/examples/js/renderers/CanvasRenderer.js"></script>
 <script src="../node_modules/three/examples/js/renderers/Projector.js"></script>
 <script src="../node_modules/three/examples/js/controls/DeviceOrientationControls.js"></script>
+<script src="../node_modules/three/examples/js/effects/StereoEffect.js"></script>
 <script src="../dist/photo-sphere-viewer.js"></script>
 
 <script>
@@ -73,7 +75,7 @@
     //webgl: false,
     time_anim: false,
     default_long: Math.PI / 2,
-    loading_img: 'photosphere-logo.gif',
+    loading_img: 'assets/photosphere-logo.gif',
     navbar: [
       'autorotate', 'zoom', 'download', 'markers',
       'spacer-1',
@@ -95,7 +97,7 @@
           }
         }())
       },
-      'caption', 'gyroscope', 'fullscreen'
+      'caption', 'gyroscope', 'stereo', 'fullscreen'
     ],
     markers: (function() {
       var a = [];
@@ -106,7 +108,7 @@
             tooltip: '#' + a.length,
             latitude: j,
             longitude: i,
-            image: 'pin.png',
+            image: 'assets/pin1.png',
             width: 32,
             height: 32,
             anchor: 'bottom center',
@@ -139,7 +141,7 @@
       tooltip: 'Generated marker',
       longitude: e.longitude,
       latitude: e.latitude,
-      image: 'pin.png',
+      image: 'assets/pin1.png',
       width: 32,
       height: 32,
       anchor: 'bottom center',

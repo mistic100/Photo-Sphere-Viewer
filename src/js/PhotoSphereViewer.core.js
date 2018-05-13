@@ -165,8 +165,6 @@ PhotoSphereViewer.prototype._loadTexture = function(panorama) {
   }
 
   if (Array.isArray(panorama)) {
-
-
     if (this.prop.isCubemap === false) {
       throw new PSVError('The viewer was initialized with an equirectangular panorama, cannot switch to cubemap.');
     }
@@ -461,7 +459,7 @@ PhotoSphereViewer.prototype._setTexture = function(texture) {
    */
   this.trigger('panorama-loaded');
 
-  this.render();
+  this._render();
 };
 
 /**
