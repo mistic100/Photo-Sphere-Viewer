@@ -6,4 +6,4 @@
 
 # [Components](module-components.html)
 
-# [PSVMarker](PSVMarker.html) & [PSVHUD](module-components.PSVHUD.html)
+# [PSVMarker](PSVMarker.html)

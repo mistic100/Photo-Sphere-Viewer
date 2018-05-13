@@ -581,6 +581,7 @@ PSVUtils.cleanTHREEScene = function(scene) {
 
 /**
  * @callback AnimationOnTick
+ * @memberOf PSVUtils
  * @param {Object} properties - current values
  * @param {float} progress - 0 to 1
  */
@@ -895,6 +896,7 @@ PSVUtils.normalizeWheel = function(event) {
 
 /**
  * @callback ForEach
+ * @memberOf PSVUtils
  * @param {*} value
  * @param {string} key
  */

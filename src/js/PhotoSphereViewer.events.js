@@ -105,10 +105,10 @@ PhotoSphereViewer.prototype._onResize = function() {
     this.prop.size.width = parseInt(this.container.clientWidth);
     this.prop.size.height = parseInt(this.container.clientHeight);
     this.prop.aspect = this.prop.size.width / this.prop.size.height;
+    this.needsUpdate();
 
     if (this.renderer) {
       (this.stereoEffect || this.renderer).setSize(this.prop.size.width, this.prop.size.height);
-      this.render();
     }
 
     /**
@@ -149,8 +149,8 @@ PhotoSphereViewer.prototype._onKeyDown = function(evt) {
   }
   else if (dLat !== 0 || dLong !== 0) {
     this.rotate({
-      longitude: this.prop.longitude + dLong * this.prop.move_speed * this.prop.hFov,
-      latitude: this.prop.latitude + dLat * this.prop.move_speed * this.prop.vFov
+      longitude: this.prop.position.longitude + dLong * this.prop.move_speed * this.prop.hFov,
+      latitude: this.prop.position.latitude + dLat * this.prop.move_speed * this.prop.vFov
     });
   }
 };
@@ -413,8 +413,8 @@ PhotoSphereViewer.prototype._move = function(evt, log) {
     }
     else {
       this.rotate({
-        longitude: this.prop.longitude - rotation.longitude,
-        latitude: this.prop.latitude + rotation.latitude
+        longitude: this.prop.position.longitude - rotation.longitude,
+        latitude: this.prop.position.latitude + rotation.latitude
       });
     }
 

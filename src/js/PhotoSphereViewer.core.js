@@ -1,4 +1,55 @@
 /**
+ * @summary Main event loop, calls {@link PhotoSphereViewer._render} if `prop.needsUpdate` is true
+ * @param {int} timestamp
+ * @fires PhotoSphereViewer.filter:before-render
+ * @private
+ */
+PhotoSphereViewer.prototype._run = function(timestamp) {
+  /**
+   * @event before-render
+   * @memberof PhotoSphereViewer
+   * @summary Triggered before a render, used to modify the view
+   * @param {int} timestamp - time provided by requestAnimationFrame
+   */
+  this.trigger('before-render', timestamp || +new Date());
+
+  if (this.prop.needsUpdate) {
+    this._render();
+    this.prop.needsUpdate = false;
+  }
+
+  this.prop.main_reqid = window.requestAnimationFrame(this._run.bind(this));
+};
+
+/**
+ * @summary Performs a render
+ * @fires PhotoSphereViewer.render
+ * @private
+ */
+PhotoSphereViewer.prototype._render = function() {
+  this.prop.direction = this.sphericalCoordsToVector3(this.prop.position);
+  this.camera.position.set(0, 0, 0);
+  this.camera.lookAt(this.prop.direction);
+
+  if (this.config.fisheye) {
+    this.camera.position.copy(this.prop.direction).multiplyScalar(this.config.fisheye / 2).negate();
+  }
+
+  this.camera.aspect = this.prop.aspect;
+  this.camera.fov = this.prop.vFov;
+  this.camera.updateProjectionMatrix();
+
+  (this.stereoEffect || this.renderer).render(this.scene, this.camera);
+
+  /**
+   * @event render
+   * @memberof PhotoSphereViewer
+   * @summary Triggered on each viewer render, **this event is triggered very often**
+   */
+  this.trigger('render');
+};
+
+/**
  * @summary Loads the XMP data with AJAX
  * @param {string} panorama
  * @returns {Promise.<PhotoSphereViewer.PanoData>}
@@ -542,16 +593,22 @@ PhotoSphereViewer.prototype._transition = function(texture, position) {
   // rotate the new sphere to make the target position face the camera
   if (position) {
     // Longitude rotation along the vertical axis
-    mesh.rotateY(position.longitude - this.prop.longitude);
+    mesh.rotateY(position.longitude - this.prop.position.longitude);
 
     // Latitude rotation along the camera horizontal axis
     var axis = new THREE.Vector3(0, 1, 0).cross(this.camera.getWorldDirection()).normalize();
-    var q = new THREE.Quaternion().setFromAxisAngle(axis, position.latitude - this.prop.latitude);
+    var q = new THREE.Quaternion().setFromAxisAngle(axis, position.latitude - this.prop.position.latitude);
     mesh.quaternion.multiplyQuaternions(q, mesh.quaternion);
+
+    // FIXME: find a better way to handle ranges
+    if (this.config.latitude_range || this.config.longitude_range) {
+      this.config.longitude_range = this.config.latitude_range = null;
+      console.warn('PhotoSphereViewer: trying to perform transition with longitude_range and/or latitude_range, ranges cleared.');
+    }
   }
 
   this.scene.add(mesh);
-  this.render();
+  this.needsUpdate();
 
   return PSVUtils.animation({
     properties: {
@@ -561,8 +618,7 @@ PhotoSphereViewer.prototype._transition = function(texture, position) {
     easing: 'outCubic',
     onTick: function(properties) {
       material.opacity = properties.opacity;
-
-      this.render();
+      this.needsUpdate();
     }.bind(this)
   })
     .then(function() {
@@ -571,6 +627,7 @@ PhotoSphereViewer.prototype._transition = function(texture, position) {
       this.mesh.material.map = texture;
 
       this.scene.remove(mesh);
+      this.needsUpdate();
 
       mesh.geometry.dispose();
       mesh.geometry = null;
@@ -579,16 +636,7 @@ PhotoSphereViewer.prototype._transition = function(texture, position) {
 
       // actually rotate the camera
       if (position) {
-        // FIXME: find a better way to handle ranges
-        if (this.config.latitude_range || this.config.longitude_range) {
-          this.config.longitude_range = this.config.latitude_range = null;
-          console.warn('PhotoSphereViewer: trying to perform transition with longitude_range and/or latitude_range, ranges cleared.');
-        }
-
         this.rotate(position);
-      }
-      else {
-        this.render();
       }
     }.bind(this));
 };
