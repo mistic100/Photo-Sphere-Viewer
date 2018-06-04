@@ -63,6 +63,9 @@ PhotoSphereViewer.prototype._loadXMP = function(panorama) {
 
   var defer = D();
   var xhr = new XMLHttpRequest();
+  if (this.config.with_credentials) {
+    xhr.withCredentials = true;
+  }
   var progress = 0;
 
   xhr.onreadystatechange = function() {
@@ -216,7 +219,12 @@ PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
     var loader = new THREE.ImageLoader();
     var progress = pano_data ? 100 : 0;
 
-    loader.setCrossOrigin('anonymous');
+    if (this.config.with_credentials) {
+      loader.setCrossOrigin('use-credentials');
+    }
+    else {
+      loader.setCrossOrigin('anonymous');
+    }
 
     var onload = function(img) {
       progress = 100;
@@ -336,7 +344,12 @@ PhotoSphereViewer.prototype._loadCubemapTexture = function(panorama) {
   var loaded = [];
   var done = 0;
 
-  loader.setCrossOrigin('anonymous');
+  if (this.config.with_credentials) {
+    loader.setCrossOrigin('use-credentials');
+  }
+  else {
+    loader.setCrossOrigin('anonymous');
+  }
 
   var onend = function() {
     loaded.forEach(function(img) {

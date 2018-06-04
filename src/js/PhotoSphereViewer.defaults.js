@@ -184,7 +184,8 @@ PhotoSphereViewer.DEFAULTS = {
   size: null,
   cache_texture: 0,
   templates: {},
-  markers: []
+  markers: [],
+  with_credentials: false
 };
 
 /**
