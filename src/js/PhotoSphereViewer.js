@@ -484,7 +484,7 @@ function PhotoSphereViewer(options) {
 
   // load panorama
   if (this.config.panorama) {
-    this.setPanorama(this.config.panorama, false);
+    this.setPanorama(this.config.panorama);
   }
 
   // enable GUI after first render

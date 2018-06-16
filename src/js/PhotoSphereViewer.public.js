@@ -184,10 +184,6 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
     position = undefined;
   }
 
-  if (transition && this.prop.isCubemap) {
-    throw new PSVError('Transition is not available with cubemap.');
-  }
-
   if (position) {
     this.cleanPosition(position);
 
@@ -510,8 +506,8 @@ PhotoSphereViewer.prototype.lockOrientation = function() {
     }
   };
 
-  if (window.screen && screen.orientation) {
-    screen.orientation.lock('landscape').then(null, displayRotateMessage.bind(this));
+  if (window.screen && window.screen.orientation) {
+    window.screen.orientation.lock('landscape').then(null, displayRotateMessage.bind(this));
   }
   else {
     displayRotateMessage.apply(this);
@@ -522,8 +518,8 @@ PhotoSphereViewer.prototype.lockOrientation = function() {
  * @summary Unlock the device orientation
  */
 PhotoSphereViewer.prototype.unlockOrientation = function() {
-  if (window.screen && screen.orientation) {
-    screen.orientation.unlock();
+  if (window.screen && window.screen.orientation) {
+    window.screen.orientation.unlock();
   }
   else {
     if (this.pleaseRotate) {

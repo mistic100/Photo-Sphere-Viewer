@@ -501,11 +501,13 @@ PhotoSphereViewer.prototype._createScene = function() {
   this.scene.add(this.camera);
 
   if (this.prop.isCubemap) {
-    this._createCubemap();
+    this.mesh = this._createCubemap();
   }
   else {
-    this._createSphere();
+    this.mesh = this._createSphere();
   }
+
+  this.scene.add(this.mesh);
 
   // create canvas container
   this.canvas_container = document.createElement('div');
@@ -517,12 +519,16 @@ PhotoSphereViewer.prototype._createScene = function() {
 
 /**
  * @summary Creates the sphere mesh
+ * @param {number} [scale=1]
+ * @returns {THREE.Mesh}
  * @private
  */
-PhotoSphereViewer.prototype._createSphere = function() {
+PhotoSphereViewer.prototype._createSphere = function(scale) {
+  scale = scale || 1;
+
   // The middle of the panorama is placed at longitude=0
   var geometry = new THREE.SphereGeometry(
-    PhotoSphereViewer.SPHERE_RADIUS,
+    PhotoSphereViewer.SPHERE_RADIUS * scale,
     PhotoSphereViewer.SPHERE_VERTICES,
     PhotoSphereViewer.SPHERE_VERTICES,
     -PSVUtils.HalfPI
@@ -533,22 +539,26 @@ PhotoSphereViewer.prototype._createSphere = function() {
     overdraw: PhotoSphereViewer.SYSTEM.isWebGLSupported && this.config.webgl ? 0 : 1
   });
 
-  this.mesh = new THREE.Mesh(geometry, material);
-  this.mesh.scale.x = -1;
-  this.mesh.rotation.x = this.config.sphere_correction.tilt;
-  this.mesh.rotation.y = this.config.sphere_correction.pan;
-  this.mesh.rotation.z = this.config.sphere_correction.roll;
+  var mesh = new THREE.Mesh(geometry, material);
+  mesh.scale.x = -1;
+  mesh.rotation.x = this.config.sphere_correction.tilt;
+  mesh.rotation.y = this.config.sphere_correction.pan;
+  mesh.rotation.z = this.config.sphere_correction.roll;
 
-  this.scene.add(this.mesh);
+  return mesh;
 };
 
 /**
  * @summary Creates the cube mesh
+ * @param {number} [scale=1]
+ * @returns {THREE.Mesh}
  * @private
  */
-PhotoSphereViewer.prototype._createCubemap = function() {
+PhotoSphereViewer.prototype._createCubemap = function(scale) {
+  scale = scale || 1;
+
   var geometry = new THREE.BoxGeometry(
-    PhotoSphereViewer.SPHERE_RADIUS * 2, PhotoSphereViewer.SPHERE_RADIUS * 2, PhotoSphereViewer.SPHERE_RADIUS * 2,
+    PhotoSphereViewer.SPHERE_RADIUS * 2 * scale, PhotoSphereViewer.SPHERE_RADIUS * 2 * scale, PhotoSphereViewer.SPHERE_RADIUS * 2 * scale,
     PhotoSphereViewer.CUBE_VERTICES, PhotoSphereViewer.CUBE_VERTICES, PhotoSphereViewer.CUBE_VERTICES
   );
 
@@ -560,13 +570,13 @@ PhotoSphereViewer.prototype._createCubemap = function() {
     }));
   }
 
-  this.mesh = new THREE.Mesh(geometry, materials);
-  this.mesh.position.x -= PhotoSphereViewer.SPHERE_RADIUS;
-  this.mesh.position.y -= PhotoSphereViewer.SPHERE_RADIUS;
-  this.mesh.position.z -= PhotoSphereViewer.SPHERE_RADIUS;
-  this.mesh.applyMatrix(new THREE.Matrix4().makeScale(1, 1, -1));
+  var mesh = new THREE.Mesh(geometry, materials);
+  mesh.position.x -= PhotoSphereViewer.SPHERE_RADIUS * scale;
+  mesh.position.y -= PhotoSphereViewer.SPHERE_RADIUS * scale;
+  mesh.position.z -= PhotoSphereViewer.SPHERE_RADIUS * scale;
+  mesh.applyMatrix(new THREE.Matrix4().makeScale(1, 1, -1));
 
-  this.scene.add(this.mesh);
+  return mesh;
 };
 
 /**
@@ -578,28 +588,29 @@ PhotoSphereViewer.prototype._createCubemap = function() {
  * @throws {PSVError} if the panorama is a cubemap
  */
 PhotoSphereViewer.prototype._transition = function(texture, position) {
+  var mesh;
+
   if (this.prop.isCubemap) {
-    throw new PSVError('Transition is not available with cubemap.');
+    if (position) {
+      console.warn('PhotoSphereViewer: cannot perform cubemap transition to different position.');
+      position = undefined;
+    }
+
+    mesh = this._createCubemap(0.9);
+
+    mesh.material.forEach(function(material, i) {
+      material.map = texture[i];
+      material.transparent = true;
+      material.opacity = 0;
+    });
   }
+  else {
+    mesh = this._createSphere(0.9);
 
-  // create a new sphere with the new texture
-  var geometry = new THREE.SphereGeometry(
-    PhotoSphereViewer.SPHERE_RADIUS * 0.9,
-    PhotoSphereViewer.SPHERE_VERTICES,
-    PhotoSphereViewer.SPHERE_VERTICES,
-    -PSVUtils.HalfPI
-  );
-
-  var material = new THREE.MeshBasicMaterial({
-    side: THREE.DoubleSide,
-    overdraw: PhotoSphereViewer.SYSTEM.isWebGLSupported && this.config.webgl ? 0 : 1,
-    map: texture,
-    transparent: true,
-    opacity: 0
-  });
-
-  var mesh = new THREE.Mesh(geometry, material);
-  mesh.scale.x = -1;
+    mesh.material.map = texture;
+    mesh.material.transparent = true;
+    mesh.material.opacity = 0;
+  }
 
   // rotate the new sphere to make the target position face the camera
   if (position) {
@@ -628,22 +639,25 @@ PhotoSphereViewer.prototype._transition = function(texture, position) {
     duration: this.config.transition.duration,
     easing: 'outCubic',
     onTick: function(properties) {
-      material.opacity = properties.opacity;
+      if (this.prop.isCubemap) {
+        for (var i = 0; i < 6; i++) {
+          mesh.material[i].opacity = properties.opacity;
+        }
+      }
+      else {
+        mesh.material.opacity = properties.opacity;
+      }
+
       this.needsUpdate();
     }.bind(this)
   })
     .then(function() {
       // remove temp sphere and transfer the texture to the main sphere
-      this.mesh.material.map.dispose();
-      this.mesh.material.map = texture;
-
+      this._setTexture(texture);
       this.scene.remove(mesh);
-      this.needsUpdate();
 
       mesh.geometry.dispose();
       mesh.geometry = null;
-      mesh.material.dispose();
-      mesh.material = null;
 
       // actually rotate the camera
       if (position) {

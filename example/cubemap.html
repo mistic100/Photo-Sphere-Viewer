@@ -90,7 +90,7 @@
             i = 1 - i;
             PSV.clearMarkers();
 
-            PSV.setPanorama(panos[i].url)
+            PSV.setPanorama(panos[i].url, true)
               .then(function() {
                 PSV.setCaption(panos[i].desc);
               });
