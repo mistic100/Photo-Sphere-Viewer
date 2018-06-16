@@ -23,21 +23,22 @@
   @include flex-grow(10);
   color: $psv-caption-color;
   margin: $psv-buttons-padding;
-  white-space: nowrap;
   overflow: hidden;
   text-align: center;
-  font-family: $psv-caption-font;
 
-  @media (max-width: 800px) {
-    visibility: hidden;
-  }
-}
+  &-icon {
+    height: $psv-buttons-height;
+    width: $psv-buttons-height;
+    cursor: pointer;
 
-.psv-spacer {
-  @for $i from 1 through 10 {
-    &--weight-#{$i} {
-      @include flex-grow($i);
+    * {
+      fill: $psv-buttons-color;
     }
+  }
+
+  &-content {
+    font-family: $psv-caption-font;
+    white-space: nowrap;
   }
 }
 

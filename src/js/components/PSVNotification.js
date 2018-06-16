@@ -23,9 +23,21 @@ PSVNotification.publicMethods = ['showNotification', 'hideNotification', 'isNoti
 PSVNotification.prototype.create = function() {
   PSVComponent.prototype.create.call(this);
 
-  this.container.innerHTML = '<div class="psv-notification-content"></div>';
+  this.content = document.createElement('div');
+  this.content.className = 'psv-notification-content';
 
-  this.content = this.container.querySelector('.psv-notification-content');
+  this.container.appendChild(this.content);
+
+  this.content.addEventListener('click', this.hideNotification.bind(this));
+};
+
+/**
+ * @override
+ */
+PSVNotification.prototype.destroy = function() {
+  delete this.content;
+
+  PSVComponent.prototype.destroy.call(this);
 };
 
 /**
@@ -38,12 +50,21 @@ PSVNotification.prototype.isNotificationVisible = function() {
 
 /**
  * @summary Displays a notification on the viewer
- * @param {Object} config
+ * @param {Object|string} config
+ * @param {string} config.content
+ * @param {int} [config.timeout]
  *
  * @example
  * viewer.showNotification({ content: 'Hello world', timeout: 5000})
+ * viewer.showNotification('Hello world')
  */
 PSVNotification.prototype.showNotification = function(config) {
+  if (typeof config === 'string') {
+    config = {
+      content: config
+    };
+  }
+
   this.content.innerHTML = config.content;
 
   this.container.classList.add('psv-notification--visible');

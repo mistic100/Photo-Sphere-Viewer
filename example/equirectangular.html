@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhotoSphereViewer - equirectangular demo</title>
 
   <link rel="stylesheet" href="../dist/photo-sphere-viewer.css">
 
@@ -138,7 +139,6 @@
 //    webgl: false,
     navbar: [
       'autorotate', 'zoom', 'download', 'markers',
-      'spacer-1',
       {
         title: 'Change image',
         className: 'custom-button',
@@ -163,12 +163,6 @@
               });
           }
         }())
-      },
-      {
-        id: 'disabled',
-        title: 'This button is disabled',
-        content: '❌',
-        enabled: false
       },
       'caption', 'gyroscope', 'stereo', 'fullscreen'
     ],

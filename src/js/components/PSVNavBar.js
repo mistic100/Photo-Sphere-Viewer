@@ -102,13 +102,10 @@ PSVNavBar.prototype.create = function() {
           this.items.push(new PSVNavBarCaption(this, this.psv.config.caption));
           break;
 
-        case 'spacer':
-          button = 'spacer-5';
         /* falls through */
         default:
-          var matches = button.match(/^spacer\-([0-9]+)$/);
-          if (matches !== null) {
-            this.items.push(new PSVNavBarSpacer(this, matches[1]));
+          if (button.indexOf('spacer') === 0) {
+            console.warn('PhotoSphereViewer: navbar spacers have been removed.');
           }
           else {
             throw new PSVError('Unknown button ' + button);
