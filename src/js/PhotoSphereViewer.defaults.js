@@ -166,7 +166,8 @@ PhotoSphereViewer.DEFAULTS = {
     markers: 'Markers',
     gyroscope: 'Gyroscope',
     stereo: 'Stereo view',
-    stereo_notification: 'Click anywhere to exit stereo view.'
+    stereo_notification: 'Click anywhere to exit stereo view.',
+    please_rotate: ['Please rotate your device', '(or tap to continue)']
   },
   mousewheel: true,
   mousewheel_factor: 1,

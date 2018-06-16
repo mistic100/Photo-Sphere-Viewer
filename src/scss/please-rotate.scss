@@ -1,0 +1,36 @@
+.psv-please-rotate {
+  @include flexbox;
+  @include flex-direction(column);
+  @include align-items(center);
+  @include justify-content(center);
+  position: absolute;
+  z-index: $psv-notification-zindex + 1;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: $psv-main-background;
+
+  &-image {
+    margin-bottom: 4vh;
+
+    svg {
+      width: 50vw;
+
+      @media screen and (orientation: landscape) {
+        width: 30vw;
+      }
+    }
+  }
+
+  &-text {
+    font: $psv-loader-font;
+    font-size: 30px;
+  }
+
+  &-subtext {
+    font: $psv-loader-font;
+    font-size: 20px;
+    opacity: 0.8;
+  }
+}

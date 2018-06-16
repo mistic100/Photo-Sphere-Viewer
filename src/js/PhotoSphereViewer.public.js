@@ -99,10 +99,8 @@ PhotoSphereViewer.prototype.destroy = function() {
   this._stopAll();
   this.stopKeyboardControl();
   this.stopNoSleep();
-
-  if (this.isFullscreenEnabled()) {
-    PSVUtils.exitFullscreen();
-  }
+  this.exitFullscreen();
+  this.unlockOrientation();
 
   // remove listeners
   this._unbindEvents();
@@ -125,6 +123,9 @@ PhotoSphereViewer.prototype.destroy = function() {
   }
   if (this.panel) {
     this.panel.destroy();
+  }
+  if (this.pleaseRotate) {
+    this.pleaseRotate.destroy();
   }
 
   // destroy ThreeJS view
@@ -149,6 +150,7 @@ PhotoSphereViewer.prototype.destroy = function() {
   delete this.panel;
   delete this.tooltip;
   delete this.notification;
+  delete this.pleaseRotate;
   delete this.canvas_container;
   delete this.renderer;
   delete this.noSleep;
@@ -439,6 +441,7 @@ PhotoSphereViewer.prototype.startStereoView = function() {
     // Need to be in the main event queue
     this.startNoSleep();
     this.enterFullscreen();
+    this.lockOrientation();
 
     this.startGyroscopeControl().then(
       function() {
@@ -463,6 +466,7 @@ PhotoSphereViewer.prototype.startStereoView = function() {
         });
       }.bind(this),
       function() {
+        this.unlockOrientation();
         this.exitFullscreen();
         this.stopNoSleep();
       }.bind(this)
@@ -484,11 +488,47 @@ PhotoSphereViewer.prototype.stopStereoView = function() {
     this.hud.show();
     this.navbar.show();
 
+    this.unlockOrientation();
     this.exitFullscreen();
     this.stopNoSleep();
     this.stopGyroscopeControl();
 
     this.trigger('stereo-updated', false);
+  }
+};
+
+/**
+ * @summary Tries to lock the device in landscape or display a message
+ */
+PhotoSphereViewer.prototype.lockOrientation = function() {
+  var displayRotateMessage = function() {
+    if (window.innerHeight > window.innerWidth) {
+      if (!this.pleaseRotate) {
+        this.pleaseRotate = new PSVPleaseRotate(this);
+      }
+      this.pleaseRotate.show();
+    }
+  };
+
+  if (window.screen && screen.orientation) {
+    screen.orientation.lock('landscape').then(null, displayRotateMessage.bind(this));
+  }
+  else {
+    displayRotateMessage.apply(this);
+  }
+};
+
+/**
+ * @summary Unlock the device orientation
+ */
+PhotoSphereViewer.prototype.unlockOrientation = function() {
+  if (window.screen && screen.orientation) {
+    screen.orientation.unlock();
+  }
+  else {
+    if (this.pleaseRotate) {
+      this.pleaseRotate.hide();
+    }
   }
 };
 

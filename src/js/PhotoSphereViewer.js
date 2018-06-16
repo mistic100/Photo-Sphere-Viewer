@@ -273,6 +273,12 @@ function PhotoSphereViewer(options) {
   this.notification = null;
 
   /**
+   * @member {module:components.PSVPleaseRotate}
+   * @readonly
+   */
+  this.pleaseRotate = null;
+
+  /**
    * @member {HTMLElement}
    * @readonly
    * @private
