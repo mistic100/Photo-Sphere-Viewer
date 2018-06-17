@@ -12,6 +12,7 @@ PhotoSphereViewer._loadSystem = function() {
   S.mouseWheelEvent = PSVUtils.mouseWheelEvent();
   S.fullscreenEvent = PSVUtils.fullscreenEvent();
   S.deviceOrientationSupported = PSVUtils.isDeviceOrientationSupported();
+  S.touchEnabled = PSVUtils.isTouchEnabled();
 };
 
 /**

@@ -71,3 +71,9 @@
     }
   }
 }
+
+.psv-is-touch .psv-zoom-button {
+  @media (max-width: 600px) {
+    display: none;
+  }
+}

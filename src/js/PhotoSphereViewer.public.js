@@ -656,7 +656,7 @@ PhotoSphereViewer.prototype.zoom = function(level) {
  */
 PhotoSphereViewer.prototype.zoomIn = function() {
   if (this.prop.zoom_lvl < 100) {
-    this.zoom(this.prop.zoom_lvl + 1);
+    this.zoom(this.prop.zoom_lvl + this.config.zoom_speed);
   }
 };
 
@@ -665,7 +665,7 @@ PhotoSphereViewer.prototype.zoomIn = function() {
  */
 PhotoSphereViewer.prototype.zoomOut = function() {
   if (this.prop.zoom_lvl > 0) {
-    this.zoom(this.prop.zoom_lvl - 1);
+    this.zoom(this.prop.zoom_lvl - this.config.zoom_speed);
   }
 };
 

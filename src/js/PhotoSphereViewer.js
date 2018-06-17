@@ -521,6 +521,10 @@ function PhotoSphereViewer(options) {
       this.trigger('ready');
     }.bind(this), 0);
   }.bind(this));
+
+  PhotoSphereViewer.SYSTEM.touchEnabled.then(function() {
+    this.container.classList.add('psv-is-touch');
+  }.bind(this));
 }
 
 /**

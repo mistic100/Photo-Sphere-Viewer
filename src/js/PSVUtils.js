@@ -129,6 +129,35 @@ PSVUtils.isDeviceOrientationSupported = function() {
 };
 
 /**
+ * @summary Detects if the user is using a touch screen
+ * @returns {Promise}
+ */
+PSVUtils.isTouchEnabled = function() {
+  var defer = D();
+
+  var listener = function(e) {
+    if (e) {
+      defer.resolve();
+    }
+    else {
+      defer.reject();
+    }
+
+    window.removeEventListener('touchstart', listener);
+  };
+
+  window.addEventListener('touchstart', listener, false);
+
+  setTimeout(function() {
+    if (defer.promise.isPending()) {
+      listener(null);
+    }
+  }, 10000); // this is totally arbitrary
+
+  return defer.promise;
+};
+
+/**
  * @summary Gets max texture width in WebGL context
  * @returns {int}
  */

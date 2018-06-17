@@ -145,7 +145,7 @@ PhotoSphereViewer.prototype._onKeyDown = function(evt) {
   }
 
   if (dZoom !== 0) {
-    this.zoom(this.prop.zoom_lvl + dZoom);
+    this.zoom(this.prop.zoom_lvl + dZoom * this.config.zoom_speed);
   }
   else if (dLat !== 0 || dLong !== 0) {
     this.rotate({

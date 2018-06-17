@@ -137,6 +137,7 @@ PhotoSphereViewer.DEFAULTS = {
   longitude_range: null,
   latitude_range: null,
   move_speed: 1,
+  zoom_speed: 2,
   time_anim: 2000,
   anim_speed: '2rpm',
   anim_lat: null,
