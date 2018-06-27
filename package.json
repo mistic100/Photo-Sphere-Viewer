@@ -37,11 +37,12 @@
     "grunt-jsdoc": "^2.1.0",
     "grunt-mocha-test": "^0.13.2",
     "grunt-open": "^0.2.3",
-    "grunt-sass": "^2.0.0",
+    "grunt-sass": "^3.0.0",
     "grunt-sass-lint": "^0.2.2",
     "grunt-wrap": "^0.3.0",
     "jit-grunt": "^0.10.0",
     "mocha": "^5.0.0",
+    "node-sass": "^4.9.1",
     "nosleep.js": "^0.7.0",
     "simple-cli": "^5.0.0",
     "time-grunt": "^1.3.0"
@@ -58,6 +59,7 @@
     "url": "git://github.com/mistic100/Photo-Sphere-Viewer.git"
   },
   "scripts": {
+    "build": "grunt build",
     "test": "grunt test",
     "start": "grunt serve"
   }
