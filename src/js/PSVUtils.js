@@ -263,7 +263,7 @@ PSVUtils.getClosest = function(el, selector) {
     if (matches.bind(el)(selector)) {
       return el;
     }
-  } while (!!(el = el.parentElement));
+  } while (!!(el instanceof SVGElement ? el = el.parentNode : el = el.parentElement));
 
   return null;
 };
