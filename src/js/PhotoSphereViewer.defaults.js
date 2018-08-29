@@ -72,23 +72,6 @@ PhotoSphereViewer.CUBE_MAP = [0, 2, 4, 5, 3, 1];
 PhotoSphereViewer.CUBE_HASHMAP = ['left', 'right', 'top', 'bottom', 'back', 'front'];
 
 /**
- * @summary Map between keyboard events `keyCode|which` and `key`
- * @type {Object.<int, string>}
- * @readonly
- * @private
- */
-PhotoSphereViewer.KEYMAP = {
-  33: 'PageUp',
-  34: 'PageDown',
-  37: 'ArrowLeft',
-  38: 'ArrowUp',
-  39: 'ArrowRight',
-  40: 'ArrowDown',
-  107: '+',
-  109: '-'
-};
-
-/**
  * @summary System properties
  * @type {Object}
  * @readonly

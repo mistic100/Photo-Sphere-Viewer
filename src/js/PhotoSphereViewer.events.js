@@ -131,7 +131,7 @@ PhotoSphereViewer.prototype._onKeyDown = function(evt) {
   var dLat = 0;
   var dZoom = 0;
 
-  var key = evt.key || PhotoSphereViewer.KEYMAP[evt.keyCode || evt.which];
+  var key = PSVUtils.getEventKey(evt);
 
   switch (key) {
     // @formatter:off
