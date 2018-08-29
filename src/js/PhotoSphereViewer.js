@@ -145,18 +145,26 @@ function PhotoSphereViewer(options) {
     console.warn('PhotoSphereViewer: max_fov cannot be lower than min_fov.');
   }
 
+  // cache_texture must be a positive integer or false
   if (this.config.cache_texture && (!PSVUtils.isInteger(this.config.cache_texture) || this.config.cache_texture < 0)) {
     this.config.cache_texture = PhotoSphereViewer.DEFAULTS.cache_texture;
     console.warn('PhotoSphereViewer: invalid value for cache_texture');
   }
 
+  // panorama_roll is deprecated
   if ('panorama_roll' in this.config) {
     this.config.sphere_correction.roll = this.config.panorama_roll;
     console.warn('PhotoSphereViewer: panorama_roll is deprecated, use sphere_correction.roll instead');
   }
 
+  // gyroscope is deprecated
   if ('gyroscope' in this.config) {
     console.warn('PhotoSphereViewer: gyroscope is deprecated, the control is automatically created if DeviceOrientationControls.js is loaded');
+  }
+
+  // keyboard=true becomes the default map
+  if (this.config.keyboard === true) {
+    this.config.keyboard = PSVUtils.clone(PhotoSphereViewer.DEFAULTS.keyboard);
   }
 
   // min_fov/max_fov between 1 and 179

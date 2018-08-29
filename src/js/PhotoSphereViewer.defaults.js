@@ -157,7 +157,17 @@ PhotoSphereViewer.DEFAULTS = {
   mousewheel_factor: 1,
   mousemove: true,
   mousemove_hover: false,
-  keyboard: true,
+  keyboard: {
+    'ArrowUp': 'rotateLatitudeUp',
+    'ArrowDown': 'rotateLatitudeDown',
+    'ArrowRight': 'rotateLongitudeRight',
+    'ArrowLeft': 'rotateLongitudeLeft',
+    'PageUp': 'zoomIn',
+    'PageDown': 'zoomOut',
+    '+': 'zoomIn',
+    '-': 'zoomOut',
+    ' ': 'toggleAutorotate'
+  },
   move_inertia: true,
   click_event_on_marker: false,
   transition: {

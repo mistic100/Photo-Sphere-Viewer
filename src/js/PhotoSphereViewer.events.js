@@ -132,15 +132,17 @@ PhotoSphereViewer.prototype._onKeyDown = function(evt) {
   var dZoom = 0;
 
   var key = PSVUtils.getEventKey(evt);
+  var action = this.config.keyboard[key];
 
-  switch (key) {
+  switch (action) {
     // @formatter:off
-    case 'ArrowUp': dLat = 0.01; break;
-    case 'ArrowDown': dLat = -0.01; break;
-    case 'ArrowRight': dLong = 0.01; break;
-    case 'ArrowLeft': dLong = -0.01; break;
-    case 'PageUp':case '+': dZoom = 1; break;
-    case 'PageDown':case '-': dZoom = -1; break;
+    case 'rotateLatitudeUp': dLat = 0.01; break;
+    case 'rotateLatitudeDown': dLat = -0.01; break;
+    case 'rotateLongitudeRight': dLong = 0.01; break;
+    case 'rotateLongitudeLeft': dLong = -0.01; break;
+    case 'zoomIn': dZoom = 1; break;
+    case 'zoomOut': dZoom = -1; break;
+    case 'toggleAutorotate': this.toggleAutorotate(); break;
     // @formatter:on
   }
 
