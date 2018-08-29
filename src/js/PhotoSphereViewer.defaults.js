@@ -84,6 +84,10 @@ PhotoSphereViewer.KEYMAP = {
   38: 'ArrowUp',
   39: 'ArrowRight',
   40: 'ArrowDown',
+  65: 'a',
+  87: 'w',
+  68: 'd',
+  83: 's',
   107: '+',
   109: '-'
 };

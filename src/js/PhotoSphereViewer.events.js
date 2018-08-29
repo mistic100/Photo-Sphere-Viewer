@@ -136,9 +136,13 @@ PhotoSphereViewer.prototype._onKeyDown = function(evt) {
   switch (key) {
     // @formatter:off
     case 'ArrowUp': dLat = 0.01; break;
+    case 'w': dLat = 0.01; break;
     case 'ArrowDown': dLat = -0.01; break;
+    case 's': dLat = -0.01; break;
     case 'ArrowRight': dLong = 0.01; break;
+    case 'd': dLong = 0.01; break;
     case 'ArrowLeft': dLong = -0.01; break;
+    case 'a': dLong = -0.01; break;
     case 'PageUp':case '+': dZoom = 1; break;
     case 'PageDown':case '-': dZoom = -1; break;
     // @formatter:on
