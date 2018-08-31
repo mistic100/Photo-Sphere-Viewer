@@ -99,33 +99,27 @@ PSVUtils.isWebGLSupported = function() {
  * @returns {Promise}
  */
 PSVUtils.isDeviceOrientationSupported = function() {
-  var defer = D();
+  var promise = new Promise(function(resolve, reject) {
+      if ('DeviceOrientationEvent' in window) {
+        var listener = function(event) {
+          if (event && event.alpha !== null && !isNaN(event.alpha)) {
+            resolve();
+          }
+          else {
+            reject();
+          }
 
-  if ('DeviceOrientationEvent' in window) {
-    var listener = function(event) {
-      if (event && event.alpha !== null && !isNaN(event.alpha)) {
-        defer.resolve();
+          window.removeEventListener('deviceorientation', listener);
+        };
+
+        window.addEventListener('deviceorientation', listener, false);
       }
       else {
-        defer.reject();
+        reject();
       }
+  });
 
-      window.removeEventListener('deviceorientation', listener);
-    };
-
-    window.addEventListener('deviceorientation', listener, false);
-
-    setTimeout(function() {
-      if (defer.promise.isPending()) {
-        listener(null);
-      }
-    }, 2000);
-  }
-  else {
-    defer.reject();
-  }
-
-  return defer.promise;
+  return promise;
 };
 
 /**
@@ -133,28 +127,25 @@ PSVUtils.isDeviceOrientationSupported = function() {
  * @returns {Promise}
  */
 PSVUtils.isTouchEnabled = function() {
-  var defer = D();
 
-  var listener = function(e) {
-    if (e) {
-      defer.resolve();
-    }
-    else {
-      defer.reject();
-    }
+  var promise = new Promise(function(resolve, reject) {
 
-    window.removeEventListener('touchstart', listener);
-  };
+      var listener = function(e) {
+          if (e) {
+              resolve();
+          } else {
+              reject();
+          }
 
-  window.addEventListener('touchstart', listener, false);
+          window.removeEventListener('touchstart', listener);
+      };
 
-  setTimeout(function() {
-    if (defer.promise.isPending()) {
-      listener(null);
-    }
-  }, 10000); // this is totally arbitrary
+      window.addEventListener('touchstart', listener, false);
 
-  return defer.promise;
+  });
+
+  return promise;
+
 };
 
 /**
@@ -683,67 +674,65 @@ PSVUtils.cleanTHREEScene = function(scene) {
  * @returns {Promise} Promise with an additional "cancel" method
  */
 PSVUtils.animation = function(options) {
-  var defer = D(false); // alwaysAsync = false to allow immediate resolution of "cancel"
-  var start = null;
 
-  if (!options.easing || typeof options.easing === 'string') {
-    options.easing = PSVUtils.animation.easings[options.easing || 'linear'];
-  }
+  var promise = new Promise(function(resolve, reject) {
 
-  function run(timestamp) {
-    // the animation has been cancelled
-    if (defer.promise.getStatus() === -1) {
-      return;
-    }
+      var start = null;
 
-    // first iteration
-    if (start === null) {
-      start = timestamp;
-    }
-
-    // compute progress
-    var progress = (timestamp - start) / options.duration;
-    var current = {};
-    var name;
-
-    if (progress < 1.0) {
-      // interpolate properties
-      for (name in options.properties) {
-        current[name] = options.properties[name].start + (options.properties[name].end - options.properties[name].start) * options.easing(progress);
+      if (!options.easing || typeof options.easing === 'string') {
+        options.easing = PSVUtils.animation.easings[options.easing || 'linear'];
       }
 
-      options.onTick(current, progress);
+      function run(timestamp) {
 
-      window.requestAnimationFrame(run);
-    }
-    else {
-      // call onTick one last time with final values
-      for (name in options.properties) {
-        current[name] = options.properties[name].end;
+        // first iteration
+        if (start === null) {
+          start = timestamp;
+        }
+
+        // compute progress
+        var progress = (timestamp - start) / options.duration;
+        var current = {};
+        var name;
+
+        if (progress < 1.0) {
+          // interpolate properties
+          for (name in options.properties) {
+            current[name] = options.properties[name].start + (options.properties[name].end - options.properties[name].start) * options.easing(progress);
+          }
+
+          options.onTick(current, progress);
+
+          window.requestAnimationFrame(run);
+        }
+        else {
+          // call onTick one last time with final values
+          for (name in options.properties) {
+            current[name] = options.properties[name].end;
+          }
+
+          options.onTick(current, 1.0);
+
+          window.requestAnimationFrame(function() {
+            resolve();
+          });
+        }
       }
 
-      options.onTick(current, 1.0);
+      if (options.delay !== undefined) {
+        window.setTimeout(function() {
+          window.requestAnimationFrame(run);
+        }, options.delay);
+      } else {
+        window.requestAnimationFrame(run);
+      }
 
-      window.requestAnimationFrame(function() {
-        defer.resolve();
-      });
-    }
-  }
+  });
 
-  if (options.delay !== undefined) {
-    window.setTimeout(function() {
-      window.requestAnimationFrame(run);
-    }, options.delay);
-  }
-  else {
-    window.requestAnimationFrame(run);
-  }
-
-  // add a "cancel" to the promise
-  var promise = defer.promise;
   promise.cancel = function() {
-    defer.reject();
+      reject();
   };
+
   return promise;
 };
 
