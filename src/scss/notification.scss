@@ -1,12 +1,12 @@
 .psv-notification {
   position: absolute;
   z-index: $psv-notification-zindex;
-  bottom: nth($psv-notification-bottom, 1);
+  bottom: map-get($psv-notification-bottom, from);
   display: flex;
   justify-content: center;
   box-sizing: border-box;
   width: 100%;
-  padding: 0 #{nth($psv-notification-bottom, 2) - nth($psv-notification-bottom, 1)};
+  padding: 0 2em;
   opacity: 0;
   transition-property: opacity, bottom;
   transition-timing-function: ease-in-out;
@@ -23,6 +23,6 @@
 
   &--visible {
     opacity: 100;
-    bottom: nth($psv-notification-bottom, 2);
+    bottom: map-get($psv-notification-bottom, to);
   }
 }

@@ -281,10 +281,10 @@ function PhotoSphereViewer(options) {
   this.notification = null;
 
   /**
-   * @member {module:components.PSVPleaseRotate}
+   * @member {module:components.PSVOverlay}
    * @readonly
    */
-  this.pleaseRotate = null;
+  this.overlay = null;
 
   /**
    * @member {HTMLElement}
@@ -486,6 +486,9 @@ function PhotoSphereViewer(options) {
 
   // load notification
   this.notification = new PSVNotification(this);
+
+  // load overlay
+  this.overlay = new PSVOverlay(this);
 
   // attach event handlers
   this._bindEvents();

@@ -87,13 +87,21 @@ $psv-markers-list-title-font: 24px sans-serif !default;
 
 
 //*** NOTIFICATION ***
-$psv-notification-bottom: ($psv-navbar-height, $psv-navbar-height * 2) !default;
-$psv-notification-animate-delay: $psv-tooltip-animate-delay !default;
+$psv-notification-bottom: (from: $psv-navbar-height, to: $psv-navbar-height * 2) !default;
+$psv-notification-animate-delay: .2 !default;
 $psv-notification-background-color: $psv-tooltip-background-color !default;
 $psv-notification-radius: $psv-tooltip-radius !default;
 $psv-notification-padding: $psv-tooltip-padding !default;
 $psv-notification-font: $psv-tooltip-font !default;
 $psv-notification-text-color: $psv-tooltip-text-color !default;
+
+
+//*** OVERLAY ***
+$psv-overlay-opacity: .8 !default;
+$psv-overlay-font: sans-serif !default;
+$psv-overlay-text-size: 30px !default;
+$psv-overlay-subtext-size: 20px !default;
+$psv-overlay-image-size: (portrait: 50vw, landscape: 25vw) !default;
 
 
 //*** Z-INDEXES ***
@@ -106,3 +114,4 @@ $psv-panel-zindex: 90 !default;
 $psv-navbar-zindex: 90 !default;
 $psv-loader-zindex: 100 !default;
 $psv-notification-zindex: 100 !default;
+$psv-overlay-zindex: 110 !default;

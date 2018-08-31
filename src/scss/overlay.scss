@@ -1,36 +1,39 @@
-.psv-please-rotate {
+.psv-overlay {
   @include flexbox;
   @include flex-direction(column);
   @include align-items(center);
   @include justify-content(center);
   position: absolute;
-  z-index: $psv-notification-zindex + 1;
+  z-index: $psv-overlay-zindex;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
   background: $psv-main-background;
+  opacity: $psv-overlay-opacity;
 
   &-image {
     margin-bottom: 4vh;
 
     svg {
-      width: 50vw;
+      width: map-get($psv-overlay-image-size, portrait);
 
       @media screen and (orientation: landscape) {
-        width: 30vw;
+        width: map-get($psv-overlay-image-size, landscape);
       }
     }
   }
 
   &-text {
-    font: $psv-loader-font;
-    font-size: 30px;
+    font: $psv-overlay-font;
+    font-size: $psv-overlay-text-size;
+    text-align: center;
   }
 
   &-subtext {
-    font: $psv-loader-font;
-    font-size: 20px;
+    font: $psv-overlay-font;
+    font-size: $psv-overlay-subtext-size;
     opacity: .8;
+    text-align: center;
   }
 }
