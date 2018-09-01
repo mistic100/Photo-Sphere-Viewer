@@ -25,11 +25,6 @@ PSVNavBarFullscreenButton.iconActive = 'fullscreen-out.svg';
 PSVNavBarFullscreenButton.prototype.create = function() {
   PSVNavBarButton.prototype.create.call(this);
 
-  if (!PhotoSphereViewer.SYSTEM.fullscreenEvent) {
-    this.hide();
-    console.warn('PhotoSphereViewer: fullscreen not supported.');
-  }
-
   this.psv.on('fullscreen-updated', this);
 };
 
@@ -40,6 +35,13 @@ PSVNavBarFullscreenButton.prototype.destroy = function() {
   this.psv.off('fullscreen-updated', this);
 
   PSVNavBarButton.prototype.destroy.call(this);
+};
+
+/**
+ * @override
+ */
+PSVNavBarFullscreenButton.prototype.supported = function() {
+  return !!PhotoSphereViewer.SYSTEM.fullscreenEvent;
 };
 
 /**

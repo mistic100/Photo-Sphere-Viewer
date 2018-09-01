@@ -76,6 +76,20 @@ PSVNavBarButton.prototype.create = function() {
     }
     e.stopPropagation();
   }.bind(this));
+
+  var supported = this.supported();
+  if (typeof supported.then === 'function') {
+    this.hide();
+
+    supported.then(function(supported) {
+      if (supported) {
+        this.show();
+      }
+    }.bind(this));
+  }
+  else if (!supported) {
+    this.hide();
+  }
 };
 
 /**
@@ -84,6 +98,14 @@ PSVNavBarButton.prototype.create = function() {
  */
 PSVNavBarButton.prototype.destroy = function() {
   PSVComponent.prototype.destroy.call(this);
+};
+
+/**
+ * @summary Checks if the button can be displayed
+ * @returns {boolean|Promise<boolean>}
+ */
+PSVNavBarButton.prototype.supported = function() {
+  return true;
 };
 
 /**

@@ -312,8 +312,8 @@ PhotoSphereViewer.prototype.toggleAutorotate = function() {
  */
 PhotoSphereViewer.prototype.startGyroscopeControl = function() {
   if (PSVUtils.checkTHREE('DeviceOrientationControls')) {
-    return PhotoSphereViewer.SYSTEM.deviceOrientationSupported.then(
-      function() {
+    return PhotoSphereViewer.SYSTEM.deviceOrientationSupported.then(function(supported) {
+      if (supported) {
         this._stopAll();
 
         this.doControls = new THREE.DeviceOrientationControls(this.camera);
@@ -337,12 +337,12 @@ PhotoSphereViewer.prototype.startGyroscopeControl = function() {
          * @param {boolean} enabled
          */
         this.trigger('gyroscope-updated', true);
-      }.bind(this),
-      function() {
+      }
+      else {
         console.warn('PhotoSphereViewer: gyroscope not available');
         return D.rejected();
       }
-    );
+    }.bind(this));
   }
   else {
     throw new PSVError('Missing Three.js components: DeviceOrientationControls. Get them from three.js-examples package.');
