@@ -16,7 +16,7 @@ $psv-loader-font: 14px sans-serif !default;
 $psv-navbar-height: 40px !default;
 $psv-navbar-background: rgba(61, 61, 61, .5) !default;
 
-$psv-caption-font: sans-serif !default;
+$psv-caption-font: 16px sans-serif !default;
 $psv-caption-color: rgba(255, 255, 255, .7) !default;
 
 $psv-buttons-height: 20px !default;
@@ -98,7 +98,7 @@ $psv-notification-text-color: $psv-tooltip-text-color !default;
 
 //*** OVERLAY ***
 $psv-overlay-opacity: .8 !default;
-$psv-overlay-font: sans-serif !default;
+$psv-overlay-font-family: sans-serif !default;
 $psv-overlay-text-size: 30px !default;
 $psv-overlay-subtext-size: 20px !default;
 $psv-overlay-image-size: (portrait: 50vw, landscape: 25vw) !default;

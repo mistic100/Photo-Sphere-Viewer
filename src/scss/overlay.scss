@@ -25,14 +25,12 @@
   }
 
   &-text {
-    font: $psv-overlay-font;
-    font-size: $psv-overlay-text-size;
+    font: $psv-overlay-text-size $psv-overlay-font-family;
     text-align: center;
   }
 
   &-subtext {
-    font: $psv-overlay-font;
-    font-size: $psv-overlay-subtext-size;
+    font: $psv-overlay-subtext-size $psv-overlay-font-family;
     opacity: .8;
     text-align: center;
   }
