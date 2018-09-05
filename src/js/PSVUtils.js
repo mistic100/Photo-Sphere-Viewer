@@ -96,17 +96,17 @@ PSVUtils.isWebGLSupported = function() {
 /**
  * @summary Detects if device orientation is supported
  * @description We can only be sure device orientation is supported once received an event with coherent data
- * @returns {Promise}
+ * @returns {Promise<boolean>}
  */
 PSVUtils.isDeviceOrientationSupported = function() {
   var promise = new Promise(function(resolve, reject) {
     if ('DeviceOrientationEvent' in window) {
       var listener = function(event) {
         if (event && event.alpha !== null && !isNaN(event.alpha)) {
-          resolve();
+          resolve(true);
         }
         else {
-          reject();
+          resolve(false);
         }
 
         window.removeEventListener('deviceorientation', listener);
@@ -115,7 +115,7 @@ PSVUtils.isDeviceOrientationSupported = function() {
       window.addEventListener('deviceorientation', listener, false);
     }
     else {
-      reject();
+      resolve(false);
     }
   });
 
