@@ -25,13 +25,6 @@ PSVNavBarStereoButton.icon = 'stereo.svg';
 PSVNavBarStereoButton.prototype.create = function() {
   PSVNavBarButton.prototype.create.call(this);
 
-  PhotoSphereViewer.SYSTEM.deviceOrientationSupported.then(
-    this._onAvailabilityChange.bind(this, true),
-    this._onAvailabilityChange.bind(this, false)
-  );
-
-  this.hide();
-
   this.psv.on('stereo-updated', this);
 };
 
@@ -42,6 +35,18 @@ PSVNavBarStereoButton.prototype.destroy = function() {
   this.psv.off('stereo-updated', this);
 
   PSVNavBarButton.prototype.destroy.call(this);
+};
+
+/**
+ * @override
+ */
+PSVNavBarStereoButton.prototype.supported = function() {
+  if (!PhotoSphereViewer.SYSTEM.fullscreenEvent || !PSVUtils.checkTHREE('DeviceOrientationControls')) {
+    return false;
+  }
+  else {
+    return PhotoSphereViewer.SYSTEM.deviceOrientationSupported;
+  }
 };
 
 /**
@@ -64,16 +69,3 @@ PSVNavBarStereoButton.prototype.handleEvent = function(e) {
 PSVNavBarStereoButton.prototype._onClick = function() {
   this.psv.toggleStereoView();
 };
-
-/**
- * @summary Updates button display when API is ready
- * @param {boolean} available
- * @private
- * @throws {PSVError} when {@link THREE.DeviceOrientationControls} is not loaded
- */
-PSVNavBarStereoButton.prototype._onAvailabilityChange = function(available) {
-  if (available && PSVUtils.checkTHREE('DeviceOrientationControls', 'StereoEffect')) {
-    this.show();
-  }
-};
-

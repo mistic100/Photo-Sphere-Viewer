@@ -25,13 +25,6 @@ PSVNavBarGyroscopeButton.icon = 'compass.svg';
 PSVNavBarGyroscopeButton.prototype.create = function() {
   PSVNavBarButton.prototype.create.call(this);
 
-  PhotoSphereViewer.SYSTEM.deviceOrientationSupported.then(
-    this._onAvailabilityChange.bind(this, true),
-    this._onAvailabilityChange.bind(this, false)
-  );
-
-  this.hide();
-
   this.psv.on('gyroscope-updated', this);
 };
 
@@ -42,6 +35,18 @@ PSVNavBarGyroscopeButton.prototype.destroy = function() {
   this.psv.off('gyroscope-updated', this);
 
   PSVNavBarButton.prototype.destroy.call(this);
+};
+
+/**
+ * @override
+ */
+PSVNavBarGyroscopeButton.prototype.supported = function() {
+  if (!PSVUtils.checkTHREE('DeviceOrientationControls')) {
+    return false;
+  }
+  else {
+    return PhotoSphereViewer.SYSTEM.deviceOrientationSupported;
+  }
 };
 
 /**
@@ -63,16 +68,4 @@ PSVNavBarGyroscopeButton.prototype.handleEvent = function(e) {
  */
 PSVNavBarGyroscopeButton.prototype._onClick = function() {
   this.psv.toggleGyroscopeControl();
-};
-
-/**
- * @summary Updates button display when API is ready
- * @param {boolean} available
- * @private
- * @throws {PSVError} when {@link THREE.DeviceOrientationControls} is not loaded
- */
-PSVNavBarGyroscopeButton.prototype._onAvailabilityChange = function(available) {
-  if (available && PSVUtils.checkTHREE('DeviceOrientationControls')) {
-    this.show();
-  }
 };

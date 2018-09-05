@@ -124,8 +124,8 @@ PhotoSphereViewer.prototype.destroy = function() {
   if (this.panel) {
     this.panel.destroy();
   }
-  if (this.pleaseRotate) {
-    this.pleaseRotate.destroy();
+  if (this.overlay) {
+    this.overlay.destroy();
   }
 
   // destroy ThreeJS view
@@ -150,7 +150,7 @@ PhotoSphereViewer.prototype.destroy = function() {
   delete this.panel;
   delete this.tooltip;
   delete this.notification;
-  delete this.pleaseRotate;
+  delete this.overlay;
   delete this.canvas_container;
   delete this.renderer;
   delete this.noSleep;
@@ -312,8 +312,8 @@ PhotoSphereViewer.prototype.toggleAutorotate = function() {
  */
 PhotoSphereViewer.prototype.startGyroscopeControl = function() {
   if (PSVUtils.checkTHREE('DeviceOrientationControls')) {
-    return PhotoSphereViewer.SYSTEM.deviceOrientationSupported.then(
-      function() {
+    return PhotoSphereViewer.SYSTEM.deviceOrientationSupported.then(function(supported) {
+      if (supported) {
         this._stopAll();
 
         this.doControls = new THREE.DeviceOrientationControls(this.camera);
@@ -337,12 +337,12 @@ PhotoSphereViewer.prototype.startGyroscopeControl = function() {
          * @param {boolean} enabled
          */
         this.trigger('gyroscope-updated', true);
-      }.bind(this),
-      function() {
+      }
+      else {
         console.warn('PhotoSphereViewer: gyroscope not available');
         return D.rejected();
       }
-    );
+    }.bind(this));
   }
   else {
     throw new PSVError('Missing Three.js components: DeviceOrientationControls. Get them from three.js-examples package.');
@@ -497,17 +497,25 @@ PhotoSphereViewer.prototype.stopStereoView = function() {
  * @summary Tries to lock the device in landscape or display a message
  */
 PhotoSphereViewer.prototype.lockOrientation = function() {
+  var displayRotateMessageTimeout;
+
   var displayRotateMessage = function() {
-    if (window.innerHeight > window.innerWidth) {
-      if (!this.pleaseRotate) {
-        this.pleaseRotate = new PSVPleaseRotate(this);
-      }
-      this.pleaseRotate.show();
+    if (this.isStereoEnabled() && window.innerHeight > window.innerWidth) {
+      this.overlay.showOverlay({
+        image: PhotoSphereViewer.ICONS['mobile-rotate.svg'],
+        text: this.config.lang.please_rotate[0],
+        subtext: this.config.lang.please_rotate[1]
+      });
+    }
+
+    if (displayRotateMessageTimeout) {
+      window.clearTimeout(displayRotateMessageTimeout);
     }
   };
 
   if (window.screen && window.screen.orientation) {
     window.screen.orientation.lock('landscape').then(null, displayRotateMessage.bind(this));
+    displayRotateMessageTimeout = setTimeout(displayRotateMessage.bind(this), 500);
   }
   else {
     displayRotateMessage.apply(this);
@@ -522,9 +530,7 @@ PhotoSphereViewer.prototype.unlockOrientation = function() {
     window.screen.orientation.unlock();
   }
   else {
-    if (this.pleaseRotate) {
-      this.pleaseRotate.hide();
-    }
+    this.overlay.hideOverlay();
   }
 };
 

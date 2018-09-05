@@ -151,12 +151,14 @@ PhotoSphereViewer.DEFAULTS = {
     gyroscope: 'Gyroscope',
     stereo: 'Stereo view',
     stereo_notification: 'Click anywhere to exit stereo view.',
-    please_rotate: ['Please rotate your device', '(or tap to continue)']
+    please_rotate: ['Please rotate your device', '(or tap to continue)'],
+    two_fingers: ['Use two fingers to navigate']
   },
   mousewheel: true,
   mousewheel_factor: 1,
   mousemove: true,
   mousemove_hover: false,
+  touchmove_two_fingers: false,
   keyboard: {
     'ArrowUp': 'rotateLatitudeUp',
     'ArrowDown': 'rotateLatitudeDown',
