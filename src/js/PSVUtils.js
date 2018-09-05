@@ -109,7 +109,7 @@ PSVUtils.isDeviceOrientationSupported = function() {
           reject();
         }
 
-  window.removeEventListener('deviceorientation', listener);
+        window.removeEventListener('deviceorientation', listener);
       };
 
       window.addEventListener('deviceorientation', listener, false);
