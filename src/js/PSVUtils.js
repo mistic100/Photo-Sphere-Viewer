@@ -133,7 +133,8 @@ PSVUtils.isTouchEnabled = function() {
     var listener = function(e) {
       if (e) {
         resolve();
-      } else {
+      }
+      else {
         reject();
       }
 
@@ -723,7 +724,8 @@ PSVUtils.animation = function(options) {
       window.setTimeout(function() {
         window.requestAnimationFrame(run);
       }, options.delay);
-    } else {
+    }
+    else {
       window.requestAnimationFrame(run);
     }
 

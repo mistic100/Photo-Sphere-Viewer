@@ -209,12 +209,10 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
       .finally(function() {
         this.loader.hide();
 
-        if (this.canvas_container) {
-            this.canvas_container.style.opacity = 1;
-        }
+        this.canvas_container.style.opacity = 1;
 
         this.prop.loading_promise = null;
-      }.bind(this))
+      }.bind(this));
   }
   else {
     if (this.config.transition.loader) {
@@ -231,7 +229,7 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
         this.loader.hide();
 
         this.prop.loading_promise = null;
-      }.bind(this))
+      }.bind(this));
   }
 
   return this.prop.loading_promise;

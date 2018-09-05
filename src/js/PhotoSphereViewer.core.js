@@ -58,16 +58,16 @@ PhotoSphereViewer.prototype._render = function() {
  */
 PhotoSphereViewer.prototype._loadXMP = function(panorama) {
 
-  var scope = this;
+  var self = this;
 
   var promise = new Promise(function(resolve, reject) {
 
-    if (!scope.config.usexmpdata) {
+    if (!self.config.usexmpdata) {
       return resolve(null);
     }
 
     var xhr = new XMLHttpRequest();
-    if (scope.config.with_credentials) {
+    if (self.config.with_credentials) {
       xhr.withCredentials = true;
     }
     var progress = 0;
@@ -75,7 +75,7 @@ PhotoSphereViewer.prototype._loadXMP = function(panorama) {
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4) {
         if (xhr.status === 200 || xhr.status === 201 || xhr.status === 202 || xhr.status === 0) {
-          scope.loader.setProgress(100);
+          self.loader.setProgress(100);
 
           var binary = xhr.responseText;
           var a = binary.indexOf('<x:xmpmeta'), b = binary.indexOf('</x:xmpmeta>');
@@ -105,29 +105,29 @@ PhotoSphereViewer.prototype._loadXMP = function(panorama) {
           }
         }
         else {
-          scope.container.textContent = 'Cannot load image';
+          self.container.textContent = 'Cannot load image';
           throw new PSVError('Cannot load image');
         }
       }
       else if (xhr.readyState === 3) {
-        scope.loader.setProgress(progress += 10);
+        self.loader.setProgress(progress += 10);
       }
-    }.bind(scope);
+    }.bind(self);
 
     xhr.onprogress = function(e) {
       if (e.lengthComputable) {
         var new_progress = parseInt(e.loaded / e.total * 100);
         if (new_progress > progress) {
           progress = new_progress;
-          scope.loader.setProgress(progress);
+          self.loader.setProgress(progress);
         }
       }
-    }.bind(scope);
+    }.bind(self);
 
     xhr.onerror = function() {
-      scope.container.textContent = 'Cannot load image';
+      self.container.textContent = 'Cannot load image';
       throw new PSVError('Cannot load image');
-    }.bind(scope);
+    }.bind(self);
 
     xhr.open('GET', panorama, true);
     xhr.send(null);
@@ -211,35 +211,36 @@ PhotoSphereViewer.prototype._loadTexture = function(panorama) {
  */
 PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
 
-  var scope = this;
+  var self = this;
 
-  if (scope.config.cache_texture) {
-    var cache = scope.getPanoramaCache(panorama);
+  if (self.config.cache_texture) {
+    var cache = self.getPanoramaCache(panorama);
 
     if (cache) {
-      scope.prop.pano_data = cache.pano_data;
+      self.prop.pano_data = cache.pano_data;
 
       return D.resolved(cache.image);
     }
   }
 
-  return scope._loadXMP(panorama).then(function(pano_data) {
+  return self._loadXMP(panorama).then(function(pano_data) {
 
     var promise = new Promise(function(resolve, reject) {
 
       var loader = new THREE.ImageLoader();
       var progress = pano_data ? 100 : 0;
 
-      if (scope.config.with_credentials) {
+      if (self.config.with_credentials) {
         loader.setCrossOrigin('use-credentials');
-      } else {
+      }
+      else {
         loader.setCrossOrigin('anonymous');
       }
 
       var onload = function(img) {
         progress = 100;
 
-        scope.loader.setProgress(progress);
+        self.loader.setProgress(progress);
 
         /**
          * @event panorama-load-progress
@@ -248,11 +249,11 @@ PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
          * @param {string} panorama
          * @param {int} progress
          */
-        scope.trigger('panorama-load-progress', panorama, progress);
+        self.trigger('panorama-load-progress', panorama, progress);
 
         // Config XMP data
-        if (!pano_data && scope.config.pano_data) {
-          pano_data = PSVUtils.clone(scope.config.pano_data);
+        if (!pano_data && self.config.pano_data) {
+          pano_data = PSVUtils.clone(self.config.pano_data);
         }
 
         // Default XMP data
@@ -267,7 +268,7 @@ PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
           };
         }
 
-        scope.prop.pano_data = pano_data;
+        self.prop.pano_data = pano_data;
 
         var texture;
 
@@ -295,7 +296,8 @@ PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
           ctx.drawImage(img, resized_pano_data.cropped_x, resized_pano_data.cropped_y, resized_pano_data.cropped_width, resized_pano_data.cropped_height);
 
           texture = new THREE.Texture(buffer);
-        } else {
+        }
+        else {
           texture = new THREE.Texture(img);
         }
 
@@ -303,8 +305,8 @@ PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
         texture.minFilter = THREE.LinearFilter;
         texture.generateMipmaps = false;
 
-        if (scope.config.cache_texture) {
-          scope._putPanoramaCache({
+        if (self.config.cache_texture) {
+          self._putPanoramaCache({
             panorama: panorama,
             image: texture,
             pano_data: pano_data
@@ -320,25 +322,25 @@ PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
 
           if (new_progress > progress) {
             progress = new_progress;
-            scope.loader.setProgress(progress);
-            scope.trigger('panorama-load-progress', panorama, progress);
+            self.loader.setProgress(progress);
+            self.trigger('panorama-load-progress', panorama, progress);
           }
         }
       };
 
       var onerror = function(e) {
-        scope.container.textContent = 'Cannot load image';
+        self.container.textContent = 'Cannot load image';
         reject(e);
         throw new PSVError('Cannot load image');
       };
 
-      loader.load(panorama, onload.bind(scope), onprogress.bind(scope), onerror.bind(scope));
+      loader.load(panorama, onload.bind(self), onprogress.bind(self), onerror.bind(self));
 
     });
 
     return promise;
 
-  }.bind(scope));
+  }.bind(self));
 
 };
 
@@ -361,7 +363,8 @@ PhotoSphereViewer.prototype._loadCubemapTexture = function(panorama) {
 
     if (this.config.with_credentials) {
       loader.setCrossOrigin('use-credentials');
-    } else {
+    }
+    else {
       loader.setCrossOrigin('anonymous');
     }
 
