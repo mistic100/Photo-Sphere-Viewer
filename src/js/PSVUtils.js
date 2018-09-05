@@ -71,13 +71,13 @@ PSVUtils.getWebGLCtx = function() {
   }
 
   if (names.some(function(name) {
-    try {
-      context = canvas.getContext(name);
-      return (context && typeof context.getParameter === 'function');
-    } catch (e) {
-      return false;
-    }
-  })) {
+      try {
+        context = canvas.getContext(name);
+        return (context && typeof context.getParameter === 'function');
+      } catch (e) {
+        return false;
+      }
+    })) {
     return context;
   }
   else {
@@ -266,7 +266,7 @@ PSVUtils.getClosest = function(el, selector) {
 PSVUtils.mouseWheelEvent = function() {
   return 'onwheel' in document.createElement('div') ? 'wheel' : // Modern browsers support "wheel"
     document.onmousewheel !== undefined ? 'mousewheel' : // Webkit and IE support at least "mousewheel"
-    'DOMMouseScroll'; // let's assume that remaining browsers are older Firefox
+      'DOMMouseScroll'; // let's assume that remaining browsers are older Firefox
 };
 
 /**
@@ -363,8 +363,8 @@ PSVUtils.bound = function(x, min, max) {
  * @returns {boolean}
  */
 PSVUtils.isInteger = Number.isInteger || function(value) {
-  return typeof value === 'number' && isFinite(value) && Math.floor(value) === value;
-};
+    return typeof value === 'number' && isFinite(value) && Math.floor(value) === value;
+  };
 
 /**
  * @summary Computes the sum of an array
@@ -455,7 +455,7 @@ PSVUtils.getShortestArc = function(from, to) {
     0, // direct
     PSVUtils.TwoPI, // clock-wise cross zero
     -PSVUtils.TwoPI // counter-clock-wise cross zero
-      ];
+  ];
 
   return tCandidates.reduce(function(value, candidate) {
     candidate = to - from + candidate;
@@ -505,7 +505,7 @@ PSVUtils.parsePosition = function(value) {
   if (parsed) {
     return {
       left: parsed[1] / 100,
-        top: parsed[2] / 100
+      top: parsed[2] / 100
     };
   }
   else {
@@ -544,13 +544,13 @@ PSVUtils.parseSpeed = function(speed) {
         speed = THREE.Math.degToRad(speed_value);
         break;
 
-        // Radians per minute / second
+      // Radians per minute / second
       case 'radians per minute':
       case 'radians per second':
         speed = speed_value;
         break;
 
-        // Revolutions per minute / second
+      // Revolutions per minute / second
       case 'rpm':
       case 'revolutions per minute':
       case 'rps':
@@ -558,7 +558,7 @@ PSVUtils.parseSpeed = function(speed) {
         speed = speed_value * PSVUtils.TwoPI;
         break;
 
-        // Unknown unit
+      // Unknown unit
       default:
         throw new PSVError('unknown speed unit "' + speed_unit + '"');
     }
@@ -871,9 +871,9 @@ PSVUtils.deepmerge = function(target, src) {
       else {
         target.length = 0;
       }
-  src.forEach(function(e, i) {
-    target[i] = merge(null, e);
-  });
+      src.forEach(function(e, i) {
+        target[i] = merge(null, e);
+      });
     }
     else if (typeof src === 'object') {
       if (!target || Array.isArray(target)) {
@@ -961,9 +961,9 @@ PSVUtils.normalizeWheel = function(event) {
 
   return {
     spinX: sX,
-      spinY: sY,
-      pixelX: pX,
-      pixelY: pY
+    spinY: sY,
+    pixelX: pX,
+    pixelY: pY
   };
 };
 

@@ -158,10 +158,11 @@ PhotoSphereViewer.prototype._loadTexture = function(panorama) {
       tempPanorama[i] = panorama[PhotoSphereViewer.CUBE_MAP[i]];
     }
     panorama = tempPanorama;
-  } else if (typeof panorama === 'object') {
+  }
+  else if (typeof panorama === 'object') {
     if (!PhotoSphereViewer.CUBE_HASHMAP.every(function(side) {
-      return !!panorama[side];
-    })) {
+        return !!panorama[side];
+      })) {
       throw new PSVError('Must provide exactly left, front, right, back, top, bottom when using cubemap.');
     }
 
@@ -188,7 +189,8 @@ PhotoSphereViewer.prototype._loadTexture = function(panorama) {
     this.prop.isCubemap = true;
 
     return this._loadCubemapTexture(panorama);
-  } else {
+  }
+  else {
     if (this.prop.isCubemap === true) {
       throw new PSVError('The viewer was initialized with an cubemap, cannot switch to equirectangular panorama.');
     }
@@ -477,8 +479,6 @@ PhotoSphereViewer.prototype._setTexture = function(texture) {
     }
 
     this.mesh.material.map = texture;
-
-    PSVUtils.throttle(this._onResize(), 50);
   }
 
   /**
@@ -544,15 +544,15 @@ PhotoSphereViewer.prototype._createSphere = function(scale) {
 
   // The middle of the panorama is placed at longitude=0
   var geometry = new THREE.SphereGeometry(
-      PhotoSphereViewer.SPHERE_RADIUS * scale,
-      PhotoSphereViewer.SPHERE_VERTICES,
-      PhotoSphereViewer.SPHERE_VERTICES,
-      -PSVUtils.HalfPI
-      );
+    PhotoSphereViewer.SPHERE_RADIUS * scale,
+    PhotoSphereViewer.SPHERE_VERTICES,
+    PhotoSphereViewer.SPHERE_VERTICES,
+    -PSVUtils.HalfPI
+  );
 
   var material = new THREE.MeshBasicMaterial({
     side: THREE.DoubleSide, // needs to be DoubleSide for CanvasRenderer
-      overdraw: PhotoSphereViewer.SYSTEM.isWebGLSupported && this.config.webgl ? 0 : 1
+    overdraw: PhotoSphereViewer.SYSTEM.isWebGLSupported && this.config.webgl ? 0 : 1
   });
 
   var mesh = new THREE.Mesh(geometry, material);
@@ -574,9 +574,9 @@ PhotoSphereViewer.prototype._createCubemap = function(scale) {
   scale = scale || 1;
 
   var geometry = new THREE.BoxGeometry(
-      PhotoSphereViewer.SPHERE_RADIUS * 2 * scale, PhotoSphereViewer.SPHERE_RADIUS * 2 * scale, PhotoSphereViewer.SPHERE_RADIUS * 2 * scale,
-      PhotoSphereViewer.CUBE_VERTICES, PhotoSphereViewer.CUBE_VERTICES, PhotoSphereViewer.CUBE_VERTICES
-      );
+    PhotoSphereViewer.SPHERE_RADIUS * 2 * scale, PhotoSphereViewer.SPHERE_RADIUS * 2 * scale, PhotoSphereViewer.SPHERE_RADIUS * 2 * scale,
+    PhotoSphereViewer.CUBE_VERTICES, PhotoSphereViewer.CUBE_VERTICES, PhotoSphereViewer.CUBE_VERTICES
+  );
 
   var materials = [];
   for (var i = 0; i < 6; i++) {
@@ -652,34 +652,34 @@ PhotoSphereViewer.prototype._transition = function(texture, position) {
     properties: {
       opacity: { start: 0.0, end: 1.0 }
     },
-         duration: this.config.transition.duration,
-         easing: 'outCubic',
-         onTick: function(properties) {
-           if (this.prop.isCubemap) {
-             for (var i = 0; i < 6; i++) {
-               mesh.material[i].opacity = properties.opacity;
-             }
-           }
-           else {
-             mesh.material.opacity = properties.opacity;
-           }
+    duration: this.config.transition.duration,
+    easing: 'outCubic',
+    onTick: function(properties) {
+      if (this.prop.isCubemap) {
+        for (var i = 0; i < 6; i++) {
+          mesh.material[i].opacity = properties.opacity;
+        }
+      }
+      else {
+        mesh.material.opacity = properties.opacity;
+      }
 
-  this.needsUpdate();
-         }.bind(this)
+      this.needsUpdate();
+    }.bind(this)
   })
-  .then(function() {
-    // remove temp sphere and transfer the texture to the main sphere
-    this._setTexture(texture);
-    this.scene.remove(mesh);
+    .then(function() {
+      // remove temp sphere and transfer the texture to the main sphere
+      this._setTexture(texture);
+      this.scene.remove(mesh);
 
-    mesh.geometry.dispose();
-    mesh.geometry = null;
+      mesh.geometry.dispose();
+      mesh.geometry = null;
 
-    // actually rotate the camera
-    if (position) {
-      this.rotate(position);
-    }
-  }.bind(this));
+      // actually rotate the camera
+      if (position) {
+        this.rotate(position);
+      }
+    }.bind(this));
 };
 
 /**
@@ -702,22 +702,22 @@ PhotoSphereViewer.prototype._reverseAutorotate = function() {
       self.config.anim_speed = properties.speed;
     }
   })
-  .then(function() {
-    return PSVUtils.animation({
-      properties: {
-        speed: { start: 0, end: newSpeed }
-      },
-           duration: 300,
-           easing: 'outSine',
-           onTick: function(properties) {
-             self.config.anim_speed = properties.speed;
-           }
+    .then(function() {
+      return PSVUtils.animation({
+        properties: {
+          speed: { start: 0, end: newSpeed }
+        },
+        duration: 300,
+        easing: 'outSine',
+        onTick: function(properties) {
+          self.config.anim_speed = properties.speed;
+        }
+      });
+    })
+    .then(function() {
+      self.config.longitude_range = range;
+      self.config.anim_speed = newSpeed;
     });
-  })
-  .then(function() {
-    self.config.longitude_range = range;
-    self.config.anim_speed = newSpeed;
-  });
 };
 
 /**
