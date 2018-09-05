@@ -71,13 +71,13 @@ PSVUtils.getWebGLCtx = function() {
   }
 
   if (names.some(function(name) {
-      try {
-        context = canvas.getContext(name);
-        return (context && typeof context.getParameter === 'function');
-      } catch (e) {
-        return false;
-      }
-    })) {
+    try {
+      context = canvas.getContext(name);
+      return (context && typeof context.getParameter === 'function');
+    } catch (e) {
+      return false;
+    }
+  })) {
     return context;
   }
   else {
@@ -100,23 +100,23 @@ PSVUtils.isWebGLSupported = function() {
  */
 PSVUtils.isDeviceOrientationSupported = function() {
   var promise = new Promise(function(resolve, reject) {
-      if ('DeviceOrientationEvent' in window) {
-        var listener = function(event) {
-          if (event && event.alpha !== null && !isNaN(event.alpha)) {
-            resolve();
-          }
-          else {
-            reject();
-          }
+    if ('DeviceOrientationEvent' in window) {
+      var listener = function(event) {
+        if (event && event.alpha !== null && !isNaN(event.alpha)) {
+          resolve();
+        }
+        else {
+          reject();
+        }
 
-          window.removeEventListener('deviceorientation', listener);
-        };
+  window.removeEventListener('deviceorientation', listener);
+      };
 
-        window.addEventListener('deviceorientation', listener, false);
-      }
-      else {
-        reject();
-      }
+      window.addEventListener('deviceorientation', listener, false);
+    }
+    else {
+      reject();
+    }
   });
 
   return promise;
@@ -130,17 +130,17 @@ PSVUtils.isTouchEnabled = function() {
 
   var promise = new Promise(function(resolve, reject) {
 
-      var listener = function(e) {
-          if (e) {
-              resolve();
-          } else {
-              reject();
-          }
+    var listener = function(e) {
+      if (e) {
+        resolve();
+      } else {
+        reject();
+      }
 
-          window.removeEventListener('touchstart', listener);
-      };
+      window.removeEventListener('touchstart', listener);
+    };
 
-      window.addEventListener('touchstart', listener, false);
+    window.addEventListener('touchstart', listener, false);
 
   });
 
@@ -266,7 +266,7 @@ PSVUtils.getClosest = function(el, selector) {
 PSVUtils.mouseWheelEvent = function() {
   return 'onwheel' in document.createElement('div') ? 'wheel' : // Modern browsers support "wheel"
     document.onmousewheel !== undefined ? 'mousewheel' : // Webkit and IE support at least "mousewheel"
-      'DOMMouseScroll'; // let's assume that remaining browsers are older Firefox
+    'DOMMouseScroll'; // let's assume that remaining browsers are older Firefox
 };
 
 /**
@@ -363,8 +363,8 @@ PSVUtils.bound = function(x, min, max) {
  * @returns {boolean}
  */
 PSVUtils.isInteger = Number.isInteger || function(value) {
-    return typeof value === 'number' && isFinite(value) && Math.floor(value) === value;
-  };
+  return typeof value === 'number' && isFinite(value) && Math.floor(value) === value;
+};
 
 /**
  * @summary Computes the sum of an array
@@ -455,7 +455,7 @@ PSVUtils.getShortestArc = function(from, to) {
     0, // direct
     PSVUtils.TwoPI, // clock-wise cross zero
     -PSVUtils.TwoPI // counter-clock-wise cross zero
-  ];
+      ];
 
   return tCandidates.reduce(function(value, candidate) {
     candidate = to - from + candidate;
@@ -505,7 +505,7 @@ PSVUtils.parsePosition = function(value) {
   if (parsed) {
     return {
       left: parsed[1] / 100,
-      top: parsed[2] / 100
+        top: parsed[2] / 100
     };
   }
   else {
@@ -544,13 +544,13 @@ PSVUtils.parseSpeed = function(speed) {
         speed = THREE.Math.degToRad(speed_value);
         break;
 
-      // Radians per minute / second
+        // Radians per minute / second
       case 'radians per minute':
       case 'radians per second':
         speed = speed_value;
         break;
 
-      // Revolutions per minute / second
+        // Revolutions per minute / second
       case 'rpm':
       case 'revolutions per minute':
       case 'rps':
@@ -558,7 +558,7 @@ PSVUtils.parseSpeed = function(speed) {
         speed = speed_value * PSVUtils.TwoPI;
         break;
 
-      // Unknown unit
+        // Unknown unit
       default:
         throw new PSVError('unknown speed unit "' + speed_unit + '"');
     }
@@ -677,60 +677,60 @@ PSVUtils.animation = function(options) {
 
   var promise = new Promise(function(resolve, reject) {
 
-      var start = null;
+    var start = null;
 
-      if (!options.easing || typeof options.easing === 'string') {
-        options.easing = PSVUtils.animation.easings[options.easing || 'linear'];
+    if (!options.easing || typeof options.easing === 'string') {
+      options.easing = PSVUtils.animation.easings[options.easing || 'linear'];
+    }
+
+    function run(timestamp) {
+
+      // first iteration
+      if (start === null) {
+        start = timestamp;
       }
 
-      function run(timestamp) {
+      // compute progress
+      var progress = (timestamp - start) / options.duration;
+      var current = {};
+      var name;
 
-        // first iteration
-        if (start === null) {
-          start = timestamp;
+      if (progress < 1.0) {
+        // interpolate properties
+        for (name in options.properties) {
+          current[name] = options.properties[name].start + (options.properties[name].end - options.properties[name].start) * options.easing(progress);
         }
 
-        // compute progress
-        var progress = (timestamp - start) / options.duration;
-        var current = {};
-        var name;
+        options.onTick(current, progress);
 
-        if (progress < 1.0) {
-          // interpolate properties
-          for (name in options.properties) {
-            current[name] = options.properties[name].start + (options.properties[name].end - options.properties[name].start) * options.easing(progress);
-          }
-
-          options.onTick(current, progress);
-
-          window.requestAnimationFrame(run);
-        }
-        else {
-          // call onTick one last time with final values
-          for (name in options.properties) {
-            current[name] = options.properties[name].end;
-          }
-
-          options.onTick(current, 1.0);
-
-          window.requestAnimationFrame(function() {
-            resolve();
-          });
-        }
-      }
-
-      if (options.delay !== undefined) {
-        window.setTimeout(function() {
-          window.requestAnimationFrame(run);
-        }, options.delay);
-      } else {
         window.requestAnimationFrame(run);
       }
+      else {
+        // call onTick one last time with final values
+        for (name in options.properties) {
+          current[name] = options.properties[name].end;
+        }
+
+        options.onTick(current, 1.0);
+
+        window.requestAnimationFrame(function() {
+          resolve();
+        });
+      }
+    }
+
+    if (options.delay !== undefined) {
+      window.setTimeout(function() {
+        window.requestAnimationFrame(run);
+      }, options.delay);
+    } else {
+      window.requestAnimationFrame(run);
+    }
 
   });
 
   promise.cancel = function() {
-      reject();
+    reject();
   };
 
   return promise;
@@ -871,9 +871,9 @@ PSVUtils.deepmerge = function(target, src) {
       else {
         target.length = 0;
       }
-      src.forEach(function(e, i) {
-        target[i] = merge(null, e);
-      });
+  src.forEach(function(e, i) {
+    target[i] = merge(null, e);
+  });
     }
     else if (typeof src === 'object') {
       if (!target || Array.isArray(target)) {
@@ -961,9 +961,9 @@ PSVUtils.normalizeWheel = function(event) {
 
   return {
     spinX: sX,
-    spinY: sY,
-    pixelX: pX,
-    pixelY: pY
+      spinY: sY,
+      pixelX: pX,
+      pixelY: pY
   };
 };
 
