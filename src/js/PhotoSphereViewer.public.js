@@ -214,7 +214,7 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
         this.prop.loading_promise = null;
       }.bind(this))
       .catch(function(e) {
-          console.error(e.getMessage());
+        console.error(e.getMessage());
       });
   }
   else {
@@ -234,7 +234,7 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
         this.prop.loading_promise = null;
       }.bind(this))
       .catch(function(e) {
-          console.error(e.getMessage());
+        console.error(e.getMessage());
       });
   }
 

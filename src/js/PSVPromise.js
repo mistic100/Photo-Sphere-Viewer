@@ -5,33 +5,33 @@
  */
 function PSVPromise(resolver) {
 
-    var gResolve;
+  var gResolve;
 
-    var promise = new Promise(function(resolve, reject) {
-        //Send args like normal promise
-        resolver(resolution(resolve), resolution(reject));
-    });
+  var promise = new Promise(function(resolve, reject) {
+    // Send args like normal promise
+    resolver(resolution(resolve), resolution(reject));
+  });
 
-    function resolution(func) {
-        return function(args) {
-            promise.resolved = true;
-            func(args);
-        }
-    }
+  function resolution(func) {
+    return function(args) {
+      promise.resolved = true;
+      func(args);
+    };
+  }
 
-    promise.resolved = false;
+  promise.resolved = false;
 
-    return promise;
+  return promise;
 }
 
 /**
  * Resolved promise helper
  */
 PSVPromise.resolved = function(args) {
-    var promise = PSVPromise(function(resolve, reject) {
-        resolve(args);
-    });
+  var promise = PSVPromise(function(resolve, reject) {
+    resolve(args);
+  });
 
-    promise.resolved = true;
-    return promise;
+  promise.resolved = true;
+  return promise;
 };
