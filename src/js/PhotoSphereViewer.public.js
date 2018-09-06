@@ -212,7 +212,10 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
         this.canvas_container.style.opacity = 1;
 
         this.prop.loading_promise = null;
-      }.bind(this));
+      }.bind(this))
+      .catch(function(e) {
+          console.error(e.getMessage());
+      });
   }
   else {
     if (this.config.transition.loader) {
@@ -229,7 +232,10 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
         this.loader.hide();
 
         this.prop.loading_promise = null;
-      }.bind(this));
+      }.bind(this))
+      .catch(function(e) {
+          console.error(e.getMessage());
+      });
   }
 
   return this.prop.loading_promise;
@@ -645,6 +651,7 @@ PhotoSphereViewer.prototype.zoom = function(level) {
   this.prop.zoom_lvl = PSVUtils.bound(Math.round(level), 0, 100);
   this.prop.vFov = this.config.max_fov + (this.prop.zoom_lvl / 100) * (this.config.min_fov - this.config.max_fov);
   this.prop.hFov = THREE.Math.radToDeg(2 * Math.atan(Math.tan(THREE.Math.degToRad(this.prop.vFov) / 2) * this.prop.aspect));
+
   this.needsUpdate();
 
   /**

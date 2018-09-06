@@ -99,7 +99,7 @@ PSVUtils.isWebGLSupported = function() {
  * @returns {Promise<boolean>}
  */
 PSVUtils.isDeviceOrientationSupported = function() {
-  var promise = new Promise(function(resolve, reject) {
+  var promise = PSVPromise(function(resolve, reject) {
     if ('DeviceOrientationEvent' in window) {
       var listener = function(event) {
         if (event && event.alpha !== null && !isNaN(event.alpha)) {
@@ -113,11 +113,18 @@ PSVUtils.isDeviceOrientationSupported = function() {
       };
 
       window.addEventListener('deviceorientation', listener, false);
+
     }
     else {
       resolve(false);
     }
   });
+
+  setTimeout(function() {
+    if (!promise.resolved) {
+      listener(null);
+    }
+  }, 2000); // this is totally arbitrary
 
   return promise;
 };
@@ -128,9 +135,10 @@ PSVUtils.isDeviceOrientationSupported = function() {
  */
 PSVUtils.isTouchEnabled = function() {
 
-  var promise = new Promise(function(resolve, reject) {
+  var listener;
+  var promise = PSVPromise(function(resolve, reject) {
 
-    var listener = function(e) {
+    listener = function(e) {
       if (e) {
         resolve();
       }
@@ -144,6 +152,12 @@ PSVUtils.isTouchEnabled = function() {
     window.addEventListener('touchstart', listener, false);
 
   });
+
+  setTimeout(function() {
+    if (!promise.resolved) {
+      listener(null);
+    }
+  }, 10000); // this is totally arbitrary
 
   return promise;
 
@@ -676,7 +690,11 @@ PSVUtils.cleanTHREEScene = function(scene) {
  */
 PSVUtils.animation = function(options) {
 
-  var promise = new Promise(function(resolve, reject) {
+  var promise = PSVPromise(function(resolve, reject) {
+
+    promise.cancel = function() {
+      reject();
+    };
 
     var start = null;
 
@@ -730,10 +748,6 @@ PSVUtils.animation = function(options) {
     }
 
   });
-
-  promise.cancel = function() {
-    reject();
-  };
 
   return promise;
 };

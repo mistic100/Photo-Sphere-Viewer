@@ -60,7 +60,7 @@ PhotoSphereViewer.prototype._loadXMP = function(panorama) {
 
   var self = this;
 
-  var promise = new Promise(function(resolve, reject) {
+  var promise = PSVPromise(function(resolve, reject) {
 
     if (!self.config.usexmpdata) {
       return resolve(null);
@@ -219,13 +219,13 @@ PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
     if (cache) {
       self.prop.pano_data = cache.pano_data;
 
-      return D.resolved(cache.image);
+      return PSVPromise.resolved(cache.image);
     }
   }
 
   return self._loadXMP(panorama).then(function(pano_data) {
 
-    var promise = new Promise(function(resolve, reject) {
+    var promise = PSVPromise(function(resolve, reject) {
 
       var loader = new THREE.ImageLoader();
       var progress = pano_data ? 100 : 0;
@@ -354,7 +354,7 @@ PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
  */
 PhotoSphereViewer.prototype._loadCubemapTexture = function(panorama) {
 
-  var promise = new Promise(function(resolve, reject) {
+  var promise = PSVPromise(function(resolve, reject) {
 
     var loader = new THREE.ImageLoader();
     var progress = [0, 0, 0, 0, 0, 0];
