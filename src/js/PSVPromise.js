@@ -5,31 +5,69 @@
  */
 function PSVPromise(resolver) {
 
+  var self = this;
+
   var gResolve;
 
-  var promise = new Promise(function(resolve, reject) {
+  self.innerpromise = new Promise(function(resolve, reject) {
     // Send args like normal promise
     gResolve = resolution(resolve);
-    resolver(resolution(resolve), resolution(reject));
+    resolver(gResolve, resolution(reject));
   });
 
-  promise.cancel = function() {
-    setTimeout(function() {
-      gResolve();
-    }, 500);
+  self.cancel = function() {
+    gResolve();
   };
 
   function resolution(func) {
     return function(args) {
-      promise.resolved = true;
+      self.resolved = self.innerpromise.resolved = true;
       func(args);
     };
   }
 
-  promise.resolved = false;
-
-  return promise;
+  self.resolved = self.innerpromise.resolved = false;
 }
+
+PSVPromise.prototype = {
+
+  then: function(onFulfilled) {
+
+    var self = this;
+
+    return new PSVPromise(function(res, rej) {
+
+      self.innerpromise.then(res, rej);
+
+    });
+
+  },
+
+  catch: function(onFulfilled, onRejected) {
+
+    var self = this;
+
+    return new PSVPromise(function(res, rej) {
+
+      self.innerpromise.catch(res, rej);
+
+    });
+
+  },
+
+  finally: function(onFulfilled, onRejected) {
+
+    var self = this;
+
+    return new PSVPromise(function(res, rej) {
+
+      self.innerpromise.finally(res, rej);
+
+    });
+
+  },
+
+};
 
 /**
  * Resolved promise helper

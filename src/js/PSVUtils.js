@@ -99,9 +99,11 @@ PSVUtils.isWebGLSupported = function() {
  * @returns {Promise<boolean>}
  */
 PSVUtils.isDeviceOrientationSupported = function() {
-  var promise = PSVPromise(function(resolve, reject) {
+  var listener;
+
+  var promise = new PSVPromise(function(resolve, reject) {
     if ('DeviceOrientationEvent' in window) {
-      var listener = function(event) {
+      listener = function(event) {
         if (event && event.alpha !== null && !isNaN(event.alpha)) {
           resolve(true);
         }
@@ -136,7 +138,7 @@ PSVUtils.isDeviceOrientationSupported = function() {
 PSVUtils.isTouchEnabled = function() {
 
   var listener;
-  var promise = PSVPromise(function(resolve, reject) {
+  var promise = new PSVPromise(function(resolve, reject) {
 
     listener = function(e) {
       if (e) {
@@ -690,7 +692,7 @@ PSVUtils.cleanTHREEScene = function(scene) {
  */
 PSVUtils.animation = function(options) {
 
-  var promise = PSVPromise(function(resolve, reject) {
+  var promise = new PSVPromise(function(resolve, reject) {
 
     var start = null;
 

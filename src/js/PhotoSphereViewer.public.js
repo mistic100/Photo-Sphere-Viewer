@@ -192,8 +192,6 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
 
   this.config.panorama = path;
 
-  var self = this;
-
   if (!transition || !this.config.transition || !this.scene) {
     this.loader.show();
     if (this.canvas_container) {
