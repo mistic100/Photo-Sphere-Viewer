@@ -354,6 +354,8 @@ PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
  */
 PhotoSphereViewer.prototype._loadCubemapTexture = function(panorama) {
 
+  var self = this;
+
   var promise = PSVPromise(function(resolve, reject) {
 
     var loader = new THREE.ImageLoader();
@@ -361,7 +363,7 @@ PhotoSphereViewer.prototype._loadCubemapTexture = function(panorama) {
     var loaded = [];
     var done = 0;
 
-    if (this.config.with_credentials) {
+    if (self.config.with_credentials) {
       loader.setCrossOrigin('use-credentials');
     }
     else {
@@ -382,8 +384,8 @@ PhotoSphereViewer.prototype._loadCubemapTexture = function(panorama) {
       done++;
       progress[i] = 100;
 
-      this.loader.setProgress(PSVUtils.sum(progress) / 6);
-      this.trigger('panorama-load-progress', panorama[i], progress[i]);
+      self.loader.setProgress(PSVUtils.sum(progress) / 6);
+      self.trigger('panorama-load-progress', panorama[i], progress[i]);
 
       var ratio = Math.min(img.width, PhotoSphereViewer.SYSTEM.maxTextureWidth / 2) / img.width;
 
@@ -402,8 +404,8 @@ PhotoSphereViewer.prototype._loadCubemapTexture = function(panorama) {
         loaded[i] = new THREE.Texture(img);
       }
 
-      if (this.config.cache_texture) {
-        this._putPanoramaCache({
+      if (self.config.cache_texture) {
+        self._putPanoramaCache({
           panorama: panorama[i],
           image: loaded[i]
         });
@@ -420,21 +422,21 @@ PhotoSphereViewer.prototype._loadCubemapTexture = function(panorama) {
 
         if (new_progress > progress[i]) {
           progress[i] = new_progress;
-          this.loader.setProgress(PSVUtils.sum(progress) / 6);
-          this.trigger('panorama-load-progress', panorama[i], progress[i]);
+          self.loader.setProgress(PSVUtils.sum(progress) / 6);
+          self.trigger('panorama-load-progress', panorama[i], progress[i]);
         }
       }
     };
 
     var onerror = function(i, e) {
-      this.container.textContent = 'Cannot load image';
+      self.container.textContent = 'Cannot load image';
       reject(e);
       throw new PSVError('Cannot load image ' + i);
     };
 
     for (var i = 0; i < 6; i++) {
-      if (this.config.cache_texture) {
-        var cache = this.getPanoramaCache(panorama[i]);
+      if (self.config.cache_texture) {
+        var cache = self.getPanoramaCache(panorama[i]);
 
         if (cache) {
           done++;
@@ -444,7 +446,7 @@ PhotoSphereViewer.prototype._loadCubemapTexture = function(panorama) {
         }
       }
 
-      loader.load(panorama[i], onload.bind(this, i), onprogress.bind(this, i), onerror.bind(this, i));
+      loader.load(panorama[i], onload.bind(self, i), onprogress.bind(self, i), onerror.bind(self, i));
     }
 
     if (done === 6) {

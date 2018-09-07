@@ -692,10 +692,6 @@ PSVUtils.animation = function(options) {
 
   var promise = PSVPromise(function(resolve, reject) {
 
-    promise.cancel = function() {
-      reject();
-    };
-
     var start = null;
 
     if (!options.easing || typeof options.easing === 'string') {

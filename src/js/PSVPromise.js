@@ -9,8 +9,15 @@ function PSVPromise(resolver) {
 
   var promise = new Promise(function(resolve, reject) {
     // Send args like normal promise
+    gResolve = resolution(resolve);
     resolver(resolution(resolve), resolution(reject));
   });
+
+  promise.cancel = function() {
+    setTimeout(function() {
+      gResolve();
+    }, 500);
+  };
 
   function resolution(func) {
     return function(args) {

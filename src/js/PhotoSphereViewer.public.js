@@ -192,6 +192,8 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
 
   this.config.panorama = path;
 
+  var self = this;
+
   if (!transition || !this.config.transition || !this.scene) {
     this.loader.show();
     if (this.canvas_container) {
@@ -209,12 +211,14 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
       .finally(function() {
         this.loader.hide();
 
-        this.canvas_container.style.opacity = 1;
+        if (this.canvas_container) {
+          this.canvas_container.style.opacity = 1;
+        }
 
         this.prop.loading_promise = null;
       }.bind(this))
       .catch(function(e) {
-        console.error(e.getMessage());
+        console.error(e);
       });
   }
   else {
@@ -234,7 +238,7 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
         this.prop.loading_promise = null;
       }.bind(this))
       .catch(function(e) {
-        console.error(e.getMessage());
+        console.error(e);
       });
   }
 
