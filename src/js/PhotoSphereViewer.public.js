@@ -192,6 +192,13 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
 
   this.config.panorama = path;
 
+  var done = function() {
+    this.loader.hide();
+    this.canvas_container.style.opacity = 1;
+
+    this.prop.loading_promise = null;
+  }.bind(this);
+
   if (!transition || !this.config.transition || !this.scene) {
     this.loader.show();
     if (this.canvas_container) {
@@ -206,13 +213,7 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
           this.rotate(position);
         }
       }.bind(this))
-      .ensure(function() {
-        this.loader.hide();
-        this.canvas_container.style.opacity = 1;
-
-        this.prop.loading_promise = null;
-      }.bind(this))
-      .rethrow();
+      .then(done, done);
   }
   else {
     if (this.config.transition.loader) {
@@ -225,12 +226,7 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
 
         return this._transition(texture, position);
       }.bind(this))
-      .ensure(function() {
-        this.loader.hide();
-
-        this.prop.loading_promise = null;
-      }.bind(this))
-      .rethrow();
+      .then(done, done);
   }
 
   return this.prop.loading_promise;
@@ -340,7 +336,7 @@ PhotoSphereViewer.prototype.startGyroscopeControl = function() {
       }
       else {
         console.warn('PhotoSphereViewer: gyroscope not available');
-        return D.rejected();
+        return Promise.reject();
       }
     }.bind(this));
   }
@@ -582,17 +578,18 @@ PhotoSphereViewer.prototype.rotate = function(position) {
  * @summary Rotates the view to specific longitude and latitude with a smooth animation
  * @param {PhotoSphereViewer.ExtendedPosition} position
  * @param {string|int} duration - animation speed or duration (in milliseconds)
- * @returns {Promise}
+ * @returns {PSVAnimation}
  */
 PhotoSphereViewer.prototype.animate = function(position, duration) {
   this._stopAll();
 
   this.cleanPosition(position);
 
-  if (!duration || Math.abs(position.longitude - this.prop.position.longitude) < PhotoSphereViewer.ANGLE_THRESHOLD && Math.abs(position.latitude - this.prop.position.latitude) < PhotoSphereViewer.ANGLE_THRESHOLD) {
+  var dLongitude = Math.abs(position.longitude - this.prop.position.longitude);
+  var dLatitude = Math.abs(position.latitude - this.prop.position.latitude);
+  if (!duration || dLongitude < PhotoSphereViewer.ANGLE_THRESHOLD && dLatitude < PhotoSphereViewer.ANGLE_THRESHOLD) {
     this.rotate(position);
-
-    return D.resolved();
+    return Promise.resolve();
   }
 
   this.applyRanges(position).forEach(
@@ -614,7 +611,7 @@ PhotoSphereViewer.prototype.animate = function(position, duration) {
   // longitude offset for shortest arc
   var tOffset = PSVUtils.getShortestArc(this.prop.position.longitude, position.longitude);
 
-  this.prop.animation_promise = PSVUtils.animation({
+  this.prop.animation_promise = new PSVAnimation({
     properties: {
       longitude: { start: this.prop.position.longitude, end: this.prop.position.longitude + tOffset },
       latitude: { start: this.prop.position.latitude, end: position.latitude }
@@ -629,11 +626,19 @@ PhotoSphereViewer.prototype.animate = function(position, duration) {
 
 /**
  * @summary Stops the ongoing animation
+ * @description The return value is a Promise because the is no guaranty the animation can be stopped synchronously.
+ * @returns {Promise} Resolved when the animation has ben cancelled
  */
 PhotoSphereViewer.prototype.stopAnimation = function() {
   if (this.prop.animation_promise) {
-    this.prop.animation_promise.cancel();
-    this.prop.animation_promise = null;
+    return new Promise(function(resolve) {
+      this.prop.animation_promise.finally(resolve);
+      this.prop.animation_promise.cancel();
+      this.prop.animation_promise = null;
+    }.bind(this));
+  }
+  else {
+    return Promise.resolve();
   }
 };
 

@@ -99,62 +99,52 @@ PSVUtils.isWebGLSupported = function() {
  * @returns {Promise<boolean>}
  */
 PSVUtils.isDeviceOrientationSupported = function() {
-  var defer = D();
+  return new Promise(function(resolve) {
+    if ('DeviceOrientationEvent' in window) {
+      var listener = function(e) {
+        if (e && e.alpha !== null && !isNaN(e.alpha)) {
+          resolve(true);
+        }
+        else {
+          resolve(false);
+        }
 
-  if ('DeviceOrientationEvent' in window) {
-    var listener = function(event) {
-      if (event && event.alpha !== null && !isNaN(event.alpha)) {
-        defer.resolve(true);
-      }
-      else {
-        defer.resolve(false);
-      }
+        window.removeEventListener('deviceorientation', listener);
+      };
 
-      window.removeEventListener('deviceorientation', listener);
-    };
+      window.addEventListener('deviceorientation', listener, false);
 
-    window.addEventListener('deviceorientation', listener, false);
-
-    setTimeout(function() {
-      if (defer.promise.isPending()) {
-        listener(null);
-      }
-    }, 2000);
-  }
-  else {
-    defer.resolve(false);
-  }
-
-  return defer.promise;
+      // after 2 secs, auto-reject the promise
+      setTimeout(listener, 2000);
+    }
+    else {
+      resolve(false);
+    }
+  });
 };
 
 /**
  * @summary Detects if the user is using a touch screen
- * @returns {Promise}
+ * @returns {Promise<boolean>}
  */
 PSVUtils.isTouchEnabled = function() {
-  var defer = D();
+  return new Promise(function(resolve) {
+    var listener = function(e) {
+      if (e) {
+        resolve(true);
+      }
+      else {
+        resolve(false);
+      }
 
-  var listener = function(e) {
-    if (e) {
-      defer.resolve();
-    }
-    else {
-      defer.reject();
-    }
+      window.removeEventListener('touchstart', listener);
+    };
 
-    window.removeEventListener('touchstart', listener);
-  };
+    window.addEventListener('touchstart', listener, false);
 
-  window.addEventListener('touchstart', listener, false);
-
-  setTimeout(function() {
-    if (defer.promise.isPending()) {
-      listener(null);
-    }
-  }, 10000); // this is totally arbitrary
-
-  return defer.promise;
+    // after 10 secs auto-reject the promise
+    setTimeout(listener, 10000);
+  });
 };
 
 /**
@@ -662,133 +652,6 @@ PSVUtils.cleanTHREEScene = function(scene) {
   });
   scene.children.length = 0;
 };
-
-/**
- * @callback AnimationOnTick
- * @memberOf PSVUtils
- * @param {Object} properties - current values
- * @param {float} progress - 0 to 1
- */
-
-/**
- * @summary Interpolates each property with an easing and optional delay
- * @param {Object} options
- * @param {Object[]} options.properties
- * @param {number} options.properties[].start
- * @param {number} options.properties[].end
- * @param {int} options.duration
- * @param {int} [options.delay=0]
- * @param {string} [options.easing='linear']
- * @param {AnimationOnTick} options.onTick - called on each frame
- * @returns {Promise} Promise with an additional "cancel" method
- */
-PSVUtils.animation = function(options) {
-  var defer = D(false); // alwaysAsync = false to allow immediate resolution of "cancel"
-  var start = null;
-
-  if (!options.easing || typeof options.easing === 'string') {
-    options.easing = PSVUtils.animation.easings[options.easing || 'linear'];
-  }
-
-  function run(timestamp) {
-    // the animation has been cancelled
-    if (defer.promise.getStatus() === -1) {
-      return;
-    }
-
-    // first iteration
-    if (start === null) {
-      start = timestamp;
-    }
-
-    // compute progress
-    var progress = (timestamp - start) / options.duration;
-    var current = {};
-    var name;
-
-    if (progress < 1.0) {
-      // interpolate properties
-      for (name in options.properties) {
-        current[name] = options.properties[name].start + (options.properties[name].end - options.properties[name].start) * options.easing(progress);
-      }
-
-      options.onTick(current, progress);
-
-      window.requestAnimationFrame(run);
-    }
-    else {
-      // call onTick one last time with final values
-      for (name in options.properties) {
-        current[name] = options.properties[name].end;
-      }
-
-      options.onTick(current, 1.0);
-
-      window.requestAnimationFrame(function() {
-        defer.resolve();
-      });
-    }
-  }
-
-  if (options.delay !== undefined) {
-    window.setTimeout(function() {
-      window.requestAnimationFrame(run);
-    }, options.delay);
-  }
-  else {
-    window.requestAnimationFrame(run);
-  }
-
-  // add a "cancel" to the promise
-  var promise = defer.promise;
-  promise.cancel = function() {
-    defer.reject();
-  };
-  return promise;
-};
-
-/**
- * @summary Collection of easing functions
- * {@link https://gist.github.com/frederickk/6165768}
- * @type {Object.<string, Function>}
- */
-// @formatter:off
-// jscs:disable
-/* jshint ignore:start */
-PSVUtils.animation.easings = {
-  linear: function(t) { return t; },
-
-  inQuad: function(t) { return t*t; },
-  outQuad: function(t) { return t*(2-t); },
-  inOutQuad: function(t) { return t<.5 ? 2*t*t : -1+(4-2*t)*t; },
-
-  inCubic: function(t) { return t*t*t; },
-  outCubic: function(t) { return (--t)*t*t+1; },
-  inOutCubic: function(t) { return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1; },
-
-  inQuart: function(t) { return t*t*t*t; },
-  outQuart: function(t) { return 1-(--t)*t*t*t; },
-  inOutQuart: function(t) { return t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t; },
-
-  inQuint: function(t) { return t*t*t*t*t; },
-  outQuint: function(t) { return 1+(--t)*t*t*t*t; },
-  inOutQuint: function(t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t; },
-
-  inSine: function(t) { return 1-Math.cos(t*(Math.PI/2)); },
-  outSine: function(t) { return Math.sin(t*(Math.PI/2)); },
-  inOutSine: function(t) { return .5-.5*Math.cos(Math.PI*t); },
-
-  inExpo: function(t) { return Math.pow(2, 10*(t-1)); },
-  outExpo: function(t) { return 1-Math.pow(2, -10*t); },
-  inOutExpo: function(t) { t=t*2-1; return t<0 ? .5*Math.pow(2, 10*t) : 1-.5*Math.pow(2, -10*t); },
-
-  inCirc: function(t) { return 1-Math.sqrt(1-t*t); },
-  outCirc: function(t) { t--; return Math.sqrt(1-t*t); },
-  inOutCirc: function(t) { t*=2; return t<1 ? .5-.5*Math.sqrt(1-t*t) : .5+.5*Math.sqrt(1-(t-=2)*t); }
-};
-/* jshint ignore:end */
-// jscs:enable
-// @formatter:off
 
 /**
  * @summary Returns a function, that, when invoked, will only be triggered at most once during a given window of time.

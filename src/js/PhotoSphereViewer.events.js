@@ -259,15 +259,16 @@ PhotoSphereViewer.prototype._onTouchMove = function(evt) {
  */
 PhotoSphereViewer.prototype._startMove = function(evt) {
   this.stopAutorotate();
-  this.stopAnimation();
+  this.stopAnimation()
+    .then(function() {
+      this.prop.mouse_x = this.prop.start_mouse_x = parseInt(evt.clientX);
+      this.prop.mouse_y = this.prop.start_mouse_y = parseInt(evt.clientY);
+      this.prop.moving = true;
+      this.prop.zooming = false;
 
-  this.prop.mouse_x = this.prop.start_mouse_x = parseInt(evt.clientX);
-  this.prop.mouse_y = this.prop.start_mouse_y = parseInt(evt.clientY);
-  this.prop.moving = true;
-  this.prop.zooming = false;
-
-  this.prop.mouse_history.length = 0;
-  this._logMouseMove(evt);
+      this.prop.mouse_history.length = 0;
+      this._logMouseMove(evt);
+    }.bind(this));
 };
 
 /**
@@ -341,7 +342,7 @@ PhotoSphereViewer.prototype._stopMoveInertia = function(evt) {
 
   var norm = Math.sqrt(direction.x * direction.x + direction.y * direction.y);
 
-  this.prop.animation_promise = PSVUtils.animation({
+  this.prop.animation_promise = new PSVAnimation({
     properties: {
       clientX: { start: evt.clientX, end: evt.clientX + direction.x },
       clientY: { start: evt.clientY, end: evt.clientY + direction.y }
@@ -352,7 +353,7 @@ PhotoSphereViewer.prototype._stopMoveInertia = function(evt) {
       this._move(properties, false);
     }.bind(this)
   })
-    .ensure(function() {
+    .finally(function() {
       this.prop.moving = false;
     }.bind(this));
 };

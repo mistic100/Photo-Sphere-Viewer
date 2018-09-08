@@ -214,13 +214,13 @@ PSVMarker.prototype.isSvg = function() {
  */
 PSVMarker.prototype.getScale = function(zoomLevel) {
   if (Array.isArray(this.scale)) {
-    return this.scale[0] + (this.scale[1] - this.scale[0]) * PSVUtils.animation.easings.inQuad(zoomLevel / 100);
+    return this.scale[0] + (this.scale[1] - this.scale[0]) * PSVAnimation.easings.inQuad(zoomLevel / 100);
   }
   else if (typeof this.scale === 'function') {
     return this.scale(zoomLevel);
   }
   else if (typeof this.scale === 'number') {
-    return this.scale * PSVUtils.animation.easings.inQuad(zoomLevel / 100);
+    return this.scale * PSVAnimation.easings.inQuad(zoomLevel / 100);
   }
   else {
     return 1;
