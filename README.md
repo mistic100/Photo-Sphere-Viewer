@@ -44,17 +44,16 @@ Photo Sphere Viewer is available on [jsDelivr](https://cdn.jsdelivr.net/npm/phot
 
 #### Prerequisites
  * NodeJS + NPM: `apt-get install nodejs-legacy npm`
- * Grunt CLI: `npm install -g grunt-cli`
 
 #### Run
 
-Install Node and Bower dependencies `npm install` then run `grunt` in the root directory to generate production files inside `dist`.
+Install Node dependencies `npm install` then run `npm run build` in the root directory to generate production files inside `dist`.
 
 #### Other commands
 
- * `grunt test` to run jshint/jscs/scsslint.
- * `grunt serve` to open the example page with automatic build and livereload.
- * `grunt doc` to generate the documentation.
+ * `npm run test` to run jshint/jscs/scsslint.
+ * `npm run serve` to open the example page with automatic build and livereload.
+ * `npm run doc` to generate the documentation.
 
 ## License
 This library is available under the MIT license.
