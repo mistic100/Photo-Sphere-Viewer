@@ -17,11 +17,11 @@ function PSVNavBarCaption(navbar, caption) {
   this.content = null;
 
   /**
-   * @member {SVGElement}
+   * @member {PSVNavBarCaptionButton}
    * @readonly
    * @private
    */
-  this.icon = null;
+  this.button = null;
 
   /**
    * @member {Object}
@@ -29,8 +29,7 @@ function PSVNavBarCaption(navbar, caption) {
    */
   this.prop = {
     caption: '',
-    width: 0,
-    hidden: false
+    width: 0
   };
 
   this.create();
@@ -50,16 +49,13 @@ PSVNavBarCaption.publicMethods = ['setCaption'];
 PSVNavBarCaption.prototype.create = function() {
   PSVComponent.prototype.create.call(this);
 
-  this.container.innerHTML = PhotoSphereViewer.ICONS['info.svg'];
-  this.icon = this.container.querySelector('svg');
-  this.icon.setAttribute('class', 'psv-caption-icon');
-  this.icon.style.display = 'none';
+  this.button = new PSVNavBarCaptionButton(this);
+  this.button.hide();
 
-  this.content = document.createElement('span');
+  this.content = document.createElement('div');
   this.content.className = 'psv-caption-content';
   this.container.appendChild(this.content);
 
-  this.icon.addEventListener('click', this);
   window.addEventListener('resize', this);
 };
 
@@ -83,7 +79,6 @@ PSVNavBarCaption.prototype.handleEvent = function(e) {
   switch (e.type) {
     // @formatter:off
     case 'resize': this._onResize(); break;
-    case 'click':  this._onClick();  break;
     // @formatter:on
   }
 };
@@ -116,24 +111,11 @@ PSVNavBarCaption.prototype._onResize = function() {
   var width = parseInt(PSVUtils.getStyle(this.container, 'width')); // get real inner width
 
   if (width >= this.prop.width) {
-    this.icon.style.display = 'none';
+    this.button.hide();
     this.content.style.display = '';
   }
   else {
-    this.icon.style.display = '';
+    this.button.show();
     this.content.style.display = 'none';
-  }
-};
-
-/**
- * @summary Display caption as notification
- * @private
- */
-PSVNavBarCaption.prototype._onClick = function() {
-  if (this.psv.isNotificationVisible()) {
-    this.psv.hideNotification();
-  }
-  else {
-    this.psv.showNotification(this.prop.caption);
   }
 };

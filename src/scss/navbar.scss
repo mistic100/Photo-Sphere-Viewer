@@ -1,5 +1,5 @@
 .psv-navbar {
-  @include flexbox;
+  display: flex;
   position: absolute;
   z-index: $psv-navbar-zindex;
   bottom: -$psv-navbar-height;
@@ -20,9 +20,8 @@
 }
 
 .psv-caption {
-  @include flex-grow(10);
+  flex: 1 1 100%;
   color: $psv-caption-color;
-  margin: $psv-buttons-padding;
   overflow: hidden;
   text-align: center;
 
@@ -37,14 +36,15 @@
   }
 
   &-content {
+    display: inline-block;
+    padding: $psv-buttons-padding;
     font: $psv-caption-font;
     white-space: nowrap;
   }
 }
 
 .psv-button {
-  @include flex-grow(0);
-  @include flex-shrink(0);
+  flex: 0 0 auto;
   padding: $psv-buttons-padding;
   position: relative;
   cursor: pointer;
@@ -65,18 +65,14 @@
   .psv-button-svg {
     width: 100%;
     transform: scale(1);
-    transition: transform .3s ease;
+    transition: transform $psv-buttons-hover-scale-delay ease;
 
     * {
       fill: $psv-buttons-color;
     }
+  }
 
-    .psv-button--hover-scale:not(.psv-button--disabled):hover & {
-      transform: scale(1.2);
-    }
+  &--hover-scale:not(&--disabled):hover &-svg {
+    transform: scale($psv-buttons-hover-scale);
   }
 }
-
-@import 'buttons/autorotate';
-@import 'buttons/zoom';
-@import 'buttons/markers';

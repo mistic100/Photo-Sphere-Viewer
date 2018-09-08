@@ -109,6 +109,20 @@ module.exports = function(grunt) {
     },
 
     /**
+     * Autoprefix CSS
+     */
+    postcss: {
+      options: {
+        processors: [
+          require('autoprefixer')({ browsers: 'last 2 versions, ie >= 11' })
+        ]
+      },
+      lib: {
+        src: 'dist/photo-sphere-viewer.css'
+      }
+    },
+
+    /**
      * Minify dist CSS file
      */
     cssmin: {
@@ -287,6 +301,7 @@ module.exports = function(grunt) {
     'wrap',
     'uglify',
     'sass',
+    'postcss',
     'cssmin',
     'usebanner'
   ]);

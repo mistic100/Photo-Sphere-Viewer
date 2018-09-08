@@ -1,5 +1,5 @@
 .psv-hud {
-  @include user-select(none);
+  user-select: none;
   position: absolute;
   z-index: $psv-hud-zindex;
   width: 100%;

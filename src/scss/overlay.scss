@@ -1,8 +1,8 @@
 .psv-overlay {
-  @include flexbox;
-  @include flex-direction(column);
-  @include align-items(center);
-  @include justify-content(center);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   z-index: $psv-overlay-zindex;
   top: 0;

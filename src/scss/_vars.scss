@@ -22,9 +22,12 @@ $psv-caption-color: rgba(255, 255, 255, .7) !default;
 $psv-buttons-height: 20px !default;
 $psv-buttons-padding: 10px !default;
 $psv-buttons-background: transparent !default;
-$psv-buttons-active-background: rgba(255, 255, 255, .1) !default;
+$psv-buttons-active-background: rgba(255, 255, 255, .2) !default;
 $psv-buttons-color: rgba(255, 255, 255, .7) !default;
 $psv-buttons-disabled-opacity: .5 !default;
+
+$psv-buttons-hover-scale: 1.2 !default;
+$psv-buttons-hover-scale-delay: 200ms !default;
 
 $psv-zoom-range-width: 80px !default;
 $psv-zoom-range-tickness: 1px !default;
@@ -38,7 +41,7 @@ $psv-tooltip-background-color: rgba(61, 61, 61, .8) !default;
 // set tooltip.offset JS config to the same value
 $psv-tooltip-animate-offset: 5px !default;
 // set tooltip.delay JS config to the same value
-$psv-tooltip-animate-delay: .1s !default;
+$psv-tooltip-animate-delay: 100ms !default;
 $psv-tooltip-radius: 4px !default;
 $psv-tooltip-padding: .5em 1em !default;
 // set tooltip.arrow_size JS config to the same value
@@ -88,7 +91,7 @@ $psv-markers-list-title-font: 24px sans-serif !default;
 
 //*** NOTIFICATION ***
 $psv-notification-bottom: (from: $psv-navbar-height, to: $psv-navbar-height * 2) !default;
-$psv-notification-animate-delay: .2 !default;
+$psv-notification-animate-delay: 200ms !default;
 $psv-notification-background-color: $psv-tooltip-background-color !default;
 $psv-notification-radius: $psv-tooltip-radius !default;
 $psv-notification-padding: $psv-tooltip-padding !default;

@@ -105,7 +105,7 @@ $psv-panel-resizer-grip-width: $psv-panel-resizer-width - 4px;
     }
 
     &--no-interaction {
-      @include user-select(none);
+      user-select: none;
       pointer-events: none;
     }
   }
