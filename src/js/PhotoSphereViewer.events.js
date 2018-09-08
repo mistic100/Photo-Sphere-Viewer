@@ -303,17 +303,19 @@ PhotoSphereViewer.prototype._stopMove = function(evt) {
     // move threshold to trigger a click
     if (Math.abs(evt.clientX - this.prop.start_mouse_x) < PhotoSphereViewer.MOVE_THRESHOLD && Math.abs(evt.clientY - this.prop.start_mouse_y) < PhotoSphereViewer.MOVE_THRESHOLD) {
       this._click(evt);
+      this.prop.moving = false;
     }
     // inertia animation
     else if (this.config.move_inertia && !this.isGyroscopeEnabled()) {
       this._logMouseMove(evt);
       this._stopMoveInertia(evt);
     }
-  }
+    else {
+      this.prop.moving = false;
+    }
 
-  this.prop.mouse_history.length = 0;
-  this.prop.moving = false;
-  this.prop.zooming = false;
+    this.prop.mouse_history.length = 0;
+  }
 };
 
 /**
@@ -349,7 +351,10 @@ PhotoSphereViewer.prototype._stopMoveInertia = function(evt) {
     onTick: function(properties) {
       this._move(properties, false);
     }.bind(this)
-  });
+  })
+    .ensure(function() {
+      this.prop.moving = false;
+    }.bind(this));
 };
 
 /**
