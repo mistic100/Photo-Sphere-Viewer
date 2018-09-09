@@ -535,7 +535,8 @@ function PhotoSphereViewer(options) {
 
   PhotoSphereViewer.SYSTEM.touchEnabled.then(function() {
     this.container.classList.add('psv-is-touch');
-  }.bind(this));
+  }.bind(this))
+  .catch(function() {});
 }
 
 /**

@@ -57,78 +57,84 @@ PhotoSphereViewer.prototype._render = function() {
  * @private
  */
 PhotoSphereViewer.prototype._loadXMP = function(panorama) {
-  if (!this.config.usexmpdata) {
-    return D.resolved(null);
-  }
 
-  var defer = D();
-  var xhr = new XMLHttpRequest();
-  if (this.config.with_credentials) {
-    xhr.withCredentials = true;
-  }
-  var progress = 0;
+  var self = this;
 
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4) {
-      if (xhr.status === 200 || xhr.status === 201 || xhr.status === 202 || xhr.status === 0) {
-        this.loader.setProgress(100);
+  var promise = new PSVPromise(function(resolve, reject) {
 
-        var binary = xhr.responseText;
-        var a = binary.indexOf('<x:xmpmeta'), b = binary.indexOf('</x:xmpmeta>');
-        var data = binary.substring(a, b);
+    if (!self.config.usexmpdata) {
+      return resolve(null);
+    }
 
-        // No data retrieved
-        if (a === -1 || b === -1 || data.indexOf('GPano:') === -1) {
-          defer.resolve(null);
-        }
-        else {
-          var pano_data = {
-            full_width: parseInt(PSVUtils.getXMPValue(data, 'FullPanoWidthPixels')),
-            full_height: parseInt(PSVUtils.getXMPValue(data, 'FullPanoHeightPixels')),
-            cropped_width: parseInt(PSVUtils.getXMPValue(data, 'CroppedAreaImageWidthPixels')),
-            cropped_height: parseInt(PSVUtils.getXMPValue(data, 'CroppedAreaImageHeightPixels')),
-            cropped_x: parseInt(PSVUtils.getXMPValue(data, 'CroppedAreaLeftPixels')),
-            cropped_y: parseInt(PSVUtils.getXMPValue(data, 'CroppedAreaTopPixels'))
-          };
+    var xhr = new XMLHttpRequest();
+    if (self.config.with_credentials) {
+      xhr.withCredentials = true;
+    }
+    var progress = 0;
 
-          if (!pano_data.full_width || !pano_data.full_height || !pano_data.cropped_width || !pano_data.cropped_height) {
-            console.warn('PhotoSphereViewer: invalid XMP data');
-            defer.resolve(null);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200 || xhr.status === 201 || xhr.status === 202 || xhr.status === 0) {
+          self.loader.setProgress(100);
+
+          var binary = xhr.responseText;
+          var a = binary.indexOf('<x:xmpmeta'), b = binary.indexOf('</x:xmpmeta>');
+          var data = binary.substring(a, b);
+
+          // No data retrieved
+          if (a === -1 || b === -1 || data.indexOf('GPano:') === -1) {
+            resolve(null);
           }
           else {
-            defer.resolve(pano_data);
+            var pano_data = {
+              full_width: parseInt(PSVUtils.getXMPValue(data, 'FullPanoWidthPixels')),
+              full_height: parseInt(PSVUtils.getXMPValue(data, 'FullPanoHeightPixels')),
+              cropped_width: parseInt(PSVUtils.getXMPValue(data, 'CroppedAreaImageWidthPixels')),
+              cropped_height: parseInt(PSVUtils.getXMPValue(data, 'CroppedAreaImageHeightPixels')),
+              cropped_x: parseInt(PSVUtils.getXMPValue(data, 'CroppedAreaLeftPixels')),
+              cropped_y: parseInt(PSVUtils.getXMPValue(data, 'CroppedAreaTopPixels'))
+            };
+
+            if (!pano_data.full_width || !pano_data.full_height || !pano_data.cropped_width || !pano_data.cropped_height) {
+              console.warn('PhotoSphereViewer: invalid XMP data');
+              resolve(null);
+            }
+            else {
+              resolve(pano_data);
+            }
           }
         }
+        else {
+          self.container.textContent = 'Cannot load image';
+          throw new PSVError('Cannot load image');
+        }
       }
-      else {
-        this.container.textContent = 'Cannot load image';
-        throw new PSVError('Cannot load image');
+      else if (xhr.readyState === 3) {
+        self.loader.setProgress(progress += 10);
       }
-    }
-    else if (xhr.readyState === 3) {
-      this.loader.setProgress(progress += 10);
-    }
-  }.bind(this);
+    }.bind(self);
 
-  xhr.onprogress = function(e) {
-    if (e.lengthComputable) {
-      var new_progress = parseInt(e.loaded / e.total * 100);
-      if (new_progress > progress) {
-        progress = new_progress;
-        this.loader.setProgress(progress);
+    xhr.onprogress = function(e) {
+      if (e.lengthComputable) {
+        var new_progress = parseInt(e.loaded / e.total * 100);
+        if (new_progress > progress) {
+          progress = new_progress;
+          self.loader.setProgress(progress);
+        }
       }
-    }
-  }.bind(this);
+    }.bind(self);
 
-  xhr.onerror = function() {
-    this.container.textContent = 'Cannot load image';
-    throw new PSVError('Cannot load image');
-  }.bind(this);
+    xhr.onerror = function() {
+      self.container.textContent = 'Cannot load image';
+      throw new PSVError('Cannot load image');
+    }.bind(self);
 
-  xhr.open('GET', panorama, true);
-  xhr.send(null);
+    xhr.open('GET', panorama, true);
+    xhr.send(null);
 
-  return defer.promise;
+  });
+
+  return promise;
 };
 
 /**
@@ -204,129 +210,138 @@ PhotoSphereViewer.prototype._loadTexture = function(panorama) {
  * @private
  */
 PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
-  if (this.config.cache_texture) {
-    var cache = this.getPanoramaCache(panorama);
+
+  var self = this;
+
+  if (self.config.cache_texture) {
+    var cache = self.getPanoramaCache(panorama);
 
     if (cache) {
-      this.prop.pano_data = cache.pano_data;
+      self.prop.pano_data = cache.pano_data;
 
-      return D.resolved(cache.image);
+      return PSVPromise.resolved(cache.image);
     }
   }
 
-  return this._loadXMP(panorama).then(function(pano_data) {
-    var defer = D();
-    var loader = new THREE.ImageLoader();
-    var progress = pano_data ? 100 : 0;
+  return self._loadXMP(panorama).then(function(pano_data) {
 
-    if (this.config.with_credentials) {
-      loader.setCrossOrigin('use-credentials');
-    }
-    else {
-      loader.setCrossOrigin('anonymous');
-    }
+    var promise = new PSVPromise(function(resolve, reject) {
 
-    var onload = function(img) {
-      progress = 100;
+      var loader = new THREE.ImageLoader();
+      var progress = pano_data ? 100 : 0;
 
-      this.loader.setProgress(progress);
-
-      /**
-       * @event panorama-load-progress
-       * @memberof PhotoSphereViewer
-       * @summary Triggered while a panorama image is loading
-       * @param {string} panorama
-       * @param {int} progress
-       */
-      this.trigger('panorama-load-progress', panorama, progress);
-
-      // Config XMP data
-      if (!pano_data && this.config.pano_data) {
-        pano_data = PSVUtils.clone(this.config.pano_data);
-      }
-
-      // Default XMP data
-      if (!pano_data) {
-        pano_data = {
-          full_width: img.width,
-          full_height: img.height,
-          cropped_width: img.width,
-          cropped_height: img.height,
-          cropped_x: 0,
-          cropped_y: 0
-        };
-      }
-
-      this.prop.pano_data = pano_data;
-
-      var texture;
-
-      var ratio = Math.min(pano_data.full_width, PhotoSphereViewer.SYSTEM.maxTextureWidth) / pano_data.full_width;
-
-      // resize image / fill cropped parts with black
-      if (ratio !== 1 || pano_data.cropped_width !== pano_data.full_width || pano_data.cropped_height !== pano_data.full_height) {
-        var resized_pano_data = PSVUtils.clone(pano_data);
-
-        resized_pano_data.full_width *= ratio;
-        resized_pano_data.full_height *= ratio;
-        resized_pano_data.cropped_width *= ratio;
-        resized_pano_data.cropped_height *= ratio;
-        resized_pano_data.cropped_x *= ratio;
-        resized_pano_data.cropped_y *= ratio;
-
-        img.width = resized_pano_data.cropped_width;
-        img.height = resized_pano_data.cropped_height;
-
-        var buffer = document.createElement('canvas');
-        buffer.width = resized_pano_data.full_width;
-        buffer.height = resized_pano_data.full_height;
-
-        var ctx = buffer.getContext('2d');
-        ctx.drawImage(img, resized_pano_data.cropped_x, resized_pano_data.cropped_y, resized_pano_data.cropped_width, resized_pano_data.cropped_height);
-
-        texture = new THREE.Texture(buffer);
+      if (self.config.with_credentials) {
+        loader.setCrossOrigin('use-credentials');
       }
       else {
-        texture = new THREE.Texture(img);
+        loader.setCrossOrigin('anonymous');
       }
 
-      texture.needsUpdate = true;
-      texture.minFilter = THREE.LinearFilter;
-      texture.generateMipmaps = false;
+      var onload = function(img) {
+        progress = 100;
 
-      if (this.config.cache_texture) {
-        this._putPanoramaCache({
-          panorama: panorama,
-          image: texture,
-          pano_data: pano_data
-        });
-      }
+        self.loader.setProgress(progress);
 
-      defer.resolve(texture);
-    };
+        /**
+         * @event panorama-load-progress
+         * @memberof PhotoSphereViewer
+         * @summary Triggered while a panorama image is loading
+         * @param {string} panorama
+         * @param {int} progress
+         */
+        self.trigger('panorama-load-progress', panorama, progress);
 
-    var onprogress = function(e) {
-      if (e.lengthComputable) {
-        var new_progress = parseInt(e.loaded / e.total * 100);
-
-        if (new_progress > progress) {
-          progress = new_progress;
-          this.loader.setProgress(progress);
-          this.trigger('panorama-load-progress', panorama, progress);
+        // Config XMP data
+        if (!pano_data && self.config.pano_data) {
+          pano_data = PSVUtils.clone(self.config.pano_data);
         }
-      }
-    };
 
-    var onerror = function(e) {
-      this.container.textContent = 'Cannot load image';
-      defer.reject(e);
-      throw new PSVError('Cannot load image');
-    };
+        // Default XMP data
+        if (!pano_data) {
+          pano_data = {
+            full_width: img.width,
+            full_height: img.height,
+            cropped_width: img.width,
+            cropped_height: img.height,
+            cropped_x: 0,
+            cropped_y: 0
+          };
+        }
 
-    loader.load(panorama, onload.bind(this), onprogress.bind(this), onerror.bind(this));
+        self.prop.pano_data = pano_data;
 
-    return defer.promise;
-  }.bind(this));
+        var texture;
+
+        var ratio = Math.min(pano_data.full_width, PhotoSphereViewer.SYSTEM.maxTextureWidth) / pano_data.full_width;
+
+        // resize image / fill cropped parts with black
+        if (ratio !== 1 || pano_data.cropped_width !== pano_data.full_width || pano_data.cropped_height !== pano_data.full_height) {
+          var resized_pano_data = PSVUtils.clone(pano_data);
+
+          resized_pano_data.full_width *= ratio;
+          resized_pano_data.full_height *= ratio;
+          resized_pano_data.cropped_width *= ratio;
+          resized_pano_data.cropped_height *= ratio;
+          resized_pano_data.cropped_x *= ratio;
+          resized_pano_data.cropped_y *= ratio;
+
+          img.width = resized_pano_data.cropped_width;
+          img.height = resized_pano_data.cropped_height;
+
+          var buffer = document.createElement('canvas');
+          buffer.width = resized_pano_data.full_width;
+          buffer.height = resized_pano_data.full_height;
+
+          var ctx = buffer.getContext('2d');
+          ctx.drawImage(img, resized_pano_data.cropped_x, resized_pano_data.cropped_y, resized_pano_data.cropped_width, resized_pano_data.cropped_height);
+
+          texture = new THREE.Texture(buffer);
+        }
+        else {
+          texture = new THREE.Texture(img);
+        }
+
+        texture.needsUpdate = true;
+        texture.minFilter = THREE.LinearFilter;
+        texture.generateMipmaps = false;
+
+        if (self.config.cache_texture) {
+          self._putPanoramaCache({
+            panorama: panorama,
+            image: texture,
+            pano_data: pano_data
+          });
+        }
+
+        resolve(texture);
+      };
+
+      var onprogress = function(e) {
+        if (e.lengthComputable) {
+          var new_progress = parseInt(e.loaded / e.total * 100);
+
+          if (new_progress > progress) {
+            progress = new_progress;
+            self.loader.setProgress(progress);
+            self.trigger('panorama-load-progress', panorama, progress);
+          }
+        }
+      };
+
+      var onerror = function(e) {
+        self.container.textContent = 'Cannot load image';
+        reject(e);
+        throw new PSVError('Cannot load image');
+      };
+
+      loader.load(panorama, onload.bind(self), onprogress.bind(self), onerror.bind(self));
+
+    });
+
+    return promise;
+
+  }.bind(self));
+
 };
 
 /**
@@ -338,103 +353,109 @@ PhotoSphereViewer.prototype._loadEquirectangularTexture = function(panorama) {
  * @private
  */
 PhotoSphereViewer.prototype._loadCubemapTexture = function(panorama) {
-  var defer = D();
-  var loader = new THREE.ImageLoader();
-  var progress = [0, 0, 0, 0, 0, 0];
-  var loaded = [];
-  var done = 0;
 
-  if (this.config.with_credentials) {
-    loader.setCrossOrigin('use-credentials');
-  }
-  else {
-    loader.setCrossOrigin('anonymous');
-  }
+  var self = this;
 
-  var onend = function() {
-    loaded.forEach(function(img) {
-      img.needsUpdate = true;
-      img.minFilter = THREE.LinearFilter;
-      img.generateMipmaps = false;
-    });
+  var promise = new PSVPromise(function(resolve, reject) {
 
-    defer.resolve(loaded);
-  };
+    var loader = new THREE.ImageLoader();
+    var progress = [0, 0, 0, 0, 0, 0];
+    var loaded = [];
+    var done = 0;
 
-  var onload = function(i, img) {
-    done++;
-    progress[i] = 100;
-
-    this.loader.setProgress(PSVUtils.sum(progress) / 6);
-    this.trigger('panorama-load-progress', panorama[i], progress[i]);
-
-    var ratio = Math.min(img.width, PhotoSphereViewer.SYSTEM.maxTextureWidth / 2) / img.width;
-
-    // resize image
-    if (ratio !== 1) {
-      var buffer = document.createElement('canvas');
-      buffer.width = img.width * ratio;
-      buffer.height = img.height * ratio;
-
-      var ctx = buffer.getContext('2d');
-      ctx.drawImage(img, 0, 0, buffer.width, buffer.height);
-
-      loaded[i] = new THREE.Texture(buffer);
+    if (self.config.with_credentials) {
+      loader.setCrossOrigin('use-credentials');
     }
     else {
-      loaded[i] = new THREE.Texture(img);
+      loader.setCrossOrigin('anonymous');
     }
 
-    if (this.config.cache_texture) {
-      this._putPanoramaCache({
-        panorama: panorama[i],
-        image: loaded[i]
+    var onend = function() {
+      loaded.forEach(function(img) {
+        img.needsUpdate = true;
+        img.minFilter = THREE.LinearFilter;
+        img.generateMipmaps = false;
       });
+
+      resolve(loaded);
+    };
+
+    var onload = function(i, img) {
+      done++;
+      progress[i] = 100;
+
+      self.loader.setProgress(PSVUtils.sum(progress) / 6);
+      self.trigger('panorama-load-progress', panorama[i], progress[i]);
+
+      var ratio = Math.min(img.width, PhotoSphereViewer.SYSTEM.maxTextureWidth / 2) / img.width;
+
+      // resize image
+      if (ratio !== 1) {
+        var buffer = document.createElement('canvas');
+        buffer.width = img.width * ratio;
+        buffer.height = img.height * ratio;
+
+        var ctx = buffer.getContext('2d');
+        ctx.drawImage(img, 0, 0, buffer.width, buffer.height);
+
+        loaded[i] = new THREE.Texture(buffer);
+      }
+      else {
+        loaded[i] = new THREE.Texture(img);
+      }
+
+      if (self.config.cache_texture) {
+        self._putPanoramaCache({
+          panorama: panorama[i],
+          image: loaded[i]
+        });
+      }
+
+      if (done === 6) {
+        onend();
+      }
+    };
+
+    var onprogress = function(i, e) {
+      if (e.lengthComputable) {
+        var new_progress = parseInt(e.loaded / e.total * 100);
+
+        if (new_progress > progress[i]) {
+          progress[i] = new_progress;
+          self.loader.setProgress(PSVUtils.sum(progress) / 6);
+          self.trigger('panorama-load-progress', panorama[i], progress[i]);
+        }
+      }
+    };
+
+    var onerror = function(i, e) {
+      self.container.textContent = 'Cannot load image';
+      reject(e);
+      throw new PSVError('Cannot load image ' + i);
+    };
+
+    for (var i = 0; i < 6; i++) {
+      if (self.config.cache_texture) {
+        var cache = self.getPanoramaCache(panorama[i]);
+
+        if (cache) {
+          done++;
+          progress[i] = 100;
+          loaded[i] = cache.image;
+          continue;
+        }
+      }
+
+      loader.load(panorama[i], onload.bind(self, i), onprogress.bind(self, i), onerror.bind(self, i));
     }
 
     if (done === 6) {
-      onend();
-    }
-  };
-
-  var onprogress = function(i, e) {
-    if (e.lengthComputable) {
-      var new_progress = parseInt(e.loaded / e.total * 100);
-
-      if (new_progress > progress[i]) {
-        progress[i] = new_progress;
-        this.loader.setProgress(PSVUtils.sum(progress) / 6);
-        this.trigger('panorama-load-progress', panorama[i], progress[i]);
-      }
-    }
-  };
-
-  var onerror = function(i, e) {
-    this.container.textContent = 'Cannot load image';
-    defer.reject(e);
-    throw new PSVError('Cannot load image ' + i);
-  };
-
-  for (var i = 0; i < 6; i++) {
-    if (this.config.cache_texture) {
-      var cache = this.getPanoramaCache(panorama[i]);
-
-      if (cache) {
-        done++;
-        progress[i] = 100;
-        loaded[i] = cache.image;
-        continue;
-      }
+      resolve(loaded);
     }
 
-    loader.load(panorama[i], onload.bind(this, i), onprogress.bind(this, i), onerror.bind(this, i));
-  }
+  });
 
-  if (done === 6) {
-    defer.resolve(loaded);
-  }
-
-  return defer.promise;
+  return promise;
 };
 
 /**
