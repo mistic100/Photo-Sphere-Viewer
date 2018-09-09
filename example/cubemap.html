@@ -85,14 +85,21 @@
         content: '↻',
         onClick: (function() {
           var i = 0;
+          var loading = false;
 
           return function() {
+            if (loading) {
+              return;
+            }
+
             i = 1 - i;
+            loading = true;
             PSV.clearMarkers();
 
             PSV.setPanorama(panos[i].url, true)
               .then(function() {
                 PSV.setCaption(panos[i].desc);
+                loading = false;
               });
           }
         }())
