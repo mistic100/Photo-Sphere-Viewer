@@ -17,8 +17,7 @@ module.exports = function(grunt) {
     'src/js/components/*.js',
     'src/js/buttons/PSVNavBarButton.js',
     'src/js/buttons/*.js',
-    'src/js/*.js',
-    'src/js/lib/*.js'
+    'src/js/*.js'
   ]);
 
   grunt.initConfig({
@@ -155,7 +154,7 @@ module.exports = function(grunt) {
         config: '.jscsrc'
       },
       lib: {
-        src: ['src/js/**/*.js', '!src/js/lib/requestAnimationFrame.js']
+        src: ['src/js/**/*.js']
       },
       grunt: {
         src: ['Gruntfile.js']
