@@ -1,0 +1,93 @@
+{
+  "extends": "airbnb-base",
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "rules": {
+    "arrow-body-style": "off",
+    "class-methods-use-this": "off",
+    "import/prefer-default-export": "off",
+    "key-spacing": "off",
+    "no-bitwise": "off",
+    "no-else-return": "off",
+    "no-plusplus": "off",
+    "no-restricted-properties": "off",
+    "no-underscore-dangle": "off",
+    "no-useless-constructor": "off",
+    "object-curly-newline": "off",
+    "prefer-destructuring": "off",
+    "prefer-template": "off",
+    "max-len": [
+      "error",
+      150
+    ],
+    "brace-style": [
+      "error",
+      "stroustrup"
+    ],
+    "comma-dangle": [
+      "error",
+      {
+        "objects": "always-multiline",
+        "arrays": "always-multiline",
+        "functions": "never"
+      }
+    ],
+    "padded-blocks": [
+      "error",
+      {
+        "classes": "always",
+        "blocks": "never",
+        "switches": "never"
+      }
+    ],
+    "no-param-reassign": [
+      "error",
+      {
+        "props": false
+      }
+    ],
+    "no-console": [
+      "error",
+      {
+        "allow": [
+          "warn",
+          "error"
+        ]
+      }
+    ],
+    "object-shorthand": [
+      "error",
+      "consistent-as-needed"
+    ],
+    "no-use-before-define": [
+      "error",
+      {
+        "functions": false,
+        "classes": true,
+        "variables": true
+      }
+    ],
+    "quote-props": [
+      "error",
+      "consistent-as-needed"
+    ],
+    "lines-between-class-members": [
+      "error",
+      "always",
+      {
+        "exceptAfterSingleLine": true
+      }
+    ],
+    "import/no-unresolved": [
+      "error",
+      {
+        "ignore": [
+          "^photo-sphere-viewer$"
+        ]
+      }
+    ]
+  }
+}

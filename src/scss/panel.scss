@@ -1,5 +1,3 @@
-$psv-panel-resizer-grip-width: $psv-panel-resizer-width - 4px;
-
 .psv-panel {
   position: absolute;
   z-index: $psv-panel-zindex;
@@ -16,7 +14,7 @@ $psv-panel-resizer-grip-width: $psv-panel-resizer-width - 4px;
   cursor: default;
   margin-left: $psv-panel-resizer-width;
 
-  .psv-container--has-navbar & {
+  .psv--has-navbar & {
     height: calc(100% - #{$psv-buttons-height + 2 * $psv-buttons-padding});
   }
 
@@ -77,6 +75,7 @@ $psv-panel-resizer-grip-width: $psv-panel-resizer-width - 4px;
     background-color: $psv-panel-resizer-background;
     cursor: col-resize;
 
+    $psv-panel-resizer-grip-width: $psv-panel-resizer-width - 4px;
     @if $psv-panel-resizer-grip-width > 0 {
       &::before {
         content: '';

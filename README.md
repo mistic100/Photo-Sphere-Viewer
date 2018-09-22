@@ -16,7 +16,6 @@ Forked from [JeremyHeleine/Photo-Sphere-Viewer](https://github.com/JeremyHeleine
 
 ### Required
  * [three.js](https://threejs.org)
- * [doT.js](https://olado.github.io/doT)
  * [uEvent](https://github.com/mistic100/uEvent)
 
 ### Optionals
@@ -24,6 +23,7 @@ Forked from [JeremyHeleine/Photo-Sphere-Viewer](https://github.com/JeremyHeleine
  * [three/CanvasRendered.js](https://github.com/mrdoob/three.js/blob/master/examples/js/renderers/CanvasRenderer.js) & [three/Projector.js](https://github.com/mrdoob/three.js/blob/master/examples/js/renderers/Projector.js) for browsers without WebGL
  * [three/DeviceOrientationControls.js](https://github.com/mrdoob/three.js/blob/master/examples/js/controls/DeviceOrientationControls.js) for gyroscope support
  * [three/StereoEffect.js](https://github.com/mrdoob/three.js/blob/master/examples/js/effects/StereoEffect.js) for VR support
+ * [NoSleep.js](https://github.com/richtr/NoSleep.js) for better VR experience
 
 ## Install
 
@@ -58,8 +58,8 @@ Install Node dependencies `npm install` then run `npm run build` in the root dir
 
 #### Other commands
 
- * `npm run test` to run jshint/jscs/scsslint.
- * `npm run serve` to open the example page with automatic build and livereload.
+ * `npm run start` to open the example page with automatic build and livereload.
+ * `npm run test` to run tests suite.
  * `npm run doc` to generate the documentation.
 
 ## License

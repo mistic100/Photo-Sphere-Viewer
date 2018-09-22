@@ -19,9 +19,4 @@ PSVError.prototype = Object.create(Error.prototype);
 PSVError.prototype.name = 'PSVError';
 PSVError.prototype.constructor = PSVError;
 
-/**
- * @summary exposes {@link PSVError}
- * @memberof PhotoSphereViewer
- * @readonly
- */
-PhotoSphereViewer.Error = PSVError;
+export { PSVError };

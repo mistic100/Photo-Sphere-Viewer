@@ -34,7 +34,6 @@
 <script src="../node_modules/three/build/three.js"></script>
 <script src="../node_modules/promise-polyfill/dist/polyfill.js"></script>
 <script src="../node_modules/uevent/uevent.js"></script>
-<script src="../node_modules/dot/doT.js"></script>
 <script src="../node_modules/nosleep.js/dist/NoSleep.js"></script>
 <script src="../node_modules/three/examples/js/controls/DeviceOrientationControls.js"></script>
 <script src="../node_modules/three/examples/js/effects/StereoEffect.js"></script>
@@ -43,18 +42,18 @@
 <script>
   var panos = [
     {
-      url: {
-        left: 'suntemple-cubemap/left.jpg',
-        front: 'suntemple-cubemap/front.jpg',
-        right: 'suntemple-cubemap/right.jpg',
-        back: 'suntemple-cubemap/back.jpg',
-        top: 'suntemple-cubemap/top.jpg',
+      url : {
+        left  : 'suntemple-cubemap/left.jpg',
+        front : 'suntemple-cubemap/front.jpg',
+        right : 'suntemple-cubemap/right.jpg',
+        back  : 'suntemple-cubemap/back.jpg',
+        top   : 'suntemple-cubemap/top.jpg',
         bottom: 'suntemple-cubemap/bottom.jpg'
       },
       desc: 'Sun Temple (Unreal 4)'
     },
     {
-      url: [
+      url : [
         'test-cubemap/1.png',
         'test-cubemap/2.png',
         'test-cubemap/3.png',
@@ -67,20 +66,19 @@
   ];
 
   var PSV = new PhotoSphereViewer({
-    container: 'photosphere',
-    panorama: panos[0].url,
-    caption: panos[0].desc,
-    //fisheye: true,
-    time_anim: false,
-    default_long: Math.PI / 2,
-    loading_img: 'assets/photosphere-logo.gif',
-    navbar: [
+    container        : 'photosphere',
+    panorama         : panos[0].url,
+    caption          : panos[0].desc,
+    autorotateStartup: false,
+    defaultLong      : Math.PI / 2,
+    loadingImg       : 'assets/photosphere-logo.gif',
+    navbar           : [
       'autorotate', 'zoom', 'download', 'markers',
       {
-        title: 'Change image',
+        title    : 'Change image',
         className: 'custom-button',
-        content: '🔄',
-        onClick: (function() {
+        content  : '🔄',
+        onClick  : (function() {
           var i = 0;
           var loading = false;
 
@@ -91,61 +89,61 @@
 
             i = 1 - i;
             loading = true;
-            PSV.clearMarkers();
+            PSV.hud.clearMarkers();
 
-            PSV.setPanorama(panos[i].url, {zoom: 50}, true)
+            PSV.setPanorama(panos[i].url, { zoom: 50 }, true)
               .then(function() {
-                PSV.setCaption(panos[i].desc);
+                PSV.navbar.setCaption(panos[i].desc);
                 loading = false;
               });
-          }
-        }())
+          };
+        }()),
       },
       {
-        title  : 'Random position',
+        title    : 'Random position',
         className: 'custom-button',
-        content: '🔀',
-        onClick: function() {
+        content  : '🔀',
+        onClick  : function() {
           PSV.animate({
             longitude: (Math.random() - 0.5) * 2 * Math.PI,
-            latitude: (Math.random() - 0.5) * 3 / 4 * Math.PI,
-            zoom: Math.random() * 60 + 20
+            latitude : (Math.random() - 0.5) * 3 / 4 * Math.PI,
+            zoom     : Math.random() * 60 + 20,
           }, 1500);
-        }
+        },
       },
-      'caption', 'gyroscope', 'stereo', 'fullscreen'
+      'caption', 'gyroscope', 'stereo', 'fullscreen',
     ],
-    markers: (function() {
+    markers          : (function() {
       var a = [];
       for (var i = 0; i < Math.PI * 2; i += Math.PI / 4) {
         for (var j = -Math.PI / 2 + Math.PI / 4; j < Math.PI / 2; j += Math.PI / 4) {
           a.push({
-            id: '#' + a.length,
-            tooltip: '#' + a.length,
-            latitude: j,
+            id       : '#' + a.length,
+            tooltip  : '#' + a.length,
+            latitude : j,
             longitude: i,
-            image: 'assets/pin1.png',
-            width: 32,
-            height: 32,
-            anchor: 'bottom center',
-            data: {
-              deletable: true
-            }
+            image    : 'assets/pin1.png',
+            width    : 32,
+            height   : 32,
+            anchor   : 'bottom center',
+            data     : {
+              deletable: true,
+            },
           });
         }
       }
 
       a.push({
-        id: 'statue',
-        tooltip: 'Angel',
-        svgStyle: {
-          fill: 'rgba(255, 0, 111, 0.26)'
+        id        : 'statue',
+        tooltip   : 'Angel',
+        svgStyle  : {
+          fill: 'rgba(255, 0, 111, 0.26)',
         },
-        polygon_rad: [5.4196, 0.6801, 5.4644, 0.7610, 5.5004, 0.9194, 5.6522, 0.9363, 5.6923, 0.9757, 5.8132, 0.9662, 5.8625, 0.9315, 5.8905, 0.9991, 6.0215, 1.0558, 0.0822, 0.9023, 6.2390, 0.8732, 6.0377, 0.8648, 5.8348, 0.8780, 5.7862, 0.8678, 5.8175, 0.8614, 5.8431, 0.8128, 5.8354, 0.7028, 5.8620, 0.6204, 5.8815, 0.4776, 5.9339, 0.3234, 5.7591, 0.3510, 5.5885, 0.3273, 5.6381, 0.4327, 5.6353, 0.5043, 5.5959, 0.6228, 5.5877, 0.7108, 5.5952, 0.7519, 5.5775, 0.7502, 5.5021, 0.7012]
+        polygonRad: [5.4196, 0.6801, 5.4644, 0.7610, 5.5004, 0.9194, 5.6522, 0.9363, 5.6923, 0.9757, 5.8132, 0.9662, 5.8625, 0.9315, 5.8905, 0.9991, 6.0215, 1.0558, 0.0822, 0.9023, 6.2390, 0.8732, 6.0377, 0.8648, 5.8348, 0.8780, 5.7862, 0.8678, 5.8175, 0.8614, 5.8431, 0.8128, 5.8354, 0.7028, 5.8620, 0.6204, 5.8815, 0.4776, 5.9339, 0.3234, 5.7591, 0.3510, 5.5885, 0.3273, 5.6381, 0.4327, 5.6353, 0.5043, 5.5959, 0.6228, 5.5877, 0.7108, 5.5952, 0.7519, 5.5775, 0.7502, 5.5021, 0.7012],
       });
 
       return a;
-    }())
+    }()),
   });
 
   PSV.on('click', function(e) {
@@ -153,17 +151,17 @@
       return;
     }
     PSV.addMarker({
-      id: '#' + Math.random(),
-      tooltip: 'Generated marker',
+      id       : '#' + Math.random(),
+      tooltip  : 'Generated marker',
       longitude: e.longitude,
-      latitude: e.latitude,
-      image: 'assets/pin1.png',
-      width: 32,
-      height: 32,
-      anchor: 'bottom center',
-      data: {
-        deletable: true
-      }
+      latitude : e.latitude,
+      image    : 'assets/pin1.png',
+      width    : 32,
+      height   : 32,
+      anchor   : 'bottom center',
+      data     : {
+        deletable: true,
+      },
     });
   });
 
@@ -172,10 +170,6 @@
       PSV.removeMarker(marker);
     }
   });
-</script>
-
-<script>
-  document.write('<script src="//' + location.host.split(':')[0] + ':35729/livereload.js" async defer><' + '/script>');
 </script>
 </body>
 </html>

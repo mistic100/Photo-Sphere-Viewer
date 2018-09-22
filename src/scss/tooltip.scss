@@ -11,6 +11,9 @@
   transition-timing-function: ease-in-out;
   transition-duration: $psv-tooltip-animate-delay;
 
+  // this is used to let the JS aware of the animation offset
+  outline: $psv-tooltip-animate-offset solid transparent;
+
   &-content {
     color: $psv-tooltip-text-color;
     font: $psv-tooltip-font;

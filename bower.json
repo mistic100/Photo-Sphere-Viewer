@@ -36,12 +36,13 @@
   "ignore": [
     "**/.*",
     "node_modules",
-    "bower_components",
     "build",
     "example",
     "src",
     "tests",
     "package.json",
-    "Gruntfile.js"
+    "postcss.config.js",
+    "rollup.config.js",
+    "yarn.lock"
   ]
 }

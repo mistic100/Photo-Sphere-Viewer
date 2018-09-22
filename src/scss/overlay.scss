@@ -18,7 +18,7 @@
     svg {
       width: map-get($psv-overlay-image-size, portrait);
 
-      @media screen and (orientation: landscape) {
+      @media (orientation: landscape) { /* stylelint-disable-line scss/media-feature-value-dollar-variable */
         width: map-get($psv-overlay-image-size, landscape);
       }
     }

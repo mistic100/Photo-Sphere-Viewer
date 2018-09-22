@@ -2,7 +2,8 @@
 build
 doc
 example
-bower_components
-Gruntfile.js
+tests
 bower.json
+postcss.config.js
+rollup.config.js
 yarn.lock

@@ -1,7 +1,7 @@
 // scss-lint:disable ColorVariable
 
 //*** MAIN ***
-$psv-main-background-stops: #fff 0%, #fdfdfd 16%, #fbfbfb 33%, #f8f8f8 49%, #efefef 66%, #dfdfdf 82%, #bfbfbf 100%;
+$psv-main-background-stops: #fff 0%, #fdfdfd 16%, #fbfbfb 33%, #f8f8f8 49%, #efefef 66%, #dfdfdf 82%, #bfbfbf 100% !default;
 $psv-main-background: radial-gradient($psv-main-background-stops) !default;
 
 
@@ -33,18 +33,15 @@ $psv-zoom-range-width: 80px !default;
 $psv-zoom-range-tickness: 1px !default;
 $psv-zoom-disk-diameter: 7px !default;
 $psv-zoom-buttons-width: 16px !default;
+$psv-zoom-range-media-min-width: 600px !default;
 
 
 //*** TOOLTIP ***
 $psv-tooltip-background-color: rgba(61, 61, 61, .8) !default;
-
-// set tooltip.offset JS config to the same value
 $psv-tooltip-animate-offset: 5px !default;
-// set tooltip.delay JS config to the same value
 $psv-tooltip-animate-delay: 100ms !default;
 $psv-tooltip-radius: 4px !default;
 $psv-tooltip-padding: .5em 1em !default;
-// set tooltip.arrow_size JS config to the same value
 $psv-tooltip-arrow-size: 7px !default;
 $psv-tooltip-max-width: 200px !default;
 

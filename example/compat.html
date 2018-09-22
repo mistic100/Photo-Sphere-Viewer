@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhotoSphereViewer - equirectangular demo</title>
+
+  <link rel="stylesheet" href="../dist/photo-sphere-viewer.css">
+
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    #photosphere {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<div id="photosphere"></div>
+
+<script src="../node_modules/three/build/three.js"></script>
+<script src="../node_modules/uevent/uevent.js"></script>
+<script src="../dist/photo-sphere-viewer.js"></script>
+<script src="../dist/photo-sphere-viewer.compat.js"></script>
+
+<script>
+  const PSV = new PhotoSphereViewerCompat({
+    container      : 'photosphere',
+    panorama       : 'Bryce-Canyon-National-Park-Mark-Doliner.jpg',
+    caption        : 'Bryce Canyon National Park <b>&copy; Mark Doliner</b>',
+    loading_img    : 'assets/photosphere-logo.gif',
+    longitude_range: [-7 * Math.PI / 8, 7 * Math.PI / 8],
+    latitude_range : [-3 * Math.PI / 4, 3 * Math.PI / 4],
+    time_anim      : false,
+    anim_speed     : '-2rpm',
+    default_fov    : 50,
+  });
+</script>
+</body>
+</html>

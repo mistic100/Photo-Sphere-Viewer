@@ -1,484 +1,520 @@
+import { EASINGS, MARKER_DATA, MARKER_TYPES, SVG_NS } from './data/constants';
+import { PSVError } from './PSVError';
+import { addClasses, dasherize, deepmerge, each, parseAngle, parsePosition } from './utils';
+
+/**
+ * @typedef {Object} PSVMarker.Properties
+ * @summary Marker properties, see {@link http://photo-sphere-viewer.js.org/markers.html#config}
+ */
+
 /**
  * Object representing a marker
- * @param {Object} properties - see {@link http://photo-sphere-viewer.js.org/markers.html#config} (merged with the object itself)
- * @param {PhotoSphereViewer} psv
- * @constructor
- * @throws {PSVError} when the configuration is incorrect
  */
-function PSVMarker(properties, psv) {
-  if (!properties.id) {
-    throw new PSVError('missing marker id');
-  }
+class PSVMarker {
 
-  if (properties.image && (!properties.width || !properties.height)) {
-    throw new PSVError('missing marker width/height');
-  }
-
-  if (properties.image || properties.html) {
-    if ((!properties.hasOwnProperty('x') || !properties.hasOwnProperty('y')) && (!properties.hasOwnProperty('latitude') || !properties.hasOwnProperty('longitude'))) {
-      throw new PSVError('missing marker position, latitude/longitude or x/y');
+  /**
+   * @param {PSVMarker.Properties} properties
+   * @param {PhotoSphereViewer} psv
+   * @throws {PSVError} when the configuration is incorrect
+   */
+  constructor(properties, psv) {
+    if (!properties.id) {
+      throw new PSVError('missing marker id');
     }
-  }
 
-  /**
-   * @member {PhotoSphereViewer}
-   * @readonly
-   * @protected
-   */
-  this.psv = psv;
+    if (properties.image && (!properties.width || !properties.height)) {
+      throw new PSVError('missing marker width/height');
+    }
 
-  /**
-   * @member {boolean}
-   */
-  this.visible = true;
+    if (properties.image || properties.html) {
+      if ((!('x' in properties) || !('y' in properties)) && (!('latitude' in properties) || !('longitude' in properties))) {
+        throw new PSVError('missing marker position, latitude/longitude or x/y');
+      }
+    }
 
-  /**
-   * @member {boolean}
-   * @readonly
-   * @private
-   */
-  this._dynamicSize = false;
-
-  // private properties
-  var _id = properties.id;
-  var _type = PSVMarker.getType(properties, false);
-  var $el;
-
-  // readonly properties
-  Object.defineProperties(this, {
     /**
-     * @memberof PSVMarker
-     * @type {string}
+     * @member {PhotoSphereViewer}
+     * @readonly
+     * @protected
+     */
+    this.psv = psv;
+
+    /**
+     * @member {string}
      * @readonly
      */
-    id: {
-      configurable: false,
-      enumerable: true,
-      get: function() {
-        return _id;
-      },
-      set: function() {
-      }
-    },
+    this.id = properties.id;
+
     /**
-     * @memberof PSVMarker
-     * @type {string}
+     * @member {string}
      * @see PSVMarker.types
      * @readonly
      */
-    type: {
-      configurable: false,
-      enumerable: true,
-      get: function() {
-        return _type;
-      },
-      set: function() {
-      }
-    },
+    this.type = PSVMarker.getType(properties, false);
+
     /**
-     * @memberof PSVMarker
-     * @type {HTMLDivElement|SVGElement}
+     * @member {boolean}
+     * @protected
+     */
+    this.visible = true;
+
+    /**
+     * @member {HTMLElement|SVGElement}
      * @readonly
      */
-    $el: {
-      configurable: false,
-      enumerable: true,
-      get: function() {
-        return $el;
-      },
-      set: function() {
-      }
-    },
+    this.$el = null;
+
     /**
-     * @summary Quick access to self value of key `type`
-     * @memberof PSVMarker
-     * @type {*}
-     * @private
+     * @summary Original configuration of the marker
+     * @member {PSVMarker.Properties}
+     * @readonly
      */
-    _def: {
-      configurable: false,
-      enumerable: true,
-      get: function() {
-        return this[_type];
-      },
-      set: function(value) {
-        this[_type] = value;
-      }
+    this.config = {};
+
+    /**
+     * @summary User data associated to the marker
+     * @member {any}
+     */
+    this.data = undefined;
+
+    /**
+     * @summary Computed properties
+     * @member {Object}
+     * @protected
+     * @property {boolean} dynamicSize
+     * @property {PhotoSphereViewer.Point} anchor
+     * @property {PhotoSphereViewer.Position} position
+     * @property {PhotoSphereViewer.Point} position2D
+     * @property {external:THREE.Vector3[]} positions3D
+     * @property {number} width
+     * @property {number} height
+     * @property {*} def
+     */
+    this.props = {
+      dynamicSize: false,
+      anchor     : null,
+      position   : null,
+      position2D : null,
+      positions3D: null,
+      width      : null,
+      height     : null,
+      def        : null,
+    };
+
+    // create element
+    if (this.isNormal()) {
+      this.$el = document.createElement('div');
     }
-  });
-
-  // create element
-  if (this.isNormal()) {
-    $el = document.createElement('div');
-  }
-  else if (this.isPolygon()) {
-    $el = document.createElementNS(PSVUtils.svgNS, 'polygon');
-  }
-  else if (this.isPolyline()) {
-    $el = document.createElementNS(PSVUtils.svgNS, 'polyline');
-  }
-  else {
-    $el = document.createElementNS(PSVUtils.svgNS, this.type);
-  }
-
-  $el.id = 'psv-marker-' + this.id;
-  $el.psvMarker = this;
-
-  this.update(properties);
-}
-
-/**
- * @summary Types of markers
- * @type {string[]}
- * @readonly
- */
-PSVMarker.types = ['image', 'html', 'polygon_px', 'polygon_rad', 'polyline_px', 'polyline_rad', 'rect', 'circle', 'ellipse', 'path'];
-
-/**
- * @summary Determines the type of a marker by the available properties
- * @param {object} properties
- * @param {boolean} [allowNone=false]
- * @returns {string}
- * @throws {PSVError} when the marker's type cannot be found
- */
-PSVMarker.getType = function(properties, allowNone) {
-  var found = [];
-
-  PSVMarker.types.forEach(function(type) {
-    if (properties[type]) {
-      found.push(type);
+    else if (this.isPolygon()) {
+      this.$el = document.createElementNS(SVG_NS, 'polygon');
     }
-  });
-
-  if (found.length === 0 && !allowNone) {
-    throw new PSVError('missing marker content, either ' + PSVMarker.types.join(', '));
-  }
-  else if (found.length > 1) {
-    throw new PSVError('multiple marker content, either ' + PSVMarker.types.join(', '));
-  }
-
-  return found[0];
-};
-
-/**
- * @summary Destroys the marker
- */
-PSVMarker.prototype.destroy = function() {
-  delete this.$el.psvMarker;
-};
-
-/**
- * @summary Checks if it is a normal marker (image or html)
- * @returns {boolean}
- */
-PSVMarker.prototype.isNormal = function() {
-  return this.type === 'image' || this.type === 'html';
-};
-
-/**
- * @summary Checks if it is a polygon/polyline marker
- * @returns {boolean}
- */
-PSVMarker.prototype.isPoly = function() {
-  return this.isPolygon() || this.isPolyline();
-};
-
-/**
- * @summary Checks if it is a polygon marker
- * @returns {boolean}
- */
-PSVMarker.prototype.isPolygon = function() {
-  return this.type === 'polygon_px' || this.type === 'polygon_rad';
-};
-
-/**
- * @summary Checks if it is a polyline marker
- * @returns {boolean}
- */
-PSVMarker.prototype.isPolyline = function() {
-  return this.type === 'polyline_px' || this.type === 'polyline_rad';
-};
-
-/**
- * @summary Checks if it is an SVG marker
- * @returns {boolean}
- */
-PSVMarker.prototype.isSvg = function() {
-  return this.type === 'rect' || this.type === 'circle' || this.type === 'ellipse' || this.type === 'path';
-};
-
-/**
- * @summary Computes marker scale from zoom level
- * @param {float} zoomLevel
- * @returns {float}
- */
-PSVMarker.prototype.getScale = function(zoomLevel) {
-  if (Array.isArray(this.scale)) {
-    return this.scale[0] + (this.scale[1] - this.scale[0]) * PSVAnimation.easings.inQuad(zoomLevel / 100);
-  }
-  else if (typeof this.scale === 'function') {
-    return this.scale(zoomLevel);
-  }
-  else if (typeof this.scale === 'number') {
-    return this.scale * PSVAnimation.easings.inQuad(zoomLevel / 100);
-  }
-  else {
-    return 1;
-  }
-};
-
-/**
- * @summary Updates the marker with new properties
- * @param {object} [properties]
- * @throws {PSVError} when trying to change the marker's type
- */
-PSVMarker.prototype.update = function(properties) {
-  // merge objects
-  if (properties && properties !== this) {
-    var newType = PSVMarker.getType(properties, true);
-
-    if (newType !== undefined && newType !== this.type) {
-      throw new PSVError('cannot change marker type');
+    else if (this.isPolyline()) {
+      this.$el = document.createElementNS(SVG_NS, 'polyline');
+    }
+    else {
+      this.$el = document.createElementNS(SVG_NS, this.type);
     }
 
-    PSVUtils.deepmerge(this, properties);
+    this.$el.id = `psv-marker-${this.id}`;
+    this.$el[MARKER_DATA] = this;
+
+    this.update(properties);
   }
 
-  // reset CSS class
-  if (this.isNormal()) {
-    this.$el.setAttribute('class', 'psv-marker psv-marker--normal');
-  }
-  else {
-    this.$el.setAttribute('class', 'psv-marker psv-marker--svg');
+  /**
+   * @summary Destroys the marker
+   */
+  destroy() {
+    delete this.$el[MARKER_DATA];
+    delete this.$el;
+    delete this.config;
+    delete this.props;
+    delete this.psv;
   }
 
-  // add CSS classes
-  if (this.className) {
-    PSVUtils.addClasses(this.$el, this.className);
+  /**
+   * @summary Checks if it is a normal marker (image or html)
+   * @returns {boolean}
+   */
+  isNormal() {
+    return this.type === MARKER_TYPES.image
+      || this.type === MARKER_TYPES.html;
   }
-  if (this.tooltip) {
-    PSVUtils.addClasses(this.$el, 'has-tooltip');
-    if (typeof this.tooltip === 'string') {
-      this.tooltip = { content: this.tooltip };
+
+  /**
+   * @summary Checks if it is a polygon/polyline marker
+   * @returns {boolean}
+   */
+  isPoly() {
+    return this.isPolygon()
+      || this.isPolyline();
+  }
+
+  /**
+   * @summary Checks if it is a polygon/polyline using pixel coordinates
+   * @returns {boolean}
+   */
+  isPolyPx() {
+    return this.type === MARKER_TYPES.polygonPx
+      || this.type === MARKER_TYPES.polylinePx;
+  }
+
+  /**
+   * @summary Checks if it is a polygon/polyline using radian coordinates
+   * @returns {boolean}
+   */
+  isPolyRad() {
+    return this.type === MARKER_TYPES.polygonRad
+      || this.type === MARKER_TYPES.polylineRad;
+  }
+
+  /**
+   * @summary Checks if it is a polygon marker
+   * @returns {boolean}
+   */
+  isPolygon() {
+    return this.type === MARKER_TYPES.polygonPx
+      || this.type === MARKER_TYPES.polygonRad;
+  }
+
+  /**
+   * @summary Checks if it is a polyline marker
+   * @returns {boolean}
+   */
+  isPolyline() {
+    return this.type === MARKER_TYPES.polylinePx
+      || this.type === MARKER_TYPES.polylineRad;
+  }
+
+  /**
+   * @summary Checks if it is an SVG marker
+   * @returns {boolean}
+   */
+  isSvg() {
+    return this.type === MARKER_TYPES.square
+      || this.type === MARKER_TYPES.rect
+      || this.type === MARKER_TYPES.circle
+      || this.type === MARKER_TYPES.ellipse
+      || this.type === MARKER_TYPES.path;
+  }
+
+  /**
+   * @summary Computes marker scale from zoom level
+   * @param {number} zoomLevel
+   * @returns {number}
+   */
+  getScale(zoomLevel) {
+    if (Array.isArray(this.config.scale)) {
+      return this.config.scale[0] + (this.config.scale[1] - this.config.scale[0]) * EASINGS.inQuad(zoomLevel / 100);
+    }
+    else if (typeof this.config.scale === 'function') {
+      return this.config.scale(zoomLevel);
+    }
+    else if (typeof this.config.scale === 'number') {
+      return this.config.scale * EASINGS.inQuad(zoomLevel / 100);
+    }
+    else {
+      return 1;
     }
   }
 
-  // apply style
-  if (this.style) {
-    PSVUtils.deepmerge(this.$el.style, this.style);
+  /**
+   * @summary Returns the markers list content for the marker, it can be either :
+   * - the `listContent`
+   * - the `tooltip.content`
+   * - the `html`
+   * - the `id`
+   * @returns {*}
+   */
+  getListContent() {
+    if (this.config.listContent) {
+      return this.config.listContent;
+    }
+    else if (this.config.tooltip) {
+      return this.config.tooltip.content;
+    }
+    else if (this.config.html) {
+      return this.config.html;
+    }
+    else {
+      return this.id;
+    }
   }
 
-  // parse anchor
-  this.anchor = PSVUtils.parsePosition(this.anchor);
+  /**
+   * @summary Updates the marker with new properties
+   * @param {PSVMarker.Properties} [properties]
+   * @throws {PSVError} when trying to change the marker's type
+   */
+  update(properties) {
+    if (properties && properties !== this.config) {
+      const newType = PSVMarker.getType(properties, true);
 
-  if (this.isNormal()) {
-    this._updateNormal();
-  }
-  else if (this.isPolygon()) {
-    this._updatePoly('polygon_rad', 'polygon_px');
-  }
-  else if (this.isPolyline()) {
-    this._updatePoly('polyline_rad', 'polyline_px');
-  }
-  else {
-    this._updateSvg();
-  }
-};
+      if (newType !== undefined && newType !== this.type) {
+        throw new PSVError('cannot change marker type');
+      }
 
-/**
- * @summary Updates a normal marker
- * @private
- */
-PSVMarker.prototype._updateNormal = function() {
-  if (this.width && this.height) {
-    this.$el.style.width = this.width + 'px';
-    this.$el.style.height = this.height + 'px';
-    this._dynamicSize = false;
+      deepmerge(this.config, properties);
+      this.data = this.config.data;
+
+      this.visible = properties.visible !== false;
+    }
+
+    // reset CSS class
+    if (this.isNormal()) {
+      this.$el.setAttribute('class', 'psv-marker psv-marker--normal');
+    }
+    else {
+      this.$el.setAttribute('class', 'psv-marker psv-marker--svg');
+    }
+
+    // add CSS classes
+    if (this.config.className) {
+      addClasses(this.$el, this.config.className);
+    }
+    if (this.config.tooltip) {
+      addClasses(this.$el, 'psv-marker--has-tooltip');
+      if (typeof this.config.tooltip === 'string') {
+        this.config.tooltip = { content: this.config.tooltip };
+      }
+    }
+    if (this.config.content) {
+      addClasses(this.$el, 'psv-marler--has-content');
+    }
+
+    // apply style
+    if (this.config.style) {
+      deepmerge(this.$el.style, this.config.style);
+    }
+
+    // parse anchor
+    this.props.anchor = parsePosition(this.config.anchor);
+
+    if (this.isNormal()) {
+      this.__updateNormal();
+    }
+    else if (this.isPoly()) {
+      this.__updatePoly();
+    }
+    else {
+      this.__updateSvg();
+    }
   }
-  else {
-    this._dynamicSize = true;
+
+  /**
+   * @summary Updates a normal marker
+   * @private
+   */
+  __updateNormal() {
+    if (this.config.width && this.config.height) {
+      this.props.dynamicSize = false;
+      this.props.width = this.config.width;
+      this.props.height = this.config.height;
+      this.$el.style.width = this.config.width + 'px';
+      this.$el.style.height = this.config.height + 'px';
+    }
+    else {
+      this.props.dynamicSize = true;
+    }
+
+    if (this.config.image) {
+      this.props.def = this.config.image;
+      this.$el.style.backgroundImage = `url(${this.config.image})`;
+    }
+    else if (this.config.html) {
+      this.props.def = this.config.html;
+      this.$el.innerHTML = this.config.html;
+    }
+
+    // set anchor
+    this.$el.style.transformOrigin = `${this.props.anchor.x * 100}% ${this.props.anchor.y * 100}%`;
+
+    // convert texture coordinates to spherical coordinates
+    this.props.position = this.psv.dataHelper.cleanPosition(this.config);
+
+    // compute x/y/z position
+    this.props.positions3D = [this.psv.dataHelper.sphericalCoordsToVector3(this.props.position)];
   }
 
-  if (this.image) {
-    this.$el.style.backgroundImage = 'url(' + this.image + ')';
-  }
-  else {
-    this.$el.innerHTML = this.html;
-  }
+  /**
+   * @summary Updates an SVG marker
+   * @private
+   */
+  __updateSvg() {
+    this.props.dynamicSize = true;
 
-  // set anchor
-  this.$el.style.transformOrigin = this.anchor.left * 100 + '% ' + this.anchor.top * 100 + '%';
-
-  // convert texture coordinates to spherical coordinates
-  this.psv.cleanPosition(this);
-
-  // compute x/y/z position
-  this.position3D = this.psv.sphericalCoordsToVector3(this);
-};
-
-/**
- * @summary Updates an SVG marker
- * @private
- */
-PSVMarker.prototype._updateSvg = function() {
-  this._dynamicSize = true;
-
-  // set content
-  switch (this.type) {
-    case 'rect':
-      if (typeof this._def === 'number') {
-        this._def = {
-          x: 0,
-          y: 0,
-          width: this._def,
-          height: this._def
+    // set content
+    switch (this.type) {
+      case MARKER_TYPES.square:
+        this.props.def = {
+          x     : 0,
+          y     : 0,
+          width : this.config.square,
+          height: this.config.square,
         };
-      }
-      else if (Array.isArray(this._def)) {
-        this._def = {
-          x: 0,
-          y: 0,
-          width: this._def[0],
-          height: this._def[1]
-        };
-      }
-      else {
-        this._def.x = this._def.y = 0;
-      }
-      break;
+        break;
 
-    case 'circle':
-      if (typeof this._def === 'number') {
-        this._def = {
-          cx: this._def,
-          cy: this._def,
-          r: this._def
-        };
-      }
-      else if (Array.isArray(this._def)) {
-        this._def = {
-          cx: this._def[0],
-          cy: this._def[0],
-          r: this._def[0]
-        };
-      }
-      else {
-        this._def.cx = this._def.cy = this._def.r;
-      }
-      break;
+      case MARKER_TYPES.rect:
+        if (Array.isArray(this.config.rect)) {
+          this.props.def = {
+            x     : 0,
+            y     : 0,
+            width : this.config.rect[0],
+            height: this.config.rect[1],
+          };
+        }
+        else {
+          this.props.def = {
+            x     : 0,
+            y     : 0,
+            width : this.config.rect.width,
+            height: this.config.rect.height,
+          };
+        }
+        break;
 
-    case 'ellipse':
-      if (typeof this._def === 'number') {
-        this._def = {
-          cx: this._def,
-          cy: this._def,
-          rx: this._def,
-          ry: this._def
+      case MARKER_TYPES.circle:
+        this.props.def = {
+          cx: this.config.circle,
+          cy: this.config.circle,
+          r : this.config.circle,
         };
-      }
-      else if (Array.isArray(this._def)) {
-        this._def = {
-          cx: this._def[0],
-          cy: this._def[1],
-          rx: this._def[0],
-          ry: this._def[1]
-        };
-      }
-      else {
-        this._def.cx = this._def.rx;
-        this._def.cy = this._def.ry;
-      }
-      break;
+        break;
 
-    case 'path':
-      if (typeof this._def === 'string') {
-        this._def = {
-          d: this._def
+      case MARKER_TYPES.ellipse:
+        if (Array.isArray(this.config.ellipse)) {
+          this.props.def = {
+            cx: this.config.ellipse[0],
+            cy: this.config.ellipse[1],
+            rx: this.config.ellipse[0],
+            ry: this.config.ellipse[1],
+          };
+        }
+        else {
+          this.props.def = {
+            cx: this.config.ellipse.rx,
+            cy: this.config.ellipse.ry,
+            rx: this.config.ellipse.rx,
+            ry: this.config.ellipse.ry,
+          };
+        }
+        break;
+
+      case MARKER_TYPES.path:
+        this.props.def = {
+          d: this.config.path,
         };
-      }
-      break;
+        break;
+
+      // no default
+    }
+
+    each(this.props.def, (value, prop) => {
+      this.$el.setAttributeNS(null, prop, value);
+    });
+
+    // set style
+    if (this.config.svgStyle) {
+      each(this.config.svgStyle, (value, prop) => {
+        this.$el.setAttributeNS(null, dasherize(prop), value);
+      });
+    }
+    else {
+      this.$el.setAttributeNS(null, 'fill', 'rgba(0,0,0,0.5)');
+    }
+
+    // convert texture coordinates to spherical coordinates
+    this.props.position = this.psv.dataHelper.cleanPosition(this.config);
+
+    // compute x/y/z position
+    this.props.positions3D = [this.psv.dataHelper.sphericalCoordsToVector3(this.props.position)];
   }
 
-  Object.getOwnPropertyNames(this._def).forEach(function(prop) {
-    this.$el.setAttributeNS(null, prop, this._def[prop]);
-  }, this);
+  /**
+   * @summary Updates a polygon marker
+   * @private
+   */
+  __updatePoly() {
+    this.props.dynamicSize = true;
 
-  // set style
-  if (this.svgStyle) {
-    Object.getOwnPropertyNames(this.svgStyle).forEach(function(prop) {
-      this.$el.setAttributeNS(null, PSVUtils.dasherize(prop), this.svgStyle[prop]);
-    }, this);
-  }
-  else {
-    this.$el.setAttributeNS(null, 'fill', 'rgba(0,0,0,0.5)');
-  }
+    // set style
+    if (this.config.svgStyle) {
+      each(this.config.svgStyle, (value, prop) => {
+        this.$el.setAttributeNS(null, dasherize(prop), value);
+      });
 
-  // convert texture coordinates to spherical coordinates
-  this.psv.cleanPosition(this);
-
-  // compute x/y/z position
-  this.position3D = this.psv.sphericalCoordsToVector3(this);
-};
-
-/**
- * @summary Updates a polygon marker
- * @param {'polygon_rad'|'polyline_rad'} key_rad
- * @param {'polygon_px'|'polyline_px'} key_px
- * @private
- */
-PSVMarker.prototype._updatePoly = function(key_rad, key_px) {
-  this._dynamicSize = true;
-
-  // set style
-  if (this.svgStyle) {
-    Object.getOwnPropertyNames(this.svgStyle).forEach(function(prop) {
-      this.$el.setAttributeNS(null, PSVUtils.dasherize(prop), this.svgStyle[prop]);
-    }, this);
-
-    if (this.isPolyline() && !this.svgStyle.fill) {
+      if (this.isPolyline() && !this.config.svgStyle.fill) {
+        this.$el.setAttributeNS(null, 'fill', 'none');
+      }
+    }
+    else if (this.isPolygon()) {
+      this.$el.setAttributeNS(null, 'fill', 'rgba(0,0,0,0.5)');
+    }
+    else if (this.isPolyline()) {
       this.$el.setAttributeNS(null, 'fill', 'none');
+      this.$el.setAttributeNS(null, 'stroke', 'rgb(0,0,0)');
     }
-  }
-  else if (this.isPolygon()) {
-    this.$el.setAttributeNS(null, 'fill', 'rgba(0,0,0,0.5)');
-  }
-  else if (this.isPolyline()) {
-    this.$el.setAttributeNS(null, 'fill', 'none');
-    this.$el.setAttributeNS(null, 'stroke', 'rgb(0,0,0)');
-  }
 
-  // fold arrays: [1,2,3,4] => [[1,2],[3,4]]
-  [this[key_rad], this[key_px]].forEach(function(polygon) {
-    if (polygon && typeof polygon[0] !== 'object') {
-      for (var i = 0; i < polygon.length; i++) {
-        polygon.splice(i, 2, [polygon[i], polygon[i + 1]]);
+    // fold arrays: [1,2,3,4] => [[1,2],[3,4]]
+    const actualPoly = this.config.polygonPx || this.config.polygonRad || this.config.polylinePx || this.config.polylineRad;
+    if (!Array.isArray(actualPoly[0])) {
+      for (let i = 0; i < actualPoly.length; i++) {
+        actualPoly.splice(i, 2, [actualPoly[i], actualPoly[i + 1]]);
       }
     }
-  });
 
-  // convert texture coordinates to spherical coordinates
-  if (this[key_px]) {
-    this[key_rad] = this[key_px].map(function(coord) {
-      var sphericalCoords = this.psv.textureCoordsToSphericalCoords({ x: coord[0], y: coord[1] });
-      return [sphericalCoords.longitude, sphericalCoords.latitude];
-    }, this);
-  }
-  // clean angles
-  else {
-    this[key_rad] = this[key_rad].map(function(coord) {
-      return [
-        PSVUtils.parseAngle(coord[0]),
-        PSVUtils.parseAngle(coord[1], true)
-      ];
+    // convert texture coordinates to spherical coordinates
+    if (this.isPolyPx()) {
+      this.props.def = actualPoly.map((coord) => {
+        const sphericalCoords = this.psv.dataHelper.textureCoordsToSphericalCoords({ x: coord[0], y: coord[1] });
+        return [sphericalCoords.longitude, sphericalCoords.latitude];
+      });
+    }
+    // clean angles
+    else {
+      this.props.def = actualPoly.map((coord) => {
+        return [parseAngle(coord[0]), parseAngle(coord[1], true)];
+      });
+    }
+
+    // TODO : compute the center of the polygon
+    this.props.position = {
+      longitude: this.props.def[0][0],
+      latitude : this.props.def[0][1],
+    };
+
+    // compute x/y/z positions
+    this.props.positions3D = this.props.def.map((coord) => {
+      return this.psv.dataHelper.sphericalCoordsToVector3({ longitude: coord[0], latitude: coord[1] });
     });
   }
 
-  // TODO : compute the center of the polygon
-  this.longitude = this[key_rad][0][0];
-  this.latitude = this[key_rad][0][1];
+  /**
+   * @summary Determines the type of a marker by the available properties
+   * @param {PSVMarker.Properties} properties
+   * @param {boolean} [allowNone=false]
+   * @returns {string}
+   * @throws {PSVError} when the marker's type cannot be found
+   */
+  static getType(properties, allowNone = false) {
+    const found = [];
 
-  // compute x/y/z positions
-  this.positions3D = this[key_rad].map(function(coord) {
-    return this.psv.sphericalCoordsToVector3({ longitude: coord[0], latitude: coord[1] });
-  }, this);
-};
+    each(MARKER_TYPES, (type) => {
+      if (type in properties) {
+        found.push(type);
+      }
+    });
+
+    if (found.length === 0 && !allowNone) {
+      throw new PSVError(`missing marker content, either ${Object.keys(MARKER_TYPES).join(', ')}`);
+    }
+    else if (found.length > 1) {
+      throw new PSVError(`multiple marker content, either ${Object.keys(MARKER_TYPES).join(', ')}`);
+    }
+
+    return found[0];
+  }
+
+}
+
+export { PSVMarker };

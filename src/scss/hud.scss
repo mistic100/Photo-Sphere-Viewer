@@ -16,7 +16,6 @@
 }
 
 .psv-marker {
-  cursor: pointer;
   display: none;
 
   &--normal {
@@ -35,5 +34,10 @@
 
   &--visible {
     display: block;
+  }
+
+  &--has-tooltip,
+  &--has-content {
+    cursor: pointer;
   }
 }

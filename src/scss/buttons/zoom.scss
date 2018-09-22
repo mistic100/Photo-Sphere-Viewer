@@ -51,7 +51,7 @@
     }
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: $psv-zoom-range-media-min-width) {
     width: auto;
     padding: 0;
 
@@ -72,8 +72,8 @@
   }
 }
 
-.psv-is-touch .psv-zoom-button {
-  @media (max-width: 600px) {
+.psv-is-touch .psv-zoom-button { /* stylelint-disable-line no-descending-specificity */
+  @media (max-width: $psv-zoom-range-media-min-width) {
     display: none;
   }
 }

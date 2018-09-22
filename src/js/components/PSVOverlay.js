@@ -1,112 +1,133 @@
+import { AbstractComponent } from './AbstractComponent';
+import { EVENTS } from '../data/constants';
+
 /**
- * Overlay class
- * @param {PhotoSphereViewer} psv
- * @constructor
- * @extends module:components.PSVComponent
+ * @summary Overlay class
+ * @extends module:components.AbstractComponent
  * @memberof module:components
  */
-function PSVOverlay(psv) {
-  PSVComponent.call(this, psv);
-
-  this.create();
-  this.hide();
-}
-
-PSVOverlay.prototype = Object.create(PSVComponent.prototype);
-PSVOverlay.prototype.constructor = PSVOverlay;
-
-PSVOverlay.className = 'psv-overlay';
-PSVOverlay.publicMethods = ['showOverlay', 'hideOverlay', 'isOverlayVisible'];
-
-/**
- * @override
- */
-PSVOverlay.prototype.create = function() {
-  PSVComponent.prototype.create.call(this);
-
-  this.image = document.createElement('div');
-  this.image.className = 'psv-overlay-image';
-  this.container.appendChild(this.image);
-
-  this.text = document.createElement('div');
-  this.text.className = 'psv-overlay-text';
-  this.container.appendChild(this.text);
-
-  this.subtext = document.createElement('div');
-  this.subtext.className = 'psv-overlay-subtext';
-  this.container.appendChild(this.subtext);
-
-  this.container.addEventListener('click', this.hideOverlay.bind(this));
-};
-
-/**
- * @override
- */
-PSVOverlay.prototype.destroy = function() {
-  delete this.image;
-  delete this.text;
-  delete this.subtext;
-
-  PSVComponent.prototype.destroy.call(this);
-};
-
-/**
- * @summary Checks if the overlay is visible
- * @returns {boolean}
- */
-PSVOverlay.prototype.isOverlayVisible = function() {
-  return this.visible;
-};
-
-/**
- * @summary Displays an overlay on the viewer
- * @param {Object|string} config
- * @param {string} config.image
- * @param {string} config.text
- * @param {string} config.subtext
- *
- * @example
- * viewer.showOverlay({
- *   image: '<svg></svg>',
- *   text: '....',
- *   subtext: '....'
- * })
- */
-PSVOverlay.prototype.showOverlay = function(config) {
-  if (typeof config === 'string') {
-    config = {
-      text: config
-    };
-  }
-
-  this.image.innerHTML = config.image || '';
-  this.text.innerHTML = config.text || '';
-  this.subtext.innerHTML = config.subtext || '';
-
-  this.show();
+class PSVOverlay extends AbstractComponent {
 
   /**
-   * @event show-overlay
-   * @memberof module:components.PSVOverlay
-   * @summary Trigered when the overlay is shown
+   * @param {PhotoSphereViewer} psv
    */
-  this.psv.trigger('show-overlay');
-};
-
-/**
- * @summary Hides the notification
- * @fires module:components.PSVOverlay.hide-notification
- */
-PSVOverlay.prototype.hideOverlay = function() {
-  if (this.isOverlayVisible()) {
-    this.hide();
+  constructor(psv) {
+    super(psv, 'psv-overlay');
 
     /**
-     * @event hide-overlay
-     * @memberof module:components.PSVOverlay
-     * @summary Trigered when the overlay is hidden
+     * @member {Object}
+     * @private
      */
-    this.psv.trigger('hide-overlay');
-  }
-};
+    this.prop = {
+      id: undefined,
+    };
 
+    /**
+     * Image container
+     * @member {HTMLElement}
+     * @readonly
+     * @private
+     */
+    this.image = document.createElement('div');
+    this.image.className = 'psv-overlay-image';
+    this.container.appendChild(this.image);
+
+    /**
+     * Text container
+     * @member {HTMLElement}
+     * @readonly
+     * @private
+     */
+    this.text = document.createElement('div');
+    this.text.className = 'psv-overlay-text';
+    this.container.appendChild(this.text);
+
+    /**
+     * Subtext container
+     * @member {HTMLElement}
+     * @readonly
+     * @private
+     */
+    this.subtext = document.createElement('div');
+    this.subtext.className = 'psv-overlay-subtext';
+    this.container.appendChild(this.subtext);
+
+    this.container.addEventListener('mouseup', (e) => {
+      e.stopPropagation();
+      this.hide();
+    }, true);
+
+    super.hide();
+  }
+
+  /**
+   * @override
+   */
+  destroy() {
+    delete this.prop;
+    delete this.image;
+    delete this.text;
+    delete this.subtext;
+
+    super.destroy();
+  }
+
+  /**
+   * @summary Displays an overlay on the viewer
+   * @param {Object|string} config
+   * @param {string} [config.id]
+   * @param {string} config.image
+   * @param {string} config.text
+   * @param {string} [config.subtext]
+   *
+   * @example
+   * viewer.showOverlay({
+   *   image: '<svg></svg>',
+   *   text: '....',
+   *   subtext: '....'
+   * })
+   */
+  show(config) {
+    if (typeof config === 'string') {
+      config = { text: config }; // eslint-disable-line no-param-reassign
+    }
+
+    this.prop.id = config.id;
+    this.image.innerHTML = config.image || '';
+    this.text.innerHTML = config.text || '';
+    this.subtext.innerHTML = config.subtext || '';
+
+    super.show();
+
+    /**
+     * @event show-overlay
+     * @memberof module:components.PSVOverlay
+     * @summary Trigered when the overlay is shown
+     * @param {string} id
+     */
+    this.psv.trigger(EVENTS.SHOW_OVERLAY, config.id);
+  }
+
+  /**
+   * @summary Hides the notification
+   * @param {string} [id]
+   * @fires module:components.PSVOverlay.hide-notification
+   */
+  hide(id) {
+    if (this.visible && (!id || !this.prop.id || this.prop.id === id)) {
+      super.hide();
+
+      this.prop.id = undefined;
+
+      /**
+       * @event hide-overlay
+       * @memberof module:components.PSVOverlay
+       * @summary Trigered when the overlay is hidden
+       */
+      this.psv.trigger(EVENTS.HIDE_OVERLAY);
+    }
+  }
+
+}
+
+export { PSVOverlay };

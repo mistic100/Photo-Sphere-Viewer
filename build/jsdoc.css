@@ -1,0 +1,8 @@
+.page-header {
+  background: #09B4E9;
+  background: linear-gradient(135deg, #09B4E9, #15884C);
+}
+
+.navbar a {
+  color: #563d7c !important;
+}

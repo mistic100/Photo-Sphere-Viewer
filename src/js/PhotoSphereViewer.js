@@ -1,594 +1,1097 @@
-/**
- * @typedef {Object} PhotoSphereViewer.Point
- * @summary Object defining a point
- * @property {int} x
- * @property {int} y
- */
+import * as THREE from 'three';
+import { PSVHUD } from './components/PSVHUD';
+import { PSVLoader } from './components/PSVLoader';
+import { PSVNavbar } from './components/PSVNavbar';
+import { PSVNotification } from './components/PSVNotification';
+import { PSVOverlay } from './components/PSVOverlay';
+import { PSVPanel } from './components/PSVPanel';
+import { PSVTooltip } from './components/PSVTooltip';
+import { getConfig } from './data/config';
+import { ANGLE_THRESHOLD, EVENTS, IDS, MARKER_DATA, VIEWER_DATA } from './data/constants';
+import { getIcons } from './data/icons';
+import { SYSTEM } from './data/system';
+import { getTemplates } from './data/templates';
+import { PSVAnimation } from './PSVAnimation';
+import { PSVError } from './PSVError';
+import { PSVDataHelper } from './services/PSVDataHelper';
+import { PSVEventsHandler } from './services/PSVEventsHandler';
+import { PSVRenderer } from './services/PSVRenderer';
+import { PSVTextureLoader } from './services/PSVTextureLoader';
+import {
+  bound,
+  each,
+  exitFullscreen,
+  getAngle,
+  getClosest,
+  getShortestArc,
+  intersect,
+  isEmpty,
+  isFullscreenEnabled,
+  logWarn,
+  requestFullscreen,
+  toggleClass
+} from './utils';
 
 /**
- * @typedef {Object} PhotoSphereViewer.Size
- * @summary Object defining a size
- * @property {int} width
- * @property {int} height
+ * @summary Main class
  */
-
-/**
- * @typedef {Object} PhotoSphereViewer.CssSize
- * @summary Object defining a size in CSS (px, % or auto)
- * @property {string} [width]
- * @property {string} [height]
- */
-
-/**
- * @typedef {Object} PhotoSphereViewer.Position
- * @summary Object defining a spherical position
- * @property {float} longitude
- * @property {float} latitude
- */
-
-/**
- * @typedef {PhotoSphereViewer.Position} PhotoSphereViewer.ExtendedPosition
- * @summary Object defining a spherical or texture position
- * @description A position that can be expressed either in spherical coordinates (radians or degrees) or in texture coordinates (pixels)
- * @property {int} x
- * @property {int} y
- */
-
-/**
- * @typedef {PhotoSphereViewer.ExtendedPosition} PhotoSphereViewer.AnimateOptions
- * @summary Object defining animation options
- * @property {number} zoom - target zoom level between 0 and 100
- */
-
-/**
- * @typedef {Object} PhotoSphereViewer.SphereCorrection
- * @property {number} pan
- * @property {number} tilt
- * @property {number} roll
- */
-
-/**
- * @typedef {PhotoSphereViewer.AnimateOptions} PhotoSphereViewer.PanoramaOptions
- * @summary Object defining panorama and animation options
- * @property {PhotoSphereViewer.SphereCorrection} sphere_correction - new sphere correction to apply to the panorama
- */
-
-/**
- * @typedef {Object} PhotoSphereViewer.CacheItem
- * @summary An entry in the memory cache
- * @property {string} panorama
- * @property {THREE.Texture} image
- * @property {PhotoSphereViewer.PanoData} pano_data
- */
-
-/**
- * @typedef {Object} PhotoSphereViewer.PanoData
- * @summary Crop information of the panorama
- * @property {int} full_width
- * @property {int} full_height
- * @property {int} cropped_width
- * @property {int} cropped_height
- * @property {int} cropped_x
- * @property {int} cropped_y
- */
-
-/**
- * @typedef {Object} PhotoSphereViewer.ClickData
- * @summary Data of the `click` event
- * @property {int} client_x - position in the browser window
- * @property {int} client_y - position in the browser window
- * @property {int} viewer_x - position in the viewer
- * @property {int} viewer_y - position in the viewer
- * @property {float} longitude - position in spherical coordinates
- * @property {float} latitude - position in spherical coordinates
- * @property {int} texture_x - position on the texture
- * @property {int} texture_y - position on the texture
- * @property {PSVMarker} [marker] - clicked marker
- */
-
-/**
- * Viewer class
- * @param {Object} options - see {@link http://photo-sphere-viewer.js.org/#options}
- * @constructor
- * @fires PhotoSphereViewer.ready
- * @throws {PSVError} when the configuration is incorrect
- */
-function PhotoSphereViewer(options) {
-  // return instance if called as a function
-  if (!(this instanceof PhotoSphereViewer)) {
-    return new PhotoSphereViewer(options);
-  }
-
-  // init global system variables
-  if (!PhotoSphereViewer.SYSTEM.loaded) {
-    PhotoSphereViewer._loadSystem();
-  }
+class PhotoSphereViewer {
 
   /**
-   * @summary Configuration object
-   * @member {Object}
-   * @readonly
+   * @param {PhotoSphereViewer.Options} options
+   * @fires PhotoSphereViewer.ready
+   * @throws {PSVError} when the configuration is incorrect
    */
-  this.config = PSVUtils.clone(PhotoSphereViewer.DEFAULTS);
-  PSVUtils.deepmerge(this.config, options);
-
-  // check container
-  if (!options.container) {
-    throw new PSVError('No value given for container.');
-  }
-
-  // must support canvas
-  if (!PhotoSphereViewer.SYSTEM.isCanvasSupported) {
-    throw new PSVError('Canvas is not supported.');
-  }
-
-  // additional scripts if webgl not supported/disabled
-  if ((!PhotoSphereViewer.SYSTEM.isWebGLSupported || !this.config.webgl) && !PSVUtils.checkTHREE('CanvasRenderer', 'Projector')) {
-    throw new PSVError('Missing Three.js components: CanvasRenderer, Projector. Get them from three.js-examples package.');
-  }
-
-  // longitude range must have two values
-  if (this.config.longitude_range && this.config.longitude_range.length !== 2) {
-    this.config.longitude_range = null;
-    console.warn('PhotoSphereViewer: longitude_range must have exactly two elements.');
-  }
-
-  if (this.config.latitude_range) {
-    // latitude range must have two values
-    if (this.config.latitude_range.length !== 2) {
-      this.config.latitude_range = null;
-      console.warn('PhotoSphereViewer: latitude_range must have exactly two elements.');
+  constructor(options) {
+    // return instance if called as a function
+    if (!(this instanceof PhotoSphereViewer)) {
+      return new PhotoSphereViewer(options);
     }
-    // latitude range must be ordered
-    else if (this.config.latitude_range[0] > this.config.latitude_range[1]) {
-      this.config.latitude_range = [this.config.latitude_range[1], this.config.latitude_range[0]];
-      console.warn('PhotoSphereViewer: latitude_range values must be ordered.');
+
+    SYSTEM.load();
+
+    /**
+     * @summary Internal properties
+     * @member {Object}
+     * @protected
+     * @property {boolean} ready - when all components are loaded
+     * @property {boolean} needsUpdate - if the view needs to be renderer
+     * @property {boolean} isCubemap - if the panorama is a cubemap
+     * @property {PhotoSphereViewer.Position} position - current direction of the camera
+     * @property {external:THREE.Vector3} direction - direction of the camera
+     * @property {number} zoomLvl - current zoom level
+     * @property {number} vFov - vertical FOV
+     * @property {number} hFov - horizontal FOV
+     * @property {number} aspect - viewer aspect ratio
+     * @property {number} moveSpeed - move speed (computed with pixel ratio and configuration moveSpeed)
+     * @property {number} gyroAlphaOffset - current alpha offset for gyroscope controls
+     * @property {Function} orientationCb - update callback of the device orientation
+     * @property {Function} autorotateCb - update callback of the automatic rotation
+     * @property {PSVAnimation} animationPromise - promise of the current animation (either go to position or image transition)
+     * @property {Promise} loadingPromise - promise of the setPanorama method
+     * @property startTimeout - timeout id of the automatic rotation delay
+     * @property {PhotoSphereViewer.Size} size - size of the container
+     * @property {PhotoSphereViewer.PanoData} panoData - panorama metadata
+     * @property {external:NoSleep} noSleep - NoSleep.js instance
+     */
+    this.prop = {
+      ready           : false,
+      needsUpdate     : false,
+      fullscreen      : false,
+      isCubemap       : undefined,
+      position        : {
+        longitude: 0,
+        latitude : 0,
+      },
+      direction       : null,
+      zoomLvl         : 0,
+      vFov            : 0,
+      hFov            : 0,
+      aspect          : 0,
+      moveSpeed       : 0.1,
+      gyroAlphaOffset : 0,
+      orientationCb   : null,
+      autorotateCb    : null,
+      animationPromise: null,
+      loadingPromise  : null,
+      startTimeout    : null,
+      size            : {
+        width : 0,
+        height: 0,
+      },
+      panoData        : {
+        fullWidth    : 0,
+        fullHeight   : 0,
+        croppedWidth : 0,
+        croppedHeight: 0,
+        croppedX     : 0,
+        croppedY     : 0,
+      },
+      noSleep         : null,
+    };
+
+    /**
+     * @summary Configuration holder
+     * @type {PhotoSphereViewer.Options}
+     * @readonly
+     */
+    this.config = getConfig(options);
+
+    /**
+     * @summary Top most parent
+     * @member {HTMLElement}
+     * @readonly
+     */
+    this.parent = (typeof options.container === 'string') ? document.getElementById(options.container) : options.container;
+    this.parent[VIEWER_DATA] = this;
+
+    /**
+     * @summary Main container
+     * @member {HTMLElement}
+     * @readonly
+     */
+    this.container = document.createElement('div');
+    this.container.classList.add('psv-container');
+    this.parent.appendChild(this.container);
+
+    /**
+     * @summary Templates holder
+     * @type {Object<string, Function>}
+     * @readonly
+     */
+    this.templates = getTemplates(options.templates);
+
+    /**
+     * @summary Icons holder
+     * @type {Object<string, string>}
+     * @readonly
+     */
+    this.icons = getIcons(options.icons);
+
+    /**
+     * @summary Main render controller
+     * @type {module:services.PSVRenderer}
+     * @readonly
+     */
+    this.renderer = new PSVRenderer(this);
+
+    /**
+     * @summary Textures loader
+     * @type {module:services.PSVTextureLoader}
+     * @readonly
+     */
+    this.textureLoader = new PSVTextureLoader(this);
+
+    /**
+     * @summary Main event handler
+     * @type {module:services.PSVEventsHandler}
+     * @readonly
+     */
+    this.eventsHandler = new PSVEventsHandler(this);
+
+    /**
+     * @summary Utilities to help converting data
+     * @type {module:services.PSVDataHelper}
+     * @readonly
+     */
+    this.dataHelper = new PSVDataHelper(this);
+
+    /**
+     * @member {module:components.PSVLoader}
+     * @readonly
+     */
+    this.loader = new PSVLoader(this);
+
+    /**
+     * @member {module:components.PSVNavbar}
+     * @readonly
+     */
+    this.navbar = new PSVNavbar(this);
+
+    /**
+     * @member {module:components.PSVHUD}
+     * @readonly
+     */
+    this.hud = new PSVHUD(this);
+
+    /**
+     * @member {module:components.PSVPanel}
+     * @readonly
+     */
+    this.panel = new PSVPanel(this);
+
+    /**
+     * @member {module:components.PSVTooltip}
+     * @readonly
+     */
+    this.tooltip = new PSVTooltip(this.hud);
+
+    /**
+     * @member {module:components.PSVNotification}
+     * @readonly
+     */
+    this.notification = new PSVNotification(this);
+
+    /**
+     * @member {module:components.PSVOverlay}
+     * @readonly
+     */
+    this.overlay = new PSVOverlay(this);
+
+    this.eventsHandler.init();
+
+    // apply container size
+    this.resize(this.config.size);
+
+    // actual move speed depends on pixel-ratio
+    this.prop.moveSpeed = THREE.Math.degToRad(this.config.moveSpeed / SYSTEM.pixelRatio);
+
+    // load panorama
+    if (this.config.panorama) {
+      this.setPanorama(this.config.panorama);
     }
-  }
-  // migrate legacy tilt_up_max and tilt_down_max
-  else if (this.config.tilt_up_max !== undefined || this.config.tilt_down_max !== undefined) {
-    this.config.latitude_range = [
-      this.config.tilt_down_max !== undefined ? this.config.tilt_down_max - Math.PI / 4 : -PSVUtils.HalfPI,
-      this.config.tilt_up_max !== undefined ? this.config.tilt_up_max + Math.PI / 4 : PSVUtils.HalfPI
-    ];
-    console.warn('PhotoSphereViewer: tilt_up_max and tilt_down_max are deprecated, use latitude_range instead.');
-  }
 
-  // min_fov and max_fov must be ordered
-  if (this.config.max_fov < this.config.min_fov) {
-    var temp_fov = this.config.max_fov;
-    this.config.max_fov = this.config.min_fov;
-    this.config.min_fov = temp_fov;
-    console.warn('PhotoSphereViewer: max_fov cannot be lower than min_fov.');
-  }
+    // enable GUI after first render
+    this.once('render', () => {
+      if (this.config.navbar) {
+        this.container.classList.add('psv--has-navbar');
+        this.navbar.show();
+      }
 
-  // cache_texture must be a positive integer or false
-  if (this.config.cache_texture && (!PSVUtils.isInteger(this.config.cache_texture) || this.config.cache_texture < 0)) {
-    this.config.cache_texture = PhotoSphereViewer.DEFAULTS.cache_texture;
-    console.warn('PhotoSphereViewer: invalid value for cache_texture');
-  }
+      this.hud.show();
 
-  // panorama_roll is deprecated
-  if ('panorama_roll' in this.config) {
-    this.config.sphere_correction.roll = this.config.panorama_roll;
-    console.warn('PhotoSphereViewer: panorama_roll is deprecated, use sphere_correction.roll instead');
-  }
+      if (this.config.markers) {
+        this.hud.setMarkers(this.config.markers);
+      }
 
-  // gyroscope is deprecated
-  if ('gyroscope' in this.config) {
-    console.warn('PhotoSphereViewer: gyroscope is deprecated, the control is automatically created if DeviceOrientationControls.js is loaded');
-  }
+      // Queue autorotate
+      if (this.config.autorotateStartup) {
+        this.prop.startTimeout = setTimeout(() => this.startAutorotate(), this.config.autorotateDelay);
+      }
 
-  // keyboard=true becomes the default map
-  if (this.config.keyboard === true) {
-    this.config.keyboard = PSVUtils.clone(PhotoSphereViewer.DEFAULTS.keyboard);
-  }
+      this.prop.ready = true;
 
-  // min_fov/max_fov between 1 and 179
-  this.config.min_fov = PSVUtils.bound(this.config.min_fov, 1, 179);
-  this.config.max_fov = PSVUtils.bound(this.config.max_fov, 1, 179);
-
-  // default default_fov is middle point between min_fov and max_fov
-  if (this.config.default_fov === null) {
-    this.config.default_fov = this.config.max_fov / 2 + this.config.min_fov / 2;
-  }
-  // default_fov between min_fov and max_fov
-  else {
-    this.config.default_fov = PSVUtils.bound(this.config.default_fov, this.config.min_fov, this.config.max_fov);
-  }
-
-  // default anim_lat is default_lat
-  if (this.config.anim_lat === null) {
-    this.config.anim_lat = this.config.default_lat;
-  }
-  // parse anim_lat, is between -PI/2 and PI/2
-  else {
-    this.config.anim_lat = PSVUtils.parseAngle(this.config.anim_lat, true);
-  }
-
-  // parse longitude_range, between 0 and 2*PI
-  if (this.config.longitude_range) {
-    this.config.longitude_range = this.config.longitude_range.map(function(angle) {
-      return PSVUtils.parseAngle(angle);
+      setTimeout(() => {
+        /**
+         * @event ready
+         * @memberof PhotoSphereViewer
+         * @summary Triggered when the panorama image has been loaded and the viewer is ready to perform the first render
+         */
+        this.trigger(EVENTS.READY);
+      }, 0);
     });
-  }
 
-  // parse latitude_range, between -PI/2 and PI/2
-  if (this.config.latitude_range) {
-    this.config.latitude_range = this.config.latitude_range.map(function(angle) {
-      return PSVUtils.parseAngle(angle, true);
-    });
-  }
-
-  // parse anim_speed
-  this.config.anim_speed = PSVUtils.parseSpeed(this.config.anim_speed);
-
-  // reactivate the navbar if the caption is provided
-  if (this.config.caption && !this.config.navbar) {
-    this.config.navbar = ['caption'];
-  }
-
-  // translate boolean fisheye to amount
-  if (this.config.fisheye === true) {
-    this.config.fisheye = 1;
-  }
-  else if (this.config.fisheye === false) {
-    this.config.fisheye = 0;
+    SYSTEM.isTouchEnabled.then(enabled => toggleClass(this.container, 'psv--is-touch', enabled));
   }
 
   /**
-   * @summary Top most parent
-   * @member {HTMLElement}
-   * @readonly
+   * @summary Destroys the viewer
+   * @description The memory used by the ThreeJS context is not totally cleared. This will be fixed as soon as possible.
    */
-  this.parent = (typeof options.container === 'string') ? document.getElementById(options.container) : options.container;
+  destroy() {
+    this.__stopAll();
+    this.stopKeyboardControl();
+    this.stopNoSleep();
+    this.exitFullscreen();
+    this.unlockOrientation();
+
+    this.eventsHandler.destroy();
+    this.renderer.destroy();
+    this.textureLoader.destroy();
+    this.dataHelper.destroy();
+
+    this.loader.destroy();
+    this.navbar.destroy();
+    this.tooltip.destroy();
+    this.notification.destroy();
+    this.hud.destroy();
+    this.panel.destroy();
+    this.overlay.destroy();
+
+    this.parent.removeChild(this.container);
+    delete this.parent[VIEWER_DATA];
+
+    delete this.parent;
+    delete this.container;
+
+    delete this.loader;
+    delete this.navbar;
+    delete this.hud;
+    delete this.panel;
+    delete this.tooltip;
+    delete this.notification;
+    delete this.overlay;
+
+    delete this.config;
+    delete this.templates;
+    delete this.icons;
+  }
 
   /**
-   * @summary Main container
-   * @member {HTMLElement}
-   * @readonly
+   * @summary Returns the current position of the camera
+   * @returns {PhotoSphereViewer.Position}
    */
-  this.container = null;
+  getPosition() {
+    return {
+      longitude: this.prop.position.longitude,
+      latitude : this.prop.position.latitude,
+    };
+  }
 
   /**
-   * @member {module:components.PSVLoader}
-   * @readonly
+   * @summary Returns the current zoom level
+   * @returns {number}
    */
-  this.loader = null;
+  getZoomLevel() {
+    return this.prop.zoomLvl;
+  }
 
   /**
-   * @member {module:components.PSVNavBar}
-   * @readonly
+   * @summary Returns the current viewer size
+   * @returns {PhotoSphereViewer.Size}
    */
-  this.navbar = null;
+  getSize() {
+    return {
+      width : this.prop.size.width,
+      height: this.prop.size.height,
+    };
+  }
 
   /**
-   * @member {module:components.PSVHUD}
-   * @readonly
+   * @summary Checks if the automatic rotation is enabled
+   * @returns {boolean}
    */
-  this.hud = null;
+  isAutorotateEnabled() {
+    return !!this.prop.autorotateCb;
+  }
 
   /**
-   * @member {module:components.PSVPanel}
-   * @readonly
+   * @summary Checks if the gyroscope is enabled
+   * @returns {boolean}
    */
-  this.panel = null;
+  isGyroscopeEnabled() {
+    return !!this.prop.orientationCb;
+  }
 
   /**
-   * @member {module:components.PSVTooltip}
-   * @readonly
+   * @summary Checks if the stereo viewx is enabled
+   * @returns {boolean}
    */
-  this.tooltip = null;
+  isStereoEnabled() {
+    return !!this.renderer.stereoEffect;
+  }
 
   /**
-   * @member {module:components.PSVNotification}
-   * @readonly
+   * @summary Checks if the viewer is in fullscreen
+   * @returns {boolean}
    */
-  this.notification = null;
-
-  /**
-   * @member {module:components.PSVOverlay}
-   * @readonly
-   */
-  this.overlay = null;
-
-  /**
-   * @member {HTMLElement}
-   * @readonly
-   * @private
-   */
-  this.canvas_container = null;
-
-  /**
-   * @member {THREE.WebGLRenderer | THREE.CanvasRenderer}
-   * @readonly
-   * @private
-   */
-  this.renderer = null;
-
-  /**
-   * @member {THREE.StereoEffect}
-   * @private
-   */
-  this.stereoEffect = null;
-
-  /**
-   * @member {NoSleep}
-   * @private
-   */
-  this.noSleep = null;
-
-  /**
-   * @member {THREE.Scene}
-   * @readonly
-   * @private
-   */
-  this.scene = null;
-
-  /**
-   * @member {THREE.PerspectiveCamera}
-   * @readonly
-   * @private
-   */
-  this.camera = null;
-
-  /**
-   * @member {THREE.Mesh}
-   * @readonly
-   * @private
-   */
-  this.mesh = null;
-
-  /**
-   * @member {THREE.Raycaster}
-   * @readonly
-   * @private
-   */
-  this.raycaster = null;
-
-  /**
-   * @member {THREE.DeviceOrientationControls}
-   * @readonly
-   * @private
-   */
-  this.doControls = null;
-
-  /**
-   * @summary Internal properties
-   * @member {Object}
-   * @readonly
-   * @property {boolean} needsUpdate - if the view needs to be renderer
-   * @property {boolean} isCubemap - if the panorama is a cubemap
-   * @property {PhotoSphereViewer.Position} position - current direction of the camera
-   * @property {THREE.Vector3} direction - direction of the camera
-   * @property {float} anim_speed - parsed animation speed (rad/sec)
-   * @property {int} zoom_lvl - current zoom level
-   * @property {float} vFov - vertical FOV
-   * @property {float} hFov - horizontal FOV
-   * @property {float} aspect - viewer aspect ratio
-   * @property {float} move_speed - move speed (computed with pixel ratio and configuration move_speed)
-   * @property {boolean} moving - is the user moving
-   * @property {boolean} zooming - is the user zooming
-   * @property {int} start_mouse_x - start x position of the click/touch
-   * @property {int} start_mouse_y - start y position of the click/touch
-   * @property {int} mouse_x - current x position of the cursor
-   * @property {int} mouse_y - current y position of the cursor
-   * @property {Array[]} mouse_history - list of latest positions of the cursor, [time, x, y]
-   * @property {int} gyro_alpha_offset - current alpha offset for gyroscope controls
-   * @property {int} pinch_dist - distance between fingers when zooming
-   * @property main_reqid - animationRequest id of the main event loop
-   * @property {function} orientation_cb - update callback of the device orientation
-   * @property {function} autorotate_cb - update callback of the automatic rotation
-   * @property {Promise} animation_promise - promise of the current animation (either go to position or image transition)
-   * @property {Promise} loading_promise - promise of the setPanorama method
-   * @property start_timeout - timeout id of the automatic rotation delay
-   * @property {PhotoSphereViewer.ClickData} dblclick_data - temporary storage of click data between two clicks
-   * @property dblclick_timeout - timeout id for double click
-   * @property {PhotoSphereViewer.CacheItem[]} cache - cached panoramas
-   * @property {PhotoSphereViewer.Size} size - size of the container
-   * @property {PhotoSphereViewer.PanoData} pano_data - panorama metadata
-   */
-  this.prop = {
-    needsUpdate: true,
-    isCubemap: undefined,
-    position: {
-      longitude: 0,
-      latitude: 0
-    },
-    ready: false,
-    direction: null,
-    anim_speed: 0,
-    zoom_lvl: 0,
-    vFov: 0,
-    hFov: 0,
-    aspect: 0,
-    move_speed: 0.1,
-    moving: false,
-    zooming: false,
-    start_mouse_x: 0,
-    start_mouse_y: 0,
-    mouse_x: 0,
-    mouse_y: 0,
-    mouse_history: [],
-    gyro_alpha_offset: 0,
-    pinch_dist: 0,
-    main_reqid: null,
-    orientation_cb: null,
-    autorotate_cb: null,
-    animation_promise: null,
-    loading_promise: null,
-    start_timeout: null,
-    dblclick_data: null,
-    dblclick_timeout: null,
-    cache: [],
-    size: {
-      width: 0,
-      height: 0
-    },
-    pano_data: {
-      full_width: 0,
-      full_height: 0,
-      cropped_width: 0,
-      cropped_height: 0,
-      cropped_x: 0,
-      cropped_y: 0
+  isFullscreenEnabled() {
+    if (SYSTEM.fullscreenEvent) {
+      return isFullscreenEnabled(this.container);
     }
-  };
-
-  // init templates
-  Object.keys(PhotoSphereViewer.TEMPLATES).forEach(function(tpl) {
-    if (!this.config.templates[tpl]) {
-      this.config.templates[tpl] = PhotoSphereViewer.TEMPLATES[tpl];
+    else {
+      return this.prop.fullscreen;
     }
-    if (typeof this.config.templates[tpl] === 'string') {
-      this.config.templates[tpl] = doT.template(this.config.templates[tpl]);
-    }
-  }, this);
-
-  // init
-  this.parent.photoSphereViewer = this;
-
-  // create actual container
-  this.container = document.createElement('div');
-  this.container.classList.add('psv-container');
-  this.parent.appendChild(this.container);
-
-  // apply container size
-  if (this.config.size !== null) {
-    this._setViewerSize(this.config.size);
-  }
-  this._onResize();
-
-  // apply default zoom level
-  var tempZoom = (this.config.default_fov - this.config.min_fov) / (this.config.max_fov - this.config.min_fov) * 100;
-  this.config.default_zoom_lvl = tempZoom - 2 * (tempZoom - 50);
-
-  // actual move speed depends on pixel-ratio
-  this.prop.move_speed = THREE.Math.degToRad(this.config.move_speed / PhotoSphereViewer.SYSTEM.pixelRatio);
-
-  // load loader (!!)
-  this.loader = new PSVLoader(this);
-  this.loader.hide();
-
-  // load navbar
-  this.navbar = new PSVNavBar(this);
-  this.navbar.hide();
-
-  // load hud
-  this.hud = new PSVHUD(this);
-  this.hud.hide();
-
-  // load side panel
-  this.panel = new PSVPanel(this);
-
-  // load hud tooltip
-  this.tooltip = new PSVTooltip(this.hud);
-
-  // load notification
-  this.notification = new PSVNotification(this);
-
-  // load overlay
-  this.overlay = new PSVOverlay(this);
-
-  // attach event handlers
-  this._bindEvents();
-
-  // load panorama
-  if (this.config.panorama) {
-    this.setPanorama(this.config.panorama);
   }
 
-  // enable GUI after first render
-  this.once('render', function() {
-    if (this.config.navbar) {
-      this.container.classList.add('psv-container--has-navbar');
-      this.navbar.show();
-    }
+  /**
+   * @summary Flags the view has changed for the next render
+   */
+  needsUpdate() {
+    this.prop.needsUpdate = true;
+  }
 
-    this.hud.show();
-
-    if (this.config.markers) {
-      this.config.markers.forEach(function(marker) {
-        this.hud.addMarker(marker, false);
-      }, this);
-
-      this.hud.renderMarkers();
-    }
-
-    // Queue animation
-    if (this.config.time_anim !== false) {
-      this.prop.start_timeout = window.setTimeout(this.startAutorotate.bind(this), this.config.time_anim);
-    }
-
-    setTimeout(function() {
-      // start render loop
-      this._run();
+  /**
+   * @summary Resizes the canvas when the window is resized
+   * @fires PhotoSphereViewer.size-updated
+   */
+  autoSize() {
+    if (this.container.clientWidth !== this.prop.size.width || this.container.clientHeight !== this.prop.size.height) {
+      this.prop.size.width = Math.round(this.container.clientWidth);
+      this.prop.size.height = Math.round(this.container.clientHeight);
+      this.prop.aspect = this.prop.size.width / this.prop.size.height;
+      this.needsUpdate();
 
       /**
-       * @event ready
+       * @event size-updated
        * @memberof PhotoSphereViewer
-       * @summary Triggered when the panorama image has been loaded and the viewer is ready to perform the first render
+       * @summary Triggered when the viewer size changes
+       * @param {PhotoSphereViewer.Size} size
        */
-      this.trigger('ready');
-    }.bind(this), 0);
-  }.bind(this));
-
-  PhotoSphereViewer.SYSTEM.touchEnabled.then(function(enabled) {
-    if (enabled) {
-      this.container.classList.add('psv-is-touch');
+      this.trigger(EVENTS.SIZE_UPDATED, this.getSize());
     }
-  }.bind(this));
+  }
+
+  /**
+   * @summary Loads a new panorama file
+   * @description Loads a new panorama file, optionally changing the camera position/zoom and activating the transition animation.<br>
+   * If the "options" parameter is not defined, the camera will not move and the ongoing animation will continue
+   * @param {string|string[]} path - URL of the new panorama file
+   * @param {PhotoSphereViewer.PanoramaOptions} [options]
+   * @returns {Promise}
+   * @throws {PSVError} when another panorama is already loading
+   */
+  setPanorama(path, options = {}) {
+    if (this.prop.loadingPromise !== null) {
+      return Promise.reject(new PSVError('Loading already in progress'));
+    }
+
+    if (isEmpty(options) && !this.prop.ready) {
+      options.longitude = this.config.defaultLong;
+      options.latitude = this.config.defaultLat;
+      options.zoom = this.config.defaultZoomLvl;
+      options.sphereCorrection = this.config.sphereCorrection;
+    }
+
+    if (options.transition === undefined) {
+      options.transition = true;
+    }
+
+    const positionProvided = this.dataHelper.isExtendedPosition(options);
+    const zoomProvided = 'zoom' in options;
+
+    if (positionProvided || zoomProvided) {
+      this.__stopAll();
+    }
+
+    this.hideError();
+
+    this.config.panorama = path;
+
+    const done = () => {
+      this.loader.hide();
+      this.renderer.show();
+
+      this.prop.loadingPromise = null;
+    };
+
+    if (!options.transition || !this.config.transitionDuration || !this.prop.ready) {
+      this.loader.show();
+      this.renderer.hide();
+
+      this.prop.loadingPromise = this.textureLoader.loadTexture(this.config.panorama)
+        .then((textureData) => {
+          this.renderer.setTexture(textureData);
+
+          if (options.sphereCorrection) {
+            this.renderer.setSphereCorrection(options.sphereCorrection);
+          }
+          if (positionProvided) {
+            this.rotate(options);
+          }
+          if (zoomProvided) {
+            this.zoom(options.zoom);
+          }
+        })
+        .catch(e => console.error(e))
+        .then(done, done);
+    }
+    else {
+      if (this.config.transitionLoader) {
+        this.loader.show();
+      }
+
+      this.prop.loadingPromise = this.textureLoader.loadTexture(this.config.panorama)
+        .then((textureData) => {
+          this.loader.hide();
+
+          return this.renderer.transition(textureData, options);
+        })
+        .catch(e => console.error(e))
+        .then(done, done);
+    }
+
+    return this.prop.loadingPromise;
+  }
+
+  /**
+   * @summary Starts the automatic rotation
+   * @fires PhotoSphereViewer.autorotate
+   */
+  startAutorotate() {
+    this.__stopAll();
+
+    this.prop.autorotateCb = (() => {
+      let last;
+      let elapsed;
+
+      return (timestamp) => {
+        elapsed = last === undefined ? 0 : timestamp - last;
+        last = timestamp;
+
+        this.rotate({
+          longitude: this.prop.position.longitude + this.config.autorotateSpeed * elapsed / 1000,
+          latitude : this.prop.position.latitude - (this.prop.position.latitude - this.config.autorotateLat) / 200,
+        });
+      };
+    })();
+
+    this.on(EVENTS.BEFORE_RENDER, this.prop.autorotateCb);
+
+    /**
+     * @event autorotate
+     * @memberof PhotoSphereViewer
+     * @summary Triggered when the automatic rotation is enabled/disabled
+     * @param {boolean} enabled
+     */
+    this.trigger(EVENTS.AUTOROTATE, true);
+  }
+
+  /**
+   * @summary Stops the automatic rotation
+   * @fires PhotoSphereViewer.autorotate
+   */
+  stopAutorotate() {
+    if (this.prop.startTimeout) {
+      clearTimeout(this.prop.startTimeout);
+      this.prop.startTimeout = null;
+    }
+
+    if (this.isAutorotateEnabled()) {
+      this.off(EVENTS.BEFORE_RENDER, this.prop.autorotateCb);
+      this.prop.autorotateCb = null;
+
+      this.trigger(EVENTS.AUTOROTATE, false);
+    }
+  }
+
+  /**
+   * @summary Starts or stops the automatic rotation
+   */
+  toggleAutorotate() {
+    if (this.isAutorotateEnabled()) {
+      this.stopAutorotate();
+    }
+    else {
+      this.startAutorotate();
+    }
+  }
+
+  /**
+   * @summary Enables the gyroscope navigation if available
+   * @fires PhotoSphereViewer.gyroscope-updated
+   * @throws {PSVError} if DeviceOrientationControls.js is missing
+   */
+  startGyroscopeControl() {
+    if (SYSTEM.checkTHREE('DeviceOrientationControls')) {
+      return SYSTEM.isDeviceOrientationSupported.then((supported) => {
+        if (supported) {
+          this.__stopAll();
+
+          this.renderer.startGyroscopeControl();
+
+          /**
+           * @event gyroscope-updated
+           * @memberof PhotoSphereViewer
+           * @summary Triggered when the gyroscope mode is enabled/disabled
+           * @param {boolean} enabled
+           */
+          this.trigger(EVENTS.GYROSCOPE_UPDATED, true);
+
+          return true;
+        }
+        else {
+          logWarn('gyroscope not available');
+          return Promise.reject();
+        }
+      });
+    }
+    else {
+      throw new PSVError('Missing Three.js components: DeviceOrientationControls.');
+    }
+  }
+
+  /**
+   * @summary Disables the gyroscope navigation
+   * @fires PhotoSphereViewer.gyroscope-updated
+   */
+  stopGyroscopeControl() {
+    if (this.isGyroscopeEnabled()) {
+      this.renderer.stopGyroscopeControl();
+
+      this.trigger(EVENTS.GYROSCOPE_UPDATED, false);
+    }
+  }
+
+  /**
+   * @summary Enables or disables the gyroscope navigation
+   */
+  toggleGyroscopeControl() {
+    if (this.isGyroscopeEnabled()) {
+      this.stopGyroscopeControl();
+    }
+    else {
+      this.startGyroscopeControl();
+    }
+  }
+
+  /**
+   * @summary Enables NoSleep.js
+   */
+  startNoSleep() {
+    if (!('NoSleep' in window)) {
+      logWarn('NoSleep is not available');
+      return;
+    }
+
+    if (!this.prop.noSleep) {
+      this.prop.noSleep = new window.NoSleep();
+    }
+
+    this.prop.noSleep.enable();
+  }
+
+  /**
+   * @summary Disables NoSleep.js
+   */
+  stopNoSleep() {
+    if (this.prop.noSleep) {
+      this.prop.noSleep.disable();
+    }
+  }
+
+  /**
+   * @summary Enables the stereo view
+   * @description
+   *  - enables NoSleep.js
+   *  - enables full screen
+   *  - starts gyroscope controle
+   *  - hides hud, navbar and panel
+   *  - instanciate StereoEffect
+   * @throws {PSVError} if StereoEffect.js is not available
+   */
+  startStereoView() {
+    if (SYSTEM.checkTHREE('DeviceOrientationControls', 'StereoEffect')) {
+      // Need to be in the main event queue
+      this.startNoSleep();
+      this.enterFullscreen();
+      this.lockOrientation();
+
+      this.startGyroscopeControl().then(() => {
+        this.renderer.startStereoView();
+        this.needsUpdate();
+
+        this.hud.hide();
+        this.navbar.hide();
+        this.panel.hide();
+
+        /**
+         * @event stereo-updated
+         * @memberof PhotoSphereViewer
+         * @summary Triggered when the stereo view is enabled/disabled
+         * @param {boolean} enabled
+         */
+        this.trigger(EVENTS.STEREO_UPATED, true);
+
+        this.notification.show({
+          content: this.config.lang.stereoNotification,
+          timeout: 3000,
+        });
+      }, () => {
+        this.unlockOrientation();
+        this.exitFullscreen();
+        this.stopNoSleep();
+      });
+    }
+    else {
+      throw new PSVError('Missing Three.js components: StereoEffect, DeviceOrientationControls.');
+    }
+  }
+
+  /**
+   * @summary Disables the stereo view
+   */
+  stopStereoView() {
+    if (this.isStereoEnabled()) {
+      this.renderer.stopStereoView();
+      this.needsUpdate();
+
+      this.hud.show();
+      this.navbar.show();
+
+      this.unlockOrientation();
+      this.exitFullscreen();
+      this.stopNoSleep();
+      this.stopGyroscopeControl();
+
+      this.trigger(EVENTS.STEREO_UPATED, false);
+    }
+  }
+
+  /**
+   * @summary Enables or disables the stereo view
+   */
+  toggleStereoView() {
+    if (this.isStereoEnabled()) {
+      this.stopStereoView();
+    }
+    else {
+      this.startStereoView();
+    }
+  }
+
+  /**
+   * @summary Displays an error message
+   * @param {string} message
+   */
+  showError(message) {
+    this.overlay.show({
+      id   : IDS.ERROR,
+      image: this.icons.error,
+      text : message,
+    });
+  }
+
+  /**
+   * @summary Hides the error message
+   */
+  hideError() {
+    this.overlay.hide(IDS.ERROR);
+  }
+
+  /**
+   * @summary Tries to lock the device in landscape or display a message
+   */
+  lockOrientation() {
+    let displayRotateMessageTimeout;
+
+    const displayRotateMessage = () => {
+      if (this.isStereoEnabled() && window.innerHeight > window.innerWidth) {
+        this.overlay.show({
+          id     : IDS.PLEASE_ROTATE,
+          image  : this.icons.mobileRotate,
+          text   : this.config.lang.pleaseRotate[0],
+          subtext: this.config.lang.pleaseRotate[1],
+        });
+      }
+
+      if (displayRotateMessageTimeout) {
+        clearTimeout(displayRotateMessageTimeout);
+        displayRotateMessageTimeout = null;
+      }
+    };
+
+    if (window.screen && window.screen.orientation) {
+      window.screen.orientation.lock('landscape').then(null, () => displayRotateMessage());
+      displayRotateMessageTimeout = setTimeout(() => displayRotateMessage(), 500);
+    }
+    else {
+      displayRotateMessage();
+    }
+  }
+
+  /**
+   * @summary Unlock the device orientation
+   */
+  unlockOrientation() {
+    if (window.screen && window.screen.orientation) {
+      window.screen.orientation.unlock();
+    }
+    else {
+      this.overlay.hide(IDS.PLEASE_ROTATE);
+    }
+  }
+
+  /**
+   * @summary Rotates the view to specific longitude and latitude
+   * @param {PhotoSphereViewer.ExtendedPosition} position
+   * @param {boolean} [ignoreRange=false] - ignore longitudeRange and latitudeRange
+   * @fires PhotoSphereViewer.position-updated
+   */
+  rotate(position, ignoreRange = false) {
+    const cleanPosition = this.dataHelper.cleanPosition(position);
+
+    if (!ignoreRange) {
+      const { rangedPosition, sidesReached } = this.dataHelper.applyRanges(cleanPosition);
+
+      if (intersect(['left', 'right'], sidesReached).length > 0) {
+        this.renderer.reverseAutorotate();
+      }
+
+      this.prop.position.longitude = rangedPosition.longitude;
+      this.prop.position.latitude = rangedPosition.latitude;
+    }
+    else {
+      this.prop.position.longitude = cleanPosition.longitude;
+      this.prop.position.latitude = cleanPosition.latitude;
+    }
+
+    this.needsUpdate();
+
+    /**
+     * @event position-updated
+     * @memberof PhotoSphereViewer
+     * @summary Triggered when the view longitude and/or latitude changes
+     * @param {PhotoSphereViewer.Position} position
+     */
+    this.trigger(EVENTS.POSITION_UPDATED, this.getPosition());
+  }
+
+  /**
+   * @summary Rotates the view to specific longitude and latitude with a smooth animation
+   * @param {PhotoSphereViewer.AnimateOptions} options - position and/or zoom level
+   * @param {string|number} speed - animation speed or duration (in milliseconds)
+   * @returns {PSVAnimation}
+   */
+  animate(options, speed) {
+    this.__stopAll();
+
+    const positionProvided = this.dataHelper.isExtendedPosition(options);
+    const zoomProvided = 'zoom' in options;
+
+    const animProperties = {};
+    let duration;
+
+    // clean/filter position and compute duration
+    if (positionProvided) {
+      const cleanPosition = this.dataHelper.cleanPosition(options);
+      const { rangedPosition } = this.dataHelper.applyRanges(cleanPosition);
+
+      const currentPosition = this.prop.position;
+      const dLongitude = Math.abs(rangedPosition.longitude - currentPosition.longitude);
+      const dLatitude = Math.abs(rangedPosition.latitude - currentPosition.latitude);
+
+      if (dLongitude >= ANGLE_THRESHOLD || dLatitude >= ANGLE_THRESHOLD) {
+        // longitude offset for shortest arc
+        const tOffset = getShortestArc(currentPosition.longitude, rangedPosition.longitude);
+
+        animProperties.longitude = { start: currentPosition.longitude, end: currentPosition.longitude + tOffset };
+        animProperties.latitude = { start: currentPosition.latitude, end: rangedPosition.latitude };
+
+        duration = this.dataHelper.speedToDuration(speed, getAngle(currentPosition, rangedPosition));
+      }
+    }
+
+    // clean/filter zoom and compute duration
+    if (zoomProvided) {
+      const dZoom = Math.abs(options.zoom - this.prop.zoomLvl);
+
+      if (dZoom >= 1) {
+        animProperties.zoom = { start: this.prop.zoomLvl, end: options.zoom };
+
+        if (!duration) {
+          // if animating zoom only and a speed is given, use an arbitrary PI/4 to compute the duration
+          duration = this.dataHelper.speedToDuration(speed, Math.PI / 4 * dZoom / 100);
+        }
+      }
+    }
+
+    // if no animation needed
+    if (!duration) {
+      if (positionProvided) {
+        this.rotate(options);
+      }
+      if (zoomProvided) {
+        this.zoom(options.zoom);
+      }
+
+      return PSVAnimation.resolve();
+    }
+
+    this.prop.animationPromise = new PSVAnimation({
+      properties: animProperties,
+      duration  : duration,
+      easing    : 'inOutSine',
+      onTick    : (properties) => {
+        if (positionProvided) {
+          this.rotate(properties, true);
+        }
+        if (zoomProvided) {
+          this.zoom(properties.zoom);
+        }
+      },
+    });
+
+    return this.prop.animationPromise;
+  }
+
+  /**
+   * @summary Stops the ongoing animation
+   * @description The return value is a Promise because the is no guaranty the animation can be stopped synchronously.
+   * @returns {Promise} Resolved when the animation has ben cancelled
+   */
+  stopAnimation() {
+    if (this.prop.animationPromise) {
+      return new Promise((resolve) => {
+        this.prop.animationPromise.finally(resolve);
+        this.prop.animationPromise.cancel();
+        this.prop.animationPromise = null;
+      });
+    }
+    else {
+      return Promise.resolve();
+    }
+  }
+
+  /**
+   * @summary Zooms to a specific level between `max_fov` and `min_fov`
+   * @param {number} level - new zoom level from 0 to 100
+   * @fires PhotoSphereViewer.zoom-updated
+   */
+  zoom(level) {
+    this.prop.zoomLvl = bound(level, 0, 100);
+    this.prop.vFov = this.dataHelper.zoomLevelToFov(this.prop.zoomLvl);
+    this.prop.hFov = this.dataHelper.vFovToHFov(this.prop.vFov);
+    this.needsUpdate();
+
+    /**
+     * @event zoom-updated
+     * @memberof PhotoSphereViewer
+     * @summary Triggered when the zoom level changes
+     * @param {number} zoomLevel
+     */
+    this.trigger(EVENTS.ZOOM_UPDATED, this.getZoomLevel());
+  }
+
+  /**
+   * @summary Increases the zoom level by 1
+   */
+  zoomIn() {
+    if (this.prop.zoomLvl < 100) {
+      this.zoom(this.prop.zoomLvl + this.config.zoomSpeed);
+    }
+  }
+
+  /**
+   * @summary Decreases the zoom level by 1
+   */
+  zoomOut() {
+    if (this.prop.zoomLvl > 0) {
+      this.zoom(this.prop.zoomLvl - this.config.zoomSpeed);
+    }
+  }
+
+  /**
+   * @summary Resizes the viewer
+   * @param {PhotoSphereViewer.CssSize} size
+   */
+  resize(size) {
+    ['width', 'height'].forEach((dim) => {
+      if (size && size[dim]) {
+        if (/^[0-9.]+$/.test(size[dim])) {
+          size[dim] += 'px';
+        }
+        this.parent.style[dim] = size[dim];
+      }
+    });
+
+    this.autoSize();
+  }
+
+  /**
+   * @summary Enters the fullscreen mode
+   */
+  enterFullscreen() {
+    if (SYSTEM.fullscreenEvent) {
+      requestFullscreen(this.container);
+    }
+    else {
+      this.container.classList.add('psv-container--fullscreen');
+      this.prop.fullscreen = true;
+      this.autoSize();
+    }
+  }
+
+  /**
+   * @summary Exits the fullscreen mode
+   */
+  exitFullscreen() {
+    if (SYSTEM.fullscreenEvent) {
+      exitFullscreen();
+    }
+    else {
+      this.container.classList.remove('psv-container--fullscreen');
+      this.prop.fullscreen = false;
+      this.autoSize();
+    }
+  }
+
+  /**
+   * @summary Enters or exits the fullscreen mode
+   */
+  toggleFullscreen() {
+    if (!this.isFullscreenEnabled()) {
+      this.enterFullscreen();
+    }
+    else {
+      this.exitFullscreen();
+    }
+  }
+
+  /**
+   * @summary Enables the keyboard controls (done automatically when entering fullscreen)
+   */
+  startKeyboardControl() {
+    this.eventsHandler.enableKeyboard();
+  }
+
+  /**
+   * @summary Disables the keyboard controls (done automatically when exiting fullscreen)
+   */
+  stopKeyboardControl() {
+    this.eventsHandler.disableKeyboard();
+  }
+
+  /**
+   * @summary Stops all current animations
+   * @private
+   */
+  __stopAll() {
+    this.stopAutorotate();
+    this.stopAnimation();
+    this.stopGyroscopeControl();
+    this.stopStereoView();
+  }
+
+  /**
+   * @summary Toggles the visibility of markers list
+   */
+  toggleMarkersList() {
+    if (this.panel.prop.id === IDS.MARKERS_LIST) {
+      this.hideMarkersList();
+    }
+    else {
+      this.showMarkersList();
+    }
+  }
+
+  /**
+   * @summary Opens side panel with list of markers
+   * @fires module:components.PSVHUD.filter:render-markers-list
+   */
+  showMarkersList() {
+    let markers = [];
+    each(this.hud.markers, (marker) => {
+      if (marker.visible && !marker.config.hideList) {
+        markers.push(marker);
+      }
+    });
+
+    /**
+     * @event filter:render-markers-list
+     * @memberof module:components.PSVHUD
+     * @summary Used to alter the list of markers displayed on the side-panel
+     * @param {PSVMarker[]} markers
+     * @returns {PSVMarker[]}
+     */
+    markers = this.change(EVENTS.RENDER_MARKERS_LIST, markers);
+
+    this.panel.show({
+      id      : IDS.MARKERS_LIST,
+      content : this.templates.markersList(markers, this),
+      noMargin: true,
+    });
+
+    const markersList = this.panel.container.querySelector('.psv-markers-list');
+
+    markersList.addEventListener('click', (e) => {
+      const li = e.target ? getClosest(e.target, 'li') : undefined;
+      const markerId = li ? li.dataset[MARKER_DATA] : undefined;
+
+      if (markerId) {
+        const marker = this.hud.getMarker(markerId);
+
+        /**
+         * @event select-marker-list
+         * @memberof module:components.PSVHUD
+         * @summary Triggered when a marker is selected from the side panel
+         * @param {PSVMarker} marker
+         */
+        this.trigger(EVENTS.SELECT_MARKER_LIST, marker);
+
+        this.hud.gotoMarker(marker, 1000);
+        this.hideMarkersList();
+      }
+    });
+  }
+
+  /**
+   * @summary Closes side panel if it contains the list of markers
+   */
+  hideMarkersList() {
+    this.panel.hide(IDS.MARKERS_LIST);
+  }
+
 }
 
-/**
- * @summary Triggers an event on the viewer
- * @function trigger
- * @memberof PhotoSphereViewer
- * @instance
- * @param {string} name
- * @param {...*} [arguments]
- * @returns {uEvent.Event}
- */
-
-/**
- * @summary Triggers an event on the viewer and returns the modified value
- * @function change
- * @memberof PhotoSphereViewer
- * @instance
- * @param {string} name
- * @param {*} value
- * @param {...*} [arguments]
- * @returns {*}
- */
-
-/**
- * @summary Attaches an event listener on the viewer
- * @function on
- * @memberof PhotoSphereViewer
- * @instance
- * @param {string|Object.<string, function>} name - event name or events map
- * @param {function} [callback]
- * @returns {PhotoSphereViewer}
- */
-
-/**
- * @summary Removes an event listener from the viewer
- * @function off
- * @memberof PhotoSphereViewer
- * @instance
- * @param {string|Object.<string, function>} name - event name or events map
- * @param {function} [callback]
- * @returns {PhotoSphereViewer}
- */
-
-/**
- * @summary Attaches an event listener called once on the viewer
- * @function once
- * @memberof PhotoSphereViewer
- * @instance
- * @param {string|Object.<string, function>} name - event name or events map
- * @param {function} [callback]
- * @returns {PhotoSphereViewer}
- */
-
-uEvent.mixin(PhotoSphereViewer);
+export { PhotoSphereViewer };
