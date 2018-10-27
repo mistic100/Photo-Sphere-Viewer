@@ -577,18 +577,21 @@ PhotoSphereViewer.prototype._createCubemap = function(scale) {
 /**
  * @summary Performs transition between the current and a new texture
  * @param {THREE.Texture} texture
- * @param {PhotoSphereViewer.Position} [position]
+ * @param {PhotoSphereViewer.AnimateOptions} options
  * @returns {Promise}
  * @private
  * @throws {PSVError} if the panorama is a cubemap
  */
-PhotoSphereViewer.prototype._transition = function(texture, position) {
+PhotoSphereViewer.prototype._transition = function(texture, options) {
   var mesh;
 
+  var positionProvided = this.isExtendedPosition(options);
+  var zoomProvided = options.zoom !== undefined;
+
   if (this.prop.isCubemap) {
-    if (position) {
+    if (positionProvided) {
       console.warn('PhotoSphereViewer: cannot perform cubemap transition to different position.');
-      position = undefined;
+      positionProvided = false;
     }
 
     mesh = this._createCubemap(0.9);
@@ -608,13 +611,15 @@ PhotoSphereViewer.prototype._transition = function(texture, position) {
   }
 
   // rotate the new sphere to make the target position face the camera
-  if (position) {
+  if (positionProvided) {
+    this.cleanPosition(options);
+
     // Longitude rotation along the vertical axis
-    mesh.rotateY(position.longitude - this.prop.position.longitude);
+    mesh.rotateY(options.longitude - this.prop.position.longitude);
 
     // Latitude rotation along the camera horizontal axis
     var axis = new THREE.Vector3(0, 1, 0).cross(this.camera.getWorldDirection()).normalize();
-    var q = new THREE.Quaternion().setFromAxisAngle(axis, position.latitude - this.prop.position.latitude);
+    var q = new THREE.Quaternion().setFromAxisAngle(axis, options.latitude - this.prop.position.latitude);
     mesh.quaternion.multiplyQuaternions(q, mesh.quaternion);
 
     // FIXME: find a better way to handle ranges
@@ -629,7 +634,8 @@ PhotoSphereViewer.prototype._transition = function(texture, position) {
 
   return new PSVAnimation({
     properties: {
-      opacity: { start: 0.0, end: 1.0 }
+      opacity: { start: 0.0, end: 1.0 },
+      zoom: zoomProvided ? { start: this.prop.zoom_lvl, end: options.zoom } : undefined
     },
     duration: this.config.transition.duration,
     easing: 'outCubic',
@@ -641,6 +647,10 @@ PhotoSphereViewer.prototype._transition = function(texture, position) {
       }
       else {
         mesh.material.opacity = properties.opacity;
+      }
+
+      if (zoomProvided) {
+        this.zoom(properties.zoom);
       }
 
       this.needsUpdate();
@@ -655,8 +665,8 @@ PhotoSphereViewer.prototype._transition = function(texture, position) {
       mesh.geometry = null;
 
       // actually rotate the camera
-      if (position) {
-        this.rotate(position);
+      if (positionProvided) {
+        this.rotate(options);
       }
     }.bind(this));
 };

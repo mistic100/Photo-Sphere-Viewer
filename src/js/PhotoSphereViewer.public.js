@@ -169,24 +169,28 @@ PhotoSphereViewer.prototype.destroy = function() {
  * If the "position" is not defined, the camera will not move and the ongoing animation will continue<br>
  * "config.transition" must be configured for "transition" to be taken in account
  * @param {string|string[]} path - URL of the new panorama file
- * @param {PhotoSphereViewer.ExtendedPosition} [position]
+ * @param {PhotoSphereViewer.AnimateOptions} [options]
  * @param {boolean} [transition=false]
  * @returns {Promise}
  * @throws {PSVError} when another panorama is already loading
  */
-PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
+PhotoSphereViewer.prototype.setPanorama = function(path, options, transition) {
   if (this.prop.loading_promise !== null) {
     throw new PSVError('Loading already in progress');
   }
 
-  if (typeof position === 'boolean') {
-    transition = position;
-    position = undefined;
+  if (typeof options === 'boolean') {
+    transition = options;
+    options = undefined;
+  }
+  if (!options) {
+    options = {};
   }
 
-  if (position) {
-    this.cleanPosition(position);
+  var positionProvided = this.isExtendedPosition(options);
+  var zoomProvided = 'zoom' in options;
 
+  if (positionProvided || zoomProvided) {
     this._stopAll();
   }
 
@@ -209,8 +213,11 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
       .then(function(texture) {
         this._setTexture(texture);
 
-        if (position) {
-          this.rotate(position);
+        if (positionProvided) {
+          this.rotate(options);
+        }
+        if (zoomProvided) {
+          this.zoom(options.zoom);
         }
       }.bind(this))
       .then(done, done);
@@ -224,7 +231,7 @@ PhotoSphereViewer.prototype.setPanorama = function(path, position, transition) {
       .then(function(texture) {
         this.loader.hide();
 
-        return this._transition(texture, position);
+        return this._transition(texture, options);
       }.bind(this))
       .then(done, done);
   }
@@ -545,21 +552,24 @@ PhotoSphereViewer.prototype.toggleStereoView = function() {
 /**
  * @summary Rotates the view to specific longitude and latitude
  * @param {PhotoSphereViewer.ExtendedPosition} position
+ * @param {boolean} [ignoreRange=false] - ignore longitude_range and latitude_range
  * @fires PhotoSphereViewer._side-reached
  * @fires PhotoSphereViewer.position-updated
  */
-PhotoSphereViewer.prototype.rotate = function(position) {
+PhotoSphereViewer.prototype.rotate = function(position, ignoreRange) {
   this.cleanPosition(position);
 
-  /**
-   * @event _side-reached
-   * @memberof PhotoSphereViewer
-   * @param {string} side
-   * @private
-   */
-  this.applyRanges(position).forEach(
-    this.trigger.bind(this, '_side-reached')
-  );
+  if (!ignoreRange) {
+    /**
+     * @event _side-reached
+     * @memberof PhotoSphereViewer
+     * @param {string} side
+     * @private
+     */
+    this.applyRanges(position).forEach(
+      this.trigger.bind(this, '_side-reached')
+    );
+  }
 
   this.prop.position.longitude = position.longitude;
   this.prop.position.latitude = position.latitude;
@@ -576,49 +586,77 @@ PhotoSphereViewer.prototype.rotate = function(position) {
 
 /**
  * @summary Rotates the view to specific longitude and latitude with a smooth animation
- * @param {PhotoSphereViewer.ExtendedPosition} position
- * @param {string|int} duration - animation speed or duration (in milliseconds)
+ * @param {PhotoSphereViewer.AnimateOptions} options
+ * @param {string|int} [speed] - animation speed or duration (in milliseconds)
  * @returns {PSVAnimation}
  */
-PhotoSphereViewer.prototype.animate = function(position, duration) {
+PhotoSphereViewer.prototype.animate = function(options, speed) {
   this._stopAll();
 
-  this.cleanPosition(position);
+  var positionProvided = this.isExtendedPosition(options);
+  var zoomProvided = 'zoom' in options;
 
-  var dLongitude = Math.abs(position.longitude - this.prop.position.longitude);
-  var dLatitude = Math.abs(position.latitude - this.prop.position.latitude);
-  if (!duration || dLongitude < PhotoSphereViewer.ANGLE_THRESHOLD && dLatitude < PhotoSphereViewer.ANGLE_THRESHOLD) {
-    this.rotate(position);
-    return Promise.resolve();
+  var animProperties = {};
+  var duration;
+
+  // clean/filter position and compute duration
+  if (positionProvided) {
+    this.cleanPosition(options);
+    this.applyRanges(options);
+
+    var currentPosition = this.prop.position;
+    var dLongitude = Math.abs(options.longitude - currentPosition.longitude);
+    var dLatitude = Math.abs(options.latitude - currentPosition.latitude);
+
+    if (dLongitude >= PhotoSphereViewer.ANGLE_THRESHOLD || dLatitude >= PhotoSphereViewer.ANGLE_THRESHOLD) {
+      // longitude offset for shortest arc
+      var tOffset = PSVUtils.getShortestArc(this.prop.position.longitude, options.longitude);
+
+      animProperties.longitude = { start: currentPosition.longitude, end: currentPosition.longitude + tOffset };
+      animProperties.latitude = { start: currentPosition.latitude, end: options.latitude };
+
+      duration = this.speedToDuration(speed, PSVUtils.getAngle(currentPosition, options));
+    }
   }
 
-  this.applyRanges(position).forEach(
-    this.trigger.bind(this, '_side-reached')
-  );
+  // clean/filter zoom and compute duration
+  if (zoomProvided) {
+    var dZoom = Math.abs(options.zoom - this.prop.zoom_lvl);
 
-  if (!duration && typeof duration !== 'number') {
-    // desired radial speed
-    duration = duration ? PSVUtils.parseSpeed(duration) : this.config.anim_speed;
-    // get the angle between current position and target
-    var angle = Math.acos(
-      Math.cos(this.prop.position.latitude) * Math.cos(position.latitude) * Math.cos(this.prop.position.longitude - position.longitude) +
-      Math.sin(this.prop.position.latitude) * Math.sin(position.latitude)
-    );
-    // compute duration
-    duration = angle / duration * 1000;
+    if (dZoom >= 1) {
+      animProperties.zoom = { start: this.prop.zoom_lvl, end: options.zoom };
+
+      if (!duration) {
+        // if animating zoom only and a speed is given, use an arbitrary PI/2 to compute the duration
+        duration = this.speedToDuration(speed, Math.PI / 4 * dZoom / 100);
+      }
+    }
   }
 
-  // longitude offset for shortest arc
-  var tOffset = PSVUtils.getShortestArc(this.prop.position.longitude, position.longitude);
+  // if no animation needed
+  if (!duration) {
+    if (positionProvided) {
+      this.rotate(options);
+    }
+    if (zoomProvided) {
+      this.zoom(options.zoom);
+    }
+
+    return PSVAnimation.resolve();
+  }
 
   this.prop.animation_promise = new PSVAnimation({
-    properties: {
-      longitude: { start: this.prop.position.longitude, end: this.prop.position.longitude + tOffset },
-      latitude: { start: this.prop.position.latitude, end: position.latitude }
-    },
+    properties: animProperties,
     duration: duration,
     easing: 'inOutSine',
-    onTick: this.rotate.bind(this)
+    onTick: function(properties) {
+      if (positionProvided) {
+        this.rotate(properties, true);
+      }
+      if (zoomProvided) {
+        this.zoom(properties.zoom);
+      }
+    }.bind(this)
   });
 
   return this.prop.animation_promise;
@@ -648,7 +686,7 @@ PhotoSphereViewer.prototype.stopAnimation = function() {
  * @fires PhotoSphereViewer.zoom-updated
  */
 PhotoSphereViewer.prototype.zoom = function(level) {
-  this.prop.zoom_lvl = PSVUtils.bound(Math.round(level), 0, 100);
+  this.prop.zoom_lvl = PSVUtils.bound(level, 0, 100);
   this.prop.vFov = this.config.max_fov + (this.prop.zoom_lvl / 100) * (this.config.min_fov - this.config.max_fov);
   this.prop.hFov = THREE.Math.radToDeg(2 * Math.atan(Math.tan(THREE.Math.degToRad(this.prop.vFov) / 2) * this.prop.aspect));
   this.needsUpdate();

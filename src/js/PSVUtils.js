@@ -463,6 +463,22 @@ PSVUtils.getShortestArc = function(from, to) {
 };
 
 /**
+ * @summary Computes the angle between the current position and a target position
+ * @param {PhotoSphereViewer.Position} position1
+ * @param {PhotoSphereViewer.Position} position2
+ * @returns {number}
+ */
+PSVUtils.getAngle = function(position1, position2) {
+  return Math.acos(
+    Math.cos(position1.latitude) *
+    Math.cos(position2.latitude) *
+    Math.cos(position1.longitude - position2.longitude) +
+    Math.sin(position1.latitude) *
+    Math.sin(position2.latitude)
+  );
+};
+
+/**
  * @summary Translate CSS values like "top center" or "10% 50%" as top and left positions
  * @description The implementation is as close as possible to the "background-position" specification
  * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/background-position}

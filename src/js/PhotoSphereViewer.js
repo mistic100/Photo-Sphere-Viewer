@@ -37,6 +37,12 @@
  */
 
 /**
+ * @typedef {PhotoSphereViewer.ExtendedPosition} PhotoSphereViewer.AnimateOptions
+ * @summary Object defining animation options
+ * @property {number} zoom - target zoom level between 0 and 100
+ */
+
+/**
  * @typedef {Object} PhotoSphereViewer.CacheItem
  * @summary An entry in the memory cache
  * @property {string} panorama
@@ -454,7 +460,7 @@ function PhotoSphereViewer(options) {
   this._onResize();
 
   // apply default zoom level
-  var tempZoom = Math.round((this.config.default_fov - this.config.min_fov) / (this.config.max_fov - this.config.min_fov) * 100);
+  var tempZoom = (this.config.default_fov - this.config.min_fov) / (this.config.max_fov - this.config.min_fov) * 100;
   this.zoom(tempZoom - 2 * (tempZoom - 50));
 
   // actual move speed depends on pixel-ratio

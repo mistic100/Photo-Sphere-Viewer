@@ -111,14 +111,16 @@
       desc: 'Bryce Canyon National Park <b>&copy; Mark Doliner</b>',
       target: {
         longitude: 3.848,
-        latitude: -0.244
+        latitude: -0.244,
+        zoom: 50
       }
     }, {
       url: 'Bryce-Canyon-By-Jess-Beauchemin.jpg',
       desc: 'Bryce Canyon National Park <b>&copy; Jess Beauchemin</b>',
       target: {
         longitude: 3.715,
-        latitude: 0.574
+        latitude: 0.574,
+        zoom: 50
       }
     }
   ];
@@ -143,7 +145,7 @@
       {
         title: 'Change image',
         className: 'custom-button',
-        content: '↻',
+        content: '🔄',
         onClick: (function() {
           var i = 0;
           var loading = false;
@@ -164,6 +166,18 @@
               });
           }
         }())
+      },
+      {
+        title  : 'Random position',
+        className: 'custom-button',
+        content: '🔀',
+        onClick: function() {
+          PSV.animate({
+            longitude: (Math.random() - 0.5) * 3 / 2 * Math.PI,
+            latitude: (Math.random() - 0.5) * 3 / 4 * Math.PI,
+            zoom: Math.random() * 60 + 20
+          }, 1500);
+        }
       },
       'caption', 'gyroscope', 'stereo', 'fullscreen'
     ],

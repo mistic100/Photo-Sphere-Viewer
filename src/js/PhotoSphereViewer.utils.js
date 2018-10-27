@@ -32,6 +32,24 @@ PhotoSphereViewer.prototype._setViewerSize = function(size) {
 };
 
 /**
+ * @summary Converts a speed into a duration from current position to a new position
+ * @param {string|number} value
+ * @param {number} angle
+ * @returns {number}
+ */
+PhotoSphereViewer.prototype.speedToDuration = function(value, angle) {
+  if (!value || typeof value !== 'number') {
+    // desired radial speed
+    var speed = value ? PSVUtils.parseSpeed(value) : this.config.anim_speed;
+    // compute duration
+    return angle / Math.abs(speed) * 1000;
+  }
+  else {
+    return Math.abs(value);
+  }
+};
+
+/**
  * @summary Converts pixel texture coordinates to spherical radians coordinates
  * @param {PhotoSphereViewer.Point} point
  * @returns {PhotoSphereViewer.Position}
@@ -147,6 +165,17 @@ PhotoSphereViewer.prototype.cleanPosition = function(position) {
 
   position.longitude = PSVUtils.parseAngle(position.longitude);
   position.latitude = PSVUtils.parseAngle(position.latitude, true);
+};
+
+/**
+ * @summary Checks if an object is a {PhotoSphereViewer.ExtendedPosition}, ie has x/y or longitude/latitude
+ * @param {object} object
+ * @returns {boolean}
+ */
+PhotoSphereViewer.prototype.isExtendedPosition = function(object) {
+  return [['x', 'y'], ['longitude', 'latitude']].some(function(keys) {
+    return keys[0] in object && keys[1] in object;
+  });
 };
 
 /**
