@@ -30,8 +30,6 @@
  * @typedef {PhotoSphereViewer.Position} PhotoSphereViewer.ExtendedPosition
  * @summary Object defining a spherical or texture position
  * @description A position that can be expressed either in spherical coordinates (radians or degrees) or in texture coordinates (pixels)
- * @property {float} longitude
- * @property {float} latitude
  * @property {int} x
  * @property {int} y
  */
@@ -40,6 +38,19 @@
  * @typedef {PhotoSphereViewer.ExtendedPosition} PhotoSphereViewer.AnimateOptions
  * @summary Object defining animation options
  * @property {number} zoom - target zoom level between 0 and 100
+ */
+
+/**
+ * @typedef {Object} PhotoSphereViewer.SphereCorrection
+ * @property {number} pan
+ * @property {number} tilt
+ * @property {number} roll
+ */
+
+/**
+ * @typedef {PhotoSphereViewer.AnimateOptions} PhotoSphereViewer.PanoramaOptions
+ * @summary Object defining panorama and animation options
+ * @property {PhotoSphereViewer.SphereCorrection} sphere_correction - new sphere correction to apply to the panorama
  */
 
 /**
@@ -185,17 +196,6 @@ function PhotoSphereViewer(options) {
   else {
     this.config.default_fov = PSVUtils.bound(this.config.default_fov, this.config.min_fov, this.config.max_fov);
   }
-
-  // parse default_long, is between 0 and 2*PI
-  this.config.default_long = PSVUtils.parseAngle(this.config.default_long);
-
-  // parse default_lat, is between -PI/2 and PI/2
-  this.config.default_lat = PSVUtils.parseAngle(this.config.default_lat, true);
-
-  // parse camera_correction, is between -PI/2 and PI/2
-  this.config.sphere_correction.pan = PSVUtils.parseAngle(this.config.sphere_correction.pan, true);
-  this.config.sphere_correction.tilt = PSVUtils.parseAngle(this.config.sphere_correction.tilt, true);
-  this.config.sphere_correction.roll = PSVUtils.parseAngle(this.config.sphere_correction.roll, true);
 
   // default anim_lat is default_lat
   if (this.config.anim_lat === null) {
@@ -461,16 +461,10 @@ function PhotoSphereViewer(options) {
 
   // apply default zoom level
   var tempZoom = (this.config.default_fov - this.config.min_fov) / (this.config.max_fov - this.config.min_fov) * 100;
-  this.zoom(tempZoom - 2 * (tempZoom - 50));
+  this.config.default_zoom_lvl = tempZoom - 2 * (tempZoom - 50);
 
   // actual move speed depends on pixel-ratio
   this.prop.move_speed = THREE.Math.degToRad(this.config.move_speed / PhotoSphereViewer.SYSTEM.pixelRatio);
-
-  // set default position
-  this.rotate({
-    longitude: this.config.default_long,
-    latitude: this.config.default_lat
-  });
 
   // load loader (!!)
   this.loader = new PSVLoader(this);

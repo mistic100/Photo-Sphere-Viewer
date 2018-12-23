@@ -169,7 +169,7 @@ PhotoSphereViewer.prototype.destroy = function() {
  * If the "position" is not defined, the camera will not move and the ongoing animation will continue<br>
  * "config.transition" must be configured for "transition" to be taken in account
  * @param {string|string[]} path - URL of the new panorama file
- * @param {PhotoSphereViewer.AnimateOptions} [options]
+ * @param {PhotoSphereViewer.PanoramaOptions} [options]
  * @param {boolean} [transition=false]
  * @returns {Promise}
  * @throws {PSVError} when another panorama is already loading
@@ -183,7 +183,15 @@ PhotoSphereViewer.prototype.setPanorama = function(path, options, transition) {
     transition = options;
     options = undefined;
   }
-  if (!options) {
+  if (!options && !this.scene) {
+    options = {
+      longitude: this.config.default_long,
+      latitude: this.config.default_lat,
+      zoom: this.config.default_zoom_lvl,
+      sphere_correction: this.config.sphere_correction
+    };
+  }
+  else if (!options) {
     options = {};
   }
 
@@ -212,6 +220,10 @@ PhotoSphereViewer.prototype.setPanorama = function(path, options, transition) {
     this.prop.loading_promise = this._loadTexture(this.config.panorama)
       .then(function(texture) {
         this._setTexture(texture);
+
+        if (options.sphere_correction && !this.prop.isCubemap) {
+          this._setSphereCorrection(this.mesh, options.sphere_correction);
+        }
 
         if (positionProvided) {
           this.rotate(options);

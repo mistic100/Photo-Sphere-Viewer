@@ -121,7 +121,9 @@ PSVAnimation.prototype._run = function(timestamp) {
   if (progress < 1.0) {
     // interpolate properties
     for (name in this._options.properties) {
-      current[name] = this._options.properties[name].start + (this._options.properties[name].end - this._options.properties[name].start) * this._options.easing(progress);
+      if (this._options.properties[name]) {
+        current[name] = this._options.properties[name].start + (this._options.properties[name].end - this._options.properties[name].start) * this._options.easing(progress);
+      }
     }
 
     this._options.onTick(current, progress);
@@ -131,7 +133,9 @@ PSVAnimation.prototype._run = function(timestamp) {
   else {
     // call onTick one last time with final values
     for (name in this._options.properties) {
-      current[name] = this._options.properties[name].end;
+      if (this._options.properties[name]) {
+        current[name] = this._options.properties[name].end;
+      }
     }
 
     this._options.onTick(current, 1.0);

@@ -536,11 +536,23 @@ PhotoSphereViewer.prototype._createSphere = function(scale) {
 
   var mesh = new THREE.Mesh(geometry, material);
   mesh.scale.x = -1;
-  mesh.rotation.x = this.config.sphere_correction.tilt;
-  mesh.rotation.y = this.config.sphere_correction.pan;
-  mesh.rotation.z = this.config.sphere_correction.roll;
 
   return mesh;
+};
+
+/**
+ * @summary Applies a SphereCorrection to a Mesh
+ * @param {THREE.Mesh} mesh
+ * @param {PhotoSphereViewer.SphereCorrection} sphere_correction
+ * @private
+ */
+PhotoSphereViewer.prototype._setSphereCorrection = function(mesh, sphere_correction) {
+  this.cleanSphereCorrection(sphere_correction);
+  mesh.rotation.set(
+    sphere_correction.tilt,
+    sphere_correction.pan,
+    sphere_correction.roll
+  );
 };
 
 /**
@@ -577,7 +589,7 @@ PhotoSphereViewer.prototype._createCubemap = function(scale) {
 /**
  * @summary Performs transition between the current and a new texture
  * @param {THREE.Texture} texture
- * @param {PhotoSphereViewer.AnimateOptions} options
+ * @param {PhotoSphereViewer.PanoramaOptions} options
  * @returns {Promise}
  * @private
  * @throws {PSVError} if the panorama is a cubemap
@@ -608,6 +620,10 @@ PhotoSphereViewer.prototype._transition = function(texture, options) {
     mesh.material.map = texture;
     mesh.material.transparent = true;
     mesh.material.opacity = 0;
+
+    if (options.sphere_correction) {
+      this._setSphereCorrection(mesh, options.sphere_correction);
+    }
   }
 
   // rotate the new sphere to make the target position face the camera
@@ -615,12 +631,12 @@ PhotoSphereViewer.prototype._transition = function(texture, options) {
     this.cleanPosition(options);
 
     // Longitude rotation along the vertical axis
-    mesh.rotateY(options.longitude - this.prop.position.longitude);
+    var verticalAxis = new THREE.Vector3(0, 1, 0);
+    mesh.rotateOnWorldAxis(verticalAxis, options.longitude - this.prop.position.longitude);
 
     // Latitude rotation along the camera horizontal axis
-    var axis = new THREE.Vector3(0, 1, 0).cross(this.camera.getWorldDirection()).normalize();
-    var q = new THREE.Quaternion().setFromAxisAngle(axis, options.latitude - this.prop.position.latitude);
-    mesh.quaternion.multiplyQuaternions(q, mesh.quaternion);
+    var horizontalAxis = new THREE.Vector3(0, 1, 0).cross(this.camera.getWorldDirection()).normalize();
+    mesh.rotateOnWorldAxis(horizontalAxis, options.latitude - this.prop.position.latitude);
 
     // FIXME: find a better way to handle ranges
     if (this.config.latitude_range || this.config.longitude_range) {
@@ -667,6 +683,13 @@ PhotoSphereViewer.prototype._transition = function(texture, options) {
       // actually rotate the camera
       if (positionProvided) {
         this.rotate(options);
+      }
+
+      if (options.sphere_correction) {
+        this._setSphereCorrection(this.mesh, options.sphere_correction);
+      }
+      else {
+        this._setSphereCorrection(this.mesh, {});
       }
     }.bind(this));
 };
