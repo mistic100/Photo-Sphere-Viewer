@@ -5,3 +5,4 @@ example
 bower_components
 Gruntfile.js
 bower.json
+yarn.lock

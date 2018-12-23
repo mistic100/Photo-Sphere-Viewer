@@ -5,3 +5,5 @@
 /*.iml
 /dist
 /doc
+/package-lock.json
+/yarn.lock
