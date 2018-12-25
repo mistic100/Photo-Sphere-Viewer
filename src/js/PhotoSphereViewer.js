@@ -149,6 +149,14 @@ class PhotoSphereViewer {
     this.icons = getIcons(options.icons);
 
     /**
+     * @summary All child components
+     * @type {module:components.AbstractComponent[]}
+     * @readonly
+     * @package
+     */
+    this.children = [];
+
+    /**
      * @summary Main render controller
      * @type {module:services.PSVRenderer}
      * @readonly
@@ -245,7 +253,7 @@ class PhotoSphereViewer {
       }
 
       // Queue autorotate
-      if (this.config.autorotateStartup) {
+      if (this.config.autorotateDelay) {
         this.prop.startTimeout = setTimeout(() => this.startAutorotate(), this.config.autorotateDelay);
       }
 
@@ -280,13 +288,8 @@ class PhotoSphereViewer {
     this.textureLoader.destroy();
     this.dataHelper.destroy();
 
-    this.loader.destroy();
-    this.navbar.destroy();
-    this.tooltip.destroy();
-    this.notification.destroy();
-    this.hud.destroy();
-    this.panel.destroy();
-    this.overlay.destroy();
+    this.children.forEach(child => child.destroy());
+    this.children.length = 0;
 
     this.parent.removeChild(this.container);
     delete this.parent[VIEWER_DATA];
@@ -305,6 +308,14 @@ class PhotoSphereViewer {
     delete this.config;
     delete this.templates;
     delete this.icons;
+  }
+
+  /**
+   * @summary Refresh UI
+   * @package
+   */
+  refresh() {
+    this.children.forEach(child => child.refresh());
   }
 
   /**
@@ -976,13 +987,15 @@ class PhotoSphereViewer {
    * @summary Exits the fullscreen mode
    */
   exitFullscreen() {
-    if (SYSTEM.fullscreenEvent) {
-      exitFullscreen();
-    }
-    else {
-      this.container.classList.remove('psv-container--fullscreen');
-      this.prop.fullscreen = false;
-      this.autoSize();
+    if (this.isFullscreenEnabled()) {
+      if (SYSTEM.fullscreenEvent) {
+        exitFullscreen();
+      }
+      else {
+        this.container.classList.remove('psv-container--fullscreen');
+        this.prop.fullscreen = false;
+        this.autoSize();
+      }
     }
   }
 

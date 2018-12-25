@@ -1,29 +1,29 @@
-import { EVENTS } from '../data/constants';
+import { EVENTS, IDS } from '../data/constants';
 import { AbstractButton } from './AbstractButton';
 
 /**
- * @summary Navigation bar markers button class
+ * @summary Navigation bar markers list button class
  * @extends module:components/buttons.AbstractButton
  * @memberof module:components/buttons
  */
-class PSVMarkersButton extends AbstractButton {
+class PSVMarkersListButton extends AbstractButton {
 
   static get id() {
-    return 'markers';
+    return 'markersList';
   }
 
   static get icon() {
-    return 'pin';
+    return 'pinList';
   }
 
   /**
    * @param {module:components.PSVNavbar} navbar
    */
   constructor(navbar) {
-    super(navbar, 'psv-button--hover-scale psv-markers-button');
+    super(navbar, 'psv-button--hover-scale psv-markers-list-button');
 
-    this.psv.on(EVENTS.SHOW_HUD, this);
-    this.psv.on(EVENTS.HIDE_HUD, this);
+    this.psv.on(EVENTS.OPEN_PANEL, this);
+    this.psv.on(EVENTS.CLOSE_PANEL, this);
 
     this.hide();
   }
@@ -32,8 +32,8 @@ class PSVMarkersButton extends AbstractButton {
    * @override
    */
   destroy() {
-    this.psv.off(EVENTS.SHOW_HUD, this);
-    this.psv.off(EVENTS.HIDE_HUD, this);
+    this.psv.off(EVENTS.OPEN_PANEL, this);
+    this.psv.off(EVENTS.CLOSE_PANEL, this);
 
     super.destroy();
   }
@@ -59,8 +59,8 @@ class PSVMarkersButton extends AbstractButton {
     /* eslint-disable */
     switch (e.type) {
       // @formatter:off
-      case EVENTS.SHOW_HUD: this.toggleActive(true); break;
-      case EVENTS.HIDE_HUD: this.toggleActive(false); break;
+      case EVENTS.OPEN_PANEL:  this.toggleActive(e.args[0] === IDS.MARKERS_LIST); break;
+      case EVENTS.CLOSE_PANEL: this.toggleActive(false); break;
       // @formatter:on
     }
     /* eslint-enable */
@@ -68,17 +68,12 @@ class PSVMarkersButton extends AbstractButton {
 
   /**
    * @override
-   * @description Toggles markers
+   * @description Toggles markers list
    */
   __onClick() {
-    if (this.psv.hud.isVisible()) {
-      this.psv.hud.hide();
-    }
-    else {
-      this.psv.hud.show();
-    }
+    this.psv.toggleMarkersList();
   }
 
 }
 
-export { PSVMarkersButton };
+export { PSVMarkersListButton };

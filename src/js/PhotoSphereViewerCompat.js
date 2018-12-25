@@ -28,11 +28,18 @@ class PhotoSphereViewerCompat extends PhotoSphereViewer {
       options.defaultZoomLvl = (defaultFov - minFov) / (maxFov - minFov) * 100;
     }
 
-    if (options.time_anim === false) {
-      options.autorotateStartup = false;
+    if (!('time_anim' in options)) {
+      options.autorotateDelay = 2000;
+    }
+    else if (options.time_anim === false) {
+      options.autorotateDelay = null;
     }
     else if (typeof options.time_anim === 'number') {
       options.autorotateDelay = options.time_anim;
+    }
+
+    if ('anim_speed' in options) {
+      options.autorotateSpeed = options.anim_speed;
     }
 
     if ('anim_lat' in options) {
@@ -54,6 +61,16 @@ class PhotoSphereViewerCompat extends PhotoSphereViewer {
     if ('panorama_roll' in options) {
       options.sphereCorrection = options.sphereCorrection || {};
       options.sphereCorrection.roll = options.panorama_roll;
+    }
+
+    if (typeof options.navbar === 'string') {
+      options.navbar = options.navbar.split(' ');
+    }
+    if (Array.isArray(options.navbar)) {
+      const markersIdx = options.navbar.indexOf('markers');
+      if (markersIdx !== -1) {
+        options.navbar.splice(markersIdx, 1, 'markersList');
+      }
     }
 
     /* eslint-disable-next-line constructor-super */

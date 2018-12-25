@@ -66,14 +66,13 @@
   ];
 
   var PSV = new PhotoSphereViewer({
-    container        : 'photosphere',
-    panorama         : panos[0].url,
-    caption          : panos[0].desc,
-    autorotateStartup: false,
-    defaultLong      : Math.PI / 2,
-    loadingImg       : 'assets/photosphere-logo.gif',
-    navbar           : [
-      'autorotate', 'zoom', 'download', 'markers',
+    container  : 'photosphere',
+    panorama   : panos[0].url,
+    caption    : panos[0].desc,
+    defaultLong: Math.PI / 2,
+    loadingImg : 'assets/photosphere-logo.gif',
+    navbar     : [
+      'autorotate', 'zoom', 'download', 'markers', 'markersList',
       {
         title    : 'Change image',
         className: 'custom-button',
@@ -113,7 +112,7 @@
       },
       'caption', 'gyroscope', 'stereo', 'fullscreen',
     ],
-    markers          : (function() {
+    markers    : (function() {
       var a = [];
       for (var i = 0; i < Math.PI * 2; i += Math.PI / 4) {
         for (var j = -Math.PI / 2 + Math.PI / 4; j < Math.PI / 2; j += Math.PI / 4) {

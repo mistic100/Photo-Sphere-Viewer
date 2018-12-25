@@ -4,6 +4,7 @@ import { PSVDownloadButton } from '../buttons/PSVDownloadButton';
 import { PSVFullscreenButton } from '../buttons/PSVFullscreenButton';
 import { PSVGyroscopeButton } from '../buttons/PSVGyroscopeButton';
 import { PSVMarkersButton } from '../buttons/PSVMarkersButton';
+import { PSVMarkersListButton } from '../buttons/PSVMarkersListButton';
 import { PSVStereoButton } from '../buttons/PSVStereoButton';
 import { PSVZoomButton } from '../buttons/PSVZoomButton';
 import { PSVError } from '../PSVError';
@@ -27,9 +28,9 @@ class PSVNavbar extends AbstractComponent {
     /**
      * @summary List of buttons of the navbar
      * @member {module:components/buttons.AbstractButton[]}
-     * @readonly
+     * @override
      */
-    this.items = [];
+    this.children = [];
 
     if (this.psv.config.navbar) {
       this.setButtons(this.psv.config.navbar);
@@ -40,10 +41,6 @@ class PSVNavbar extends AbstractComponent {
    * @override
    */
   destroy() {
-    this.setButtons([]);
-
-    delete this.items;
-
     super.destroy();
   }
 
@@ -52,45 +49,50 @@ class PSVNavbar extends AbstractComponent {
    * @param {Array<string|object>} buttons
    */
   setButtons(buttons) {
-    this.items.forEach(item => item.destroy());
-    this.items.length = 0;
+    this.children.forEach(item => item.destroy());
+    this.children.length = 0;
 
+    /* eslint-disable no-new */
     buttons.forEach((button) => {
       if (typeof button === 'object') {
-        this.items.push(new PSVCustomButton(this, button));
+        new PSVCustomButton(this, button);
       }
       else {
         switch (button) {
           case PSVAutorotateButton.id:
-            this.items.push(new PSVAutorotateButton(this));
+            new PSVAutorotateButton(this);
             break;
 
           case PSVZoomButton.id:
-            this.items.push(new PSVZoomButton(this));
+            new PSVZoomButton(this);
             break;
 
           case PSVDownloadButton.id:
-            this.items.push(new PSVDownloadButton(this));
+            new PSVDownloadButton(this);
             break;
 
           case PSVMarkersButton.id:
-            this.items.push(new PSVMarkersButton(this));
+            new PSVMarkersButton(this);
+            break;
+
+          case PSVMarkersListButton.id:
+            new PSVMarkersListButton(this);
             break;
 
           case PSVFullscreenButton.id:
-            this.items.push(new PSVFullscreenButton(this));
+            new PSVFullscreenButton(this);
             break;
 
           case PSVStereoButton.id:
-            this.items.push(new PSVStereoButton(this));
+            new PSVStereoButton(this);
             break;
 
           case PSVGyroscopeButton.id:
-            this.items.push(new PSVGyroscopeButton(this));
+            new PSVGyroscopeButton(this);
             break;
 
           case 'caption':
-            this.items.push(new PSVNavbarCaption(this, this.psv.config.caption));
+            new PSVNavbarCaption(this, this.psv.config.caption);
             break;
 
           default:
@@ -98,6 +100,7 @@ class PSVNavbar extends AbstractComponent {
         }
       }
     });
+    /* eslint-enable no-new */
   }
 
   /**
@@ -123,7 +126,7 @@ class PSVNavbar extends AbstractComponent {
   getButton(id, silent) {
     let button = null;
 
-    this.items.some((item) => {
+    this.children.some((item) => {
       if (item.id === id) {
         button = item;
         return true;

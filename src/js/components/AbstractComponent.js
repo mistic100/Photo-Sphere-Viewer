@@ -28,6 +28,15 @@ class AbstractComponent {
      * @readonly
      */
     this.parent = parent;
+    this.parent.children.push(this);
+
+    /**
+     * @summary All child components
+     * @type {module:components.AbstractComponent[]}
+     * @readonly
+     * @package
+     */
+    this.children = [];
 
     /**
      * @summary Visibility of the component
@@ -52,9 +61,20 @@ class AbstractComponent {
   destroy() {
     this.parent.container.removeChild(this.container);
 
+    this.children.forEach(child => child.destroy());
+    this.children.length = 0;
+
     delete this.container;
     delete this.parent;
     delete this.psv;
+  }
+
+  /**
+   * @summary Refresh UI
+   * @package
+   */
+  refresh() {
+    this.children.forEach(child => child.refresh());
   }
 
   /**

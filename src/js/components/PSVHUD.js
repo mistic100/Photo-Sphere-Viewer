@@ -105,6 +105,48 @@ class PSVHUD extends AbstractComponent {
   }
 
   /**
+   * @override
+   * @fires module:components.PSVHUD.show-hud
+   */
+  show() {
+    this.visible = true;
+
+    this.renderMarkers();
+
+    /**
+     * @event show-hud
+     * @memberof module:components.PSVHUD
+     * @summary Triggered when the HUD is shown
+     */
+    this.psv.trigger(EVENTS.SHOW_HUD);
+  }
+
+  /**
+   * @override
+   * @fires module:components.PSVHUD.hide-hud
+   */
+  hide() {
+    this.visible = false;
+
+    this.renderMarkers();
+
+    /**
+     * @event hide-hud
+     * @memberof module:components.PSVHUD
+     * @summary Triggered when the HUD is hidden
+     */
+    this.psv.trigger(EVENTS.HIDE_HUD);
+  }
+
+  /**
+   * @summary Return the total number of markers
+   * @returns {number}
+   */
+  getNbMarkers() {
+    return Object.keys(this.markers).length;
+  }
+
+  /**
    * @summary Adds a new marker to viewer
    * @param {PSVMarker.Properties} properties
    * @param {boolean} [render=true] - renders the marker immediately
@@ -129,6 +171,7 @@ class PSVHUD extends AbstractComponent {
 
     if (render) {
       this.renderMarkers();
+      this.psv.refresh();
     }
 
     return marker;
@@ -182,7 +225,7 @@ class PSVHUD extends AbstractComponent {
    * @param {*} markerOrId
    * @param {boolean} [render=true] - renders the marker immediately
    */
-  removeMarker(markerOrId) {
+  removeMarker(markerOrId, render = true) {
     const marker = this.getMarker(markerOrId);
 
     if (marker.isNormal()) {
@@ -198,6 +241,10 @@ class PSVHUD extends AbstractComponent {
 
     marker.destroy();
     delete this.markers[marker.id];
+
+    if (render) {
+      this.psv.refresh();
+    }
   }
 
   /**
@@ -212,6 +259,7 @@ class PSVHUD extends AbstractComponent {
 
     if (render) {
       this.renderMarkers();
+      this.psv.refresh();
     }
   }
 
@@ -224,6 +272,7 @@ class PSVHUD extends AbstractComponent {
 
     if (render) {
       this.renderMarkers();
+      this.psv.refresh();
     }
   }
 
@@ -280,14 +329,10 @@ class PSVHUD extends AbstractComponent {
    * @summary Updates the visibility and the position of all markers
    */
   renderMarkers() {
-    if (!this.visible) {
-      return;
-    }
-
     const rotation = !this.psv.isGyroscopeEnabled() ? 0 : THREE.Math.radToDeg(this.psv.renderer.camera.rotation.z);
 
     each(this.markers, (marker) => {
-      let isVisible = marker.visible;
+      let isVisible = this.visible && marker.visible;
 
       if (isVisible && marker.isPoly()) {
         const positions = this.__getPolyPositions(marker);

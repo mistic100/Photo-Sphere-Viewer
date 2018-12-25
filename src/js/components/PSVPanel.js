@@ -1,7 +1,7 @@
 import { SYSTEM } from '../data/system';
 import { toggleClass } from '../utils';
 import { AbstractComponent } from './AbstractComponent';
-import { EVENTS } from '../data/constants';
+import { EVENTS, IDS } from '../data/constants';
 
 /**
  * @summary Minimum width of the panel
@@ -100,6 +100,20 @@ class PSVPanel extends AbstractComponent {
       // @formatter:on
     }
     /* eslint-enable */
+  }
+
+  /**
+   * @override
+   */
+  refresh() {
+    if (this.isVisible() && this.prop.id === IDS.MARKERS_LIST) {
+      if (this.psv.hud.getNbMarkers() === 0) {
+        this.hide();
+      }
+      else {
+        this.psv.showMarkersList();
+      }
+    }
   }
 
   /**
