@@ -94,8 +94,6 @@ class PSVTextureLoader extends AbstractService {
       const cache = this.getPanoramaCache(panorama);
 
       if (cache) {
-        this.prop.panodata = cache.panoData;
-
         return Promise.resolve({
           texture : cache.image,
           panoData: cache.panoData,
@@ -129,7 +127,7 @@ class PSVTextureLoader extends AbstractService {
            */
           this.psv.trigger(EVENTS.PANORAMA_LOAD_PROGRESS, panorama, progress);
 
-          const panoData = xmpPanoData || {
+          const panoData = xmpPanoData || this.config.panoData || {
             fullWidth    : img.width,
             fullHeight   : img.height,
             croppedWidth : img.width,
@@ -137,6 +135,11 @@ class PSVTextureLoader extends AbstractService {
             croppedX     : 0,
             croppedY     : 0,
           };
+
+          if (panoData.croppedWidth !== img.width || panoData.croppedHeight !== img.height) {
+            logWarn(`Invalid panoData, croppedWidth and/or croppedHeight is not coherent with loaded image
+    panoData: ${panoData.croppedWidth}x${panoData.croppedHeight}, image: ${img.width}x${img.height}`);
+          }
 
           let texture;
 
@@ -339,7 +342,7 @@ class PSVTextureLoader extends AbstractService {
    * @private
    */
   __loadXMP(panorama) {
-    if (!this.config.useXmpData) {
+    if (!this.config.useXmpData || this.config.panoData) {
       return Promise.resolve(null);
     }
 

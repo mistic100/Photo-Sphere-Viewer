@@ -84,10 +84,10 @@ class PhotoSphereViewer {
         latitude : 0,
       },
       direction       : null,
-      zoomLvl         : 0,
-      vFov            : 0,
-      hFov            : 0,
-      aspect          : 0,
+      zoomLvl         : 50,
+      vFov            : 70,
+      hFov            : 70,
+      aspect          : 1,
       moveSpeed       : 0.1,
       gyroAlphaOffset : 0,
       orientationCb   : null,
@@ -401,6 +401,7 @@ class PhotoSphereViewer {
       this.prop.size.width = Math.round(this.container.clientWidth);
       this.prop.size.height = Math.round(this.container.clientHeight);
       this.prop.aspect = this.prop.size.width / this.prop.size.height;
+      this.prop.hFov = this.dataHelper.vFovToHFov(this.prop.vFov);
       this.needsUpdate();
 
       /**

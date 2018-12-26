@@ -269,7 +269,7 @@ class PSVRenderer extends AbstractService {
       cameraDistance += SPHERE_RADIUS;
     }
 
-    this.camera = new THREE.PerspectiveCamera(this.config.defaultFov, this.prop.size.width / this.prop.size.height, 1, cameraDistance);
+    this.camera = new THREE.PerspectiveCamera(this.prop.vFov, this.prop.size.width / this.prop.size.height, 1, cameraDistance);
     this.camera.position.set(0, 0, 0);
 
     if (SYSTEM.checkTHREE('DeviceOrientationControls')) {

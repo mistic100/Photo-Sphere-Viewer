@@ -759,5 +759,5 @@ export function intersect(array1, array2) {
  * @param {string} message
  */
 export function logWarn(message) {
-  console.warn(`PhotoSphereViewer: ${message}.`);
+  console.warn(`PhotoSphereViewer: ${message}`);
 }
