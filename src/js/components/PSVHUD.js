@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { EVENTS, IDS, MARKER_DATA, SPHERE_RADIUS, SVG_NS } from '../data/constants';
 import { PSVError } from '../PSVError';
 import { PSVMarker } from '../PSVMarker';
-import { addClasses, each, getClosest, hasParent, removeClasses, toggleClass } from '../utils';
+import { addClasses, deepmerge, each, getClosest, hasParent, removeClasses, toggleClass } from '../utils';
 import { AbstractComponent } from './AbstractComponent';
 
 /**
@@ -98,7 +98,7 @@ class PSVHUD extends AbstractComponent {
       case 'mousemove':  this.__onMouseMove(e);  break;
       case EVENTS.CLICK:        this.__onClick(e.args[0], e, false); break;
       case EVENTS.DOUBLE_CLICK: this.__onClick(e.args[0], e, true);  break;
-      case EVENTS.RENDER:       this.renderMarkers();                break;
+      case EVENTS.RENDER:       this.__onRender();                   break;
       // @formatter:on
     }
     /* eslint-enable */
@@ -424,8 +424,8 @@ class PSVHUD extends AbstractComponent {
     }
 
     const rect = marker.$el.getBoundingClientRect();
-    marker.props.width = rect.right - rect.left;
-    marker.props.height = rect.bottom - rect.top;
+    marker.props.width = rect.width;
+    marker.props.height = rect.height;
 
     removeClasses(marker.$el, 'psv-marker--transparent');
 
@@ -604,18 +604,7 @@ class PSVHUD extends AbstractComponent {
        */
       this.psv.trigger(EVENTS.OVER_MARKER, marker);
 
-      if (marker.config.tooltip) {
-        this.psv.tooltip.show({
-          content : marker.config.tooltip.content,
-          position: marker.config.tooltip.position,
-          left    : marker.props.position2D.x,
-          top     : marker.props.position2D.y,
-          box     : {
-            width : marker.props.width,
-            height: marker.props.height,
-          },
-        });
-      }
+      this.__renderTooltip(marker, e);
     }
   }
 
@@ -652,47 +641,72 @@ class PSVHUD extends AbstractComponent {
    * @private
    */
   __onMouseMove(e) {
-    if (!this.psv.eventsHandler.state.moving) {
-      let marker;
-      const targetMarker = this.__getTargetMarker(e.target);
+    let marker;
+    const targetMarker = this.__getTargetMarker(e.target);
 
-      if (targetMarker && targetMarker.isPoly()) {
-        marker = targetMarker;
+    if (targetMarker && targetMarker.isPoly()) {
+      marker = targetMarker;
+    }
+    // do not hide if we enter the tooltip itself while hovering a polygon
+    else if (this.__targetOnTooltip(e.target) && this.hoveringMarker) {
+      marker = this.hoveringMarker;
+    }
+
+    if (marker) {
+      if (!this.hoveringMarker) {
+        this.psv.trigger(EVENTS.OVER_MARKER, marker);
+
+        this.hoveringMarker = marker;
       }
-      // do not hide if we enter the tooltip itself while hovering a polygon
-      else if (this.__targetOnTooltip(e.target) && this.hoveringMarker) {
-        marker = this.hoveringMarker;
-      }
 
-      if (marker) {
-        if (!this.hoveringMarker) {
-          this.psv.trigger(EVENTS.OVER_MARKER, marker);
+      this.__renderTooltip(marker, e);
+    }
+    else if (this.hoveringMarker && this.hoveringMarker.isPoly()) {
+      this.psv.trigger(EVENTS.LEAVE_MARKER, this.hoveringMarker);
 
-          this.hoveringMarker = marker;
-        }
+      this.hoveringMarker = null;
 
+      this.psv.tooltip.hide();
+    }
+  }
+
+  /**
+   * @summary Display the tooltip for a particular marker
+   * @param {PSVMarker} marker
+   * @param {MouseEvent} e
+   * @private
+   */
+  __renderTooltip(marker, e = { clientX: marker.props.position2D.x, clientY: marker.props.position2D.y }) {
+    if (marker.visible && marker.config.tooltip) {
+      const config = {
+        content : marker.config.tooltip.content,
+        position: marker.config.tooltip.position,
+      };
+
+      if (marker.isPoly()) {
         const boundingRect = this.psv.container.getBoundingClientRect();
 
-        if (marker.config.tooltip) {
-          this.psv.tooltip.show({
-            content : marker.config.tooltip.content,
-            position: marker.config.tooltip.position,
-            top     : e.clientY - boundingRect.top - this.psv.tooltip.prop.arrowSize / 2,
-            left    : e.clientX - boundingRect.left - this.psv.tooltip.prop.arrowSize,
-            box     : { // separate the tooltip from the cursor
-              width : this.psv.tooltip.prop.arrowSize * 2,
-              height: this.psv.tooltip.prop.arrowSize * 2,
-            },
-          });
-        }
+        deepmerge(config, {
+          top : e.clientY - boundingRect.top - this.psv.tooltip.prop.arrowSize / 2,
+          left: e.clientX - boundingRect.left - this.psv.tooltip.prop.arrowSize,
+          box : { // separate the tooltip from the cursor
+            width : this.psv.tooltip.prop.arrowSize * 2,
+            height: this.psv.tooltip.prop.arrowSize * 2,
+          },
+        });
       }
-      else if (this.hoveringMarker && this.hoveringMarker.isPoly()) {
-        this.psv.trigger(EVENTS.LEAVE_MARKER, this.hoveringMarker);
-
-        this.hoveringMarker = null;
-
-        this.psv.tooltip.hide();
+      else {
+        deepmerge(config, {
+          left: marker.props.position2D.x,
+          top : marker.props.position2D.y,
+          box : {
+            width : marker.props.width,
+            height: marker.props.height,
+          },
+        });
       }
+
+      this.psv.tooltip.show(config);
     }
   }
 
@@ -749,6 +763,21 @@ class PSVHUD extends AbstractComponent {
     }
     else {
       this.psv.panel.hide(IDS.MARKER);
+    }
+  }
+
+  /**
+   * @summary Actions on render
+   * @private
+   */
+  __onRender() {
+    this.renderMarkers();
+
+    if (!this.hoveringMarker) {
+      this.psv.tooltip.hide();
+    }
+    else if (!this.hoveringMarker.isPoly()) {
+      this.__renderTooltip(this.hoveringMarker);
     }
   }
 

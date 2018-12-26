@@ -1,7 +1,7 @@
+import { EVENTS } from '../data/constants';
 import { PSVError } from '../PSVError';
 import { addClasses, getStyle, parsePosition } from '../utils';
 import { AbstractComponent } from './AbstractComponent';
-import { EVENTS } from '../data/constants';
 
 const LEFT_MAP = { 0: 'left', 0.5: 'center', 1: 'right' };
 const TOP_MAP = { 0: 'top', 0.5: 'center', 1: 'bottom' };
@@ -56,16 +56,12 @@ class PSVTooltip extends AbstractComponent {
 
     this.prop.arrowSize = parseInt(getStyle(this.arrow, 'borderTopWidth'), 10);
     this.prop.offset = parseInt(getStyle(this.container, 'outlineWidth'), 10);
-
-    this.psv.on(EVENTS.RENDER, this);
   }
 
   /**
    * @override
    */
   destroy() {
-    this.psv.off(EVENTS.RENDER, this);
-
     delete this.arrow;
     delete this.content;
     delete this.prop;
@@ -82,7 +78,6 @@ class PSVTooltip extends AbstractComponent {
     /* eslint-disable */
     switch (e.type) {
       // @formatter:off
-      case EVENTS.RENDER:   this.hide();               break;
       case 'transitionend': this.__onTransitionEnd(e); break;
       // @formatter:on
     }

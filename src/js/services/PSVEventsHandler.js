@@ -563,9 +563,10 @@ class PSVEventsHandler extends AbstractService {
    */
   __moveAbsolute(evt) {
     if (this.state.moving) {
+      const containerRect = this.psv.container.getBoundingClientRect();
       this.psv.rotate({
-        longitude: ((evt.clientX - this.psv.container.offsetLeft) / this.psv.container.offsetWidth - 0.5) * Math.PI * 2,
-        latitude : -((evt.clientY - this.psv.container.offsetTop) / this.psv.container.offsetHeight - 0.5) * Math.PI,
+        longitude: ((evt.clientX - containerRect.left) / containerRect.width - 0.5) * Math.PI * 2,
+        latitude : -((evt.clientY - containerRect.top) / containerRect.height - 0.5) * Math.PI,
       });
     }
   }
