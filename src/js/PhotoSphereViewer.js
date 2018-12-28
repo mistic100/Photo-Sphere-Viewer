@@ -728,9 +728,10 @@ class PhotoSphereViewer {
    */
   showError(message) {
     this.overlay.show({
-      id   : IDS.ERROR,
-      image: this.icons.error,
-      text : message,
+      id         : IDS.ERROR,
+      image      : this.icons.error,
+      text       : message,
+      dissmisable: false,
     });
   }
 

@@ -205,7 +205,7 @@ class PSVTextureLoader extends AbstractService {
         };
 
         const onerror = (e) => {
-          this.psv.showError('Cannot load image');
+          this.psv.showError(this.config.lang.loadError);
           reject(e);
         };
 
@@ -308,7 +308,7 @@ class PSVTextureLoader extends AbstractService {
       };
 
       const onerror = (i, e) => {
-        this.psv.showError('Cannot load image');
+        this.psv.showError(this.config.lang.loadError);
         reject(e);
       };
 
@@ -384,7 +384,7 @@ class PSVTextureLoader extends AbstractService {
             resolve(panoData);
           }
           else {
-            this.psv.showError('Cannot load image');
+            this.psv.showError(this.config.lang.loadError);
             reject();
           }
         }
@@ -404,7 +404,7 @@ class PSVTextureLoader extends AbstractService {
       };
 
       xhr.onerror = (e) => {
-        this.psv.showError('Cannot load image');
+        this.psv.showError(this.config.lang.loadError);
         reject(e);
       };
 

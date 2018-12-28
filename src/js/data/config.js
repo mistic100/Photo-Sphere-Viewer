@@ -77,6 +77,7 @@ const DEFAULTS = {
     stereoNotification: 'Click anywhere to exit stereo view.',
     pleaseRotate      : ['Please rotate your device', '(or tap to continue)'],
     twoFingers        : ['Use two fingers to navigate'],
+    loadError         : 'The panorama can\'t be loaded',
   },
   keyboard           : {
     'ArrowUp'   : ACTIONS.ROTATE_LAT_UP,

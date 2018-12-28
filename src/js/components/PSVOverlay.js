@@ -19,7 +19,8 @@ class PSVOverlay extends AbstractComponent {
      * @private
      */
     this.prop = {
-      id: undefined,
+      id         : undefined,
+      dissmisable: true,
     };
 
     /**
@@ -54,7 +55,9 @@ class PSVOverlay extends AbstractComponent {
 
     this.container.addEventListener('mouseup', (e) => {
       e.stopPropagation();
-      this.hide();
+      if (this.prop.dissmisable) {
+        this.hide();
+      }
     }, true);
 
     super.hide();
@@ -79,6 +82,7 @@ class PSVOverlay extends AbstractComponent {
    * @param {string} config.image
    * @param {string} config.text
    * @param {string} [config.subtext]
+   * @param {boolean} [config.dissmisable=true]
    *
    * @example
    * viewer.showOverlay({
@@ -93,6 +97,7 @@ class PSVOverlay extends AbstractComponent {
     }
 
     this.prop.id = config.id;
+    this.prop.dissmisable = config.dissmisable !== false;
     this.image.innerHTML = config.image || '';
     this.text.innerHTML = config.text || '';
     this.subtext.innerHTML = config.subtext || '';
