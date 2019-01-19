@@ -426,11 +426,12 @@ export function parseSpeed(speed) {
 /**
  * @summary Parses an angle value in radians or degrees and returns a normalized value in radians
  * @param {string|number} angle - eg: 3.14, 3.14rad, 180deg
- * @param {boolean} [zeroCenter=false] - normalize between -Pi/2 - Pi/2 instead of 0 - 2*Pi
+ * @param {boolean} [zeroCenter=false] - normalize between -Pi - Pi instead of 0 - 2*Pi
+ * @param {boolean} [halfCircle=zeroCenter] - normalize between -Pi/2 - Pi/2 instead of -Pi - Pi
  * @returns {number}
  * @throws {PSVError} when the angle cannot be parsed
  */
-export function parseAngle(angle, zeroCenter = false) {
+export function parseAngle(angle, zeroCenter = false, halfCircle = zeroCenter) {
   let parsed;
 
   if (typeof angle === 'string') {
@@ -471,10 +472,10 @@ export function parseAngle(angle, zeroCenter = false) {
   parsed = (zeroCenter ? parsed + Math.PI : parsed) % (Math.PI * 2);
 
   if (parsed < 0) {
-    parsed = Math.PI * 2 + parsed;
+    parsed += Math.PI * 2;
   }
 
-  return zeroCenter ? bound(parsed - Math.PI, -Math.PI / 2, Math.PI / 2) : parsed;
+  return zeroCenter ? bound(parsed - Math.PI, -Math.PI / (halfCircle ? 2 : 1), Math.PI / (halfCircle ? 2 : 1)) : parsed;
 }
 
 /**

@@ -205,9 +205,9 @@ class PSVDataHelper extends AbstractService {
    */
   cleanSphereCorrection(sphereCorrection) {
     return {
-      pan: parseAngle(sphereCorrection.pan || 0, true),
+      pan: parseAngle(sphereCorrection.pan || 0),
       tilt: parseAngle(sphereCorrection.tilt || 0, true),
-      roll: parseAngle(sphereCorrection.roll || 0, true),
+      roll: parseAngle(sphereCorrection.roll || 0, true, false),
     };
   }
 

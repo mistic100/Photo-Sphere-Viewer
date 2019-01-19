@@ -66,6 +66,17 @@ describe('utils::parseAngle', () => {
     }
   });
 
+  it('should normalize angles between -Pi and Pi', function() {
+    const values = {
+      '45deg': Math.PI / 4,
+      '4'    : -2 * Math.PI + 4
+    };
+
+    for (const pos in values) {
+      assert.strictEqual(utils.parseAngle(pos, true, false).toFixed(16), values[pos].toFixed(16), pos);
+    }
+  });
+
   it('should throw exception on invalid values', () => {
     assert.throws(() => {
       utils.parseAngle('foobar');
