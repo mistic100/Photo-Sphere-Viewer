@@ -26,14 +26,15 @@ export default [
   {
     input   : 'src/js/index.js',
     output  : {
-      file   : 'dist/photo-sphere-viewer.js',
-      name   : 'PhotoSphereViewer',
-      format : 'umd',
-      globals: {
+      file     : 'dist/photo-sphere-viewer.js',
+      name     : 'PhotoSphereViewer',
+      format   : 'umd',
+      sourcemap: true,
+      globals  : {
         'three' : 'THREE',
         'uevent': 'uEvent'
       },
-      banner : banner
+      banner   : banner
     },
     external: [
       'three',

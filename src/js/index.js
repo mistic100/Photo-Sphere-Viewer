@@ -1,4 +1,3 @@
-import * as uEvent from 'uevent';
 import * as utils from './utils';
 import * as constants from './data/constants';
 import { DEFAULTS } from './data/config';
@@ -178,60 +177,8 @@ import { PhotoSphereViewer } from './PhotoSphereViewer';
  */
 
 /**
- * @typedef {Object} external:uEvent.Event
- * @property {string} type
- * @property {Array} args
- */
-
-/**
- * @summary Triggers an event on the viewer
- * @function trigger
- * @memberof PhotoSphereViewer
- * @instance
- * @param {string} name
- * @param {...*} [arguments]
- * @returns {external:uEvent.Event}
- */
-
-/**
- * @summary Triggers an event on the viewer and returns the modified value
- * @function change
- * @memberof PhotoSphereViewer
- * @instance
- * @param {string} name
- * @param {*} value
- * @param {...*} [arguments]
- * @returns {*}
- */
-
-/**
- * @summary Attaches an event listener on the viewer
- * @function on
- * @memberof PhotoSphereViewer
- * @instance
- * @param {string|Object<string, function>} name - event name or events map
- * @param {function} [callback]
- * @returns {PhotoSphereViewer}
- */
-
-/**
- * @summary Removes an event listener from the viewer
- * @function off
- * @memberof PhotoSphereViewer
- * @instance
- * @param {string|Object<string, function>} name - event name or events map
- * @param {function} [callback]
- * @returns {PhotoSphereViewer}
- */
-
-/**
- * @summary Attaches an event listener called once on the viewer
- * @function once
- * @memberof PhotoSphereViewer
- * @instance
- * @param {string|Object<string, function>} name - event name or events map
- * @param {function} [callback]
- * @returns {PhotoSphereViewer}
+ * @typedef {Object} external:uEvent.EventEmitter
+ * @description {@link https://github.com/mistic100/uEvent#api}
  */
 
 PhotoSphereViewer.Utils = utils;
@@ -242,7 +189,5 @@ PhotoSphereViewer.ICONS = ICONS;
 PhotoSphereViewer.SYSTEM = SYSTEM;
 PhotoSphereViewer.PSVError = PSVError;
 PhotoSphereViewer.PSVAnimation = PSVAnimation;
-
-uEvent.mixin(PhotoSphereViewer);
 
 export default PhotoSphereViewer;

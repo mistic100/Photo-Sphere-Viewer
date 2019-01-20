@@ -96,8 +96,8 @@ class PSVHUD extends AbstractComponent {
       case 'mouseenter': this.__onMouseEnter(e); break;
       case 'mouseleave': this.__onMouseLeave(e); break;
       case 'mousemove':  this.__onMouseMove(e);  break;
-      case EVENTS.CLICK:        this.__onClick(e.args[0], e, false); break;
-      case EVENTS.DOUBLE_CLICK: this.__onClick(e.args[0], e, true);  break;
+      case EVENTS.CLICK:        this.__onClick(e, e.args[0],false); break;
+      case EVENTS.DOUBLE_CLICK: this.__onClick(e, e.args[0],true);  break;
       case EVENTS.RENDER:       this.__onRender();                   break;
       // @formatter:on
     }
@@ -712,14 +712,14 @@ class PSVHUD extends AbstractComponent {
 
   /**
    * @summary Handles mouse click events, select the marker and open the panel if necessary
-   * @param {Object} data
    * @param {Event} e
+   * @param {Object} data
    * @param {boolean} dblclick
    * @fires module:components.PSVHUD.select-marker
    * @fires module:components.PSVHUD.unselect-marker
    * @private
    */
-  __onClick(data, e, dblclick) {
+  __onClick(e, data, dblclick) {
     const marker = this.__getTargetMarker(data.target, true);
 
     if (marker) {

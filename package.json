@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "three": ">= 0.85.0",
-    "uevent": "~1.0.0"
+    "uevent": "~2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.1",
@@ -64,13 +64,13 @@
     "uglify-js": "^3.4.9"
   },
   "scripts": {
-    "build": "npm-run-all --parallel build:*",
-    "build:js": "npm-run-all build:js:*",
-    "build:css": "npm-run-all build:css:*",
-    "build:js:compile": "rollup --config rollup.config.js",
-    "build:js:minify": "uglifyjs --mangle --comments \"/^!/\" --output dist/photo-sphere-viewer.min.js dist/photo-sphere-viewer.js",
-    "build:css:compile": "postcss src/scss/index.scss --output dist/photo-sphere-viewer.css",
-    "build:css:minify": "cleancss --output dist/photo-sphere-viewer.min.css dist/photo-sphere-viewer.css",
+    "compile": "npm-run-all --parallel compile:*",
+    "compile:js": "npm-run-all compile:js:*",
+    "compile:css": "npm-run-all compile:css:*",
+    "compile:js:build": "rollup --config rollup.config.js",
+    "compile:js:minify": "uglifyjs --mangle --comments \"/^!/\" --output dist/photo-sphere-viewer.min.js dist/photo-sphere-viewer.js",
+    "compile:css:build": "postcss src/scss/index.scss --output dist/photo-sphere-viewer.css",
+    "compile:css:minify": "cleancss --output dist/photo-sphere-viewer.min.css dist/photo-sphere-viewer.css",
     "doc": "npm-run-all doc:*",
     "doc:clean": "rm -rf doc/*",
     "doc:generate": "jsdoc --configure .jsdoc.json --destination doc src/js",
@@ -81,7 +81,7 @@
     "test:sasslint": "stylelint \"src/scss/**/*.scss\"",
     "start": "npm-run-all --parallel dev:**",
     "dev:serve": "live-server --watch=dist,example --open=example",
-    "dev:watch:js": "nodemon --watch src/ --ext js,svg,html --exec \"npm run build:js:compile\"",
-    "dev:watch:css": "nodemon --watch src/ --ext scss --exec \"npm run build:css:compile\""
+    "dev:watch:js": "nodemon --watch src/ --ext js,svg,html --exec \"npm run compile:js:build\"",
+    "dev:watch:css": "nodemon --watch src/ --ext scss --exec \"npm run compile:css:build\""
   }
 }

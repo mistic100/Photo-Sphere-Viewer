@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { EventEmitter } from 'uevent';
 import { PSVHUD } from './components/PSVHUD';
 import { PSVLoader } from './components/PSVLoader';
 import { PSVNavbar } from './components/PSVNavbar';
@@ -34,8 +35,9 @@ import {
 
 /**
  * @summary Main class
+ * @extends {external:uEvent.EventEmitter}
  */
-class PhotoSphereViewer {
+class PhotoSphereViewer extends EventEmitter {
 
   /**
    * @param {PhotoSphereViewer.Options} options
@@ -43,10 +45,7 @@ class PhotoSphereViewer {
    * @throws {PSVError} when the configuration is incorrect
    */
   constructor(options) {
-    // return instance if called as a function
-    if (!(this instanceof PhotoSphereViewer)) {
-      return new PhotoSphereViewer(options);
-    }
+    super();
 
     SYSTEM.load();
 

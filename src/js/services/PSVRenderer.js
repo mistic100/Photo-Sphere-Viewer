@@ -79,7 +79,7 @@ class PSVRenderer extends AbstractService {
      */
     this.doControls = null;
 
-    psv.on(EVENTS.SIZE_UPDATED, (size) => {
+    psv.on(EVENTS.SIZE_UPDATED, (e, size) => {
       if (this.renderer) {
         (this.stereoEffect || this.renderer).setSize(size.width, size.height);
       }

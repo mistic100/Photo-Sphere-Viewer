@@ -60,8 +60,6 @@ class PSVNavbarCaption extends AbstractComponent {
   destroy() {
     this.psv.off(EVENTS.SIZE_UPDATED, this);
 
-    this.button.destroy();
-
     delete this.button;
     delete this.content;
 
