@@ -5,14 +5,7 @@ import alias from 'rollup-plugin-alias';
 import pkg from './package.json';
 
 const babelConfig = {
-  exclude                 : 'node_modules/**',
-  externalHelpersWhitelist: [
-    'assertThisInitialized',
-    'defineProperties',
-    'createClass',
-    'inheritsLoose',
-    'defineProperty'
-  ]
+  exclude: 'node_modules/**',
 };
 
 const banner = `/*!

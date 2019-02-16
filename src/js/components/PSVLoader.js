@@ -39,11 +39,11 @@ class PSVLoader extends AbstractComponent {
     this.loader.appendChild(this.canvas);
 
     /**
-     * @summary Properties
-     * @readonly
-     * @private
+     * @override
+     * @property {number} thickness
      */
     this.prop = {
+      ...this.prop,
       tickness: (this.loader.offsetWidth - this.loader.clientWidth) / 2 * SYSTEM.pixelRatio,
     };
 

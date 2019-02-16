@@ -54,7 +54,9 @@ const DEFAULTS = {
   cacheTexture       : 0,
   navbar             : [
     'autorotate',
-    'zoom',
+    'zoomOut',
+    'zoomRange',
+    'zoomIn',
     'download',
     'markers',
     'markersList',
@@ -72,6 +74,7 @@ const DEFAULTS = {
     fullscreen        : 'Fullscreen',
     markers           : 'Markers',
     markersList       : 'Markers list',
+    menu              : 'Menu',
     gyroscope         : 'Gyroscope',
     stereo            : 'Stereo view',
     stereoNotification: 'Click anywhere to exit stereo view.',

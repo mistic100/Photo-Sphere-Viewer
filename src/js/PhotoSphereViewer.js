@@ -29,7 +29,7 @@ import {
   isEmpty,
   isFullscreenEnabled,
   logWarn,
-  requestFullscreen,
+  requestFullscreen, throttle,
   toggleClass
 } from './utils';
 
@@ -75,6 +75,7 @@ class PhotoSphereViewer extends EventEmitter {
      */
     this.prop = {
       ready           : false,
+      uiRefresh       : false,
       needsUpdate     : false,
       fullscreen      : false,
       isCubemap       : undefined,
@@ -227,6 +228,8 @@ class PhotoSphereViewer extends EventEmitter {
 
     this.eventsHandler.init();
 
+    this.__resizeRefresh = throttle(() => this.refresh('resize'), 500);
+
     // apply container size
     this.resize(this.config.size);
 
@@ -259,6 +262,8 @@ class PhotoSphereViewer extends EventEmitter {
       this.prop.ready = true;
 
       setTimeout(() => {
+        this.refresh('init');
+
         /**
          * @event ready
          * @memberof PhotoSphereViewer
@@ -313,8 +318,32 @@ class PhotoSphereViewer extends EventEmitter {
    * @summary Refresh UI
    * @package
    */
-  refresh() {
-    this.children.forEach(child => child.refresh());
+  refresh(reason) {
+    if (!this.prop.ready) {
+      return;
+    }
+
+    if (!this.prop.uiRefresh) {
+      // console.log(`PhotoSphereViewer: UI Refresh, ${reason}`);
+
+      this.prop.uiRefresh = true;
+
+      this.children.every((child) => {
+        child.refresh();
+        return this.prop.uiRefresh === true;
+      });
+
+      this.prop.uiRefresh = false;
+    }
+    else if (this.prop.uiRefresh !== 'new') {
+      this.prop.uiRefresh = 'new';
+
+      // wait for current refresh to cancel
+      setTimeout(() => {
+        this.prop.uiRefresh = false;
+        this.refresh(reason);
+      });
+    }
   }
 
   /**
@@ -410,6 +439,7 @@ class PhotoSphereViewer extends EventEmitter {
        * @param {PhotoSphereViewer.Size} size
        */
       this.trigger(EVENTS.SIZE_UPDATED, this.getSize());
+      this.__resizeRefresh();
     }
   }
 
@@ -506,7 +536,7 @@ class PhotoSphereViewer extends EventEmitter {
       let last;
       let elapsed;
 
-      return (timestamp) => {
+      return (e, timestamp) => {
         elapsed = last === undefined ? 0 : timestamp - last;
         last = timestamp;
 
@@ -1071,31 +1101,28 @@ class PhotoSphereViewer extends EventEmitter {
     markers = this.change(EVENTS.RENDER_MARKERS_LIST, markers);
 
     this.panel.show({
-      id      : IDS.MARKERS_LIST,
-      content : this.templates.markersList(markers, this),
-      noMargin: true,
-    });
+      id          : IDS.MARKERS_LIST,
+      content     : this.templates.markersList(markers, this),
+      noMargin    : true,
+      clickHandler: (e) => {
+        const li = e.target ? getClosest(e.target, 'li') : undefined;
+        const markerId = li ? li.dataset[MARKER_DATA] : undefined;
 
-    const markersList = this.panel.container.querySelector('.psv-markers-list');
+        if (markerId) {
+          const marker = this.hud.getMarker(markerId);
 
-    markersList.addEventListener('click', (e) => {
-      const li = e.target ? getClosest(e.target, 'li') : undefined;
-      const markerId = li ? li.dataset[MARKER_DATA] : undefined;
+          /**
+           * @event select-marker-list
+           * @memberof module:components.PSVHUD
+           * @summary Triggered when a marker is selected from the side panel
+           * @param {PSVMarker} marker
+           */
+          this.trigger(EVENTS.SELECT_MARKER_LIST, marker);
 
-      if (markerId) {
-        const marker = this.hud.getMarker(markerId);
-
-        /**
-         * @event select-marker-list
-         * @memberof module:components.PSVHUD
-         * @summary Triggered when a marker is selected from the side panel
-         * @param {PSVMarker} marker
-         */
-        this.trigger(EVENTS.SELECT_MARKER_LIST, marker);
-
-        this.hud.gotoMarker(marker, 1000);
-        this.hideMarkersList();
-      }
+          this.hud.gotoMarker(marker, 1000);
+          this.hideMarkersList();
+        }
+      },
     });
   }
 

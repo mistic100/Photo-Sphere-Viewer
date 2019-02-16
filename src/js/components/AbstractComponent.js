@@ -39,11 +39,14 @@ class AbstractComponent {
     this.children = [];
 
     /**
-     * @summary Visibility of the component
-     * @member {boolean}
-     * @readonly
+     * @summary Internal properties
+     * @member {Object}
+     * @protected
+     * @property {boolean} visible - Visibility of the component
      */
-    this.visible = true;
+    this.prop = {
+      visible: true,
+    };
 
     /**
      * @member {HTMLElement}
@@ -67,14 +70,19 @@ class AbstractComponent {
     delete this.container;
     delete this.parent;
     delete this.psv;
+    delete this.prop;
   }
 
   /**
    * @summary Refresh UI
+   * Must be be a very lightweight operation
    * @package
    */
   refresh() {
-    this.children.forEach(child => child.refresh());
+    this.children.every((child) => {
+      child.refresh();
+      return this.psv.prop.uiRefresh === true;
+    });
   }
 
   /**
@@ -82,7 +90,7 @@ class AbstractComponent {
    */
   hide() {
     this.container.style.display = 'none';
-    this.visible = false;
+    this.prop.visible = false;
   }
 
   /**
@@ -90,7 +98,7 @@ class AbstractComponent {
    */
   show() {
     this.container.style.display = '';
-    this.visible = true;
+    this.prop.visible = true;
   }
 
   /**
@@ -98,7 +106,7 @@ class AbstractComponent {
    * @returns {boolean}
    */
   isVisible() {
-    return this.visible;
+    return this.prop.visible;
   }
 
 }

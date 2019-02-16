@@ -16,6 +16,10 @@ class PSVMarkersListButton extends AbstractButton {
     return 'pinList';
   }
 
+  get collapsable() {
+    return true;
+  }
+
   /**
    * @param {module:components.PSVNavbar} navbar
    */
@@ -42,10 +46,11 @@ class PSVMarkersListButton extends AbstractButton {
    * @override
    */
   refresh() {
-    if (this.psv.hud.getNbMarkers() === 0) {
+    const nbMarkers = this.psv.hud.getNbMarkers();
+    if (nbMarkers === 0 && this.prop.visible) {
       this.hide();
     }
-    else {
+    else if (nbMarkers > 0 && !this.prop.visible) {
       this.show();
     }
   }

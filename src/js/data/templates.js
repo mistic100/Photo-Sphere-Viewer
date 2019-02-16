@@ -1,4 +1,5 @@
 import markersList from '../../templates/markers-list';
+import menu from '../../templates/menu';
 
 /**
  * @summary Default templates
@@ -8,6 +9,7 @@ import markersList from '../../templates/markers-list';
  */
 const TEMPLATES = {
   markersList,
+  menu,
 };
 
 /**

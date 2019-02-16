@@ -17,6 +17,10 @@ class PSVGyroscopeButton extends AbstractButton {
     return 'compass';
   }
 
+  get collapsable() {
+    return true;
+  }
+
   /**
    * @param {module:components.PSVNavbar} navbar
    */
@@ -38,12 +42,12 @@ class PSVGyroscopeButton extends AbstractButton {
   /**
    * @override
    */
-  supported() {
+  checkSupported() {
     if (!SYSTEM.checkTHREE('DeviceOrientationControls')) {
       return false;
     }
     else {
-      return SYSTEM.isDeviceOrientationSupported;
+      return { initial: false, promise: SYSTEM.isDeviceOrientationSupported };
     }
   }
 

@@ -1,6 +1,5 @@
 import { PSVCaptionButton } from '../buttons/PSVCaptionButton';
 import { AbstractComponent } from './AbstractComponent';
-import { EVENTS } from '../data/constants';
 
 /**
  * @summary Navbar caption class
@@ -9,28 +8,20 @@ import { EVENTS } from '../data/constants';
  */
 class PSVNavbarCaption extends AbstractComponent {
 
+  static get id() {
+    return 'caption';
+  }
+
+  get collapsable() {
+    return false;
+  }
+
   /**
    * @param {module:components.PSVNavbar} navbar
    * @param {string} caption
    */
   constructor(navbar, caption) {
     super(navbar, 'psv-caption');
-
-    /**
-     * @summary Unique identifier of the button
-     * @member {string}
-     * @readonly
-     */
-    this.id = 'caption';
-
-    /**
-     * @member {Object}
-     * @private
-     */
-    this.prop = {
-      caption: '',
-      width  : 0,
-    };
 
     /**
      * @member {module:components/buttons.PSVCaptionButton}
@@ -41,6 +32,23 @@ class PSVNavbarCaption extends AbstractComponent {
     this.button.hide();
 
     /**
+     * @override
+     * @property {string} id
+     * @property {number} width
+     * @property {string} caption
+     * @property {boolean} contentVisible - if the content is visible in the navbar
+     * @property {number} contentWidth - with of the caption content
+     */
+    this.prop = {
+      ...this.prop,
+      id            : this.constructor.id,
+      width         : this.button.prop.width,
+      caption       : '',
+      contentVisible: true,
+      contentWidth  : 0,
+    };
+
+    /**
      * @member {HTMLElement}
      * @readonly
      * @private
@@ -49,8 +57,6 @@ class PSVNavbarCaption extends AbstractComponent {
     this.content.className = 'psv-caption-content';
     this.container.appendChild(this.content);
 
-    this.psv.on(EVENTS.SIZE_UPDATED, this);
-
     this.setCaption(caption);
   }
 
@@ -58,27 +64,10 @@ class PSVNavbarCaption extends AbstractComponent {
    * @override
    */
   destroy() {
-    this.psv.off(EVENTS.SIZE_UPDATED, this);
-
     delete this.button;
     delete this.content;
 
     super.destroy();
-  }
-
-  /**
-   * @summary Handles events
-   * @param {Event} e
-   * @private
-   */
-  handleEvent(e) {
-    /* eslint-disable */
-    switch (e.type) {
-      // @formatter:off
-      case EVENTS.SIZE_UPDATED: this.__onResize(); break;
-      // @formatter:on
-    }
-    /* eslint-enable */
   }
 
   /**
@@ -87,28 +76,36 @@ class PSVNavbarCaption extends AbstractComponent {
    */
   setCaption(html) {
     this.prop.caption = html || '';
-
     this.content.innerHTML = this.prop.caption;
 
-    this.button.hide();
-    this.content.style.display = '';
-    this.prop.width = this.content.offsetWidth;
+    if (html) {
+      this.show(false);
 
-    this.__onResize();
+      this.content.style.display = '';
+      this.prop.contentWidth = this.content.offsetWidth;
+
+      this.refresh();
+    }
+    else {
+      this.hide();
+    }
   }
 
   /**
    * @summary Toggles content and icon depending on available space
    * @private
    */
-  __onResize() {
-    if (this.container.offsetWidth >= this.prop.width) {
-      this.button.hide();
+  refresh() {
+    const availableWidth = this.container.offsetWidth;
+    if (availableWidth >= this.prop.contentWidth && !this.prop.contentVisible) {
       this.content.style.display = '';
+      this.prop.contentVisible = true;
+      this.button.hide(false);
     }
-    else {
-      this.button.show();
+    else if (availableWidth < this.prop.contentWidth && this.prop.contentVisible) {
       this.content.style.display = 'none';
+      this.prop.contentVisible = false;
+      this.button.show(false);
     }
   }
 

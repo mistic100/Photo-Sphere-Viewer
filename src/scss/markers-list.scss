@@ -39,16 +39,17 @@
     &:nth-child(even)::before {
       background: $psv-markers-list-even-background;
     }
-
-    &:hover {
-      transform: translateX($psv-markers-list-hover-translation);
-      transition: transform .1s ease-in-out;
-    }
   }
 
   &-image {
     float: left;
     width: $psv-markers-list-image-size;
+  }
+
+  .psv-button-svg {
+    * {
+      fill: currentColor;
+    }
   }
 
   &-name {
@@ -59,4 +60,9 @@
   &-image + &-name {
     padding-left: calc(#{$psv-markers-list-image-size} + #{nth($psv-markers-list-padding, 1)});
   }
+}
+
+.psv-container:not(.psv--is-touch) .psv-markers-list-item:hover {
+  transform: translateX($psv-markers-list-hover-translation);
+  transition: transform .1s ease-in-out;
 }

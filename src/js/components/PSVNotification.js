@@ -1,5 +1,5 @@
-import { AbstractComponent } from './AbstractComponent';
 import { EVENTS } from '../data/constants';
+import { AbstractComponent } from './AbstractComponent';
 
 /**
  * @summary Notification class
@@ -15,10 +15,12 @@ class PSVNotification extends AbstractComponent {
     super(psv, 'psv-notification');
 
     /**
-     * @member {Object}
-     * @private
+     * @override
+     * @property {*} timeout
      */
     this.prop = {
+      ...this.prop,
+      visible: false,
       timeout: null,
     };
 
@@ -66,7 +68,7 @@ class PSVNotification extends AbstractComponent {
     }
 
     this.content.innerHTML = config.content;
-    this.visible = true;
+    this.prop.visible = true;
 
     this.container.classList.add('psv-notification--visible');
 
@@ -87,10 +89,10 @@ class PSVNotification extends AbstractComponent {
    * @fires module:components.PSVNotification.hide-notification
    */
   hide() {
-    if (this.visible) {
+    if (this.prop.visible) {
       this.container.classList.remove('psv-notification--visible');
 
-      this.visible = false;
+      this.prop.visible = false;
 
       /**
        * @event hide-notification

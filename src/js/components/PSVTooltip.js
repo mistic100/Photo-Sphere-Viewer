@@ -5,6 +5,7 @@ import { AbstractComponent } from './AbstractComponent';
 
 const LEFT_MAP = { 0: 'left', 0.5: 'center', 1: 'right' };
 const TOP_MAP = { 0: 'top', 0.5: 'center', 1: 'bottom' };
+const STATE = { NONE: 0, SHOWING: 1, HIDING: 2 };
 
 /**
  * @summary Tooltip class
@@ -20,11 +21,15 @@ class PSVTooltip extends AbstractComponent {
     super(hud, 'psv-tooltip');
 
     /**
-     * @member {Object}
-     * @private
+     * @override
+     * @property {*} state
+     * @property {number} arrowSize
+     * @property {number} offset
      */
     this.prop = {
-      state    : null,
+      ...this.prop,
+      visible  : false,
+      state    : STATE.NONE,
       arrowSize: 0,
       offset   : 0,
     };
@@ -104,7 +109,7 @@ class PSVTooltip extends AbstractComponent {
    * viewer.showTooltip({ content: 'Hello world', top: 200, left: 450, position: 'center bottom'})
    */
   show(config) {
-    const isUpdate = this.visible;
+    const isUpdate = this.prop.visible;
     const t = this.container;
     const c = this.content;
     const a = this.arrow;
@@ -201,7 +206,7 @@ class PSVTooltip extends AbstractComponent {
     a.style.left = style.arrowLeft + 'px';
 
     t.classList.add('psv-tooltip--' + style.posClass.join('-'));
-    this.prop.state = 'showing';
+    this.prop.state = STATE.SHOWING;
   }
 
   /**
@@ -209,10 +214,10 @@ class PSVTooltip extends AbstractComponent {
    * @fires module:components.PSVTooltip.hide-tooltip
    */
   hide() {
-    if (this.visible) {
+    if (this.prop.visible) {
       this.container.classList.remove('psv-tooltip--visible');
-      this.visible = false;
-      this.prop.state = 'hidding';
+      this.prop.visible = false;
+      this.prop.state = STATE.HIDING;
 
       /**
        * @event hide-tooltip
@@ -231,10 +236,10 @@ class PSVTooltip extends AbstractComponent {
   __onTransitionEnd(e) {
     if (e.propertyName === 'transform') {
       switch (this.prop.state) {
-        case 'showing':
+        case STATE.SHOWING:
           this.container.classList.add('psv-tooltip--visible');
-          this.visible = true;
-          this.prop.state = null;
+          this.prop.visible = true;
+          this.prop.state = STATE.NONE;
 
           /**
            * @event show-tooltip
@@ -244,8 +249,8 @@ class PSVTooltip extends AbstractComponent {
           this.psv.trigger(EVENTS.SHOW_TOOLTIP);
           break;
 
-        case 'hidding':
-          this.prop.state = null;
+        case STATE.HIDING:
+          this.prop.state = STATE.NONE;
           this.content.innerHTML = null;
           this.container.style.top = '-1000px';
           this.container.style.left = '-1000px';

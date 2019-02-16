@@ -68,11 +68,11 @@
     transition: transform $psv-buttons-hover-scale-delay ease;
 
     * {
-      fill: $psv-buttons-color;
+      fill: currentColor;
     }
   }
+}
 
-  &--hover-scale:not(&--disabled):hover &-svg {
-    transform: scale($psv-buttons-hover-scale);
-  }
+.psv-container:not(.psv--is-touch) .psv-button--hover-scale:not(.psv-button--disabled):hover .psv-button-svg {
+  transform: scale($psv-buttons-hover-scale);
 }

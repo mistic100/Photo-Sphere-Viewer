@@ -5,6 +5,7 @@ import fullscreenIn from '../../icons/fullscreen-in.svg';
 import fullscreenOut from '../../icons/fullscreen-out.svg';
 import gesture from '../../icons/gesture.svg';
 import info from '../../icons/info.svg';
+import menu from '../../icons/menu.svg';
 import mobileRotate from '../../icons/mobile-rotate.svg';
 import pin from '../../icons/pin.svg';
 import pinList from '../../icons/pin-list.svg';
@@ -28,6 +29,7 @@ const ICONS = {
   fullscreenOut,
   gesture,
   info,
+  menu,
   mobileRotate,
   pin,
   pinList,

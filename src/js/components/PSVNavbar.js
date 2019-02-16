@@ -5,12 +5,33 @@ import { PSVFullscreenButton } from '../buttons/PSVFullscreenButton';
 import { PSVGyroscopeButton } from '../buttons/PSVGyroscopeButton';
 import { PSVMarkersButton } from '../buttons/PSVMarkersButton';
 import { PSVMarkersListButton } from '../buttons/PSVMarkersListButton';
+import { PSVMenuButton } from '../buttons/PSVMenuButton';
 import { PSVStereoButton } from '../buttons/PSVStereoButton';
-import { PSVZoomButton } from '../buttons/PSVZoomButton';
+import { PSVZoomInButton } from '../buttons/PSVZoomInButton';
+import { PSVZoomOutButton } from '../buttons/PSVZoomOutButton';
+import { PSVZoomRangeButton } from '../buttons/PSVZoomRangeButton';
 import { PSVError } from '../PSVError';
 import { logWarn } from '../utils';
 import { AbstractComponent } from './AbstractComponent';
 import { PSVNavbarCaption } from './PSVNavbarCaption';
+
+const STANDARD_BUTTONS = [
+  PSVAutorotateButton,
+  PSVZoomInButton,
+  PSVZoomRangeButton,
+  PSVZoomOutButton,
+  PSVDownloadButton,
+  PSVMarkersButton,
+  PSVMarkersListButton,
+  PSVFullscreenButton,
+  PSVStereoButton,
+  PSVGyroscopeButton,
+];
+
+const STANDARD_BUTTONS_BY_ID = STANDARD_BUTTONS.reduce((map, item) => {
+  map[item.id] = item;
+  return map;
+}, {});
 
 /**
  * @summary Navigation bar class
@@ -32,16 +53,16 @@ class PSVNavbar extends AbstractComponent {
      */
     this.children = [];
 
+    /**
+     * @summary List of collapsed buttons
+     * @member {module:components/buttons.AbstractButton[]}
+     * @private
+     */
+    this.collapsed = [];
+
     if (this.psv.config.navbar) {
       this.setButtons(this.psv.config.navbar);
     }
-  }
-
-  /**
-   * @override
-   */
-  destroy() {
-    super.destroy();
   }
 
   /**
@@ -57,49 +78,23 @@ class PSVNavbar extends AbstractComponent {
       if (typeof button === 'object') {
         new PSVCustomButton(this, button);
       }
+      else if (STANDARD_BUTTONS_BY_ID[button]) {
+        new STANDARD_BUTTONS_BY_ID[button](this);
+      }
+      else if (button === 'caption') {
+        new PSVNavbarCaption(this, this.psv.config.caption);
+      }
+      else if (button === 'zoom') {
+        new PSVZoomOutButton(this);
+        new PSVZoomRangeButton(this);
+        new PSVZoomInButton(this);
+      }
       else {
-        switch (button) {
-          case PSVAutorotateButton.id:
-            new PSVAutorotateButton(this);
-            break;
-
-          case PSVZoomButton.id:
-            new PSVZoomButton(this);
-            break;
-
-          case PSVDownloadButton.id:
-            new PSVDownloadButton(this);
-            break;
-
-          case PSVMarkersButton.id:
-            new PSVMarkersButton(this);
-            break;
-
-          case PSVMarkersListButton.id:
-            new PSVMarkersListButton(this);
-            break;
-
-          case PSVFullscreenButton.id:
-            new PSVFullscreenButton(this);
-            break;
-
-          case PSVStereoButton.id:
-            new PSVStereoButton(this);
-            break;
-
-          case PSVGyroscopeButton.id:
-            new PSVGyroscopeButton(this);
-            break;
-
-          case 'caption':
-            new PSVNavbarCaption(this, this.psv.config.caption);
-            break;
-
-          default:
-            throw new PSVError('Unknown button ' + button);
-        }
+        throw new PSVError('Unknown button ' + button);
       }
     });
+
+    new PSVMenuButton(this);
     /* eslint-enable no-new */
   }
 
@@ -108,7 +103,7 @@ class PSVNavbar extends AbstractComponent {
    * @param {string} html
    */
   setCaption(html) {
-    const caption = this.getButton('caption', true);
+    const caption = this.getButton('caption', false);
 
     if (!caption) {
       throw new PSVError('Cannot set caption, the navbar caption container is not initialized.');
@@ -120,14 +115,14 @@ class PSVNavbar extends AbstractComponent {
   /**
    * @summary Returns a button by its identifier
    * @param {string} id
-   * @param {boolean} [silent=false]
+   * @param {boolean} [warnNotFound=true]
    * @returns {module:components/buttons.AbstractButton}
    */
-  getButton(id, silent) {
+  getButton(id, warnNotFound = true) {
     let button = null;
 
     this.children.some((item) => {
-      if (item.id === id) {
+      if (item.prop.id === id) {
         button = item;
         return true;
       }
@@ -136,7 +131,7 @@ class PSVNavbar extends AbstractComponent {
       }
     });
 
-    if (!button && !silent) {
+    if (!button && warnNotFound) {
       logWarn(`button "${id}" not found in the navbar`);
     }
 
@@ -148,7 +143,7 @@ class PSVNavbar extends AbstractComponent {
    */
   show() {
     this.container.classList.add('psv-navbar--open');
-    this.visible = true;
+    this.prop.visible = true;
   }
 
   /**
@@ -156,7 +151,54 @@ class PSVNavbar extends AbstractComponent {
    */
   hide() {
     this.container.classList.remove('psv-navbar--open');
-    this.visible = false;
+    this.prop.visible = false;
+  }
+
+  /**
+   * @override
+   */
+  refresh() {
+    super.refresh();
+
+    if (this.psv.prop.uiRefresh === true) {
+      const availableWidth = this.container.offsetWidth;
+
+      let totalWidth = 0;
+      const visibleButtons = [];
+      const collapsableButtons = [];
+
+      this.children.forEach((item) => {
+        if (item.prop.visible) {
+          totalWidth += item.prop.width;
+          visibleButtons.push(item);
+          if (item.collapsable) {
+            collapsableButtons.push(item);
+          }
+        }
+      });
+
+      if (!visibleButtons.length) {
+        return;
+      }
+
+      if (availableWidth < totalWidth && collapsableButtons.length > 0) {
+        collapsableButtons.forEach(item => item.collapse());
+        this.collapsed = collapsableButtons;
+
+        this.getButton(PSVMenuButton.id).show(false);
+      }
+      else if (availableWidth >= totalWidth && this.collapsed.length > 0) {
+        this.collapsed.forEach(item => item.uncollapse());
+        this.collapsed = [];
+
+        this.getButton(PSVMenuButton.id).hide(false);
+      }
+
+      const caption = this.getButton(PSVNavbarCaption.id, false);
+      if (caption) {
+        caption.refresh();
+      }
+    }
   }
 
 }

@@ -1,5 +1,5 @@
-import { AbstractComponent } from './AbstractComponent';
 import { EVENTS } from '../data/constants';
+import { AbstractComponent } from './AbstractComponent';
 
 /**
  * @summary Overlay class
@@ -15,11 +15,13 @@ class PSVOverlay extends AbstractComponent {
     super(psv, 'psv-overlay');
 
     /**
-     * @member {Object}
-     * @private
+     * @override
+     * @property {string} contentId
+     * @property {boolean} dissmisable
      */
     this.prop = {
-      id         : undefined,
+      ...this.prop,
+      contentId  : undefined,
       dissmisable: true,
     };
 
@@ -67,7 +69,6 @@ class PSVOverlay extends AbstractComponent {
    * @override
    */
   destroy() {
-    delete this.prop;
     delete this.image;
     delete this.text;
     delete this.subtext;
@@ -96,7 +97,7 @@ class PSVOverlay extends AbstractComponent {
       config = { text: config }; // eslint-disable-line no-param-reassign
     }
 
-    this.prop.id = config.id;
+    this.prop.contentId = config.id;
     this.prop.dissmisable = config.dissmisable !== false;
     this.image.innerHTML = config.image || '';
     this.text.innerHTML = config.text || '';
@@ -119,10 +120,10 @@ class PSVOverlay extends AbstractComponent {
    * @fires module:components.PSVOverlay.hide-notification
    */
   hide(id) {
-    if (this.visible && (!id || !this.prop.id || this.prop.id === id)) {
+    if (this.isVisible() && (!id || !this.prop.contentId || this.prop.contentId === id)) {
       super.hide();
 
-      this.prop.id = undefined;
+      this.prop.contentId = undefined;
 
       /**
        * @event hide-overlay

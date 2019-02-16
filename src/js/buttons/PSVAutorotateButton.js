@@ -20,6 +20,10 @@ class PSVAutorotateButton extends AbstractButton {
     return 'playActive';
   }
 
+  get collapsable() {
+    return true;
+  }
+
   /**
    * @param {module:components.PSVNavbar} navbar
    */

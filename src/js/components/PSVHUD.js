@@ -26,18 +26,15 @@ class PSVHUD extends AbstractComponent {
     this.markers = {};
 
     /**
-     * @summary Last selected marker
-     * @member {PSVMarker}
-     * @readonly
+     * @override
+     * @property {PSVMarker} currentMarker - Last selected marker
+     * @property {PSVMarker} hoveringMarker - Marker under the cursor
      */
-    this.currentMarker = null;
-
-    /**
-     * @summary Marker under the cursor
-     * @member {PSVMarker}
-     * @readonly
-     */
-    this.hoveringMarker = null;
+    this.prop = {
+      ...this.prop,
+      currentMarker : null,
+      hoveringMarker: null,
+    };
 
     if (this.psv.config.mousemove) {
       this.container.style.cursor = 'move';
@@ -77,8 +74,6 @@ class PSVHUD extends AbstractComponent {
     this.psv.off(EVENTS.RENDER, this);
 
     delete this.svgContainer;
-    delete this.currentMarker;
-    delete this.hoveringMarker;
     delete this.markers;
 
     super.destroy();
@@ -109,7 +104,7 @@ class PSVHUD extends AbstractComponent {
    * @fires module:components.PSVHUD.show-hud
    */
   show() {
-    this.visible = true;
+    this.prop.visible = true;
 
     this.renderMarkers();
 
@@ -126,7 +121,7 @@ class PSVHUD extends AbstractComponent {
    * @fires module:components.PSVHUD.hide-hud
    */
   hide() {
-    this.visible = false;
+    this.prop.visible = false;
 
     this.renderMarkers();
 
@@ -171,7 +166,7 @@ class PSVHUD extends AbstractComponent {
 
     if (render) {
       this.renderMarkers();
-      this.psv.refresh();
+      this.psv.refresh(`add marker ${marker.id}`);
     }
 
     return marker;
@@ -198,7 +193,7 @@ class PSVHUD extends AbstractComponent {
    * @returns {PSVMarker}
    */
   getCurrentMarker() {
-    return this.currentMarker;
+    return this.prop.currentMarker;
   }
 
   /**
@@ -235,7 +230,7 @@ class PSVHUD extends AbstractComponent {
       this.svgContainer.removeChild(marker.$el);
     }
 
-    if (this.hoveringMarker === marker) {
+    if (this.prop.hoveringMarker === marker) {
       this.psv.tooltip.hide();
     }
 
@@ -243,7 +238,7 @@ class PSVHUD extends AbstractComponent {
     delete this.markers[marker.id];
 
     if (render) {
-      this.psv.refresh();
+      this.psv.refresh(`remove marker ${marker.id}`);
     }
   }
 
@@ -259,7 +254,7 @@ class PSVHUD extends AbstractComponent {
 
     if (render) {
       this.renderMarkers();
-      this.psv.refresh();
+      this.psv.refresh('set markers');
     }
   }
 
@@ -272,7 +267,7 @@ class PSVHUD extends AbstractComponent {
 
     if (render) {
       this.renderMarkers();
-      this.psv.refresh();
+      this.psv.refresh('clear markers');
     }
   }
 
@@ -332,7 +327,7 @@ class PSVHUD extends AbstractComponent {
     const rotation = !this.psv.isGyroscopeEnabled() ? 0 : THREE.Math.radToDeg(this.psv.renderer.camera.rotation.z);
 
     each(this.markers, (marker) => {
-      let isVisible = this.visible && marker.visible;
+      let isVisible = this.prop.visible && marker.visible;
 
       if (isVisible && marker.isPoly()) {
         const positions = this.__getPolyPositions(marker);
@@ -594,7 +589,7 @@ class PSVHUD extends AbstractComponent {
     const marker = this.__getTargetMarker(e.target);
 
     if (marker && !marker.isPoly()) {
-      this.hoveringMarker = marker;
+      this.prop.hoveringMarker = marker;
 
       /**
        * @event over-marker
@@ -627,7 +622,7 @@ class PSVHUD extends AbstractComponent {
        */
       this.psv.trigger(EVENTS.LEAVE_MARKER, marker);
 
-      this.hoveringMarker = null;
+      this.prop.hoveringMarker = null;
 
       this.psv.tooltip.hide();
     }
@@ -648,23 +643,23 @@ class PSVHUD extends AbstractComponent {
       marker = targetMarker;
     }
     // do not hide if we enter the tooltip itself while hovering a polygon
-    else if (this.__targetOnTooltip(e.target) && this.hoveringMarker) {
-      marker = this.hoveringMarker;
+    else if (this.__targetOnTooltip(e.target) && this.prop.hoveringMarker) {
+      marker = this.prop.hoveringMarker;
     }
 
     if (marker) {
-      if (!this.hoveringMarker) {
+      if (!this.prop.hoveringMarker) {
         this.psv.trigger(EVENTS.OVER_MARKER, marker);
 
-        this.hoveringMarker = marker;
+        this.prop.hoveringMarker = marker;
       }
 
       this.__renderTooltip(marker, e);
     }
-    else if (this.hoveringMarker && this.hoveringMarker.isPoly()) {
-      this.psv.trigger(EVENTS.LEAVE_MARKER, this.hoveringMarker);
+    else if (this.prop.hoveringMarker && this.prop.hoveringMarker.isPoly()) {
+      this.psv.trigger(EVENTS.LEAVE_MARKER, this.prop.hoveringMarker);
 
-      this.hoveringMarker = null;
+      this.prop.hoveringMarker = null;
 
       this.psv.tooltip.hide();
     }
@@ -723,7 +718,7 @@ class PSVHUD extends AbstractComponent {
     const marker = this.__getTargetMarker(data.target, true);
 
     if (marker) {
-      this.currentMarker = marker;
+      this.prop.currentMarker = marker;
 
       /**
        * @event select-marker
@@ -743,16 +738,16 @@ class PSVHUD extends AbstractComponent {
         e.stopPropagation();
       }
     }
-    else if (this.currentMarker) {
+    else if (this.prop.currentMarker) {
       /**
        * @event unselect-marker
        * @memberof module:components.PSVHUD
        * @summary Triggered when a marker was selected and the user clicks elsewhere
        * @param {PSVMarker} marker
        */
-      this.psv.trigger(EVENTS.UNSELECT_MARKER, this.currentMarker);
+      this.psv.trigger(EVENTS.UNSELECT_MARKER, this.prop.currentMarker);
 
-      this.currentMarker = null;
+      this.prop.currentMarker = null;
     }
 
     if (marker && marker.config.content) {
@@ -773,11 +768,11 @@ class PSVHUD extends AbstractComponent {
   __onRender() {
     this.renderMarkers();
 
-    if (!this.hoveringMarker) {
+    if (!this.prop.hoveringMarker) {
       this.psv.tooltip.hide();
     }
-    else if (!this.hoveringMarker.isPoly()) {
-      this.__renderTooltip(this.hoveringMarker);
+    else if (!this.prop.hoveringMarker.isPoly()) {
+      this.__renderTooltip(this.prop.hoveringMarker);
     }
   }
 

@@ -20,8 +20,7 @@
   ],
   "dependencies": {
     "three.js": ">= 0.85.0",
-    "uevent": "~1.0.0",
-    "doT": ">=1.0.3"
+    "uevent": "~1.0.0"
   },
   "keywords": [
     "photosphere",

@@ -81,6 +81,13 @@ export const CUBE_HASHMAP = ['left', 'right', 'top', 'bottom', 'back', 'front'];
 export const MARKER_DATA = 'psvMarker';
 
 /**
+ * @summary Property name added to buttons list
+ * @type {string}
+ * @constant
+ */
+export const BUTTON_DATA = 'psvButton';
+
+/**
  * @summary Property name added to viewer element
  * @type {string}
  * @constant
@@ -169,6 +176,7 @@ export const MARKER_TYPES = {
 export const IDS = {
   MARKERS_LIST : 'markersList',
   MARKER       : 'marker',
+  MENU         : 'menu',
   PLEASE_ROTATE: 'pleaseRotate',
   TWO_FINGERS  : 'twoFingers',
   ERROR        : 'error',

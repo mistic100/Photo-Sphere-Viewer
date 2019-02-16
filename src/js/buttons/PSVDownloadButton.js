@@ -15,6 +15,10 @@ class PSVDownloadButton extends AbstractButton {
     return 'download';
   }
 
+  get collapsable() {
+    return true;
+  }
+
   /**
    * @param {module:components.PSVNavbar} navbar
    */

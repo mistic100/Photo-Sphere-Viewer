@@ -4,7 +4,7 @@
 
 import { AbstractComponent } from '../components/AbstractComponent';
 import { PSVError } from '../PSVError';
-import { toggleClass } from '../utils';
+import { isPlainObject, toggleClass } from '../utils';
 
 /**
  * @summary Base navbar button class
@@ -45,6 +45,14 @@ class AbstractButton extends AbstractComponent {
   }
 
   /**
+   * @summary `true` if the button can be moved to menu when the navbar is too small
+   * @returns {boolean}
+   */
+  get collapsable() {
+    return false;
+  }
+
+  /**
    * @param {module:components.PSVNavbar} navbar
    * @param {string} className
    */
@@ -52,54 +60,67 @@ class AbstractButton extends AbstractComponent {
     super(navbar, 'psv-button ' + className);
 
     /**
-     * @summary Unique identifier of the button
-     * @member {string}
-     * @readonly
+     * @override
+     * @property {string} id - Unique identifier of the button
+     * @property {boolean} enabled
+     * @property {boolean} supported
+     * @property {boolean} collapsed
+     * @property {boolean} active
+     * @property {number} width
      */
-    this.id = this.constructor.id;
-
-    /**
-     * @summary State of the button
-     * @member {boolean}
-     * @readonly
-     */
-    this.enabled = true;
+    this.prop = {
+      ...this.prop,
+      id       : this.constructor.id,
+      enabled  : true,
+      supported: true,
+      collapsed: false,
+      active   : false,
+      width    : this.container.offsetWidth,
+    };
 
     if (this.constructor.icon) {
       this.__setIcon(this.constructor.icon);
     }
 
-    if (this.id && this.psv.config.lang[this.id]) {
-      this.container.title = this.psv.config.lang[this.id];
+    if (this.prop.id && this.psv.config.lang[this.prop.id]) {
+      this.container.title = this.psv.config.lang[this.prop.id];
     }
 
     this.container.addEventListener('click', (e) => {
-      if (this.enabled) {
+      if (this.prop.enabled) {
         this.__onClick();
       }
       e.stopPropagation();
     });
 
-    const supportedOrPromise = this.supported();
-    if (typeof supportedOrPromise.then === 'function') {
-      this.hide();
+    const supportedOrObject = this.checkSupported();
+    if (isPlainObject(supportedOrObject)) {
+      if (supportedOrObject.initial === false) {
+        this.hide();
+        this.prop.supportedOrObject = false;
+      }
 
-      supportedOrPromise.then((supported) => {
-        if (supported) {
+      supportedOrObject.promise.then((supported) => {
+        this.prop.supportedOrObject = supported;
+        if (!supported && this.prop.visible) {
+          this.hide();
+        }
+        else if (supported && !this.prop.visible) {
           this.show();
         }
       });
     }
-    else if (!supportedOrPromise) {
+    else if (!supportedOrObject) {
       this.hide();
+      this.prop.supportedOrObject = false;
     }
   }
 
   /**
    * @summary Checks if the button can be displayed
-   * @returns {boolean|Promise<boolean>}
+   * @returns {boolean|{initial: boolean, promise: Promise<boolean>}}
    */
-  supported() {
+  checkSupported() {
     return true;
   }
 
@@ -108,10 +129,35 @@ class AbstractButton extends AbstractComponent {
    * @param {boolean} [active] - forced state
    */
   toggleActive(active) {
-    toggleClass(this.container, 'psv-button--active', active);
+    this.prop.active = active !== undefined ? active : !this.prop.active;
+    toggleClass(this.container, 'psv-button--active', this.prop.active);
 
     if (this.constructor.iconActive) {
-      this.__setIcon(active ? this.constructor.iconActive : this.constructor.icon);
+      this.__setIcon(this.prop.active ? this.constructor.iconActive : this.constructor.icon);
+    }
+  }
+
+  /**
+   * @override
+   */
+  show(refresh = true) {
+    this.prop.visible = true;
+    if (!this.prop.collapsed) {
+      this.container.style.display = '';
+    }
+    if (refresh) {
+      this.psv.refresh(`show button ${this.prop.id}`);
+    }
+  }
+
+  /**
+   * @override
+   */
+  hide(refresh = true) {
+    this.prop.visible = false;
+    this.container.style.display = 'none';
+    if (refresh) {
+      this.psv.refresh(`hide button ${this.prop.id}`);
     }
   }
 
@@ -120,8 +166,7 @@ class AbstractButton extends AbstractComponent {
    */
   disable() {
     this.container.classList.add('psv-button--disabled');
-
-    this.enabled = false;
+    this.prop.enabled = false;
   }
 
   /**
@@ -129,8 +174,25 @@ class AbstractButton extends AbstractComponent {
    */
   enable() {
     this.container.classList.remove('psv-button--disabled');
+    this.prop.enabled = true;
+  }
 
-    this.enabled = true;
+  /**
+   * @summary Collapses the button in the navbar menu
+   */
+  collapse() {
+    this.prop.collapsed = true;
+    this.container.style.display = 'none';
+  }
+
+  /**
+   * @summary Uncollapses the button from the navbar menu
+   */
+  uncollapse() {
+    this.prop.collapsed = false;
+    if (this.prop.visible) {
+      this.container.style.display = '';
+    }
   }
 
   /**
@@ -156,7 +218,7 @@ class AbstractButton extends AbstractComponent {
    * @abstract
    */
   __onClick() {
-    throw new PSVError(`__onClick not implemented for button "${this.id}".`);
+    throw new PSVError(`__onClick not implemented for button "${this.prop.id}".`);
   }
 
 }

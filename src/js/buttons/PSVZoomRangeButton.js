@@ -1,43 +1,39 @@
-import { AbstractButton } from './AbstractButton';
 import { EVENTS } from '../data/constants';
+import { SYSTEM } from '../data/system';
+import { getStyle } from '../utils';
+import { AbstractButton } from './AbstractButton';
 
 /**
  * @summary Navigation bar zoom button class
  * @extends module:components/buttons.AbstractButton
  * @memberof module:components/buttons
  */
-class PSVZoomButton extends AbstractButton {
+class PSVZoomRangeButton extends AbstractButton {
 
   static get id() {
-    return 'zoom';
+    return 'zoomRange';
+  }
+
+  get collapsable() {
+    return false;
   }
 
   /**
    * @param {module:components.PSVNavbar} navbar
    */
   constructor(navbar) {
-    super(navbar, 'psv-zoom-button');
+    super(navbar, 'psv-zoom-range');
 
     /**
-     * @member {Object}
-     * @private
+     * @override
+     * @property {boolean} mousedown
+     * @property {number} mediaMinWidth
      */
     this.prop = {
-      mousedown        : false,
-      buttondown       : false,
-      longPressInterval: null,
-      longPressTimeout : null,
+      ...this.prop,
+      mousedown    : false,
+      mediaMinWidth: 0,
     };
-
-    const zoomMinus = document.createElement('div');
-    zoomMinus.className = 'psv-zoom-button-minus';
-    zoomMinus.title = this.psv.config.lang.zoomOut;
-    this.__setIcon('zoomOut', zoomMinus);
-    this.container.appendChild(zoomMinus);
-
-    const zoomRangeBg = document.createElement('div');
-    zoomRangeBg.className = 'psv-zoom-button-range';
-    this.container.appendChild(zoomRangeBg);
 
     /**
      * @member {HTMLElement}
@@ -45,8 +41,8 @@ class PSVZoomButton extends AbstractButton {
      * @private
      */
     this.zoomRange = document.createElement('div');
-    this.zoomRange.className = 'psv-zoom-button-line';
-    zoomRangeBg.appendChild(this.zoomRange);
+    this.zoomRange.className = 'psv-zoom-range-line';
+    this.container.appendChild(this.zoomRange);
 
     /**
      * @member {HTMLElement}
@@ -54,26 +50,22 @@ class PSVZoomButton extends AbstractButton {
      * @private
      */
     this.zoomValue = document.createElement('div');
-    this.zoomValue.className = 'psv-zoom-button-handle';
+    this.zoomValue.className = 'psv-zoom-range-handle';
     this.zoomRange.appendChild(this.zoomValue);
 
-    const zoomPlus = document.createElement('div');
-    zoomPlus.className = 'psv-zoom-button-plus';
-    zoomPlus.title = this.psv.config.lang.zoomIn;
-    this.__setIcon('zoomIn', zoomPlus);
-    this.container.appendChild(zoomPlus);
+    this.prop.mediaMinWidth = parseInt(getStyle(this.container, 'maxWidth'), 10);
 
-    this.zoomRange.addEventListener('mousedown', this);
-    this.zoomRange.addEventListener('touchstart', this);
+    this.container.addEventListener('mousedown', this);
+    this.container.addEventListener('touchstart', this);
     this.psv.container.addEventListener('mousemove', this);
     this.psv.container.addEventListener('touchmove', this);
     this.psv.container.addEventListener('mouseup', this);
     this.psv.container.addEventListener('touchend', this);
-    zoomMinus.addEventListener('mousedown', this.__zoomOut.bind(this));
-    zoomPlus.addEventListener('mousedown', this.__zoomIn.bind(this));
 
     this.psv.on(EVENTS.ZOOM_UPDATED, this);
     this.psv.once(EVENTS.READY, this);
+
+    this.refresh();
   }
 
   /**
@@ -89,7 +81,6 @@ class PSVZoomButton extends AbstractButton {
 
     delete this.zoomRange;
     delete this.zoomValue;
-    delete this.prop;
 
     this.psv.off(EVENTS.ZOOM_UPDATED, this);
 
@@ -111,11 +102,32 @@ class PSVZoomButton extends AbstractButton {
       case 'touchmove':    this.__changeZoomByTouch(e);       break;
       case 'mouseup':      this.__stopZoomChange(e);          break;
       case 'touchend':     this.__stopZoomChange(e);          break;
-      case EVENTS.ZOOM_UPDATED: this.__moveZoomValue(e.args[0]);             break;
+      case EVENTS.ZOOM_UPDATED: this.__moveZoomValue(e.args[0]); break;
       case EVENTS.READY:        this.__moveZoomValue(this.psv.prop.zoomLvl); break;
       // @formatter:on
     }
     /* eslint-enable */
+  }
+
+  /**
+   * @override
+   */
+  checkSupported() {
+    return { initial: true, promise: SYSTEM.isTouchEnabled.then(enabled => !enabled) };
+  }
+
+  /**
+   * @override
+   */
+  refresh() {
+    if (this.prop.supported) {
+      if (this.psv.prop.size.width <= this.prop.mediaMinWidth && this.prop.visible) {
+        this.hide();
+      }
+      else if (this.psv.prop.size.width > this.prop.mediaMinWidth && !this.prop.visible) {
+        this.show();
+      }
+    }
   }
 
   /**
@@ -154,7 +166,7 @@ class PSVZoomButton extends AbstractButton {
    * @private
    */
   __initZoomChangeByTouch(evt) {
-    if (!this.enabled) {
+    if (!this.prop.enabled) {
       return;
     }
 
@@ -163,54 +175,11 @@ class PSVZoomButton extends AbstractButton {
   }
 
   /**
-   * @summary Handles click events
-   * @description Zooms in and register long press timer
-   * @private
-   */
-  __zoomIn() {
-    if (!this.enabled) {
-      return;
-    }
-
-    this.prop.buttondown = true;
-    this.psv.zoomIn();
-    this.prop.longPressTimeout = setTimeout(() => this.__startLongPressInterval(1), 200);
-  }
-
-  /**
-   * @summary Handles click events
-   * @description Zooms out and register long press timer
-   * @private
-   */
-  __zoomOut() {
-    if (!this.enabled) {
-      return;
-    }
-
-    this.prop.buttondown = true;
-    this.psv.zoomOut();
-    this.prop.longPressTimeout = setTimeout(() => this.__startLongPressInterval(-1), 200);
-  }
-
-  /**
-   * @summary Continues zooming as long as the user presses the button
-   * @param value
-   * @private
-   */
-  __startLongPressInterval(value) {
-    if (this.prop.buttondown) {
-      this.prop.longPressInterval = setInterval(() => {
-        this.psv.zoom(this.psv.prop.zoomLvl + value);
-      }, 50);
-    }
-  }
-
-  /**
    * @summary Handles mouse up events
    * @private
    */
   __stopZoomChange() {
-    if (!this.enabled) {
+    if (!this.prop.enabled) {
       return;
     }
 
@@ -227,7 +196,7 @@ class PSVZoomButton extends AbstractButton {
    * @private
    */
   __changeZoomWithMouse(evt) {
-    if (!this.enabled) {
+    if (!this.prop.enabled) {
       return;
     }
 
@@ -241,7 +210,7 @@ class PSVZoomButton extends AbstractButton {
    * @private
    */
   __changeZoomByTouch(evt) {
-    if (!this.enabled) {
+    if (!this.prop.enabled) {
       return;
     }
     this.__changeZoom(evt.changedTouches[0].clientX);
@@ -262,4 +231,4 @@ class PSVZoomButton extends AbstractButton {
 
 }
 
-export { PSVZoomButton };
+export { PSVZoomRangeButton };

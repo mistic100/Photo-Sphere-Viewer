@@ -1,7 +1,7 @@
+import { EVENTS, IDS } from '../data/constants';
 import { SYSTEM } from '../data/system';
 import { toggleClass } from '../utils';
 import { AbstractComponent } from './AbstractComponent';
-import { EVENTS, IDS } from '../data/constants';
 
 /**
  * @summary Minimum width of the panel
@@ -25,14 +25,21 @@ class PSVPanel extends AbstractComponent {
     super(psv, 'psv-panel');
 
     /**
-     * @member {Object}
-     * @private
+     * @override
+     * @property {string} contentId
+     * @property {number} mouseX
+     * @property {number} mouseY
+     * @property {boolean} mousedown
+     * @property {function} clickHandler
      */
     this.prop = {
-      id       : undefined,
-      mouseX   : 0,
-      mouseY   : 0,
-      mousedown: false,
+      ...this.prop,
+      visible     : false,
+      contentId   : undefined,
+      mouseX      : 0,
+      mouseY      : 0,
+      mousedown   : false,
+      clickHandler: null,
     };
 
     const resizer = document.createElement('div');
@@ -106,7 +113,7 @@ class PSVPanel extends AbstractComponent {
    * @override
    */
   refresh() {
-    if (this.isVisible() && this.prop.id === IDS.MARKERS_LIST) {
+    if (this.prop.visible && this.prop.contentId === IDS.MARKERS_LIST) {
       if (this.psv.hud.getNbMarkers() === 0) {
         this.hide();
       }
@@ -122,6 +129,7 @@ class PSVPanel extends AbstractComponent {
    * @param {string} [config.id]
    * @param {string} config.content
    * @param {boolean} [config.noMargin=false]
+   * @param {Function} [config.clickHandler]
    * @fires module:components.PSVPanel.open-panel
    */
   show(config) {
@@ -129,14 +137,19 @@ class PSVPanel extends AbstractComponent {
       config = { content: config }; // eslint-disable-line no-param-reassign
     }
 
-    this.prop.id = config.id;
-    this.visible = true;
+    this.prop.contentId = config.id;
+    this.prop.visible = true;
 
     this.content.innerHTML = config.content;
     this.content.scrollTop = 0;
     this.container.classList.add('psv-panel--open');
 
     toggleClass(this.content, 'psv-panel-content--no-margin', config.noMargin === true);
+
+    if (config.clickHandler) {
+      this.prop.clickHandler = config.clickHandler;
+      this.content.addEventListener('click', config.clickHandler);
+    }
 
     /**
      * @event open-panel
@@ -153,12 +166,17 @@ class PSVPanel extends AbstractComponent {
    * @fires module:components.PSVPanel.close-panel
    */
   hide(id) {
-    if (this.visible && (!id || !this.prop.id || this.prop.id === id)) {
-      this.visible = false;
-      this.prop.id = undefined;
+    if (this.prop.visible && (!id || !this.prop.contentId || this.prop.contentId === id)) {
+      this.prop.visible = false;
+      this.prop.contentId = undefined;
 
       this.content.innerHTML = null;
       this.container.classList.remove('psv-panel--open');
+
+      if (this.prop.clickHandler) {
+        this.content.removeEventListener('click', this.prop.clickHandler);
+        this.prop.clickHandler = null;
+      }
 
       /**
        * @event close-panel

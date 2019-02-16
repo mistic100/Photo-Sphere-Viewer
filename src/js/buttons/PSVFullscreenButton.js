@@ -20,6 +20,10 @@ class PSVFullscreenButton extends AbstractButton {
     return 'fullscreenOut';
   }
 
+  get collapsable() {
+    return false;
+  }
+
   /**
    * @param {module:components.PSVNavbar} navbar
    */

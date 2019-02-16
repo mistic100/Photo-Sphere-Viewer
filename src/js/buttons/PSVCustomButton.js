@@ -8,6 +8,10 @@ import { AbstractButton } from './AbstractButton';
  */
 class PSVCustomButton extends AbstractButton {
 
+  get collapsable() {
+    return this.config.collapsable !== false;
+  }
+
   /**
    * @param {module:components.PSVNavbar} navbar
    * @param {Object} config
@@ -30,7 +34,10 @@ class PSVCustomButton extends AbstractButton {
     this.config = config;
 
     if (this.config.id) {
-      this.id = this.config.id;
+      this.prop.id = this.config.id;
+    }
+    else {
+      this.prop.id = 'psvButton-' + Math.random().toString(36).substr(2, 9);
     }
 
     if (this.config.className) {
@@ -44,6 +51,8 @@ class PSVCustomButton extends AbstractButton {
     if (this.config.content) {
       this.container.innerHTML = this.config.content;
     }
+
+    this.width = this.container.offsetWidth;
 
     if (this.config.enabled === false) {
       this.disable();

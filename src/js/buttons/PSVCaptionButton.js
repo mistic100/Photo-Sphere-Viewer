@@ -16,6 +16,10 @@ class PSVCaptionButton extends AbstractButton {
     return 'info';
   }
 
+  get collapsable() {
+    return false;
+  }
+
   /**
    * @param {module:components.PSVNavbarCaption} caption
    */
@@ -54,7 +58,7 @@ class PSVCaptionButton extends AbstractButton {
    * @description Toggles markers list
    */
   __onClick() {
-    if (this.psv.notification.visible) {
+    if (this.psv.notification.prop.visible) {
       this.psv.notification.hide();
     }
     else {
