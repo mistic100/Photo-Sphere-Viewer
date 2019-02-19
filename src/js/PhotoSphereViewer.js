@@ -29,7 +29,8 @@ import {
   isEmpty,
   isFullscreenEnabled,
   logWarn,
-  requestFullscreen, throttle,
+  requestFullscreen,
+  throttle,
   toggleClass
 } from './utils';
 
@@ -84,10 +85,10 @@ class PhotoSphereViewer extends EventEmitter {
         latitude : 0,
       },
       direction       : null,
-      zoomLvl         : 50,
-      vFov            : 70,
-      hFov            : 70,
-      aspect          : 1,
+      zoomLvl         : null,
+      vFov            : null,
+      hFov            : null,
+      aspect          : null,
       moveSpeed       : 0.1,
       gyroAlphaOffset : 0,
       orientationCb   : null,
@@ -418,6 +419,10 @@ class PhotoSphereViewer extends EventEmitter {
    */
   needsUpdate() {
     this.prop.needsUpdate = true;
+
+    if (!this.renderer.mainReqid && this.renderer.renderer) {
+      this.renderer.__renderLoop(+new Date());
+    }
   }
 
   /**
@@ -497,11 +502,11 @@ class PhotoSphereViewer extends EventEmitter {
           if (options.sphereCorrection) {
             this.renderer.setSphereCorrection(options.sphereCorrection);
           }
-          if (positionProvided) {
-            this.rotate(options);
-          }
           if (zoomProvided) {
             this.zoom(options.zoom);
+          }
+          if (positionProvided) {
+            this.rotate(options);
           }
         })
         .catch(e => console.error(e))
@@ -821,32 +826,31 @@ class PhotoSphereViewer extends EventEmitter {
    * @fires PhotoSphereViewer.position-updated
    */
   rotate(position, ignoreRange = false) {
-    const cleanPosition = this.dataHelper.cleanPosition(position);
+    let cleanPosition = this.dataHelper.cleanPosition(position);
 
     if (!ignoreRange) {
       const { rangedPosition, sidesReached } = this.dataHelper.applyRanges(cleanPosition);
+      cleanPosition = rangedPosition;
 
       if (intersect(['left', 'right'], sidesReached).length > 0) {
         this.renderer.reverseAutorotate();
       }
-
-      this.prop.position.longitude = rangedPosition.longitude;
-      this.prop.position.latitude = rangedPosition.latitude;
     }
-    else {
+
+    if (this.prop.position.longitude !== cleanPosition.longitude || this.prop.position.latitude !== cleanPosition.latitude) {
       this.prop.position.longitude = cleanPosition.longitude;
       this.prop.position.latitude = cleanPosition.latitude;
+
+      this.needsUpdate();
+
+      /**
+       * @event position-updated
+       * @memberof PhotoSphereViewer
+       * @summary Triggered when the view longitude and/or latitude changes
+       * @param {PhotoSphereViewer.Position} position
+       */
+      this.trigger(EVENTS.POSITION_UPDATED, this.getPosition());
     }
-
-    this.needsUpdate();
-
-    /**
-     * @event position-updated
-     * @memberof PhotoSphereViewer
-     * @summary Triggered when the view longitude and/or latitude changes
-     * @param {PhotoSphereViewer.Position} position
-     */
-    this.trigger(EVENTS.POSITION_UPDATED, this.getPosition());
   }
 
   /**
@@ -951,18 +955,25 @@ class PhotoSphereViewer extends EventEmitter {
    * @fires PhotoSphereViewer.zoom-updated
    */
   zoom(level) {
-    this.prop.zoomLvl = bound(level, 0, 100);
-    this.prop.vFov = this.dataHelper.zoomLevelToFov(this.prop.zoomLvl);
-    this.prop.hFov = this.dataHelper.vFovToHFov(this.prop.vFov);
-    this.needsUpdate();
+    const newZoomLvl = bound(level, 0, 100);
 
-    /**
-     * @event zoom-updated
-     * @memberof PhotoSphereViewer
-     * @summary Triggered when the zoom level changes
-     * @param {number} zoomLevel
-     */
-    this.trigger(EVENTS.ZOOM_UPDATED, this.getZoomLevel());
+    if (this.prop.zoomLvl !== newZoomLvl) {
+      this.prop.zoomLvl = newZoomLvl;
+      this.prop.vFov = this.dataHelper.zoomLevelToFov(this.prop.zoomLvl);
+      this.prop.hFov = this.dataHelper.vFovToHFov(this.prop.vFov);
+
+      this.needsUpdate();
+
+      /**
+       * @event zoom-updated
+       * @memberof PhotoSphereViewer
+       * @summary Triggered when the zoom level changes
+       * @param {number} zoomLevel
+       */
+      this.trigger(EVENTS.ZOOM_UPDATED, this.getZoomLevel());
+
+      this.rotate(this.prop.position);
+    }
   }
 
   /**

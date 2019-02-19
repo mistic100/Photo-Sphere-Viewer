@@ -152,7 +152,7 @@ class PSVZoomRangeButton extends AbstractButton {
    * @private
    */
   __initZoomChangeWithMouse(evt) {
-    if (!this.enabled) {
+    if (!this.prop.enabled) {
       return;
     }
 

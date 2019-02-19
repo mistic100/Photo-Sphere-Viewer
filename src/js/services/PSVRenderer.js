@@ -143,7 +143,7 @@ class PSVRenderer extends AbstractService {
    * @summary Main event loop, calls {@link render} if `prop.needsUpdate` is true
    * @param {number} timestamp
    * @fires module:services.PSVRenderer.before-render
-   * @private
+   * @package
    */
   __renderLoop(timestamp) {
     /**
@@ -228,10 +228,6 @@ class PSVRenderer extends AbstractService {
      * @summary Triggered when a panorama image has been loaded
      */
     this.psv.trigger(EVENTS.PANORAMA_LOADED);
-
-    if (!this.mainReqid) {
-      this.__renderLoop(+new Date());
-    }
   }
 
   /**

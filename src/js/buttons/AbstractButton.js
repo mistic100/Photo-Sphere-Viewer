@@ -97,11 +97,11 @@ class AbstractButton extends AbstractComponent {
     if (isPlainObject(supportedOrObject)) {
       if (supportedOrObject.initial === false) {
         this.hide();
-        this.prop.supportedOrObject = false;
+        this.prop.supported = false;
       }
 
       supportedOrObject.promise.then((supported) => {
-        this.prop.supportedOrObject = supported;
+        this.prop.supported = supported;
         if (!supported && this.prop.visible) {
           this.hide();
         }
@@ -112,7 +112,7 @@ class AbstractButton extends AbstractComponent {
     }
     else if (!supportedOrObject) {
       this.hide();
-      this.prop.supportedOrObject = false;
+      this.prop.supported = false;
     }
   }
 
