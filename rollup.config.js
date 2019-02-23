@@ -1,6 +1,6 @@
-import babel from 'rollup-plugin-babel';
-import string from 'rollup-plugin-string';
 import alias from 'rollup-plugin-alias';
+import babel from 'rollup-plugin-babel';
+import { string } from 'rollup-plugin-string';
 
 import pkg from './package.json';
 
