@@ -150,12 +150,7 @@ class PhotoSphereViewerCompat extends PhotoSphereViewer {
   }
 
   toggleNavbar() {
-    if (this.navbar.isVisible()) {
-      this.navbar.hide();
-    }
-    else {
-      this.navbar.show();
-    }
+    this.navbar.toggle();
   }
 
   getNavbarButton(id, silent) {
@@ -207,15 +202,18 @@ class PhotoSphereViewerCompat extends PhotoSphereViewer {
   // TOOLTIP
 
   showTooltip(config) {
-    this.tooltip.show(config);
+    this.prop.mainTooltip = this.tooltip.create(config);
   }
 
   hideTooltip() {
-    this.tooltip.hide();
+    if (this.prop.mainTooltip) {
+      this.prop.mainTooltip.hide();
+      this.prop.mainTooltip = null;
+    }
   }
 
   isTooltipVisible() {
-    return this.tooltip.isVisible();
+    return !!this.prop.mainTooltip;
   }
 
 }

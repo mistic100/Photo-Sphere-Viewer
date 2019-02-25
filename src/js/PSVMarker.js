@@ -78,19 +78,27 @@ class PSVMarker {
     this.data = undefined;
 
     /**
+     * @summary Tooltip instance for this marker
+     * @member {module:components.PSVTooltip}
+     */
+    this.tooltip = null;
+
+    /**
      * @summary Computed properties
      * @member {Object}
      * @protected
+     * @property {boolean} inViewport
      * @property {boolean} dynamicSize
      * @property {PhotoSphereViewer.Point} anchor
-     * @property {PhotoSphereViewer.Position} position
-     * @property {PhotoSphereViewer.Point} position2D
-     * @property {external:THREE.Vector3[]} positions3D
+     * @property {PhotoSphereViewer.Position} position - position in spherical coordinates
+     * @property {PhotoSphereViewer.Point} position2D - position in viewer coordinates
+     * @property {external:THREE.Vector3[]} positions3D - positions in 3D space
      * @property {number} width
      * @property {number} height
      * @property {*} def
      */
     this.props = {
+      inViewport : false,
       dynamicSize: false,
       anchor     : null,
       position   : null,
@@ -238,6 +246,63 @@ class PSVMarker {
     }
     else {
       return this.id;
+    }
+  }
+
+  /**
+   * @summary Display the tooltip of this marker
+   * @param {{clientX: number, clientY: number}} [mousePosition]
+   */
+  showTooltip(mousePosition) {
+    if (this.visible && this.config.tooltip && this.props.position2D) {
+      const config = {
+        content : this.config.tooltip.content,
+        position: this.config.tooltip.position,
+        data    : this,
+      };
+
+      if (this.isPoly()) {
+        const boundingRect = this.psv.container.getBoundingClientRect();
+
+        config.box = { // separate the tooltip from the cursor
+          width : this.psv.tooltip.size.arrow * 2,
+          height: this.psv.tooltip.size.arrow * 2,
+        };
+
+        if (mousePosition) {
+          config.top = mousePosition.clientY - boundingRect.top - this.psv.tooltip.size.arrow / 2;
+          config.left = mousePosition.clientX - boundingRect.left - this.psv.tooltip.size.arrow;
+        }
+        else {
+          config.top = this.props.position2D.y;
+          config.left = this.props.position2D.x;
+        }
+      }
+      else {
+        config.top = this.props.position2D.y;
+        config.left = this.props.position2D.x;
+        config.box = {
+          width : this.props.width,
+          height: this.props.height,
+        };
+      }
+
+      if (this.tooltip) {
+        this.tooltip.move(config);
+      }
+      else {
+        this.tooltip = this.psv.tooltip.create(config);
+      }
+    }
+  }
+
+  /**
+   * @summary Hides the tooltip of this marker
+   */
+  hideTooltip() {
+    if (this.tooltip) {
+      this.tooltip.hide();
+      this.tooltip = null;
     }
   }
 
@@ -477,10 +542,13 @@ class PSVMarker {
       });
     }
 
-    // TODO : compute the center of the polygon
+    const centroid = this.isPolygon()
+      ? this.psv.dataHelper.getPolygonCenter(this.props.def)
+      : this.psv.dataHelper.getPolylineCenter(this.props.def);
+
     this.props.position = {
-      longitude: this.props.def[0][0],
-      latitude : this.props.def[0][1],
+      longitude: centroid[0],
+      latitude : centroid[1],
     };
 
     // compute x/y/z positions

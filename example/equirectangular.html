@@ -138,6 +138,13 @@
     navbar         : [
       'autorotate', 'zoom', 'download', 'markers', 'markersList',
       {
+        content: '💬',
+        className: 'custom-button',
+        onClick: function() {
+          PSV.hud.toggleAllTooltips();
+        }
+      },
+      {
         title    : 'Change image',
         className: 'custom-button',
         content  : '🔄',
@@ -450,6 +457,12 @@
 
   PSV.on('goto-marker-done', function(e, marker) {
     console.log('goto-done', marker.id);
+  });
+
+  PSV.on('show-tooltip', function (e, marker) {
+    if (marker) {
+      console.log('show-tooltip', marker.id);
+    }
   });
 </script>
 </body>

@@ -6,7 +6,6 @@ import { PSVNavbar } from './components/PSVNavbar';
 import { PSVNotification } from './components/PSVNotification';
 import { PSVOverlay } from './components/PSVOverlay';
 import { PSVPanel } from './components/PSVPanel';
-import { PSVTooltip } from './components/PSVTooltip';
 import { getConfig } from './data/config';
 import { ANGLE_THRESHOLD, EVENTS, IDS, MARKER_DATA, VIEWER_DATA } from './data/constants';
 import { getIcons } from './data/icons';
@@ -32,6 +31,7 @@ import {
   throttle,
   toggleClass
 } from './utils';
+import { PSVTooltipRenderer } from './services/PSVTooltipRenderer';
 
 /**
  * @summary Main class
@@ -209,10 +209,10 @@ class PhotoSphereViewer extends EventEmitter {
     this.panel = new PSVPanel(this);
 
     /**
-     * @member {module:components.PSVTooltip}
+     * @member {module:services.PSVTooltipRenderer}
      * @readonly
      */
-    this.tooltip = new PSVTooltip(this.hud);
+    this.tooltip = new PSVTooltipRenderer(this);
 
     /**
      * @member {module:components.PSVNotification}

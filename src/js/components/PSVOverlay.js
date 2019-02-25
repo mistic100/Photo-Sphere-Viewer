@@ -1,5 +1,6 @@
 import { EVENTS } from '../data/constants';
 import { AbstractComponent } from './AbstractComponent';
+import { PSVError } from '../PSVError';
 
 /**
  * @summary Overlay class
@@ -74,6 +75,13 @@ class PSVOverlay extends AbstractComponent {
     delete this.subtext;
 
     super.destroy();
+  }
+
+  /**
+   * @override
+   */
+  toggle() {
+    throw new PSVError('PSVOverlay cannot be toggled');
   }
 
   /**

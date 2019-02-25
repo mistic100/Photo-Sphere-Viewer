@@ -1,11 +1,26 @@
 import { EVENTS } from '../data/constants';
 import { PSVError } from '../PSVError';
-import { addClasses, getStyle, parsePosition } from '../utils';
+import { addClasses, parsePosition } from '../utils';
 import { AbstractComponent } from './AbstractComponent';
 
 const LEFT_MAP = { 0: 'left', 0.5: 'center', 1: 'right' };
 const TOP_MAP = { 0: 'top', 0.5: 'center', 1: 'bottom' };
-const STATE = { NONE: 0, SHOWING: 1, HIDING: 2 };
+const STATE = { NONE: 0, SHOWING: 1, HIDING: 2, READY: 3 };
+
+/**
+ * @typedef {Object} PSVTooltip.Config
+ * @summary Object defining the tooltip configuration
+ * @property {string} content - HTML content of the tooltip
+ * @property {number} top - Position of the tip of the arrow of the tooltip, in pixels
+ * @property {number} left - Position of the tip of the arrow of the tooltip, in pixels
+ * @property {string|string[]} [position='top center'] - Tooltip position toward it's arrow tip.
+ *           Accepted values are combinations of `top`, `center`, `bottom` and `left`, `center`, `right`
+ * @property {string} [className] - Additional CSS class added to the tooltip
+ * @property {Object} [box] - Used when displaying a tooltip on a marker
+ * @property {number} [box.width=0]
+ * @property {number} [box.height=0]
+ * @property {*} [data] - Userdata associated to the tooltip
+ */
 
 /**
  * @summary Tooltip class
@@ -15,23 +30,30 @@ const STATE = { NONE: 0, SHOWING: 1, HIDING: 2 };
 class PSVTooltip extends AbstractComponent {
 
   /**
-   * @param {module:components.PSVHUD} hud
+   * @param {PhotoSphereViewer} psv
+   * @param {{arrow: number, offset: number}} size
    */
-  constructor(hud) {
-    super(hud, 'psv-tooltip');
+  constructor(psv, size) {
+    super(psv, 'psv-tooltip');
 
     /**
      * @override
-     * @property {*} state
-     * @property {number} arrowSize
+     * @property {number} arrow
      * @property {number} offset
+     * @property {number} width
+     * @property {number} height
+     * @property {string} pos
+     * @property {string} state
+     * @property {*} data
      */
     this.prop = {
       ...this.prop,
-      visible  : false,
-      state    : STATE.NONE,
-      arrowSize: 0,
-      offset   : 0,
+      ...size,
+      state : STATE.NONE,
+      width : 0,
+      height: 0,
+      pos   : '',
+      data  : null,
     };
 
     /**
@@ -48,7 +70,7 @@ class PSVTooltip extends AbstractComponent {
      * Tooltip arrow
      * @member {HTMLElement}
      * @readonly
-     * @private
+     * @package
      */
     this.arrow = document.createElement('div');
     this.arrow.className = 'psv-tooltip-arrow';
@@ -58,9 +80,6 @@ class PSVTooltip extends AbstractComponent {
 
     this.container.style.top = '-1000px';
     this.container.style.left = '-1000px';
-
-    this.prop.arrowSize = parseInt(getStyle(this.arrow, 'borderTopWidth'), 10);
-    this.prop.offset = parseInt(getStyle(this.container, 'outlineWidth'), 10);
   }
 
   /**
@@ -69,7 +88,6 @@ class PSVTooltip extends AbstractComponent {
   destroy() {
     delete this.arrow;
     delete this.content;
-    delete this.prop;
 
     super.destroy();
   }
@@ -90,18 +108,16 @@ class PSVTooltip extends AbstractComponent {
   }
 
   /**
+   * @override
+   */
+  toggle() {
+    throw new PSVError('PSVTooltip cannot be toggled');
+  }
+
+  /**
    * @summary Displays a tooltip on the viewer
-   * @param {Object} config
-   * @param {string} config.content - HTML content of the tootlip
-   * @param {number} config.top - Position of the tip of the arrow of the tooltip, in pixels
-   * @param {number} config.left - Position of the tip of the arrow of the tooltip, in pixels
-   * @param {string|string[]} [config.position='top center'] - Tooltip position toward it's arrow tip.
-   *                                                  Accepted values are combinations of `top`, `center`, `bottom`
-   *                                                  and `left`, `center`, `right`
-   * @param {string} [config.className] - Additional CSS class added to the tooltip
-   * @param {Object} [config.box] - Used when displaying a tooltip on a marker
-   * @param {number} [config.box.width=0]
-   * @param {number} [config.box.height=0]
+   * @param {PSVTooltip.Config} config
+   *
    * @fires module:components.PSVTooltip.show-tooltip
    * @throws {PSVError} when the configuration is incorrect
    *
@@ -109,20 +125,53 @@ class PSVTooltip extends AbstractComponent {
    * viewer.showTooltip({ content: 'Hello world', top: 200, left: 450, position: 'center bottom'})
    */
   show(config) {
-    const isUpdate = this.prop.visible;
+    if (this.prop.state !== STATE.NONE) {
+      throw new PSVError('Initialized tooltip cannot be re-initialized');
+    }
+
+    if (config.className) {
+      addClasses(this.container, config.className);
+    }
+
+    this.content.innerHTML = config.content;
+
+    const rect = this.container.getBoundingClientRect();
+    this.prop.width = rect.right - rect.left;
+    this.prop.height = rect.bottom - rect.top;
+
+    this.prop.state = STATE.READY;
+
+    this.move(config);
+
+    this.prop.data = config.data;
+    this.prop.state = STATE.SHOWING;
+
+    /**
+     * @event show-tooltip
+     * @memberof module:components.PSVTooltip
+     * @summary Trigered when the tooltip is shown
+     * @param {*} Data associated to this tooltip
+     * @param {module:components.PSVTooltip} Instance of the tooltip
+     */
+    this.psv.trigger(EVENTS.SHOW_TOOLTIP, this.prop.data, this);
+  }
+
+  /**
+   * @summary Moves the tooltip to a new position
+   * @param {PSVTooltip.Config} config
+   *
+   * @throws {PSVError} when the configuration is incorrect
+   */
+  move(config) {
+    if (this.prop.state !== STATE.SHOWING && this.prop.state !== STATE.READY) {
+      throw new PSVError('Uninitialized tooltip cannot be moved');
+    }
+
     const t = this.container;
-    const c = this.content;
     const a = this.arrow;
 
     if (!config.position) {
       config.position = ['top', 'center'];
-    }
-
-    if (!config.box) {
-      config.box = {
-        width : 0,
-        height: 0,
-      };
     }
 
     // parse position
@@ -140,33 +189,11 @@ class PSVTooltip extends AbstractComponent {
       throw new PSVError('unable to parse tooltip position "center center"');
     }
 
-    if (isUpdate) {
-      // Remove every other classes (Firefox does not implements forEach)
-      for (let i = t.classList.length - 1; i >= 0; i--) {
-        const item = t.classList.item(i);
-        if (item !== 'psv-tooltip' && item !== 'psv-tooltip--visible') {
-          t.classList.remove(item);
-        }
-      }
-    }
-    else {
-      t.className = 'psv-tooltip'; // reset the class
-    }
-
-    if (config.className) {
-      addClasses(t, config.className);
-    }
-
-    c.innerHTML = config.content;
-    t.style.top = '0px';
-    t.style.left = '0px';
-
     // compute size
-    const rect = t.getBoundingClientRect();
     const style = {
       posClass : config.position.slice(),
-      width    : rect.right - rect.left,
-      height   : rect.bottom - rect.top,
+      width    : this.prop.width,
+      height   : this.prop.height,
       top      : 0,
       left     : 0,
       arrowTop : 0,
@@ -205,8 +232,13 @@ class PSVTooltip extends AbstractComponent {
     a.style.top = style.arrowTop + 'px';
     a.style.left = style.arrowLeft + 'px';
 
-    t.classList.add('psv-tooltip--' + style.posClass.join('-'));
-    this.prop.state = STATE.SHOWING;
+    const newPos = style.posClass.join('-');
+    if (newPos !== this.prop.pos) {
+      t.classList.remove(`psv-tooltip--${this.prop.pos}`);
+
+      this.prop.pos = newPos;
+      t.classList.add(`psv-tooltip--${this.prop.pos}`);
+    }
   }
 
   /**
@@ -214,18 +246,17 @@ class PSVTooltip extends AbstractComponent {
    * @fires module:components.PSVTooltip.hide-tooltip
    */
   hide() {
-    if (this.prop.visible) {
-      this.container.classList.remove('psv-tooltip--visible');
-      this.prop.visible = false;
-      this.prop.state = STATE.HIDING;
+    this.container.classList.remove('psv-tooltip--visible');
+    this.prop.state = STATE.HIDING;
 
-      /**
-       * @event hide-tooltip
-       * @memberof module:components.PSVTooltip
-       * @summary Trigered when the tooltip is hidden
-       */
-      this.psv.trigger(EVENTS.HIDE_TOOLTIP);
-    }
+    /**
+     * @event hide-tooltip
+     * @memberof module:components.PSVTooltip
+     * @summary Trigered when the tooltip is hidden
+     * @param {*} Data associated to this tooltip
+     * @param {module:components.PSVTooltip} Instance of the tooltip
+     */
+    this.psv.trigger(EVENTS.HIDE_TOOLTIP, this.prop.data, this);
   }
 
   /**
@@ -238,26 +269,16 @@ class PSVTooltip extends AbstractComponent {
       switch (this.prop.state) {
         case STATE.SHOWING:
           this.container.classList.add('psv-tooltip--visible');
-          this.prop.visible = true;
-          this.prop.state = STATE.NONE;
-
-          /**
-           * @event show-tooltip
-           * @memberof module:components.PSVTooltip
-           * @summary Trigered when the tooltip is shown
-           */
-          this.psv.trigger(EVENTS.SHOW_TOOLTIP);
+          this.prop.state = STATE.READY;
           break;
 
         case STATE.HIDING:
           this.prop.state = STATE.NONE;
-          this.content.innerHTML = null;
-          this.container.style.top = '-1000px';
-          this.container.style.left = '-1000px';
+          this.destroy();
           break;
 
         default:
-          this.prop.state = null;
+          // nothing
       }
     }
   }
@@ -271,20 +292,27 @@ class PSVTooltip extends AbstractComponent {
   __computeTooltipPosition(style, config) {
     let topBottom = false;
 
+    if (!config.box) {
+      config.box = {
+        width : 0,
+        height: 0,
+      };
+    }
+
     switch (style.posClass[0]) {
       case 'bottom':
-        style.top = config.top + config.box.height + this.prop.offset + this.prop.arrowSize;
-        style.arrowTop = -this.prop.arrowSize * 2;
+        style.top = config.top + config.box.height + this.prop.offset + this.prop.arrow;
+        style.arrowTop = -this.prop.arrow * 2;
         topBottom = true;
         break;
 
       case 'center':
         style.top = config.top + config.box.height / 2 - style.height / 2;
-        style.arrowTop = style.height / 2 - this.prop.arrowSize;
+        style.arrowTop = style.height / 2 - this.prop.arrow;
         break;
 
       case 'top':
-        style.top = config.top - style.height - this.prop.offset - this.prop.arrowSize;
+        style.top = config.top - style.height - this.prop.offset - this.prop.arrow;
         style.arrowTop = style.height;
         topBottom = true;
         break;
@@ -295,27 +323,27 @@ class PSVTooltip extends AbstractComponent {
     switch (style.posClass[1]) {
       case 'right':
         if (topBottom) {
-          style.left = config.left + config.box.width / 2 - this.prop.offset - this.prop.arrowSize;
+          style.left = config.left + config.box.width / 2 - this.prop.offset - this.prop.arrow;
           style.arrowLeft = this.prop.offset;
         }
         else {
-          style.left = config.left + config.box.width + this.prop.offset + this.prop.arrowSize;
-          style.arrowLeft = -this.prop.arrowSize * 2;
+          style.left = config.left + config.box.width + this.prop.offset + this.prop.arrow;
+          style.arrowLeft = -this.prop.arrow * 2;
         }
         break;
 
       case 'center':
         style.left = config.left + config.box.width / 2 - style.width / 2;
-        style.arrowLeft = style.width / 2 - this.prop.arrowSize;
+        style.arrowLeft = style.width / 2 - this.prop.arrow;
         break;
 
       case 'left':
         if (topBottom) {
-          style.left = config.left - style.width + config.box.width / 2 + this.prop.offset + this.prop.arrowSize;
-          style.arrowLeft = style.width - this.prop.offset - this.prop.arrowSize * 2;
+          style.left = config.left - style.width + config.box.width / 2 + this.prop.offset + this.prop.arrow;
+          style.arrowLeft = style.width - this.prop.offset - this.prop.arrow * 2;
         }
         else {
-          style.left = config.left - style.width - this.prop.offset - this.prop.arrowSize;
+          style.left = config.left - style.width - this.prop.offset - this.prop.arrow;
           style.arrowLeft = style.width;
         }
         break;

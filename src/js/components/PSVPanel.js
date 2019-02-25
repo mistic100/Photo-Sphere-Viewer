@@ -2,6 +2,7 @@ import { EVENTS, IDS } from '../data/constants';
 import { SYSTEM } from '../data/system';
 import { toggleClass } from '../utils';
 import { AbstractComponent } from './AbstractComponent';
+import { PSVError } from '../PSVError';
 
 /**
  * @summary Minimum width of the panel
@@ -121,6 +122,13 @@ class PSVPanel extends AbstractComponent {
         this.psv.showMarkersList();
       }
     }
+  }
+
+  /**
+   * @override
+   */
+  toggle() {
+    throw new PSVError('PSVPanel cannot be toggled');
   }
 
   /**

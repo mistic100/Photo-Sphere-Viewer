@@ -86,6 +86,18 @@ class AbstractComponent {
   }
 
   /**
+   * @summary Displays or hides the component
+   */
+  toggle() {
+    if (this.isVisible()) {
+      this.hide();
+    }
+    else {
+      this.show();
+    }
+  }
+
+  /**
    * @summary Hides the component
    */
   hide() {
