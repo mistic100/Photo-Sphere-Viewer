@@ -33,7 +33,7 @@
 
 <script src="../node_modules/three/build/three.js"></script>
 <script src="../node_modules/promise-polyfill/dist/polyfill.js"></script>
-<script src="../node_modules/uevent/uevent.js"></script>
+<script src="../node_modules/uevent/browser.js"></script>
 <script src="../node_modules/nosleep.js/dist/NoSleep.js"></script>
 <script src="../node_modules/three/examples/js/controls/DeviceOrientationControls.js"></script>
 <script src="../node_modules/three/examples/js/effects/StereoEffect.js"></script>
@@ -69,7 +69,7 @@
     container  : 'photosphere',
     panorama   : panos[0].url,
     caption    : panos[0].desc,
-    defaultLong: Math.PI / 2,
+    //defaultLong: Math.PI / 2,
     loadingImg : 'assets/photosphere-logo.gif',
     navbar     : [
       'autorotate', 'zoom', 'download', 'markers', 'markersList',

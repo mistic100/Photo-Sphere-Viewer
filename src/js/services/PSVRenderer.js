@@ -309,7 +309,7 @@ class PSVRenderer extends AbstractService {
     });
 
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.scale.x = -1;
+    mesh.scale.set(-1, 1, 1);
 
     return mesh;
   }
@@ -333,10 +333,7 @@ class PSVRenderer extends AbstractService {
     }
 
     const mesh = new THREE.Mesh(geometry, materials);
-    mesh.position.x -= SPHERE_RADIUS * scale;
-    mesh.position.y -= SPHERE_RADIUS * scale;
-    mesh.position.z -= SPHERE_RADIUS * scale;
-    mesh.applyMatrix(new THREE.Matrix4().makeScale(1, 1, -1));
+    mesh.scale.set(1, 1, -1);
 
     return mesh;
   }

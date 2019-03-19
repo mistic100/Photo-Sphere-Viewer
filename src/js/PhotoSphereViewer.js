@@ -462,11 +462,19 @@ class PhotoSphereViewer extends EventEmitter {
       return Promise.reject(new PSVError('Loading already in progress'));
     }
 
-    if (isEmpty(options) && !this.prop.ready) {
-      options.longitude = this.config.defaultLong;
-      options.latitude = this.config.defaultLat;
-      options.zoom = this.config.defaultZoomLvl;
-      options.sphereCorrection = this.config.sphereCorrection;
+    if (!this.prop.isReady) {
+      if (!('longitude' in options)) {
+        options.longitude = this.config.defaultLong;
+      }
+      if (!('latitude' in options)) {
+        options.latitude = this.config.defaultLat;
+      }
+      if (!('zoom' in options)) {
+        options.zoom = this.config.defaultZoomLvl;
+      }
+      if (!('sphereCorrection' in options)) {
+        options.sphereCorrection = this.config.sphereCorrection;
+      }
     }
 
     if (options.transition === undefined) {
