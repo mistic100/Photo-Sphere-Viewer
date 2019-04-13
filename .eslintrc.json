@@ -8,6 +8,7 @@
   "rules": {
     "arrow-body-style": "off",
     "class-methods-use-this": "off",
+    "import/no-cycle": "off",
     "import/prefer-default-export": "off",
     "key-spacing": "off",
     "no-bitwise": "off",
