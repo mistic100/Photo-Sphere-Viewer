@@ -4,6 +4,7 @@
 [![jsDelivr Hits](https://data.jsdelivr.com/v1/package/npm/photo-sphere-viewer/badge)](https://www.jsdelivr.com/package/npm/photo-sphere-viewer)
 [![Build Status](https://img.shields.io/travis/mistic100/Photo-Sphere-Viewer/master.svg?style=flat-square)](https://travis-ci.org/mistic100/Photo-Sphere-Viewer)
 [![Dependencies Status](https://david-dm.org/mistic100/Photo-Sphere-Viewer/status.svg?style=flat-square)](https://david-dm.org/mistic100/Photo-Sphere-Viewer)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmistic100%2FPhoto-Sphere-Viewer.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmistic100%2FPhoto-Sphere-Viewer?ref=badge_shield)
 
 Photo Sphere Viewer is a JavaScript library that allows you to display 360×180 degrees panoramas on any web page. Panoramas must use the equirectangular projection and can be taken with the Google Camera, the Ricoh Theta or any 360° camera.
 
@@ -64,3 +65,6 @@ Install Node dependencies `npm install` then run `npm run build` in the root dir
 
 ## License
 This library is available under the MIT license.
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmistic100%2FPhoto-Sphere-Viewer.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmistic100%2FPhoto-Sphere-Viewer?ref=badge_large)
