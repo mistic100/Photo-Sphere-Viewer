@@ -4,9 +4,7 @@ module.exports = {
   map    : false,
   plugins: [
     require('@csstools/postcss-sass')({}),
-    require('autoprefixer')({
-      browsers: 'last 2 versions, ie >= 11'
-    }),
+    require('autoprefixer')({}),
     require('postcss-banner')({
       important: true,
       banner   : `Photo Sphere Viewer ${pkg.version}

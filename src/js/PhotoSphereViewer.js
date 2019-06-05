@@ -26,7 +26,6 @@ import {
   getClosest,
   getShortestArc,
   intersect,
-  isEmpty,
   isFullscreenEnabled,
   logWarn,
   requestFullscreen,
