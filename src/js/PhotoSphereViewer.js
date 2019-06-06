@@ -7,7 +7,7 @@ import { PSVNotification } from './components/PSVNotification';
 import { PSVOverlay } from './components/PSVOverlay';
 import { PSVPanel } from './components/PSVPanel';
 import { getConfig } from './data/config';
-import { ANGLE_THRESHOLD, EVENTS, IDS, MARKER_DATA, VIEWER_DATA } from './data/constants';
+import { EVENTS, IDS, MARKER_DATA, VIEWER_DATA } from './data/constants';
 import { getIcons } from './data/icons';
 import { SYSTEM } from './data/system';
 import { getTemplates } from './data/templates';
@@ -884,28 +884,24 @@ class PhotoSphereViewer extends EventEmitter {
       const dLongitude = Math.abs(rangedPosition.longitude - currentPosition.longitude);
       const dLatitude = Math.abs(rangedPosition.latitude - currentPosition.latitude);
 
-      if (dLongitude >= ANGLE_THRESHOLD || dLatitude >= ANGLE_THRESHOLD) {
-        // longitude offset for shortest arc
-        const tOffset = getShortestArc(currentPosition.longitude, rangedPosition.longitude);
+      // longitude offset for shortest arc
+      const tOffset = getShortestArc(currentPosition.longitude, rangedPosition.longitude);
 
-        animProperties.longitude = { start: currentPosition.longitude, end: currentPosition.longitude + tOffset };
-        animProperties.latitude = { start: currentPosition.latitude, end: rangedPosition.latitude };
+      animProperties.longitude = { start: currentPosition.longitude, end: currentPosition.longitude + tOffset };
+      animProperties.latitude = { start: currentPosition.latitude, end: rangedPosition.latitude };
 
-        duration = this.dataHelper.speedToDuration(speed, getAngle(currentPosition, rangedPosition));
-      }
+      duration = this.dataHelper.speedToDuration(speed, getAngle(currentPosition, rangedPosition));
     }
 
     // clean/filter zoom and compute duration
     if (zoomProvided) {
       const dZoom = Math.abs(options.zoom - this.prop.zoomLvl);
 
-      if (dZoom >= 1) {
-        animProperties.zoom = { start: this.prop.zoomLvl, end: options.zoom };
+      animProperties.zoom = { start: this.prop.zoomLvl, end: options.zoom };
 
-        if (!duration) {
-          // if animating zoom only and a speed is given, use an arbitrary PI/4 to compute the duration
-          duration = this.dataHelper.speedToDuration(speed, Math.PI / 4 * dZoom / 100);
-        }
+      if (!duration) {
+        // if animating zoom only and a speed is given, use an arbitrary PI/4 to compute the duration
+        duration = this.dataHelper.speedToDuration(speed, Math.PI / 4 * dZoom / 100);
       }
     }
 
