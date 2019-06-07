@@ -880,17 +880,13 @@ class PhotoSphereViewer extends EventEmitter {
       const cleanPosition = this.dataHelper.cleanPosition(options);
       const { rangedPosition } = this.dataHelper.applyRanges(cleanPosition);
 
-      const currentPosition = this.prop.position;
-      const dLongitude = Math.abs(rangedPosition.longitude - currentPosition.longitude);
-      const dLatitude = Math.abs(rangedPosition.latitude - currentPosition.latitude);
-
       // longitude offset for shortest arc
-      const tOffset = getShortestArc(currentPosition.longitude, rangedPosition.longitude);
+      const tOffset = getShortestArc(this.prop.position.longitude, rangedPosition.longitude);
 
-      animProperties.longitude = { start: currentPosition.longitude, end: currentPosition.longitude + tOffset };
-      animProperties.latitude = { start: currentPosition.latitude, end: rangedPosition.latitude };
+      animProperties.longitude = { start: this.prop.position.longitude, end: this.prop.position.longitude + tOffset };
+      animProperties.latitude = { start: this.prop.position.latitude, end: rangedPosition.latitude };
 
-      duration = this.dataHelper.speedToDuration(speed, getAngle(currentPosition, rangedPosition));
+      duration = this.dataHelper.speedToDuration(speed, getAngle(this.prop.position, rangedPosition));
     }
 
     // clean/filter zoom and compute duration
