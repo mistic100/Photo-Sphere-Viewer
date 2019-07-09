@@ -8,7 +8,7 @@ import { EVENTS } from '../data/constants';
  * @extends module:services.AbstractService
  * @memberof module:services
  */
-export class PSVTooltipRenderer extends AbstractService {
+class PSVTooltipRenderer extends AbstractService {
 
   /**
    * @param {PhotoSphereViewer} psv
@@ -96,3 +96,5 @@ export class PSVTooltipRenderer extends AbstractService {
   }
 
 }
+
+export { PSVTooltipRenderer };

@@ -1081,7 +1081,7 @@ class PhotoSphereViewer extends EventEmitter {
    * @summary Toggles the visibility of markers list
    */
   toggleMarkersList() {
-    if (this.panel.prop.id === IDS.MARKERS_LIST) {
+    if (this.panel.prop.contentId === IDS.MARKERS_LIST) {
       this.hideMarkersList();
     }
     else {
