@@ -11,5 +11,6 @@ jobs:
     - uses: actions/checkout@v1
     - name: build
       run: |
+        npm install
         npm run compile
         npm run test
