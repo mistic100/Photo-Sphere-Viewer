@@ -1,9 +1,9 @@
 # Photo Sphere Viewer
 
-[![NPM version](https://img.shields.io/npm/v/photo-sphere-viewer.svg?style=flat-square)](https://www.npmjs.com/package/photo-sphere-viewer)
-[![jsDelivr Hits](https://data.jsdelivr.com/v1/package/npm/photo-sphere-viewer/badge)](https://www.jsdelivr.com/package/npm/photo-sphere-viewer)
-[![Build Status](https://img.shields.io/travis/mistic100/Photo-Sphere-Viewer/master.svg?style=flat-square)](https://travis-ci.org/mistic100/Photo-Sphere-Viewer)
-[![Dependencies Status](https://david-dm.org/mistic100/Photo-Sphere-Viewer/status.svg?style=flat-square)](https://david-dm.org/mistic100/Photo-Sphere-Viewer)
+[![NPM version](https://img.shields.io/npm/v/photo-sphere-viewer.svg)](https://www.npmjs.com/package/photo-sphere-viewer)
+[![jsDelivr Hits](https://data.jsdelivr.com/v1/package/npm/photo-sphere-viewer/badge?style=rounded)](https://www.jsdelivr.com/package/npm/photo-sphere-viewer)
+[![Build Status](https://github.com/mistic100/Photo-Sphere-Viewer/workflows/CI/badge.svg)](https://github.com/mistic100/Photo-Sphere-Viewer/actions)
+[![Dependencies Status](https://david-dm.org/mistic100/Photo-Sphere-Viewer/status.svg)](https://david-dm.org/mistic100/Photo-Sphere-Viewer)
 
 Photo Sphere Viewer is a JavaScript library that allows you to display 360×180 degrees panoramas on any web page. Panoramas must use the equirectangular projection and can be taken with the Google Camera, the Ricoh Theta or any 360° camera.
 
@@ -31,12 +31,6 @@ Forked from [JeremyHeleine/Photo-Sphere-Viewer](https://github.com/JeremyHeleine
 
 [Download the latest release](https://github.com/mistic100/Photo-Sphere-Viewer/releases)
 
-#### With Bower
-
-```bash
-$ bower install Photo-Sphere-Viewer
-```
-
 #### With npm
 
 ```bash
@@ -45,22 +39,7 @@ $ npm install photo-sphere-viewer
 
 #### Via CDN
 
-Photo Sphere Viewer is available on [jsDelivr](https://cdn.jsdelivr.net/npm/photo-sphere-viewer/dist/) and [unpkg](https://unpkg.com/photo-sphere-viewer/dist/)
-
-## Build
-
-#### Prerequisites
- * NodeJS + NPM: `apt-get install nodejs-legacy npm`
-
-#### Run
-
-Install Node dependencies `npm install` then run `npm run build` in the root directory to generate production files inside `dist`.
-
-#### Other commands
-
- * `npm run start` to open the example page with automatic build and livereload.
- * `npm run test` to run tests suite.
- * `npm run doc` to generate the documentation.
+Photo Sphere Viewer is available on [jsDelivr](https://cdn.jsdelivr.net/npm/photo-sphere-viewer/dist/)
 
 ## License
 This library is available under the MIT license.
