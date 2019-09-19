@@ -20,6 +20,14 @@
     "object-curly-newline": "off",
     "prefer-destructuring": "off",
     "prefer-template": "off",
+    "no-mixed-operators": "off",
+    "arrow-parens": [
+      "error",
+      "as-needed",
+      {
+        "requireForBlockBody": true
+      }
+    ],
     "max-len": [
       "error",
       150
