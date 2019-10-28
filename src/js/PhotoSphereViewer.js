@@ -910,7 +910,7 @@ class PhotoSphereViewer extends EventEmitter {
         this.zoom(options.zoom);
       }
 
-      return PSVAnimation.resolve();
+      return PSVAnimation().resolve();
     }
 
     this.prop.animationPromise = new PSVAnimation({
