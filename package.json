@@ -58,7 +58,7 @@
     "rollup-plugin-alias": "^2.0.0",
     "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-string": "^3.0.0",
-    "stylelint": "^11.0.0",
+    "stylelint": "^12.0.0",
     "stylelint-config-standard": "^19.0.0",
     "stylelint-scss": "^3.3.0",
     "uglify-js": "^3.4.9"
