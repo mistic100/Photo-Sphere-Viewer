@@ -1,9 +1,0 @@
-.*
-build
-doc
-example
-tests
-postcss.config.js
-rollup.config.js
-yarn.lock
-yarn-error.log
