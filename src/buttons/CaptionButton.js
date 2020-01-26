@@ -49,7 +49,7 @@ export class CaptionButton extends AbstractButton {
    * @override
    * @description Toggles caption
    */
-  __onClick() {
+  onClick() {
     if (this.psv.notification.prop.visible) {
       this.psv.notification.hide();
     }

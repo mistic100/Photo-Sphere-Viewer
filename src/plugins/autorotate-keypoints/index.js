@@ -1,8 +1,8 @@
 import { AbstractPlugin, CONSTANTS, PSVError, utils } from 'photo-sphere-viewer';
 
 /**
- * @typedef {Object} PSV.plugins.AutorotateKeypointsPlugin.Keypoints
- * @summary Definition of keypoints for automatic rotation
+ * @typedef {PSV.ExtendedPosition|string|Object} PSV.plugins.AutorotateKeypointsPlugin.Keypoints
+ * @summary Definition of keypoints for automatic rotation, can be a position object, a marker id or an object with the following properties
  * @property {string} [markerId]
  * @property {PSV.ExtendedPosition} [position]
  * @property {string|{content: string, position: string}} [tooltip]
@@ -12,7 +12,7 @@ import { AbstractPlugin, CONSTANTS, PSVError, utils } from 'photo-sphere-viewer'
 /**
  * @typedef {Object} PSV.plugins.AutorotateKeypointsPlugin.Options
  * @property {boolean} [startFromClosest=true] - start from the closest keypoint instead of the first keypoint
- * @property {Array<PSV.ExtendedPosition|string|PSV.plugins.AutorotateKeypointsPlugin.Keypoints>} keypoints
+ * @property {PSV.plugins.AutorotateKeypointsPlugin.Keypoints[]} keypoints
  */
 
 /**
@@ -27,7 +27,7 @@ const serializePt = position => [position.longitude, position.latitude];
 
 
 /**
- * @summary Replace the standard autorotate animations by a smooth transition between multiple points
+ * @summary Replaces the standard autorotate animation by a smooth transition between multiple points
  * @extends PSV.plugins.AbstractPlugin
  * @memberof PSV.plugins
  */
@@ -97,7 +97,7 @@ export default class AutorotateKeypointsPlugin extends AbstractPlugin {
 
   /**
    * @summary Changes the keypoints
-   * @param {Array<PSV.ExtendedPosition|string|PSV.plugins.AutorotateKeypointsPlugin.Keypoints>} keypoints
+   * @param {PSV.plugins.AutorotateKeypointsPlugin.Keypoints[]} keypoints
    */
   setKeypoints(keypoints) {
     if (keypoints?.length < 2) {

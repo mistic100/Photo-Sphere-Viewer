@@ -65,7 +65,7 @@ export class GyroscopeButton extends AbstractButton {
    * @override
    * @description Toggles gyroscope control
    */
-  __onClick() {
+  onClick() {
     this.plugin.toggle();
   }
 

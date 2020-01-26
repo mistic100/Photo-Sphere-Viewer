@@ -28,7 +28,7 @@ DEFAULTS.lang.pleaseRotate = ['Please rotate your device', '(or tap to continue)
 
 
 /**
- * @summary Adds stereo controls on mobile devices
+ * @summary Adds stereo view on mobile devices
  * @extends PSV.plugins.AbstractPlugin
  * @memberof PSV.plugins
  */

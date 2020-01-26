@@ -53,7 +53,7 @@ export class AutorotateButton extends AbstractButton {
    * @override
    * @description Toggles autorotate
    */
-  __onClick() {
+  onClick() {
     this.psv.toggleAutorotate();
   }
 

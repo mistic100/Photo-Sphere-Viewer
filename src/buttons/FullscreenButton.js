@@ -51,7 +51,7 @@ export class FullscreenButton extends AbstractButton {
    * @override
    * @description Toggles fullscreen
    */
-  __onClick() {
+  onClick() {
     this.psv.toggleFullscreen();
   }
 

@@ -75,7 +75,7 @@ export class AbstractZoomButton extends AbstractButton {
   /**
    * @override
    */
-  __onClick() {
+  onClick() {
     // nothing
   }
 

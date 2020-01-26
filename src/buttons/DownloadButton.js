@@ -22,7 +22,7 @@ export class DownloadButton extends AbstractButton {
    * @override
    * @description Asks the browser to download the panorama source file
    */
-  __onClick() {
+  onClick() {
     const link = document.createElement('a');
     link.href = this.psv.config.panorama;
     link.download = this.psv.config.panorama;

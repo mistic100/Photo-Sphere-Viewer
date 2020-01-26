@@ -70,7 +70,7 @@ export class MarkersButton extends AbstractButton {
    * @override
    * @description Toggles markers
    */
-  __onClick() {
+  onClick() {
     if (this.plugin.prop.visible) {
       this.plugin.hide();
     }

@@ -65,7 +65,7 @@ export class CustomButton extends AbstractButton {
    * @override
    * @description Calls user method
    */
-  __onClick() {
+  onClick() {
     if (this.config.onClick) {
       this.config.onClick.apply(this.psv);
     }

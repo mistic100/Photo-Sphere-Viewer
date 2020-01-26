@@ -1,5 +1,6 @@
 /**
  * @summary Number of pixels bellow which a mouse move will be considered as a click
+ * @memberOf PSV.CONSTANTS
  * @type {number}
  * @constant
  */
@@ -7,6 +8,7 @@ export const MOVE_THRESHOLD = 4;
 
 /**
  * @summary Delay in milliseconds between two clicks to consider a double click
+ * @memberOf PSV.CONSTANTS
  * @type {number}
  * @constant
  */
@@ -14,6 +16,7 @@ export const DBLCLICK_DELAY = 300;
 
 /**
  * @summary Delay in milliseconds to emulate a long touch
+ * @memberOf PSV.CONSTANTS
  * @type {number}
  * @constant
  */
@@ -21,14 +24,15 @@ export const LONGTOUCH_DELAY = 500;
 
 /**
  * @summary Time size of the mouse position history used to compute inertia
+ * @memberOf PSV.CONSTANTS
  * @type {number}
  * @constant
  */
 export const INERTIA_WINDOW = 300;
 
 /**
- * @summary Radius of the THREE.SphereGeometry
- * Half-length of the THREE.BoxGeometry
+ * @summary Radius of the THREE.SphereGeometry, Half-length of the THREE.BoxGeometry
+ * @memberOf PSV.CONSTANTS
  * @type {number}
  * @constant
  */
@@ -36,6 +40,7 @@ export const SPHERE_RADIUS = 100;
 
 /**
  * @summary Number of vertice of the THREE.SphereGeometry
+ * @memberOf PSV.CONSTANTS
  * @type {number}
  * @constant
  */
@@ -43,6 +48,7 @@ export const SPHERE_VERTICES = 64;
 
 /**
  * @summary Number of vertices of each side of the THREE.BoxGeometry
+ * @memberOf PSV.CONSTANTS
  * @type {number}
  * @constant
  */
@@ -50,6 +56,7 @@ export const CUBE_VERTICES = 8;
 
 /**
  * @summary Order of cube textures for arrays
+ * @memberOf PSV.CONSTANTS
  * @type {number[]}
  * @constant
  */
@@ -57,6 +64,7 @@ export const CUBE_MAP = [0, 2, 4, 5, 3, 1];
 
 /**
  * @summary Order of cube textures for maps
+ * @memberOf PSV.CONSTANTS
  * @type {string[]}
  * @constant
  */
@@ -64,6 +72,7 @@ export const CUBE_HASHMAP = ['left', 'right', 'top', 'bottom', 'back', 'front'];
 
 /**
  * @summary Property name added to buttons list
+ * @memberOf PSV.CONSTANTS
  * @type {string}
  * @constant
  */
@@ -71,6 +80,7 @@ export const BUTTON_DATA = 'psvButton';
 
 /**
  * @summary Property name added to viewer element
+ * @memberOf PSV.CONSTANTS
  * @type {string}
  * @constant
  */
@@ -78,6 +88,7 @@ export const VIEWER_DATA = 'photoSphereViewer';
 
 /**
  * @summary Available actions
+ * @memberOf PSV.CONSTANTS
  * @enum {string}
  * @constant
  */
@@ -93,6 +104,7 @@ export const ACTIONS = {
 
 /**
  * @summary Available events
+ * @memberOf PSV.CONSTANTS
  * @enum {string}
  * @constant
  */
@@ -125,6 +137,7 @@ export const EVENTS = {
 
 /**
  * @summary Internal identifiers for various stuff
+ * @memberOf PSV.CONSTANTS
  * @enum {string}
  * @constant
  */
@@ -138,6 +151,7 @@ export const IDS = {
 // @formatter:off
 /**
  * @summary Collection of easing functions
+ * @memberOf PSV.CONSTANTS
  * @see {@link https://gist.github.com/frederickk/6165768}
  * @type {Object<string, Function>}
  * @constant

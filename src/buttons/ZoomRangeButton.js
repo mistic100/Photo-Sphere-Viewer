@@ -135,7 +135,7 @@ export class ZoomRangeButton extends AbstractButton {
   /**
    * @override
    */
-  __onClick() {
+  onClick() {
     // nothing
   }
 

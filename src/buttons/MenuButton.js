@@ -75,7 +75,7 @@ export class MenuButton extends AbstractButton {
    * @override
    * @description Toggles menu
    */
-  __onClick() {
+  onClick() {
     if (this.prop.active) {
       this.__hideMenu();
     }
@@ -94,7 +94,7 @@ export class MenuButton extends AbstractButton {
         const buttonId = li ? li.dataset[BUTTON_DATA] : undefined;
 
         if (buttonId) {
-          this.parent.getButton(buttonId).__onClick();
+          this.parent.getButton(buttonId).onClick();
           this.__hideMenu();
         }
       },

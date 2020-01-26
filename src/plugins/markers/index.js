@@ -7,7 +7,7 @@ import './style.scss';
 
 /**
  * @typedef {Object} PSV.plugins.MarkersPlugin.Options
- * @property {boolean} [clickEventOnMarker=false]
+ * @property {boolean} [clickEventOnMarker=false] If a `click` event is triggered on the viewer additionally to the `select-marker` event.
  * @property {PSV.plugins.MarkersPlugin.Properties[]} [markers]
  */
 

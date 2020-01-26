@@ -1,0 +1,25 @@
+name: Website
+
+on:
+  push:
+    branches:
+      -master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: build
+        run: |
+          npm install
+          npm run doc
+          zip -r public.zip public
+      - name: deploy
+        run: >-
+          curl -H "Content-Type: application/zip" \
+               -H "Authorization: Bearer ${{ secrets.NETLIFY_TOKEN }}" \
+               --data-binary "@public.zip" \
+               https://api.netlify.com/api/v1/sites/photo-sphere-viewer.netlify.com/deploys

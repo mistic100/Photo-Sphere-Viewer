@@ -1,48 +1,23 @@
 {
   "source": {
-    "excludePattern": "PhotoSphereViewerCompat\\.js"
+    "excludePattern": "PhotoSphereViewerCompat\\.js|data/constants\\.js"
   },
   "opts": {
     "recurse": true,
     "private": false,
-    "template": "node_modules/foodoc/template",
-    "readme": "build/jsdoc.md"
+    "template": "node_modules/@pixi/jsdoc-template",
+    "readme": "docs/jsdoc.md"
   },
   "plugins": [
-    "plugins/markdown"
+    "plugins/markdown",
+    "@pixi/jsdoc-template/plugins/es6-fix"
   ],
   "templates": {
-    "systemName": "Photo Sphere Viewer API",
-    "systemSummary": "A JavaScript library to display Photo Sphere panoramas",
-    "favicon": "build/jsdoc.png",
-    "systemColor": "#1C9F72",
-    "copyright": "Licensed under MIT License, documentation under CC BY 3.0.",
-    "includeDate": false,
-    "inverseNav": false,
-    "cleverLinks": true,
-    "showAccessFilter": false,
-    "sort": "longname, version, since",
-    "analytics": {
-      "ua": "UA-28192323-3",
-      "domain": "auto"
+    "applicationName": "Photo Sphere Viewer",
+    "googleAnalytics": "UA-28192323-3",
+    "meta": {
+      "title": "Photo Sphere Viewer API Documentation"
     },
-    "navMembers": [
-      {"kind": "class", "title": "Classes", "summary": "All documented classes."},
-      {"kind": "external", "title": "Externals", "summary": "All documented external members."},
-      {"kind": "global", "title": "Globals", "summary": "All documented globals."},
-      {"kind": "mixin", "title": "Mixins", "summary": "All documented mixins."},
-      {"kind": "interface", "title": "Interfaces", "summary": "All documented interfaces."},
-      {"kind": "module", "title": "Modules", "summary": "All documented modules."},
-      {"kind": "event", "title": "Events", "summary": "All documented events."},
-      {"kind": "namespace", "title": "Namespaces", "summary": "All documented namespaces."},
-      {"kind": "tutorial", "title": "Tutorials", "summary": "All available tutorials."}
-    ],
-    "scripts": [
-      "https://cdnjs.cloudflare.com/ajax/libs/trianglify/1.0.1/trianglify.min.js",
-      "js/custom.js"
-    ],
-    "stylesheets": [
-      "css/custom.css"
-    ]
+    "favicon": "docs/.vuepress/public/favicon.png"
   }
 }

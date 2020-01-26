@@ -76,7 +76,7 @@ export class AbstractButton extends AbstractComponent {
 
     this.container.addEventListener('click', (e) => {
       if (this.prop.enabled) {
-        this.__onClick();
+        this.onClick();
       }
       e.stopPropagation();
     });
@@ -217,8 +217,8 @@ export class AbstractButton extends AbstractComponent {
    * @private
    * @abstract
    */
-  __onClick() {
-    throw new PSVError(`__onClick not implemented for button "${this.prop.id}".`);
+  onClick() {
+    throw new PSVError(`onClick not implemented for button "${this.prop.id}".`);
   }
 
 }

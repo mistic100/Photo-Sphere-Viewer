@@ -68,7 +68,7 @@ export class MarkersListButton extends AbstractButton {
    * @override
    * @description Toggles markers list
    */
-  __onClick() {
+  onClick() {
     this.plugin.toggleMarkersList();
   }
 
