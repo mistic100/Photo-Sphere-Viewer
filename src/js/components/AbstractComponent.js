@@ -1,30 +1,30 @@
-import { PhotoSphereViewer } from '../PhotoSphereViewer';
+import { Viewer } from '../Viewer';
 
 /**
- * @module components
+ * @namespace PSV.components
  */
 
 /**
  * @summary Base component class
- * @memberof module:components
+ * @memberof PSV.components
  * @abstract
  */
-class AbstractComponent {
+export class AbstractComponent {
 
   /**
-   * @param {PhotoSphereViewer | module:components.AbstractComponent} parent
+   * @param {PSV.Viewer | PSV.components.AbstractComponent} parent
    * @param {string} className - CSS class added to the component's container
    */
   constructor(parent, className) {
     /**
      * @summary Reference to main controller
-     * @type {PhotoSphereViewer}
+     * @type {PSV.Viewer}
      * @readonly
      */
-    this.psv = parent instanceof PhotoSphereViewer ? parent : parent.psv;
+    this.psv = parent instanceof Viewer ? parent : parent.psv;
 
     /**
-     * @member {PhotoSphereViewer|module:components.AbstractComponent}
+     * @member {PSV.Viewer|PSV.components.AbstractComponent}
      * @readonly
      */
     this.parent = parent;
@@ -32,7 +32,7 @@ class AbstractComponent {
 
     /**
      * @summary All child components
-     * @type {module:components.AbstractComponent[]}
+     * @type {PSV.components.AbstractComponent[]}
      * @readonly
      * @package
      */
@@ -64,6 +64,11 @@ class AbstractComponent {
   destroy() {
     this.parent.container.removeChild(this.container);
 
+    const childIdx = this.parent.children.indexOf(this);
+    if (childIdx !== -1) {
+      this.parent.children.splice(childIdx, 1);
+    }
+
     this.children.forEach(child => child.destroy());
     this.children.length = 0;
 
@@ -75,7 +80,7 @@ class AbstractComponent {
 
   /**
    * @summary Refresh UI
-   * Must be be a very lightweight operation
+   * @description Must be be a very lightweight operation
    * @package
    */
   refresh() {
@@ -122,5 +127,3 @@ class AbstractComponent {
   }
 
 }
-
-export { AbstractComponent };

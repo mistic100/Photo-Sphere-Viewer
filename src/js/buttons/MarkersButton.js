@@ -3,10 +3,10 @@ import { AbstractButton } from './AbstractButton';
 
 /**
  * @summary Navigation bar markers button class
- * @extends module:components/buttons.AbstractButton
- * @memberof module:components/buttons
+ * @extends PSV.buttons.AbstractButton
+ * @memberof PSV.buttons
  */
-class PSVMarkersButton extends AbstractButton {
+export class MarkersButton extends AbstractButton {
 
   static get id() {
     return 'markers';
@@ -21,7 +21,7 @@ class PSVMarkersButton extends AbstractButton {
   }
 
   /**
-   * @param {module:components.PSVNavbar} navbar
+   * @param {PSV.components.Navbar} navbar
    */
   constructor(navbar) {
     super(navbar, 'psv-button--hover-scale psv-markers-button');
@@ -85,5 +85,3 @@ class PSVMarkersButton extends AbstractButton {
   }
 
 }
-
-export { PSVMarkersButton };

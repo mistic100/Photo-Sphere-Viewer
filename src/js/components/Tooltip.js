@@ -8,7 +8,7 @@ const TOP_MAP = { 0: 'top', 0.5: 'center', 1: 'bottom' };
 const STATE = { NONE: 0, SHOWING: 1, HIDING: 2, READY: 3 };
 
 /**
- * @typedef {Object} PSVTooltip.Config
+ * @typedef {Object} Tooltip.Config
  * @summary Object defining the tooltip configuration
  * @property {string} content - HTML content of the tooltip
  * @property {number} top - Position of the tip of the arrow of the tooltip, in pixels
@@ -24,13 +24,13 @@ const STATE = { NONE: 0, SHOWING: 1, HIDING: 2, READY: 3 };
 
 /**
  * @summary Tooltip class
- * @extends module:components.AbstractComponent
- * @memberof module:components
+ * @extends PSV.components.AbstractComponent
+ * @memberof PSV.components
  */
-class PSVTooltip extends AbstractComponent {
+export class Tooltip extends AbstractComponent {
 
   /**
-   * @param {PhotoSphereViewer} psv
+   * @param {PSV.Viewer} psv
    * @param {{arrow: number, offset: number}} size
    */
   constructor(psv, size) {
@@ -111,15 +111,15 @@ class PSVTooltip extends AbstractComponent {
    * @override
    */
   toggle() {
-    throw new PSVError('PSVTooltip cannot be toggled');
+    throw new PSVError('Tooltip cannot be toggled');
   }
 
   /**
    * @summary Displays a tooltip on the viewer
-   * @param {PSVTooltip.Config} config
+   * @param {Tooltip.Config} config
    *
-   * @fires module:components.PSVTooltip.show-tooltip
-   * @throws {PSVError} when the configuration is incorrect
+   * @fires PSV.show-tooltip
+   * @throws {PSV.PSVError} when the configuration is incorrect
    *
    * @example
    * viewer.showTooltip({ content: 'Hello world', top: 200, left: 450, position: 'center bottom'})
@@ -148,19 +148,19 @@ class PSVTooltip extends AbstractComponent {
 
     /**
      * @event show-tooltip
-     * @memberof module:components.PSVTooltip
+     * @memberof PSV
      * @summary Trigered when the tooltip is shown
      * @param {*} Data associated to this tooltip
-     * @param {module:components.PSVTooltip} Instance of the tooltip
+     * @param {PSV.components.Tooltip} Instance of the tooltip
      */
     this.psv.trigger(EVENTS.SHOW_TOOLTIP, this.prop.data, this);
   }
 
   /**
    * @summary Moves the tooltip to a new position
-   * @param {PSVTooltip.Config} config
+   * @param {Tooltip.Config} config
    *
-   * @throws {PSVError} when the configuration is incorrect
+   * @throws {PSV.PSVError} when the configuration is incorrect
    */
   move(config) {
     if (this.prop.state !== STATE.SHOWING && this.prop.state !== STATE.READY) {
@@ -179,14 +179,14 @@ class PSVTooltip extends AbstractComponent {
       const tempPos = parsePosition(config.position);
 
       if (!(tempPos.x in LEFT_MAP) || !(tempPos.y in TOP_MAP)) {
-        throw new PSVError(`unable to parse tooltip position "${config.position}"`);
+        throw new PSVError(`Unable to parse tooltip position "${config.position}"`);
       }
 
       config.position = [TOP_MAP[tempPos.y], LEFT_MAP[tempPos.x]];
     }
 
     if (config.position[0] === 'center' && config.position[1] === 'center') {
-      throw new PSVError('unable to parse tooltip position "center center"');
+      throw new PSVError('Unable to parse tooltip position "center center"');
     }
 
     // compute size
@@ -243,7 +243,7 @@ class PSVTooltip extends AbstractComponent {
 
   /**
    * @summary Hides the tooltip
-   * @fires module:components.PSVTooltip.hide-tooltip
+   * @fires PSV.hide-tooltip
    */
   hide() {
     this.container.classList.remove('psv-tooltip--visible');
@@ -251,10 +251,10 @@ class PSVTooltip extends AbstractComponent {
 
     /**
      * @event hide-tooltip
-     * @memberof module:components.PSVTooltip
+     * @memberof PSV
      * @summary Trigered when the tooltip is hidden
      * @param {*} Data associated to this tooltip
-     * @param {module:components.PSVTooltip} Instance of the tooltip
+     * @param {PSV.components.Tooltip} Instance of the tooltip
      */
     this.psv.trigger(EVENTS.HIDE_TOOLTIP, this.prop.data, this);
   }
@@ -353,5 +353,3 @@ class PSVTooltip extends AbstractComponent {
   }
 
 }
-
-export { PSVTooltip };

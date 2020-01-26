@@ -3,10 +3,10 @@ import { AbstractButton } from './AbstractButton';
 
 /**
  * @summary Navigation bar fullscreen button class
- * @extends module:components/buttons.AbstractButton
- * @memberof module:components/buttons
+ * @extends PSV.buttons.AbstractButton
+ * @memberof PSV.buttons
  */
-class PSVFullscreenButton extends AbstractButton {
+export class FullscreenButton extends AbstractButton {
 
   static get id() {
     return 'fullscreen';
@@ -25,7 +25,7 @@ class PSVFullscreenButton extends AbstractButton {
   }
 
   /**
-   * @param {module:components.PSVNavbar} navbar
+   * @param {PSV.components.Navbar} navbar
    */
   constructor(navbar) {
     super(navbar, 'psv-button--hover-scale psv-fullscreen-button');
@@ -66,5 +66,3 @@ class PSVFullscreenButton extends AbstractButton {
   }
 
 }
-
-export { PSVFullscreenButton };

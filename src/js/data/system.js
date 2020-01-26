@@ -1,12 +1,9 @@
-/**
- * @module data/system
- */
-
 import * as THREE from 'three';
 
 /**
  * @summary General information about the system
  * @constant
+ * @memberOf PSV
  * @property {boolean} loaded - Indicates if the system has been loaded yet
  * @property {Function} load - Loads the system if not already loaded
  * @property {Function} checkTHREE - Checks if one or more THREE modules are available
@@ -19,7 +16,7 @@ import * as THREE from 'three';
  * @property {Promise<boolean>} isDeviceOrientationSupported
  * @property {Promise<boolean>} isTouchEnabled
  */
-const SYSTEM = {
+export const SYSTEM = {
   loaded                      : false,
   checkTHREE                  : checkTHREE,
   pixelRatio                  : 1,
@@ -226,5 +223,3 @@ function getFullscreenEvent() {
     return null;
   }
 }
-
-export { SYSTEM };

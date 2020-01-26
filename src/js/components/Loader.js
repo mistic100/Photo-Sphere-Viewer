@@ -4,13 +4,13 @@ import { AbstractComponent } from './AbstractComponent';
 
 /**
  * @summary Loader class
- * @extends module:components.AbstractComponent
- * @memberof module:components
+ * @extends PSV.components.AbstractComponent
+ * @memberof PSV.components
  */
-class PSVLoader extends AbstractComponent {
+export class Loader extends AbstractComponent {
 
   /**
-   * @param {PhotoSphereViewer} psv
+   * @param {PSV.Viewer} psv
    */
   constructor(psv) {
     super(psv, 'psv-loader-container');
@@ -100,5 +100,3 @@ class PSVLoader extends AbstractComponent {
   }
 
 }
-
-export { PSVLoader };

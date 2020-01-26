@@ -6,13 +6,13 @@ import { AbstractService } from './AbstractService';
 
 /**
  * @summary Collections of data converters for the current viewer
- * @extends module:services.AbstractService
- * @memberof module:services
+ * @extends PSV.services.AbstractService
+ * @memberof PSV.services
  */
-class PSVDataHelper extends AbstractService {
+export class DataHelper extends AbstractService {
 
   /**
-   * @param {PhotoSphereViewer} psv
+   * @param {PSV.Viewer} psv
    */
   constructor(psv) {
     super(psv);
@@ -66,8 +66,8 @@ class PSVDataHelper extends AbstractService {
 
   /**
    * @summary Converts pixel texture coordinates to spherical radians coordinates
-   * @param {PhotoSphereViewer.Point} point
-   * @returns {PhotoSphereViewer.Position}
+   * @param {PSV.Point} point
+   * @returns {PSV.Position}
    */
   textureCoordsToSphericalCoords(point) {
     if (this.prop.isCubemap) {
@@ -86,8 +86,8 @@ class PSVDataHelper extends AbstractService {
 
   /**
    * @summary Converts spherical radians coordinates to pixel texture coordinates
-   * @param {PhotoSphereViewer.Position} position
-   * @returns {PhotoSphereViewer.Point}
+   * @param {PSV.Position} position
+   * @returns {PSV.Point}
    */
   sphericalCoordsToTextureCoords(position) {
     if (this.prop.isCubemap) {
@@ -106,7 +106,7 @@ class PSVDataHelper extends AbstractService {
 
   /**
    * @summary Converts spherical radians coordinates to a THREE.Vector3
-   * @param {PhotoSphereViewer.Position} position
+   * @param {PSV.Position} position
    * @returns {external:THREE.Vector3}
    */
   sphericalCoordsToVector3(position) {
@@ -120,7 +120,7 @@ class PSVDataHelper extends AbstractService {
   /**
    * @summary Converts a THREE.Vector3 to spherical radians coordinates
    * @param {external:THREE.Vector3} vector
-   * @returns {PhotoSphereViewer.Position}
+   * @returns {PSV.Position}
    */
   vector3ToSphericalCoords(vector) {
     const phi = Math.acos(vector.y / Math.sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z));
@@ -134,7 +134,7 @@ class PSVDataHelper extends AbstractService {
 
   /**
    * @summary Converts position on the viewer to a THREE.Vector3
-   * @param {PhotoSphereViewer.Point} viewerPoint
+   * @param {PSV.Point} viewerPoint
    * @returns {external:THREE.Vector3}
    */
   viewerCoordsToVector3(viewerPoint) {
@@ -158,7 +158,7 @@ class PSVDataHelper extends AbstractService {
   /**
    * @summary Converts a THREE.Vector3 to position on the viewer
    * @param {external:THREE.Vector3} vector
-   * @returns {PhotoSphereViewer.Point}
+   * @returns {PSV.Point}
    */
   vector3ToViewerCoords(vector) {
     const vectorClone = vector.clone();
@@ -171,7 +171,7 @@ class PSVDataHelper extends AbstractService {
   }
 
   /**
-   * @summary Checks if an object is a {PhotoSphereViewer.ExtendedPosition}, ie has x/y or longitude/latitude
+   * @summary Checks if an object is a {PSV.ExtendedPosition}, ie has x/y or longitude/latitude
    * @param {object} object
    * @returns {boolean}
    */
@@ -183,8 +183,8 @@ class PSVDataHelper extends AbstractService {
 
   /**
    * @summary Converts x/y to latitude/longitude if present and ensure boundaries
-   * @param {PhotoSphereViewer.ExtendedPosition} position
-   * @returns {PhotoSphereViewer.Position}
+   * @param {PSV.ExtendedPosition} position
+   * @returns {PSV.Position}
    */
   cleanPosition(position) {
     if ('x' in position && 'y' in position) {
@@ -200,8 +200,8 @@ class PSVDataHelper extends AbstractService {
 
   /**
    * @summary Ensure a SphereCorrection object is valide
-   * @param {PhotoSphereViewer.SphereCorrection} sphereCorrection
-   * @returns {PhotoSphereViewer.SphereCorrection}
+   * @param {PSV.SphereCorrection} sphereCorrection
+   * @returns {PSV.SphereCorrection}
    */
   cleanSphereCorrection(sphereCorrection) {
     return {
@@ -213,8 +213,8 @@ class PSVDataHelper extends AbstractService {
 
   /**
    * @summary Apply "longitudeRange" and "latitudeRange"
-   * @param {PhotoSphereViewer.Position} position
-   * @returns {{rangedPosition: PhotoSphereViewer.Position, sidesReached: string[]}}
+   * @param {PSV.Position} position
+   * @returns {{rangedPosition: PSV.Position, sidesReached: string[]}}
    */
   applyRanges(position) {
     const rangedPosition = {
@@ -363,5 +363,3 @@ class PSVDataHelper extends AbstractService {
   }
 
 }
-
-export { PSVDataHelper };

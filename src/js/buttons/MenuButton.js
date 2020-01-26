@@ -4,10 +4,10 @@ import { AbstractButton } from './AbstractButton';
 
 /**
  * @summary Navigation bar menu button class
- * @extends module:components/buttons.AbstractButton
- * @memberof module:components/buttons
+ * @extends PSV.buttons.AbstractButton
+ * @memberof PSV.buttons
  */
-class PSVMenuButton extends AbstractButton {
+export class MenuButton extends AbstractButton {
 
   static get id() {
     return 'menu';
@@ -22,7 +22,7 @@ class PSVMenuButton extends AbstractButton {
   }
 
   /**
-   * @param {module:components.PSVNavbar} navbar
+   * @param {PSV.components.Navbar} navbar
    */
   constructor(navbar) {
     super(navbar, 'psv-button--hover-scale psv-menu-button');
@@ -115,5 +115,3 @@ class PSVMenuButton extends AbstractButton {
   }
 
 }
-
-export { PSVMenuButton };

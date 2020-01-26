@@ -6,7 +6,7 @@ const HTML_BUTTON_DATA = 'data-' + dasherize(BUTTON_DATA);
 /**
  * @summary Menu template
  * @param {AbstractButton[]} buttons
- * @param {PhotoSphereViewer} psv
+ * @param {PSV.Viewer} psv
  * @returns {string}
  */
 export default (buttons, psv) => `

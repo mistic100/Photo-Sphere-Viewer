@@ -1,12 +1,13 @@
-/**
- * @module utils
- */
-
 import * as THREE from 'three';
 import { PSVError } from './PSVError';
 
 /**
+ * @namespace PSV.utils
+ */
+
+/**
  * @summary Toggles a CSS class
+ * @memberOf PSV.utils
  * @param {HTMLElement|SVGElement} element
  * @param {string} className
  * @param {boolean} [active] - forced state
@@ -40,6 +41,7 @@ export function toggleClass(element, className, active) {
 
 /**
  * @summary Adds one or several CSS classes to an element
+ * @memberOf PSV.utils
  * @param {HTMLElement} element
  * @param {string} className
  */
@@ -53,6 +55,7 @@ export function addClasses(element, className) {
 
 /**
  * @summary Removes one or several CSS classes to an element
+ * @memberOf PSV.utils
  * @param {HTMLElement} element
  * @param {string} className
  */
@@ -66,6 +69,7 @@ export function removeClasses(element, className) {
 
 /**
  * @summary Searches if an element has a particular parent at any level including itself
+ * @memberOf PSV.utils
  * @param {HTMLElement} el
  * @param {HTMLElement} parent
  * @returns {boolean}
@@ -85,6 +89,7 @@ export function hasParent(el, parent) {
 
 /**
  * @summary Gets the closest parent (can by itself)
+ * @memberOf PSV.utils
  * @param {HTMLElement|SVGElement} el
  * @param {string} selector
  * @returns {HTMLElement}
@@ -105,6 +110,7 @@ export function getClosest(el, selector) {
 
 /**
  * @summary Map between keyboard events `keyCode|which` and `key`
+ * @memberOf PSV.utils
  * @type {Object<int, string>}
  * @readonly
  * @private
@@ -145,6 +151,7 @@ const MS_KEYMAP = {
 
 /**
  * @summary Returns the key name of a KeyboardEvent
+ * @memberOf PSV.utils
  * @param {KeyboardEvent} evt
  * @returns {string}
  */
@@ -160,6 +167,7 @@ export function getEventKey(evt) {
 
 /**
  * @summary Ensures that a number is in a given interval
+ * @memberOf PSV.utils
  * @param {number} x
  * @param {number} min
  * @param {number} max
@@ -171,7 +179,7 @@ export function bound(x, min, max) {
 
 /**
  * @summary Checks if a value is an integer
- * @function
+ * @memberOf PSV.utils
  * @param {*} value
  * @returns {boolean}
  */
@@ -185,6 +193,7 @@ export function isInteger(value) {
 
 /**
  * @summary Computes the sum of an array
+ * @memberOf PSV.utils
  * @param {number[]} array
  * @returns {number}
  */
@@ -194,8 +203,9 @@ export function sum(array) {
 
 /**
  * @summary Computes the distance between two points
- * @param {PhotoSphereViewer.Point} p1
- * @param {PhotoSphereViewer.Point} p2
+ * @memberOf PSV.utils
+ * @param {PSV.Point} p1
+ * @param {PSV.Point} p2
  * @returns {number}
  */
 export function distance(p1, p2) {
@@ -203,8 +213,8 @@ export function distance(p1, p2) {
 }
 
 /**
- * @summary Transforms a string to dash-case
- * {@link https://github.com/shahata/dasherize}
+ * @summary Transforms a string to dash-case{@link https://github.com/shahata/dasherize}
+ * @memberOf PSV.utils
  * @param {string} str
  * @returns {string}
  */
@@ -216,6 +226,7 @@ export function dasherize(str) {
 
 /**
  * @summary Returns the value of a given attribute in the panorama metadata
+ * @memberOf PSV.utils
  * @param {string} data
  * @param {string} attr
  * @returns (string)
@@ -238,6 +249,7 @@ export function getXMPValue(data, attr) {
 
 /**
  * @summary Detects if fullscreen is enabled
+ * @memberOf PSV.utils
  * @param {HTMLElement} elt
  * @returns {boolean}
  */
@@ -248,6 +260,7 @@ export function isFullscreenEnabled(elt) {
 
 /**
  * @summary Enters fullscreen mode
+ * @memberOf PSV.utils
  * @param {HTMLElement} elt
  */
 export function requestFullscreen(elt) {
@@ -257,6 +270,7 @@ export function requestFullscreen(elt) {
 
 /**
  * @summary Exits fullscreen mode
+ * @memberOf PSV.utils
  */
 export function exitFullscreen() {
   /* eslint-disable-next-line max-len */
@@ -265,6 +279,7 @@ export function exitFullscreen() {
 
 /**
  * @summary Gets an element style
+ * @memberOf PSV.utils
  * @param {HTMLElement} elt
  * @param {string} prop
  * @returns {*}
@@ -275,6 +290,7 @@ export function getStyle(elt, prop) {
 
 /**
  * @summary Compute the shortest offset between two longitudes
+ * @memberOf PSV.utils
  * @param {number} from
  * @param {number} to
  * @returns {number}
@@ -294,8 +310,9 @@ export function getShortestArc(from, to) {
 
 /**
  * @summary Computes the angle between the current position and a target position
- * @param {PhotoSphereViewer.Position} position1
- * @param {PhotoSphereViewer.Position} position2
+ * @memberOf PSV.utils
+ * @param {PSV.Position} position1
+ * @param {PSV.Position} position2
  * @returns {number}
  */
 export function getAngle(position1, position2) {
@@ -308,6 +325,11 @@ export function getAngle(position1, position2) {
   );
 }
 
+/**
+ * @readonly
+ * @private
+ * @type {{top: string, left: string, bottom: string, center: string, right: string}}
+ */
 const CSS_POSITIONS = {
   top   : '0%',
   bottom: '100%',
@@ -318,10 +340,11 @@ const CSS_POSITIONS = {
 
 /**
  * @summary Translate CSS values like "top center" or "10% 50%" as top and left positions
+ * @memberOf PSV.utils
  * @description The implementation is as close as possible to the "background-position" specification
  * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/background-position}
  * @param {string|object} value
- * @returns {PhotoSphereViewer.Point}
+ * @returns {PSV.Point}
  */
 export function parsePosition(value) {
   if (!value) {
@@ -366,9 +389,10 @@ export function parsePosition(value) {
 
 /**
  * @summary Parses an speed
+ * @memberOf PSV.utils
  * @param {string|number} speed - The speed, in radians/degrees/revolutions per second/minute
  * @returns {number} radians per second
- * @throws {PSVError} when the speed cannot be parsed
+ * @throws {PSV.PSVError} when the speed cannot be parsed
  */
 export function parseSpeed(speed) {
   let parsed;
@@ -413,7 +437,7 @@ export function parseSpeed(speed) {
 
       // Unknown unit
       default:
-        throw new PSVError('unknown speed unit "' + speedUnit + '"');
+        throw new PSVError('Unknown speed unit "' + speedUnit + '"');
     }
   }
   else {
@@ -425,11 +449,12 @@ export function parseSpeed(speed) {
 
 /**
  * @summary Parses an angle value in radians or degrees and returns a normalized value in radians
+ * @memberOf PSV.utils
  * @param {string|number} angle - eg: 3.14, 3.14rad, 180deg
  * @param {boolean} [zeroCenter=false] - normalize between -Pi - Pi instead of 0 - 2*Pi
  * @param {boolean} [halfCircle=zeroCenter] - normalize between -Pi/2 - Pi/2 instead of -Pi - Pi
  * @returns {number}
- * @throws {PSVError} when the angle cannot be parsed
+ * @throws {PSV.PSVError} when the angle cannot be parsed
  */
 export function parseAngle(angle, zeroCenter = false, halfCircle = zeroCenter) {
   let parsed;
@@ -438,7 +463,7 @@ export function parseAngle(angle, zeroCenter = false, halfCircle = zeroCenter) {
     const match = angle.toLowerCase().trim().match(/^(-?[0-9]+(?:\.[0-9]*)?)(.*)$/);
 
     if (!match) {
-      throw new PSVError('unknown angle "' + angle + '"');
+      throw new PSVError('Unknown angle "' + angle + '"');
     }
 
     const value = parseFloat(match[1]);
@@ -455,7 +480,7 @@ export function parseAngle(angle, zeroCenter = false, halfCircle = zeroCenter) {
           parsed = value;
           break;
         default:
-          throw new PSVError('unknown angle unit "' + unit + '"');
+          throw new PSVError('Unknown angle unit "' + unit + '"');
       }
     }
     else {
@@ -466,7 +491,7 @@ export function parseAngle(angle, zeroCenter = false, halfCircle = zeroCenter) {
     parsed = angle;
   }
   else {
-    throw new PSVError('unknown angle "' + angle + '"');
+    throw new PSVError('Unknown angle "' + angle + '"');
   }
 
   parsed = (zeroCenter ? parsed + Math.PI : parsed) % (Math.PI * 2);
@@ -480,6 +505,7 @@ export function parseAngle(angle, zeroCenter = false, halfCircle = zeroCenter) {
 
 /**
  * @summary Calls `dispose` on all objects and textures
+ * @memberOf PSV.utils
  * @param {external:THREE.Object3D} object
  */
 export function cleanTHREEScene(object) {
@@ -519,6 +545,7 @@ export function cleanTHREEScene(object) {
 
 /**
  * @summary Returns a function, that, when invoked, will only be triggered at most once during a given window of time.
+ * @memberOf PSV.utils
  * @copyright underscore.js - modified by Clément Prévost {@link http://stackoverflow.com/a/27078401}
  * @param {Function} func
  * @param {number} wait
@@ -566,6 +593,7 @@ export function throttle(func, wait) {
 
 /**
  * @summary Test if an object is a plain object
+ * @memberOf PSV.utils
  * @description Test if an object is a plain object, i.e. is constructed
  * by the built-in Object constructor and inherits directly from Object.prototype
  * or null. Some built-in objects pass the test, e.g. Math which is a plain object
@@ -594,6 +622,7 @@ export function isPlainObject(obj) {
 
 /**
  * @summary Merges the enumerable attributes of two objects
+ * @memberOf PSV.utils
  * @description Replaces arrays and alters the target object.
  * @copyright Nicholas Fisher <nfisher110@gmail.com>
  * @param {Object} target
@@ -645,6 +674,7 @@ export function deepmerge(target, src) {
 
 /**
  * @summary Deeply clones an object
+ * @memberOf PSV.utils
  * @param {Object} src
  * @returns {Object}
  */
@@ -654,6 +684,7 @@ export function clone(src) {
 
 /**
  * @summery Test of an object is empty
+ * @memberOf PSV.utils
  * @param {object} obj
  * @returns {boolean}
  */
@@ -663,6 +694,7 @@ export function isEmpty(obj) {
 
 /**
  * @summary Normalize mousewheel values accross browsers
+ * @memberOf PSV.utils
  * @description From Facebook's Fixed Data Table
  * {@link https://github.com/facebookarchive/fixed-data-table/blob/master/src/vendor_upstream/dom/normalizeWheel.js}
  * @copyright Facebook
@@ -735,6 +767,7 @@ export function normalizeWheel(event) {
 
 /**
  * @summary Loops over enumerable properties of an object
+ * @memberOf PSV.utils
  * @param {Object} object
  * @param {Function} callback
  */
@@ -746,6 +779,7 @@ export function each(object, callback) {
 
 /**
  * @summary Returns the intersection between two arrays
+ * @memberOf PSV.utils
  * @template T
  * @param {T[]} array1
  * @param {T[]} array2
@@ -756,7 +790,8 @@ export function intersect(array1, array2) {
 }
 
 /**
- * Displays a warning in the console
+ * @summary Displays a warning in the console
+ * @memberOf PSV.utils
  * @param {string} message
  */
 export function logWarn(message) {

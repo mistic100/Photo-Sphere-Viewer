@@ -1,18 +1,18 @@
-/**
- * @module components/buttons
- */
-
 import { AbstractComponent } from '../components/AbstractComponent';
 import { PSVError } from '../PSVError';
 import { isPlainObject, toggleClass } from '../utils';
 
 /**
+ * @namespace PSV.buttons
+ */
+
+/**
  * @summary Base navbar button class
- * @extends module:components.AbstractComponent
- * @memberof module:components/buttons
+ * @extends PSV.components.AbstractComponent
+ * @memberof PSV.buttons
  * @abstract
  */
-class AbstractButton extends AbstractComponent {
+export class AbstractButton extends AbstractComponent {
 
   /**
    * @summary Unique identifier of the button
@@ -53,7 +53,7 @@ class AbstractButton extends AbstractComponent {
   }
 
   /**
-   * @param {module:components.PSVNavbar} navbar
+   * @param {PSV.components.Navbar} navbar
    * @param {string} className
    */
   constructor(navbar, className) {
@@ -222,5 +222,3 @@ class AbstractButton extends AbstractComponent {
   }
 
 }
-
-export { AbstractButton };

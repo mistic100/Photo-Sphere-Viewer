@@ -18,10 +18,10 @@ import zoomOut from '../../icons/zoom-out.svg';
 /**
  * @summary Default icons
  * @type {Object<string, string>}
+ * @memberOf PSV
  * @constant
- * @memberOf module:data/config
  */
-const ICONS = {
+export const ICONS = {
   compass,
   download,
   error,
@@ -44,9 +44,10 @@ const ICONS = {
  * @summary Gets icons from config
  * @param {Object<string, string>} options
  * @returns {Object<string, string>}
- * @memberOf module:data/config
+ * @memberOf PSV
+ * @private
  */
-function getIcons(options) {
+export function getIcons(options) {
   const icons = {};
 
   Object.keys(ICONS).forEach((name) => {
@@ -60,5 +61,3 @@ function getIcons(options) {
 
   return icons;
 }
-
-export { ICONS, getIcons };

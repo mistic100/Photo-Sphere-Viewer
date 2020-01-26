@@ -1,22 +1,22 @@
 import * as THREE from 'three';
 import { EventEmitter } from 'uevent';
-import { PSVHUD } from './components/PSVHUD';
-import { PSVLoader } from './components/PSVLoader';
-import { PSVNavbar } from './components/PSVNavbar';
-import { PSVNotification } from './components/PSVNotification';
-import { PSVOverlay } from './components/PSVOverlay';
-import { PSVPanel } from './components/PSVPanel';
+import { HUD } from './components/HUD';
+import { Loader } from './components/Loader';
+import { Navbar } from './components/Navbar';
+import { Notification } from './components/Notification';
+import { Overlay } from './components/Overlay';
+import { Panel } from './components/Panel';
 import { getConfig } from './data/config';
 import { EVENTS, IDS, MARKER_DATA, VIEWER_DATA } from './data/constants';
 import { getIcons } from './data/icons';
 import { SYSTEM } from './data/system';
 import { getTemplates } from './data/templates';
-import { PSVAnimation } from './PSVAnimation';
+import { Animation } from './Animation';
 import { PSVError } from './PSVError';
-import { PSVDataHelper } from './services/PSVDataHelper';
-import { PSVEventsHandler } from './services/PSVEventsHandler';
-import { PSVRenderer } from './services/PSVRenderer';
-import { PSVTextureLoader } from './services/PSVTextureLoader';
+import { DataHelper } from './services/DataHelper';
+import { EventsHandler } from './services/EventsHandler';
+import { Renderer } from './services/Renderer';
+import { TextureLoader } from './services/TextureLoader';
 import {
   bound,
   each,
@@ -31,18 +31,19 @@ import {
   throttle,
   toggleClass
 } from './utils';
-import { PSVTooltipRenderer } from './services/PSVTooltipRenderer';
+import { TooltipRenderer } from './services/TooltipRenderer';
 
 /**
  * @summary Main class
+ * @memberOf PSV
  * @extends {external:uEvent.EventEmitter}
  */
-class PhotoSphereViewer extends EventEmitter {
+export class Viewer extends EventEmitter {
 
   /**
-   * @param {PhotoSphereViewer.Options} options
-   * @fires PhotoSphereViewer.ready
-   * @throws {PSVError} when the configuration is incorrect
+   * @param {PSV.Options} options
+   * @fires PSV.ready
+   * @throws {PSV.PSVError} when the configuration is incorrect
    */
   constructor(options) {
     super();
@@ -56,7 +57,7 @@ class PhotoSphereViewer extends EventEmitter {
      * @property {boolean} ready - when all components are loaded
      * @property {boolean} needsUpdate - if the view needs to be renderer
      * @property {boolean} isCubemap - if the panorama is a cubemap
-     * @property {PhotoSphereViewer.Position} position - current direction of the camera
+     * @property {PSV.Position} position - current direction of the camera
      * @property {external:THREE.Vector3} direction - direction of the camera
      * @property {number} zoomLvl - current zoom level
      * @property {number} vFov - vertical FOV
@@ -66,11 +67,11 @@ class PhotoSphereViewer extends EventEmitter {
      * @property {number} gyroAlphaOffset - current alpha offset for gyroscope controls
      * @property {Function} orientationCb - update callback of the device orientation
      * @property {Function} autorotateCb - update callback of the automatic rotation
-     * @property {PSVAnimation} animationPromise - promise of the current animation (either go to position or image transition)
+     * @property {PSV.Animation} animationPromise - promise of the current animation (either go to position or image transition)
      * @property {Promise} loadingPromise - promise of the setPanorama method
      * @property startTimeout - timeout id of the automatic rotation delay
-     * @property {PhotoSphereViewer.Size} size - size of the container
-     * @property {PhotoSphereViewer.PanoData} panoData - panorama metadata
+     * @property {PSV.Size} size - size of the container
+     * @property {PSV.PanoData} panoData - panorama metadata
      * @property {external:NoSleep} noSleep - NoSleep.js instance
      */
     this.prop = {
@@ -112,7 +113,7 @@ class PhotoSphereViewer extends EventEmitter {
 
     /**
      * @summary Configuration holder
-     * @type {PhotoSphereViewer.Options}
+     * @type {PSV.Options}
      * @readonly
      */
     this.config = getConfig(options);
@@ -150,7 +151,7 @@ class PhotoSphereViewer extends EventEmitter {
 
     /**
      * @summary All child components
-     * @type {module:components.AbstractComponent[]}
+     * @type {PSV.components.AbstractComponent[]}
      * @readonly
      * @package
      */
@@ -158,73 +159,73 @@ class PhotoSphereViewer extends EventEmitter {
 
     /**
      * @summary Main render controller
-     * @type {module:services.PSVRenderer}
+     * @type {PSV.services.Renderer}
      * @readonly
      */
-    this.renderer = new PSVRenderer(this);
+    this.renderer = new Renderer(this);
 
     /**
      * @summary Textures loader
-     * @type {module:services.PSVTextureLoader}
+     * @type {PSV.services.TextureLoader}
      * @readonly
      */
-    this.textureLoader = new PSVTextureLoader(this);
+    this.textureLoader = new TextureLoader(this);
 
     /**
      * @summary Main event handler
-     * @type {module:services.PSVEventsHandler}
+     * @type {PSV.services.EventsHandler}
      * @readonly
      */
-    this.eventsHandler = new PSVEventsHandler(this);
+    this.eventsHandler = new EventsHandler(this);
 
     /**
      * @summary Utilities to help converting data
-     * @type {module:services.PSVDataHelper}
+     * @type {PSV.services.DataHelper}
      * @readonly
      */
-    this.dataHelper = new PSVDataHelper(this);
+    this.dataHelper = new DataHelper(this);
 
     /**
-     * @member {module:components.PSVLoader}
+     * @member {PSV.components.Loader}
      * @readonly
      */
-    this.loader = new PSVLoader(this);
+    this.loader = new Loader(this);
 
     /**
-     * @member {module:components.PSVNavbar}
+     * @member {PSV.components.Navbar}
      * @readonly
      */
-    this.navbar = new PSVNavbar(this);
+    this.navbar = new Navbar(this);
 
     /**
-     * @member {module:components.PSVHUD}
+     * @member {PSV.components.HUD}
      * @readonly
      */
-    this.hud = new PSVHUD(this);
+    this.hud = new HUD(this);
 
     /**
-     * @member {module:components.PSVPanel}
+     * @member {PSV.components.Panel}
      * @readonly
      */
-    this.panel = new PSVPanel(this);
+    this.panel = new Panel(this);
 
     /**
-     * @member {module:services.PSVTooltipRenderer}
+     * @member {PSV.services.TooltipRenderer}
      * @readonly
      */
-    this.tooltip = new PSVTooltipRenderer(this);
+    this.tooltip = new TooltipRenderer(this);
 
     /**
-     * @member {module:components.PSVNotification}
+     * @member {PSV.components.Notification}
      * @readonly
      */
-    this.notification = new PSVNotification(this);
+    this.notification = new Notification(this);
 
     /**
-     * @member {module:components.PSVOverlay}
+     * @member {PSV.components.Overlay}
      * @readonly
      */
-    this.overlay = new PSVOverlay(this);
+    this.overlay = new Overlay(this);
 
     this.eventsHandler.init();
 
@@ -266,7 +267,7 @@ class PhotoSphereViewer extends EventEmitter {
 
         /**
          * @event ready
-         * @memberof PhotoSphereViewer
+         * @memberof PSV
          * @summary Triggered when the panorama image has been loaded and the viewer is ready to perform the first render
          */
         this.trigger(EVENTS.READY);
@@ -324,8 +325,6 @@ class PhotoSphereViewer extends EventEmitter {
     }
 
     if (!this.prop.uiRefresh) {
-      // console.log(`PhotoSphereViewer: UI Refresh, ${reason}`);
-
       this.prop.uiRefresh = true;
 
       this.children.every((child) => {
@@ -348,7 +347,7 @@ class PhotoSphereViewer extends EventEmitter {
 
   /**
    * @summary Returns the current position of the camera
-   * @returns {PhotoSphereViewer.Position}
+   * @returns {PSV.Position}
    */
   getPosition() {
     return {
@@ -367,7 +366,7 @@ class PhotoSphereViewer extends EventEmitter {
 
   /**
    * @summary Returns the current viewer size
-   * @returns {PhotoSphereViewer.Size}
+   * @returns {PSV.Size}
    */
   getSize() {
     return {
@@ -426,7 +425,7 @@ class PhotoSphereViewer extends EventEmitter {
 
   /**
    * @summary Resizes the canvas when the window is resized
-   * @fires PhotoSphereViewer.size-updated
+   * @fires PSV.size-updated
    */
   autoSize() {
     if (this.container.clientWidth !== this.prop.size.width || this.container.clientHeight !== this.prop.size.height) {
@@ -438,9 +437,9 @@ class PhotoSphereViewer extends EventEmitter {
 
       /**
        * @event size-updated
-       * @memberof PhotoSphereViewer
+       * @memberof PSV
        * @summary Triggered when the viewer size changes
-       * @param {PhotoSphereViewer.Size} size
+       * @param {PSV.Size} size
        */
       this.trigger(EVENTS.SIZE_UPDATED, this.getSize());
       this.__resizeRefresh();
@@ -452,9 +451,9 @@ class PhotoSphereViewer extends EventEmitter {
    * @description Loads a new panorama file, optionally changing the camera position/zoom and activating the transition animation.<br>
    * If the "options" parameter is not defined, the camera will not move and the ongoing animation will continue
    * @param {string|string[]} path - URL of the new panorama file
-   * @param {PhotoSphereViewer.PanoramaOptions} [options]
+   * @param {PSV.PanoramaOptions} [options]
    * @returns {Promise}
-   * @throws {PSVError} when another panorama is already loading
+   * @throws {PSV.PSVError} when another panorama is already loading
    */
   setPanorama(path, options = {}) {
     if (this.prop.loadingPromise !== null) {
@@ -539,7 +538,7 @@ class PhotoSphereViewer extends EventEmitter {
 
   /**
    * @summary Starts the automatic rotation
-   * @fires PhotoSphereViewer.autorotate
+   * @fires PSV.autorotate
    */
   startAutorotate() {
     this.__stopAll();
@@ -563,7 +562,7 @@ class PhotoSphereViewer extends EventEmitter {
 
     /**
      * @event autorotate
-     * @memberof PhotoSphereViewer
+     * @memberof PSV
      * @summary Triggered when the automatic rotation is enabled/disabled
      * @param {boolean} enabled
      */
@@ -572,7 +571,7 @@ class PhotoSphereViewer extends EventEmitter {
 
   /**
    * @summary Stops the automatic rotation
-   * @fires PhotoSphereViewer.autorotate
+   * @fires PSV.autorotate
    */
   stopAutorotate() {
     if (this.prop.startTimeout) {
@@ -602,8 +601,8 @@ class PhotoSphereViewer extends EventEmitter {
 
   /**
    * @summary Enables the gyroscope navigation if available
-   * @fires PhotoSphereViewer.gyroscope-updated
-   * @throws {PSVError} if DeviceOrientationControls.js is missing
+   * @fires PSV.gyroscope-updated
+   * @throws {PSV.PSVError} if DeviceOrientationControls.js is missing
    */
   startGyroscopeControl() {
     if (SYSTEM.checkTHREE('DeviceOrientationControls')) {
@@ -615,7 +614,7 @@ class PhotoSphereViewer extends EventEmitter {
 
           /**
            * @event gyroscope-updated
-           * @memberof PhotoSphereViewer
+           * @memberof PSV
            * @summary Triggered when the gyroscope mode is enabled/disabled
            * @param {boolean} enabled
            */
@@ -636,7 +635,7 @@ class PhotoSphereViewer extends EventEmitter {
 
   /**
    * @summary Disables the gyroscope navigation
-   * @fires PhotoSphereViewer.gyroscope-updated
+   * @fires PSV.gyroscope-updated
    */
   stopGyroscopeControl() {
     if (this.isGyroscopeEnabled()) {
@@ -691,7 +690,7 @@ class PhotoSphereViewer extends EventEmitter {
    *  - starts gyroscope controle
    *  - hides hud, navbar and panel
    *  - instanciate StereoEffect
-   * @throws {PSVError} if StereoEffect.js is not available
+   * @throws {PSV.PSVError} if StereoEffect.js is not available
    */
   startStereoView() {
     if (SYSTEM.checkTHREE('DeviceOrientationControls', 'StereoEffect')) {
@@ -710,7 +709,7 @@ class PhotoSphereViewer extends EventEmitter {
 
         /**
          * @event stereo-updated
-         * @memberof PhotoSphereViewer
+         * @memberof PSV
          * @summary Triggered when the stereo view is enabled/disabled
          * @param {boolean} enabled
          */
@@ -828,9 +827,9 @@ class PhotoSphereViewer extends EventEmitter {
 
   /**
    * @summary Rotates the view to specific longitude and latitude
-   * @param {PhotoSphereViewer.ExtendedPosition} position
+   * @param {PSV.ExtendedPosition} position
    * @param {boolean} [ignoreRange=false] - ignore longitudeRange and latitudeRange
-   * @fires PhotoSphereViewer.position-updated
+   * @fires PSV.position-updated
    */
   rotate(position, ignoreRange = false) {
     let cleanPosition = this.dataHelper.cleanPosition(position);
@@ -852,9 +851,9 @@ class PhotoSphereViewer extends EventEmitter {
 
       /**
        * @event position-updated
-       * @memberof PhotoSphereViewer
+       * @memberof PSV
        * @summary Triggered when the view longitude and/or latitude changes
-       * @param {PhotoSphereViewer.Position} position
+       * @param {PSV.Position} position
        */
       this.trigger(EVENTS.POSITION_UPDATED, this.getPosition());
     }
@@ -862,9 +861,9 @@ class PhotoSphereViewer extends EventEmitter {
 
   /**
    * @summary Rotates the view to specific longitude and latitude with a smooth animation
-   * @param {PhotoSphereViewer.AnimateOptions} options - position and/or zoom level
+   * @param {PSV.AnimateOptions} options - position and/or zoom level
    * @param {string|number} speed - animation speed or duration (in milliseconds)
-   * @returns {PSVAnimation}
+   * @returns {PSV.Animation}
    */
   animate(options, speed) {
     this.__stopAll();
@@ -910,10 +909,10 @@ class PhotoSphereViewer extends EventEmitter {
         this.zoom(options.zoom);
       }
 
-      return PSVAnimation.resolve();
+      return Animation.resolve();
     }
 
-    this.prop.animationPromise = new PSVAnimation({
+    this.prop.animationPromise = new Animation({
       properties: animProperties,
       duration  : duration,
       easing    : 'inOutSine',
@@ -951,7 +950,7 @@ class PhotoSphereViewer extends EventEmitter {
   /**
    * @summary Zooms to a specific level between `max_fov` and `min_fov`
    * @param {number} level - new zoom level from 0 to 100
-   * @fires PhotoSphereViewer.zoom-updated
+   * @fires PSV.zoom-updated
    */
   zoom(level) {
     const newZoomLvl = bound(level, 0, 100);
@@ -965,7 +964,7 @@ class PhotoSphereViewer extends EventEmitter {
 
       /**
        * @event zoom-updated
-       * @memberof PhotoSphereViewer
+       * @memberof PSV
        * @summary Triggered when the zoom level changes
        * @param {number} zoomLevel
        */
@@ -995,7 +994,7 @@ class PhotoSphereViewer extends EventEmitter {
 
   /**
    * @summary Resizes the viewer
-   * @param {PhotoSphereViewer.CssSize} size
+   * @param {PSV.CssSize} size
    */
   resize(size) {
     ['width', 'height'].forEach((dim) => {
@@ -1091,7 +1090,7 @@ class PhotoSphereViewer extends EventEmitter {
 
   /**
    * @summary Opens side panel with list of markers
-   * @fires module:components.PSVHUD.filter:render-markers-list
+   * @fires PSV.components.PSVHUD.filter:render-markers-list
    */
   showMarkersList() {
     let markers = [];
@@ -1103,10 +1102,10 @@ class PhotoSphereViewer extends EventEmitter {
 
     /**
      * @event filter:render-markers-list
-     * @memberof module:components.PSVHUD
+     * @memberof PSV.components.PSVHUD
      * @summary Used to alter the list of markers displayed on the side-panel
-     * @param {PSVMarker[]} markers
-     * @returns {PSVMarker[]}
+     * @param {PSV.Marker[]} markers
+     * @returns {PSV.Marker[]}
      */
     markers = this.change(EVENTS.RENDER_MARKERS_LIST, markers);
 
@@ -1123,9 +1122,9 @@ class PhotoSphereViewer extends EventEmitter {
 
           /**
            * @event select-marker-list
-           * @memberof module:components.PSVHUD
+           * @memberof PSV.components.PSVHUD
            * @summary Triggered when a marker is selected from the side panel
-           * @param {PSVMarker} marker
+           * @param {PSV.Marker} marker
            */
           this.trigger(EVENTS.SELECT_MARKER_LIST, marker);
 
@@ -1144,5 +1143,3 @@ class PhotoSphereViewer extends EventEmitter {
   }
 
 }
-
-export { PhotoSphereViewer };

@@ -3,19 +3,20 @@ import { PSVError } from './PSVError';
 import { addClasses, dasherize, deepmerge, each, parseAngle, parsePosition } from './utils';
 
 /**
- * @typedef {Object} PSVMarker.Properties
+ * @typedef {Object} PSV.Marker.Properties
  * @summary Marker properties, see {@link http://photo-sphere-viewer.js.org/markers.html#config}
  */
 
 /**
- * Object representing a marker
+ * @summary Object representing a marker
+ * @memberOf PSV
  */
-class PSVMarker {
+export class Marker {
 
   /**
-   * @param {PSVMarker.Properties} properties
-   * @param {PhotoSphereViewer} psv
-   * @throws {PSVError} when the configuration is incorrect
+   * @param {PSV.Marker.Properties} properties
+   * @param {PSV.Viewer} psv
+   * @throws {PSV.PSVError} when the configuration is incorrect
    */
   constructor(properties, psv) {
     if (!properties.id) {
@@ -33,7 +34,7 @@ class PSVMarker {
     }
 
     /**
-     * @member {PhotoSphereViewer}
+     * @member {PSV.Viewer}
      * @readonly
      * @protected
      */
@@ -47,10 +48,10 @@ class PSVMarker {
 
     /**
      * @member {string}
-     * @see PSVMarker.types
+     * @see Marker.types
      * @readonly
      */
-    this.type = PSVMarker.getType(properties, false);
+    this.type = Marker.getType(properties, false);
 
     /**
      * @member {boolean}
@@ -66,7 +67,7 @@ class PSVMarker {
 
     /**
      * @summary Original configuration of the marker
-     * @member {PSVMarker.Properties}
+     * @member {Marker.Properties}
      * @readonly
      */
     this.config = {};
@@ -79,7 +80,7 @@ class PSVMarker {
 
     /**
      * @summary Tooltip instance for this marker
-     * @member {module:components.PSVTooltip}
+     * @member {PSV.components.Tooltip}
      */
     this.tooltip = null;
 
@@ -89,9 +90,9 @@ class PSVMarker {
      * @protected
      * @property {boolean} inViewport
      * @property {boolean} dynamicSize
-     * @property {PhotoSphereViewer.Point} anchor
-     * @property {PhotoSphereViewer.Position} position - position in spherical coordinates
-     * @property {PhotoSphereViewer.Point} position2D - position in viewer coordinates
+     * @property {PSV.Point} anchor
+     * @property {PSV.Position} position - position in spherical coordinates
+     * @property {PSV.Point} position2D - position in viewer coordinates
      * @property {external:THREE.Vector3[]} positions3D - positions in 3D space
      * @property {number} width
      * @property {number} height
@@ -308,12 +309,12 @@ class PSVMarker {
 
   /**
    * @summary Updates the marker with new properties
-   * @param {PSVMarker.Properties} [properties]
-   * @throws {PSVError} when trying to change the marker's type
+   * @param {Marker.Properties} [properties]
+   * @throws {PSV.PSVError} when trying to change the marker's type
    */
   update(properties) {
     if (properties && properties !== this.config) {
-      const newType = PSVMarker.getType(properties, true);
+      const newType = Marker.getType(properties, true);
 
       if (newType !== undefined && newType !== this.type) {
         throw new PSVError('cannot change marker type');
@@ -559,10 +560,10 @@ class PSVMarker {
 
   /**
    * @summary Determines the type of a marker by the available properties
-   * @param {PSVMarker.Properties} properties
+   * @param {Marker.Properties} properties
    * @param {boolean} [allowNone=false]
    * @returns {string}
-   * @throws {PSVError} when the marker's type cannot be found
+   * @throws {PSV.PSVError} when the marker's type cannot be found
    */
   static getType(properties, allowNone = false) {
     const found = [];
@@ -584,5 +585,3 @@ class PSVMarker {
   }
 
 }
-
-export { PSVMarker };

@@ -1,7 +1,8 @@
 /**
- * Custom error used in the lib
+ * @summary Custom error used in the lib
  * @param {string} message
  * @constructor
+ * @memberOf PSV
  */
 function PSVError(message) {
   this.message = message;

@@ -80,11 +80,11 @@ describe('utils::parseAngle', () => {
   it('should throw exception on invalid values', () => {
     assert.throws(() => {
       utils.parseAngle('foobar');
-    }, /unknown angle "foobar"/, 'foobar');
+    }, /Unknown angle "foobar"/, 'foobar');
 
     assert.throws(() => {
       utils.parseAngle('200gr')
-    }, /unknown angle unit "gr"/, '200gr');
+    }, /Unknown angle unit "gr"/, '200gr');
   });
 });
 
@@ -246,7 +246,7 @@ describe('utils::parseSpeed', () => {
   it('should throw exception on invalid unit', () => {
     assert.throws(() => {
       utils.parseSpeed('10rpsec');
-    }, /unknown speed unit "rpsec"/, '10rpsec');
+    }, /Unknown speed unit "rpsec"/, '10rpsec');
   });
 
   it('should passthrough when number', () => {

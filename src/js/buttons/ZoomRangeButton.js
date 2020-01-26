@@ -5,10 +5,10 @@ import { AbstractButton } from './AbstractButton';
 
 /**
  * @summary Navigation bar zoom button class
- * @extends module:components/buttons.AbstractButton
- * @memberof module:components/buttons
+ * @extends PSV.buttons.AbstractButton
+ * @memberof PSV.buttons
  */
-class PSVZoomRangeButton extends AbstractButton {
+export class ZoomRangeButton extends AbstractButton {
 
   static get id() {
     return 'zoomRange';
@@ -19,7 +19,7 @@ class PSVZoomRangeButton extends AbstractButton {
   }
 
   /**
-   * @param {module:components.PSVNavbar} navbar
+   * @param {PSV.components.Navbar} navbar
    */
   constructor(navbar) {
     super(navbar, 'psv-zoom-range');
@@ -230,5 +230,3 @@ class PSVZoomRangeButton extends AbstractButton {
   }
 
 }
-
-export { PSVZoomRangeButton };

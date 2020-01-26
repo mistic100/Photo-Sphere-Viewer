@@ -5,8 +5,8 @@ const HTML_MARKER_DATA = 'data-' + dasherize(MARKER_DATA);
 
 /**
  * @summary Markers list template
- * @param {PSVMarker[]} markers
- * @param {PhotoSphereViewer} psv
+ * @param {PSV.Marker[]} markers
+ * @param {PSV.Viewer} psv
  * @returns {string}
  */
 export default (markers, psv) => `

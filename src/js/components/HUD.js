@@ -1,34 +1,34 @@
 import * as THREE from 'three';
 import { EVENTS, IDS, MARKER_DATA, SPHERE_RADIUS, SVG_NS } from '../data/constants';
 import { PSVError } from '../PSVError';
-import { PSVMarker } from '../PSVMarker';
+import { Marker } from '../Marker';
 import { addClasses, each, getClosest, hasParent, removeClasses, toggleClass } from '../utils';
 import { AbstractComponent } from './AbstractComponent';
 
 /**
  * @summary HUD class
- * @extends module:components.AbstractComponent
- * @memberof module:components
+ * @extends PSV.components.AbstractComponent
+ * @memberof PSV.components
  */
-class PSVHUD extends AbstractComponent {
+export class HUD extends AbstractComponent {
 
   /**
-   * @param {PhotoSphereViewer} psv
+   * @param {PSV.Viewer} psv
    */
   constructor(psv) {
     super(psv, 'psv-hud');
 
     /**
      * @summary All registered markers
-     * @member {Object<string, PSVMarker>}
+     * @member {Object<string, PSV.Marker>}
      * @readonly
      */
     this.markers = {};
 
     /**
      * @override
-     * @property {PSVMarker} currentMarker - Last selected marker
-     * @property {PSVMarker} hoveringMarker - Marker under the cursor
+     * @property {PSV.Marker} currentMarker - Last selected marker
+     * @property {PSV.Marker} hoveringMarker - Marker under the cursor
      */
     this.prop = {
       ...this.prop,
@@ -101,7 +101,7 @@ class PSVHUD extends AbstractComponent {
 
   /**
    * @override
-   * @fires module:components.PSVHUD.show-hud
+   * @fires PSV.show-hud
    */
   show() {
     this.prop.visible = true;
@@ -110,7 +110,7 @@ class PSVHUD extends AbstractComponent {
 
     /**
      * @event show-hud
-     * @memberof module:components.PSVHUD
+     * @memberof PSV
      * @summary Triggered when the HUD is shown
      */
     this.psv.trigger(EVENTS.SHOW_HUD);
@@ -118,7 +118,7 @@ class PSVHUD extends AbstractComponent {
 
   /**
    * @override
-   * @fires module:components.PSVHUD.hide-hud
+   * @fires PSV.hide-hud
    */
   hide() {
     this.prop.visible = false;
@@ -127,7 +127,7 @@ class PSVHUD extends AbstractComponent {
 
     /**
      * @event hide-hud
-     * @memberof module:components.PSVHUD
+     * @memberof PSV
      * @summary Triggered when the HUD is hidden
      */
     this.psv.trigger(EVENTS.HIDE_HUD);
@@ -167,17 +167,17 @@ class PSVHUD extends AbstractComponent {
 
   /**
    * @summary Adds a new marker to viewer
-   * @param {PSVMarker.Properties} properties
+   * @param {PSV.Marker.Properties} properties
    * @param {boolean} [render=true] - renders the marker immediately
-   * @returns {PSVMarker}
-   * @throws {PSVError} when the marker's id is missing or already exists
+   * @returns {PSV.Marker}
+   * @throws {PSV.PSVError} when the marker's id is missing or already exists
    */
   addMarker(properties, render = true) {
     if (this.markers[properties.id]) {
       throw new PSVError(`marker "${properties.id}" already exists`);
     }
 
-    const marker = new PSVMarker(properties, this.psv);
+    const marker = new Marker(properties, this.psv);
 
     if (marker.isNormal()) {
       this.container.appendChild(marker.$el);
@@ -199,8 +199,8 @@ class PSVHUD extends AbstractComponent {
   /**
    * @summary Returns the internal marker object for a marker id
    * @param {*} markerId
-   * @returns {PSVMarker}
-   * @throws {PSVError} when the marker cannot be found
+   * @returns {PSV.Marker}
+   * @throws {PSV.PSVError} when the marker cannot be found
    */
   getMarker(markerId) {
     const id = typeof markerId === 'object' ? markerId.id : markerId;
@@ -214,7 +214,7 @@ class PSVHUD extends AbstractComponent {
 
   /**
    * @summary Returns the last marker selected by the user
-   * @returns {PSVMarker}
+   * @returns {PSV.Marker}
    */
   getCurrentMarker() {
     return this.prop.currentMarker;
@@ -223,9 +223,9 @@ class PSVHUD extends AbstractComponent {
   /**
    * @summary Updates the existing marker with the same id
    * @description Every property can be changed but you can't change its type (Eg: `image` to `html`).
-   * @param {PSVMarker.Properties|PSVMarker} properties
+   * @param {PSV.Marker.Properties|PSV.Marker} properties
    * @param {boolean} [render=true] - renders the marker immediately
-   * @returns {PSVMarker}
+   * @returns {PSV.Marker}
    */
   updateMarker(properties, render = true) {
     const marker = this.getMarker(properties);
@@ -304,9 +304,9 @@ class PSVHUD extends AbstractComponent {
   /**
    * @summary Rotate the view to face the marker
    * @param {*} markerOrId
-   * @param {string|number} [duration] - rotates smoothy, see {@link PhotoSphereViewer#animate}
-   * @fires module:components.PSVHUD.goto-marker-done
-   * @return {PSVAnimation}  A promise that will be resolved when the animation finishes
+   * @param {string|number} [duration] - rotates smoothy, see {@link PSV.Viewer#animate}
+   * @fires PSV.goto-marker-done
+   * @return {PSV.Animation}  A promise that will be resolved when the animation finishes
    */
   gotoMarker(markerOrId, duration) {
     const marker = this.getMarker(markerOrId);
@@ -315,9 +315,9 @@ class PSVHUD extends AbstractComponent {
       .then(() => {
         /**
          * @event goto-marker-done
-         * @memberof module:components.PSVHUD
+         * @memberof PSV
          * @summary Triggered when the animation to a marker is done
-         * @param {PSVMarker} marker
+         * @param {PSV.Marker} marker
          */
         this.psv.trigger(EVENTS.GOTO_MARKER_DONE, marker);
       });
@@ -423,8 +423,8 @@ class PSVHUD extends AbstractComponent {
   /**
    * @summary Determines if a point marker is visible<br>
    * It tests if the point is in the general direction of the camera, then check if it's in the viewport
-   * @param {PSVMarker} marker
-   * @param {PhotoSphereViewer.Point} position
+   * @param {PSV.Marker} marker
+   * @param {PSV.Point} position
    * @returns {boolean}
    * @private
    */
@@ -440,7 +440,7 @@ class PSVHUD extends AbstractComponent {
    * @summary Computes the real size of a marker
    * @description This is done by removing all it's transformations (if any) and making it visible
    * before querying its bounding rect
-   * @param {PSVMarker} marker
+   * @param {PSV.Marker} marker
    * @private
    */
   __updateMarkerSize(marker) {
@@ -477,9 +477,9 @@ class PSVHUD extends AbstractComponent {
 
   /**
    * @summary Computes HUD coordinates of a marker
-   * @param {PSVMarker} marker
+   * @param {PSV.Marker} marker
    * @param {number} [scale=1]
-   * @returns {PhotoSphereViewer.Point}
+   * @returns {PSV.Point}
    * @private
    */
   __getMarkerPosition(marker, scale = 1) {
@@ -499,8 +499,8 @@ class PSVHUD extends AbstractComponent {
   /**
    * @summary Computes HUD coordinates of each point of a polygon/polyline<br>
    * It handles points behind the camera by creating intermediary points suitable for the projector
-   * @param {PSVMarker} marker
-   * @returns {PhotoSphereViewer.Point[]}
+   * @param {PSV.Marker} marker
+   * @returns {PSV.Point[]}
    * @private
    */
   __getPolyPositions(marker) {
@@ -575,7 +575,7 @@ class PSVHUD extends AbstractComponent {
    * @summary Returns the marker associated to an event target
    * @param {EventTarget} target
    * @param {boolean} [closest=false]
-   * @returns {PSVMarker}
+   * @returns {PSV.Marker}
    * @private
    */
   __getTargetMarker(target, closest = false) {
@@ -586,7 +586,7 @@ class PSVHUD extends AbstractComponent {
   /**
    * @summary Checks if an event target is in the tooltip
    * @param {EventTarget} target
-   * @param {module:components.PSVTooltip} tooltip
+   * @param {PSV.components.Tooltip} tooltip
    * @returns {boolean}
    * @private
    */
@@ -597,7 +597,7 @@ class PSVHUD extends AbstractComponent {
   /**
    * @summary Handles mouse enter events, show the tooltip for non polygon markers
    * @param {MouseEvent} e
-   * @fires module:components.PSVHUD.over-marker
+   * @fires PSV.over-marker
    * @private
    */
   __onMouseEnter(e) {
@@ -608,9 +608,9 @@ class PSVHUD extends AbstractComponent {
 
       /**
        * @event over-marker
-       * @memberof module:components.PSVHUD
+       * @memberof PSV
        * @summary Triggered when the user puts the cursor hover a marker
-       * @param {PSVMarker} marker
+       * @param {PSV.Marker} marker
        */
       this.psv.trigger(EVENTS.OVER_MARKER, marker);
 
@@ -623,7 +623,7 @@ class PSVHUD extends AbstractComponent {
   /**
    * @summary Handles mouse leave events, hide the tooltip
    * @param {MouseEvent} e
-   * @fires module:components.PSVHUD.leave-marker
+   * @fires PSV.leave-marker
    * @private
    */
   __onMouseLeave(e) {
@@ -633,9 +633,9 @@ class PSVHUD extends AbstractComponent {
     if (marker && !(marker.isPoly() && this.__targetOnTooltip(e.relatedTarget, marker.tooltip))) {
       /**
        * @event leave-marker
-       * @memberof module:components.PSVHUD
+       * @memberof PSV
        * @summary Triggered when the user puts the cursor away from a marker
-       * @param {PSVMarker} marker
+       * @param {PSV.Marker} marker
        */
       this.psv.trigger(EVENTS.LEAVE_MARKER, marker);
 
@@ -650,8 +650,8 @@ class PSVHUD extends AbstractComponent {
   /**
    * @summary Handles mouse move events, refresh the tooltip for polygon markers
    * @param {MouseEvent} e
-   * @fires module:components.PSVHUD.leave-marker
-   * @fires module:components.PSVHUD.over-marker
+   * @fires PSV.leave-marker
+   * @fires PSV.over-marker
    * @private
    */
   __onMouseMove(e) {
@@ -693,8 +693,8 @@ class PSVHUD extends AbstractComponent {
    * @param {Event} e
    * @param {Object} data
    * @param {boolean} dblclick
-   * @fires module:components.PSVHUD.select-marker
-   * @fires module:components.PSVHUD.unselect-marker
+   * @fires PSV.select-marker
+   * @fires PSV.unselect-marker
    * @private
    */
   __onClick(e, data, dblclick) {
@@ -705,10 +705,10 @@ class PSVHUD extends AbstractComponent {
 
       /**
        * @event select-marker
-       * @memberof module:components.PSVHUD
+       * @memberof PSV
        * @summary Triggered when the user clicks on a marker. The marker can be retrieved from outside the event handler
-       * with {@link module:components.PSVHUD.getCurrentMarker}
-       * @param {PSVMarker} marker
+       * with {@link PSV.components.HUD.getCurrentMarker}
+       * @param {PSV.Marker} marker
        * @param {boolean} dblclick - the simple click is always fired before the double click
        */
       this.psv.trigger(EVENTS.SELECT_MARKER, marker, dblclick);
@@ -724,9 +724,9 @@ class PSVHUD extends AbstractComponent {
     else if (this.prop.currentMarker) {
       /**
        * @event unselect-marker
-       * @memberof module:components.PSVHUD
+       * @memberof PSV
        * @summary Triggered when a marker was selected and the user clicks elsewhere
-       * @param {PSVMarker} marker
+       * @param {PSV.Marker} marker
        */
       this.psv.trigger(EVENTS.UNSELECT_MARKER, this.prop.currentMarker);
 
@@ -745,5 +745,3 @@ class PSVHUD extends AbstractComponent {
   }
 
 }
-
-export { PSVHUD };

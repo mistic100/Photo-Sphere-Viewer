@@ -1,12 +1,12 @@
-import { PSVCaptionButton } from '../buttons/PSVCaptionButton';
+import { CaptionButton } from '../buttons/CaptionButton';
 import { AbstractComponent } from './AbstractComponent';
 
 /**
  * @summary Navbar caption class
- * @extends module:components.AbstractComponent
- * @memberof module:components
+ * @extends PSV.components.AbstractComponent
+ * @memberof PSV.components
  */
-class PSVNavbarCaption extends AbstractComponent {
+export class NavbarCaption extends AbstractComponent {
 
   static get id() {
     return 'caption';
@@ -17,18 +17,18 @@ class PSVNavbarCaption extends AbstractComponent {
   }
 
   /**
-   * @param {module:components.PSVNavbar} navbar
+   * @param {PSV.components.Navbar} navbar
    * @param {string} caption
    */
   constructor(navbar, caption) {
     super(navbar, 'psv-caption');
 
     /**
-     * @member {module:components/buttons.PSVCaptionButton}
+     * @member {PSV.buttons.CaptionButton}
      * @readonly
      * @private
      */
-    this.button = new PSVCaptionButton(this);
+    this.button = new CaptionButton(this);
     this.button.hide();
 
     /**
@@ -110,5 +110,3 @@ class PSVNavbarCaption extends AbstractComponent {
   }
 
 }
-
-export { PSVNavbarCaption };

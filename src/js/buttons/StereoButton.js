@@ -4,10 +4,10 @@ import { AbstractButton } from './AbstractButton';
 
 /**
  * @summary Navigation bar gyroscope button class
- * @extends module:components/buttons.AbstractButton
- * @memberof module:components/buttons
+ * @extends PSV.buttons.AbstractButton
+ * @memberof PSV.buttons
  */
-class PSVStereoButton extends AbstractButton {
+export class StereoButton extends AbstractButton {
 
   static get id() {
     return 'stereo';
@@ -22,7 +22,7 @@ class PSVStereoButton extends AbstractButton {
   }
 
   /**
-   * @param {module:components.PSVNavbar} navbar
+   * @param {PSV.components.Navbar} navbar
    */
   constructor(navbar) {
     super(navbar, 'psv-button--hover-scale psv-stereo-button');
@@ -75,5 +75,3 @@ class PSVStereoButton extends AbstractButton {
   }
 
 }
-
-export { PSVStereoButton };

@@ -1,50 +1,67 @@
 import * as utils from './utils';
-import * as constants from './data/constants';
 import { DEFAULTS } from './data/config';
 import { TEMPLATES } from './data/templates';
 import { ICONS } from './data/icons';
 import { SYSTEM } from './data/system';
 import { PSVError } from './PSVError';
-import { PSVAnimation } from './PSVAnimation';
-import { PhotoSphereViewer } from './PhotoSphereViewer';
+import { Animation } from './Animation';
+import { Viewer } from './Viewer';
+import { ViewerCompat } from './ViewerCompat';
+
+export {
+  Animation,
+  DEFAULTS,
+  ICONS,
+  PSVError,
+  SYSTEM,
+  TEMPLATES,
+  Viewer,
+  ViewerCompat,
+  utils
+};
+
 
 /**
- * @typedef {Object} PhotoSphereViewer.Point
+ * @namespace PSV
+ */
+
+/**
+ * @typedef {Object} PSV.Point
  * @summary Object defining a point
  * @property {number} x
  * @property {number} y
  */
 
 /**
- * @typedef {Object} PhotoSphereViewer.Size
+ * @typedef {Object} PSV.Size
  * @summary Object defining a size
  * @property {number} width
  * @property {number} height
  */
 
 /**
- * @typedef {Object} PhotoSphereViewer.CssSize
+ * @typedef {Object} PSV.CssSize
  * @summary Object defining a size in CSS (px, % or auto)
  * @property {string} [width]
  * @property {string} [height]
  */
 
 /**
- * @typedef {Object} PhotoSphereViewer.SphereCorrection
+ * @typedef {Object} PSV.SphereCorrection
  * @property {number} pan
  * @property {number} tilt
  * @property {number} roll
  */
 
 /**
- * @typedef {Object} PhotoSphereViewer.Position
+ * @typedef {Object} PSV.Position
  * @summary Object defining a spherical position
  * @property {number} longitude
  * @property {number} latitude
  */
 
 /**
- * @typedef {PhotoSphereViewer.Position} PhotoSphereViewer.ExtendedPosition
+ * @typedef {PSV.Position} PSV.ExtendedPosition
  * @summary Object defining a spherical or texture position
  * @description A position that can be expressed either in spherical coordinates (radians or degrees) or in texture coordinates (pixels)
  * @property {number} [longitude]
@@ -54,35 +71,35 @@ import { PhotoSphereViewer } from './PhotoSphereViewer';
  */
 
 /**
- * @typedef {PhotoSphereViewer.ExtendedPosition} PhotoSphereViewer.AnimateOptions
+ * @typedef {PSV.ExtendedPosition} PSV.AnimateOptions
  * @summary Object defining animation options
  * @property {number} [zoom] - new zoom level between 0 and 100
  */
 
 /**
- * @typedef {PhotoSphereViewer.AnimateOptions} PhotoSphereViewer.PanoramaOptions
+ * @typedef {PSV.AnimateOptions} PSV.PanoramaOptions
  * @summary Object defining panorama and animation options
- * @property {PhotoSphereViewer.SphereCorrection} [sphereCorrection] - new sphere correction to apply to the panorama
+ * @property {PSV.SphereCorrection} [sphereCorrection] - new sphere correction to apply to the panorama
  * @property {boolean} [transition=true] - enable transition between all and new panorama
  */
 
 /**
- * @typedef {Object} PhotoSphereViewer.CacheItem
+ * @typedef {Object} PSV.CacheItem
  * @summary An entry in the memory cache
  * @property {string} panorama
  * @property {external:THREE.Texture} image
- * @property {PhotoSphereViewer.PanoData} panoData
+ * @property {PSV.PanoData} panoData
  */
 
 /**
- * @typedef {Object} PhotoSphereViewer.TextureData
- * @summary Result of the {@link PSVTextureLoader#loadTexture} method
+ * @typedef {Object} PSV.TextureData
+ * @summary Result of the {@link PSV.TextureLoader#loadTexture} method
  * @property {external:THREE.Texture|external:THREE.Texture[]} texture
- * @property {PhotoSphereViewer.PanoData} [panoData]
+ * @property {PSV.PanoData} [panoData]
  */
 
 /**
- * @typedef {Object} PhotoSphereViewer.PanoData
+ * @typedef {Object} PSV.PanoData
  * @summary Crop information of the panorama
  * @property {number} fullWidth
  * @property {number} fullHeight
@@ -93,7 +110,7 @@ import { PhotoSphereViewer } from './PhotoSphereViewer';
  */
 
 /**
- * @typedef {Object} PhotoSphereViewer.ClickData
+ * @typedef {Object} PSV.ClickData
  * @summary Data of the `click` event
  * @property {number} clientX - position in the browser window
  * @property {number} clientY - position in the browser window
@@ -103,11 +120,11 @@ import { PhotoSphereViewer } from './PhotoSphereViewer';
  * @property {number} latitude - position in spherical coordinates
  * @property {number} textureX - position on the texture
  * @property {number} textureY - position on the texture
- * @property {PSVMarker} [marker] - clicked marker
+ * @property {PSV.Marker} [marker] - clicked marker
  */
 
 /**
- * @typedef {Object} PhotoSphereViewer.Options
+ * @typedef {Object} PSV.Options
  * @summary Viewer options, see {@link http://photo-sphere-viewer.js.org/#options}
  */
 
@@ -180,14 +197,3 @@ import { PhotoSphereViewer } from './PhotoSphereViewer';
  * @typedef {Object} external:uEvent.EventEmitter
  * @description {@link https://github.com/mistic100/uEvent#api}
  */
-
-PhotoSphereViewer.Utils = utils;
-PhotoSphereViewer.CONSTANTS = constants;
-PhotoSphereViewer.DEFAULTS = DEFAULTS;
-PhotoSphereViewer.TEMPLATES = TEMPLATES;
-PhotoSphereViewer.ICONS = ICONS;
-PhotoSphereViewer.SYSTEM = SYSTEM;
-PhotoSphereViewer.PSVError = PSVError;
-PhotoSphereViewer.PSVAnimation = PSVAnimation;
-
-export default PhotoSphereViewer;

@@ -4,10 +4,10 @@ import menu from '../../templates/menu';
 /**
  * @summary Default templates
  * @type {Object<string, Function>}
+ * @memberOf PSV
  * @constant
- * @memberOf module:data/config
  */
-const TEMPLATES = {
+export const TEMPLATES = {
   markersList,
   menu,
 };
@@ -16,9 +16,10 @@ const TEMPLATES = {
  * @summary Crrate template functions from config
  * @param {Object<string, Function>} options
  * @returns {Object<string, Function>}
- * @memberOf module:data/config
+ * @memberOf PSV
+ * @private
  */
-function getTemplates(options) {
+export function getTemplates(options) {
   const templates = {};
 
   Object.keys(TEMPLATES).forEach((name) => {
@@ -32,5 +33,3 @@ function getTemplates(options) {
 
   return templates;
 }
-
-export { TEMPLATES, getTemplates };

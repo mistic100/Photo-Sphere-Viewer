@@ -2,10 +2,10 @@ import { AbstractZoomButton } from './AbstractZoomButton';
 
 /**
  * @summary Navigation bar zoom-out button class
- * @extends module:components/buttons.AbstractZoomButton
- * @memberof module:components/buttons
+ * @extends PSV.buttons.AbstractZoomButton
+ * @memberof PSV.buttons
  */
-class PSVZoomOutButton extends AbstractZoomButton {
+export class ZoomOutButton extends AbstractZoomButton {
 
   static get id() {
     return 'zoomOut';
@@ -16,12 +16,10 @@ class PSVZoomOutButton extends AbstractZoomButton {
   }
 
   /**
-   * @param {module:components.PSVNavbar} navbar
+   * @param {PSV.components.Navbar} navbar
    */
   constructor(navbar) {
     super(navbar, () => navbar.psv.zoomOut());
   }
 
 }
-
-export { PSVZoomOutButton };

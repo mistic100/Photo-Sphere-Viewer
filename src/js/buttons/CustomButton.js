@@ -3,17 +3,17 @@ import { AbstractButton } from './AbstractButton';
 
 /**
  * @summary Navigation bar custom button class
- * @extends module:components/buttons.AbstractButton
- * @memberof module:components/buttons
+ * @extends PSV.buttons.AbstractButton
+ * @memberof PSV.buttons
  */
-class PSVCustomButton extends AbstractButton {
+export class CustomButton extends AbstractButton {
 
   get collapsable() {
     return this.config.collapsable !== false;
   }
 
   /**
-   * @param {module:components.PSVNavbar} navbar
+   * @param {PSV.components.Navbar} navbar
    * @param {Object} config
    * @param {string} [config.id]
    * @param {string} [config.className]
@@ -83,5 +83,3 @@ class PSVCustomButton extends AbstractButton {
   }
 
 }
-
-export { PSVCustomButton };

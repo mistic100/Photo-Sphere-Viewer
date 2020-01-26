@@ -3,10 +3,10 @@ import { EVENTS } from '../data/constants';
 
 /**
  * @summary Navigation bar caption button class
- * @extends module:components/buttons.AbstractButton
- * @memberof module:components/buttons
+ * @extends PSV.buttons.AbstractButton
+ * @memberof PSV.buttons
  */
-class PSVCaptionButton extends AbstractButton {
+export class CaptionButton extends AbstractButton {
 
   static get id() {
     return 'caption';
@@ -21,7 +21,7 @@ class PSVCaptionButton extends AbstractButton {
   }
 
   /**
-   * @param {module:components.PSVNavbarCaption} caption
+   * @param {PSV.components.NavbarCaption} caption
    */
   constructor(caption) {
     super(caption, 'psv-button--hover-scale psv-caption-button');
@@ -68,5 +68,3 @@ class PSVCaptionButton extends AbstractButton {
   }
 
 }
-
-export { PSVCaptionButton };

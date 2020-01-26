@@ -1,8 +1,4 @@
 /**
- * @module data/constants
- */
-
-/**
  * @summary Namespace for SVG creation
  * @type {string}
  * @constant

@@ -1,28 +1,28 @@
 /**
- * @module services
+ * @namespace PSV.services
  */
 
 /**
  * @summary Base services class
- * @memberof module:services
+ * @memberof PSV.services
  * @abstract
  */
-class AbstractService {
+export class AbstractService {
 
   /**
-   * @param {PhotoSphereViewer} psv
+   * @param {PSV.Viewer} psv
    */
   constructor(psv) {
     /**
      * @summary Reference to main controller
-     * @type {PhotoSphereViewer}
+     * @type {PSV.Viewer}
      * @readonly
      */
     this.psv = psv;
 
     /**
      * @summary Configuration holder
-     * @type {PhotoSphereViewer.Options}
+     * @type {PSV.Options}
      * @readonly
      */
     this.config = psv.config;
@@ -45,5 +45,3 @@ class AbstractService {
   }
 
 }
-
-export { AbstractService };

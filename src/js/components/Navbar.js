@@ -1,31 +1,31 @@
-import { PSVAutorotateButton } from '../buttons/PSVAutorotateButton';
-import { PSVCustomButton } from '../buttons/PSVCustomButton';
-import { PSVDownloadButton } from '../buttons/PSVDownloadButton';
-import { PSVFullscreenButton } from '../buttons/PSVFullscreenButton';
-import { PSVGyroscopeButton } from '../buttons/PSVGyroscopeButton';
-import { PSVMarkersButton } from '../buttons/PSVMarkersButton';
-import { PSVMarkersListButton } from '../buttons/PSVMarkersListButton';
-import { PSVMenuButton } from '../buttons/PSVMenuButton';
-import { PSVStereoButton } from '../buttons/PSVStereoButton';
-import { PSVZoomInButton } from '../buttons/PSVZoomInButton';
-import { PSVZoomOutButton } from '../buttons/PSVZoomOutButton';
-import { PSVZoomRangeButton } from '../buttons/PSVZoomRangeButton';
+import { AutorotateButton } from '../buttons/AutorotateButton';
+import { CustomButton } from '../buttons/CustomButton';
+import { DownloadButton } from '../buttons/DownloadButton';
+import { FullscreenButton } from '../buttons/FullscreenButton';
+import { GyroscopeButton } from '../buttons/GyroscopeButton';
+import { MarkersButton } from '../buttons/MarkersButton';
+import { MarkersListButton } from '../buttons/MarkersListButton';
+import { MenuButton } from '../buttons/MenuButton';
+import { StereoButton } from '../buttons/StereoButton';
+import { ZoomInButton } from '../buttons/ZoomInButton';
+import { ZoomOutButton } from '../buttons/ZoomOutButton';
+import { ZoomRangeButton } from '../buttons/ZoomRangeButton';
 import { PSVError } from '../PSVError';
 import { logWarn } from '../utils';
 import { AbstractComponent } from './AbstractComponent';
-import { PSVNavbarCaption } from './PSVNavbarCaption';
+import { NavbarCaption } from './NavbarCaption';
 
 const STANDARD_BUTTONS = [
-  PSVAutorotateButton,
-  PSVZoomInButton,
-  PSVZoomRangeButton,
-  PSVZoomOutButton,
-  PSVDownloadButton,
-  PSVMarkersButton,
-  PSVMarkersListButton,
-  PSVFullscreenButton,
-  PSVStereoButton,
-  PSVGyroscopeButton,
+  AutorotateButton,
+  ZoomInButton,
+  ZoomRangeButton,
+  ZoomOutButton,
+  DownloadButton,
+  MarkersButton,
+  MarkersListButton,
+  FullscreenButton,
+  StereoButton,
+  GyroscopeButton,
 ];
 
 const STANDARD_BUTTONS_BY_ID = STANDARD_BUTTONS.reduce((map, item) => {
@@ -35,27 +35,27 @@ const STANDARD_BUTTONS_BY_ID = STANDARD_BUTTONS.reduce((map, item) => {
 
 /**
  * @summary Navigation bar class
- * @extends module:components.AbstractComponent
- * @memberof module:components
+ * @extends PSV.components.AbstractComponent
+ * @memberof PSV.components
  */
-class PSVNavbar extends AbstractComponent {
+export class Navbar extends AbstractComponent {
 
   /**
-   * @param {PhotoSphereViewer} psv
+   * @param {PSV.Viewer} psv
    */
   constructor(psv) {
     super(psv, 'psv-navbar');
 
     /**
      * @summary List of buttons of the navbar
-     * @member {module:components/buttons.AbstractButton[]}
+     * @member {PSV.buttons.AbstractButton[]}
      * @override
      */
     this.children = [];
 
     /**
      * @summary List of collapsed buttons
-     * @member {module:components/buttons.AbstractButton[]}
+     * @member {PSV.buttons.AbstractButton[]}
      * @private
      */
     this.collapsed = [];
@@ -76,25 +76,25 @@ class PSVNavbar extends AbstractComponent {
     /* eslint-disable no-new */
     buttons.forEach((button) => {
       if (typeof button === 'object') {
-        new PSVCustomButton(this, button);
+        new CustomButton(this, button);
       }
       else if (STANDARD_BUTTONS_BY_ID[button]) {
         new STANDARD_BUTTONS_BY_ID[button](this);
       }
       else if (button === 'caption') {
-        new PSVNavbarCaption(this, this.psv.config.caption);
+        new NavbarCaption(this, this.psv.config.caption);
       }
       else if (button === 'zoom') {
-        new PSVZoomOutButton(this);
-        new PSVZoomRangeButton(this);
-        new PSVZoomInButton(this);
+        new ZoomOutButton(this);
+        new ZoomRangeButton(this);
+        new ZoomInButton(this);
       }
       else {
         throw new PSVError('Unknown button ' + button);
       }
     });
 
-    new PSVMenuButton(this);
+    new MenuButton(this);
     /* eslint-enable no-new */
   }
 
@@ -116,7 +116,7 @@ class PSVNavbar extends AbstractComponent {
    * @summary Returns a button by its identifier
    * @param {string} id
    * @param {boolean} [warnNotFound=true]
-   * @returns {module:components/buttons.AbstractButton}
+   * @returns {PSV.buttons.AbstractButton}
    */
   getButton(id, warnNotFound = true) {
     let button = null;
@@ -185,16 +185,16 @@ class PSVNavbar extends AbstractComponent {
         collapsableButtons.forEach(item => item.collapse());
         this.collapsed = collapsableButtons;
 
-        this.getButton(PSVMenuButton.id).show(false);
+        this.getButton(MenuButton.id).show(false);
       }
       else if (availableWidth >= totalWidth && this.collapsed.length > 0) {
         this.collapsed.forEach(item => item.uncollapse());
         this.collapsed = [];
 
-        this.getButton(PSVMenuButton.id).hide(false);
+        this.getButton(MenuButton.id).hide(false);
       }
 
-      const caption = this.getButton(PSVNavbarCaption.id, false);
+      const caption = this.getButton(NavbarCaption.id, false);
       if (caption) {
         caption.refresh();
       }
@@ -202,5 +202,3 @@ class PSVNavbar extends AbstractComponent {
   }
 
 }
-
-export { PSVNavbar };

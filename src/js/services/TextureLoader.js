@@ -8,19 +8,19 @@ import { AbstractService } from './AbstractService';
 
 /**
  * @summary Texture loader
- * @extends module:services.AbstractService
- * @memberof module:services
+ * @extends PSV.services.AbstractService
+ * @memberof PSV.services
  */
-class PSVTextureLoader extends AbstractService {
+export class TextureLoader extends AbstractService {
 
   /**
-   * @param {PhotoSphereViewer} psv
+   * @param {PSV.Viewer} psv
    */
   constructor(psv) {
     super(psv);
 
     /**
-     * @member {PhotoSphereViewer.CacheItem[]}
+     * @member {PSV.CacheItem[]}
      * @protected
      */
     this.cache = [];
@@ -38,9 +38,9 @@ class PSVTextureLoader extends AbstractService {
   /**
    * @summary Loads the panorama texture(s)
    * @param {string|string[]} panorama
-   * @returns {Promise.<PhotoSphereViewer.TextureData>}
-   * @fires module:services.PSVTextureLoader.panorama-load-progress
-   * @throws {PSVError} when the image cannot be loaded
+   * @returns {Promise.<PSV.TextureData>}
+   * @fires PSV.panorama-load-progress
+   * @throws {PSV.PSVError} when the image cannot be loaded
    * @package
    */
   loadTexture(panorama) {
@@ -78,9 +78,9 @@ class PSVTextureLoader extends AbstractService {
   /**
    * @summary Loads the sphere texture
    * @param {string} panorama
-   * @returns {Promise.<PhotoSphereViewer.TextureData>}
-   * @fires module:services.PSVTextureLoader.panorama-load-progress
-   * @throws {PSVError} when the image cannot be loaded
+   * @returns {Promise.<PSV.TextureData>}
+   * @fires PSV.panorama-load-progress
+   * @throws {PSV.PSVError} when the image cannot be loaded
    * @private
    */
   __loadEquirectangularTexture(panorama) {
@@ -120,7 +120,7 @@ class PSVTextureLoader extends AbstractService {
 
           /**
            * @event panorama-load-progress
-           * @memberof module:services.PSVTextureLoader
+           * @memberof PSV
            * @summary Triggered while a panorama image is loading
            * @param {string} panorama
            * @param {number} progress
@@ -216,9 +216,9 @@ class PSVTextureLoader extends AbstractService {
   /**
    * @summary Load the six textures of the cube
    * @param {string[]} panorama
-   * @returns {Promise.<PhotoSphereViewer.TextureData>}
-   * @fires module:services.PSVTextureLoader.panorama-load-progress
-   * @throws {PSVError} when the image cannot be loaded
+   * @returns {Promise.<PSV.TextureData>}
+   * @fires PSV.panorama-load-progress
+   * @throws {PSV.PSVError} when the image cannot be loaded
    * @private
    */
   __loadCubemapTexture(panorama) {
@@ -337,8 +337,8 @@ class PSVTextureLoader extends AbstractService {
   /**
    * @summary Loads the XMP data with AJAX
    * @param {string} panorama
-   * @returns {Promise.<PhotoSphereViewer.PanoData>}
-   * @throws {PSVError} when the image cannot be loaded
+   * @returns {Promise.<PSV.PanoData>}
+   * @throws {PSV.PSVError} when the image cannot be loaded
    * @private
    */
   __loadXMP(panorama) {
@@ -417,7 +417,7 @@ class PSVTextureLoader extends AbstractService {
    * @summary Preload a panorama file without displaying it
    * @param {string} panorama
    * @returns {Promise}
-   * @throws {PSVError} when the cache is disabled
+   * @throws {PSV.PSVError} when the cache is disabled
    */
   preloadPanorama(panorama) {
     if (!this.config.cacheTexture) {
@@ -430,7 +430,7 @@ class PSVTextureLoader extends AbstractService {
   /**
    * @summary Removes a panorama from the cache or clears the entire cache
    * @param {string} [panorama]
-   * @throws {PSVError} when the cache is disabled
+   * @throws {PSV.PSVError} when the cache is disabled
    */
   clearPanoramaCache(panorama) {
     if (!this.config.cacheTexture) {
@@ -453,8 +453,8 @@ class PSVTextureLoader extends AbstractService {
   /**
    * @summary Retrieves the cache for a panorama
    * @param {string} panorama
-   * @returns {PhotoSphereViewer.CacheItem}
-   * @throws {PSVError} when the cache is disabled
+   * @returns {PSV.CacheItem}
+   * @throws {PSV.PSVError} when the cache is disabled
    */
   getPanoramaCache(panorama) {
     if (!this.config.cacheTexture) {
@@ -466,9 +466,9 @@ class PSVTextureLoader extends AbstractService {
 
   /**
    * @summary Adds a panorama to the cache
-   * @param {PhotoSphereViewer.CacheItem} cache
-   * @fires module:services.PSVTextureLoader.panorama-cached
-   * @throws {PSVError} when the cache is disabled
+   * @param {PSV.CacheItem} cache
+   * @fires PSV.panorama-cached
+   * @throws {PSV.PSVError} when the cache is disabled
    * @private
    */
   __putPanoramaCache(cache) {
@@ -489,7 +489,7 @@ class PSVTextureLoader extends AbstractService {
 
     /**
      * @event panorama-cached
-     * @memberof module:services.PSVTextureLoader
+     * @memberof PSV
      * @summary Triggered when a panorama is stored in the cache
      * @param {string} panorama
      */
@@ -497,5 +497,3 @@ class PSVTextureLoader extends AbstractService {
   }
 
 }
-
-export { PSVTextureLoader };

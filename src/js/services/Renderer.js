@@ -1,19 +1,19 @@
 import * as THREE from 'three';
 import { CUBE_VERTICES, EVENTS, SPHERE_RADIUS, SPHERE_VERTICES } from '../data/constants';
 import { SYSTEM } from '../data/system';
-import { PSVAnimation } from '../PSVAnimation';
+import { Animation } from '../Animation';
 import { cleanTHREEScene, getShortestArc, logWarn } from '../utils';
 import { AbstractService } from './AbstractService';
 
 /**
  * @summary Viewer and renderer
- * @extends module:services.AbstractService
- * @memberof module:services
+ * @extends PSV.services.AbstractService
+ * @memberof PSV.services
  */
-class PSVRenderer extends AbstractService {
+export class Renderer extends AbstractService {
 
   /**
-   * @param {PhotoSphereViewer} psv
+   * @param {PSV.Viewer} psv
    */
   constructor(psv) {
     super(psv);
@@ -142,13 +142,13 @@ class PSVRenderer extends AbstractService {
   /**
    * @summary Main event loop, calls {@link render} if `prop.needsUpdate` is true
    * @param {number} timestamp
-   * @fires module:services.PSVRenderer.before-render
+   * @fires PSV.before-render
    * @package
    */
   __renderLoop(timestamp) {
     /**
      * @event before-render
-     * @memberof module:services.PSVRenderer
+     * @memberof PSV
      * @summary Triggered before a render, used to modify the view
      * @param {number} timestamp - time provided by requestAnimationFrame
      */
@@ -165,8 +165,8 @@ class PSVRenderer extends AbstractService {
   /**
    * @summary Performs a render
    * @description Do not call this method directly, instead call
-   * {@link PhotoSphereViewer#needsUpdate} on {@link module:services.PSVRenderer.event:before-render}.
-   * @fires module:services.PSVRenderer.render
+   * {@link PSV.Viewer#needsUpdate} on {@link PSV.event:before-render}.
+   * @fires PSV.render
    */
   render() {
     this.prop.direction = this.psv.dataHelper.sphericalCoordsToVector3(this.prop.position);
@@ -185,7 +185,7 @@ class PSVRenderer extends AbstractService {
 
     /**
      * @event render
-     * @memberof module:services.PSVRenderer
+     * @memberof PSV
      * @summary Triggered on each viewer render, **this event is triggered very often**
      */
     this.psv.trigger(EVENTS.RENDER);
@@ -193,8 +193,8 @@ class PSVRenderer extends AbstractService {
 
   /**
    * @summary Applies the texture to the scene, creates the scene if needed
-   * @param {PhotoSphereViewer.TextureData} textureData
-   * @fires module:services.PSVRenderer.panorama-loaded
+   * @param {PSV.TextureData} textureData
+   * @fires PSV.panorama-loaded
    * @package
    */
   setTexture(textureData) {
@@ -224,7 +224,7 @@ class PSVRenderer extends AbstractService {
 
     /**
      * @event panorama-loaded
-     * @memberof module:services.PSVRenderer
+     * @memberof PSV
      * @summary Triggered when a panorama image has been loaded
      */
     this.psv.trigger(EVENTS.PANORAMA_LOADED);
@@ -232,7 +232,7 @@ class PSVRenderer extends AbstractService {
 
   /**
    * @summary Apply a SphereCorrection to a Mesh
-   * @param {PhotoSphereViewer.SphereCorrection} sphereCorrection
+   * @param {PSV.SphereCorrection} sphereCorrection
    * @param {external:THREE.Mesh} [mesh=this.mesh]
    * @package
    */
@@ -253,7 +253,7 @@ class PSVRenderer extends AbstractService {
   __createScene() {
     this.raycaster = new THREE.Raycaster();
 
-    this.renderer = this.config.webgl ? new THREE.WebGLRenderer() : new THREE.CanvasRenderer();
+    this.renderer = new THREE.WebGLRenderer();
     this.renderer.setSize(this.prop.size.width, this.prop.size.height);
     this.renderer.setPixelRatio(SYSTEM.pixelRatio);
 
@@ -304,8 +304,7 @@ class PSVRenderer extends AbstractService {
     const geometry = new THREE.SphereGeometry(SPHERE_RADIUS * scale, SPHERE_VERTICES, SPHERE_VERTICES, -Math.PI / 2);
 
     const material = new THREE.MeshBasicMaterial({
-      side    : THREE.DoubleSide, // needs to be DoubleSide for CanvasRenderer
-      overdraw: this.config.webgl ? 0 : 1,
+      side: THREE.DoubleSide, // TODO needed for CanvasRenderer, can it be removed ?
     });
 
     const mesh = new THREE.Mesh(geometry, material);
@@ -327,8 +326,7 @@ class PSVRenderer extends AbstractService {
     const materials = [];
     for (let i = 0; i < 6; i++) {
       materials.push(new THREE.MeshBasicMaterial({
-        side    : THREE.BackSide,
-        overdraw: this.config.webgl ? 0 : 1,
+        side: THREE.BackSide,
       }));
     }
 
@@ -340,9 +338,9 @@ class PSVRenderer extends AbstractService {
 
   /**
    * @summary Performs transition between the current and a new texture
-   * @param {PhotoSphereViewer.TextureData} textureData
-   * @param {PhotoSphereViewer.PanoramaOptions} options
-   * @returns {PSVAnimation}
+   * @param {PSV.TextureData} textureData
+   * @param {PSV.PanoramaOptions} options
+   * @returns {PSV.Animation}
    * @package
    */
   transition(textureData, options) {
@@ -402,7 +400,7 @@ class PSVRenderer extends AbstractService {
     this.scene.add(mesh);
     this.psv.needsUpdate();
 
-    return new PSVAnimation({
+    return new Animation({
       properties: {
         opacity: { start: 0.0, end: 1.0 },
         zoom   : zoomProvided ? { start: this.prop.zoomLvl, end: options.zoom } : undefined,
@@ -461,7 +459,7 @@ class PSVRenderer extends AbstractService {
     const range = this.config.longitudeRange;
     this.config.longitudeRange = null;
 
-    new PSVAnimation({
+    new Animation({
       properties: {
         speed: { start: this.config.autorotateSpeed, end: 0 },
       },
@@ -471,7 +469,7 @@ class PSVRenderer extends AbstractService {
         this.config.autorotateSpeed = properties.speed;
       },
     })
-      .then(() => new PSVAnimation({
+      .then(() => new Animation({
         properties: {
           speed: { start: 0, end: newSpeed },
         },
@@ -542,5 +540,3 @@ class PSVRenderer extends AbstractService {
   }
 
 }
-
-export { PSVRenderer };

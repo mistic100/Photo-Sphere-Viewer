@@ -4,10 +4,10 @@ import { EVENTS } from '../data/constants';
 
 /**
  * @summary Navigation bar gyroscope button class
- * @extends module:components/buttons.AbstractButton
- * @memberof module:components/buttons
+ * @extends PSV.buttons.AbstractButton
+ * @memberof PSV.buttons
  */
-class PSVGyroscopeButton extends AbstractButton {
+export class GyroscopeButton extends AbstractButton {
 
   static get id() {
     return 'gyroscope';
@@ -22,7 +22,7 @@ class PSVGyroscopeButton extends AbstractButton {
   }
 
   /**
-   * @param {module:components.PSVNavbar} navbar
+   * @param {PSV.components.Navbar} navbar
    */
   constructor(navbar) {
     super(navbar, 'psv-button--hover-scale psv-gyroscope-button');
@@ -75,5 +75,3 @@ class PSVGyroscopeButton extends AbstractButton {
   }
 
 }
-
-export { PSVGyroscopeButton };

@@ -3,13 +3,13 @@ import { AbstractComponent } from './AbstractComponent';
 
 /**
  * @summary Notification class
- * @extends module:components.AbstractComponent
- * @memberof module:components
+ * @extends PSV.components.AbstractComponent
+ * @memberof PSV.components
  */
-class PSVNotification extends AbstractComponent {
+export class Notification extends AbstractComponent {
 
   /**
-   * @param {PhotoSphereViewer} psv
+   * @param {PSV.Viewer} psv
    */
   constructor(psv) {
     super(psv, 'psv-notification');
@@ -51,6 +51,7 @@ class PSVNotification extends AbstractComponent {
    * @param {Object|string} config
    * @param {string} config.content
    * @param {number} [config.timeout]
+   * @fires PSV.show-notification
    *
    * @example
    * viewer.showNotification({ content: 'Hello world', timeout: 5000 })
@@ -74,7 +75,7 @@ class PSVNotification extends AbstractComponent {
 
     /**
      * @event show-notification
-     * @memberof module:components.PSVNotification
+     * @memberof PSV
      * @summary Trigered when the notification is shown
      */
     this.psv.trigger(EVENTS.SHOW_NOTIFICATION);
@@ -86,7 +87,7 @@ class PSVNotification extends AbstractComponent {
 
   /**
    * @summary Hides the notification
-   * @fires module:components.PSVNotification.hide-notification
+   * @fires PSV.hide-notification
    */
   hide() {
     if (this.prop.visible) {
@@ -96,7 +97,7 @@ class PSVNotification extends AbstractComponent {
 
       /**
        * @event hide-notification
-       * @memberof module:components.PSVNotification
+       * @memberof PSV
        * @summary Trigered when the notification is hidden
        */
       this.psv.trigger(EVENTS.HIDE_NOTIFICATION);
@@ -104,5 +105,3 @@ class PSVNotification extends AbstractComponent {
   }
 
 }
-
-export { PSVNotification };

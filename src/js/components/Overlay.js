@@ -4,13 +4,13 @@ import { PSVError } from '../PSVError';
 
 /**
  * @summary Overlay class
- * @extends module:components.AbstractComponent
- * @memberof module:components
+ * @extends PSV.components.AbstractComponent
+ * @memberof PSV.components
  */
-class PSVOverlay extends AbstractComponent {
+export class Overlay extends AbstractComponent {
 
   /**
-   * @param {PhotoSphereViewer} psv
+   * @param {PSV.Viewer} psv
    */
   constructor(psv) {
     super(psv, 'psv-overlay');
@@ -81,7 +81,7 @@ class PSVOverlay extends AbstractComponent {
    * @override
    */
   toggle() {
-    throw new PSVError('PSVOverlay cannot be toggled');
+    throw new PSVError('Overlay cannot be toggled');
   }
 
   /**
@@ -92,6 +92,7 @@ class PSVOverlay extends AbstractComponent {
    * @param {string} config.text
    * @param {string} [config.subtext]
    * @param {boolean} [config.dissmisable=true]
+   * @fires PSV.show-overlay
    *
    * @example
    * viewer.showOverlay({
@@ -115,7 +116,7 @@ class PSVOverlay extends AbstractComponent {
 
     /**
      * @event show-overlay
-     * @memberof module:components.PSVOverlay
+     * @memberof PSV
      * @summary Trigered when the overlay is shown
      * @param {string} id
      */
@@ -123,9 +124,9 @@ class PSVOverlay extends AbstractComponent {
   }
 
   /**
-   * @summary Hides the notification
+   * @summary Hides the overlay
    * @param {string} [id]
-   * @fires module:components.PSVOverlay.hide-notification
+   * @fires PSV.hide-overlay
    */
   hide(id) {
     if (this.isVisible() && (!id || !this.prop.contentId || this.prop.contentId === id)) {
@@ -135,7 +136,7 @@ class PSVOverlay extends AbstractComponent {
 
       /**
        * @event hide-overlay
-       * @memberof module:components.PSVOverlay
+       * @memberof PSV
        * @summary Trigered when the overlay is hidden
        */
       this.psv.trigger(EVENTS.HIDE_OVERLAY);
@@ -143,5 +144,3 @@ class PSVOverlay extends AbstractComponent {
   }
 
 }
-
-export { PSVOverlay };

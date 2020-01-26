@@ -1,18 +1,18 @@
 import { ACTIONS, DBLCLICK_DELAY, EVENTS, IDS, INERTIA_WINDOW, MOVE_THRESHOLD } from '../data/constants';
 import { SYSTEM } from '../data/system';
-import { PSVAnimation } from '../PSVAnimation';
+import { Animation } from '../Animation';
 import { clone, distance, getClosest, getEventKey, isFullscreenEnabled, normalizeWheel, throttle } from '../utils';
 import { AbstractService } from './AbstractService';
 
 /**
  * @summary Events handler
- * @extends module:services.AbstractService
- * @memberof module:services
+ * @extends PSV.services.AbstractService
+ * @memberof PSV.services
  */
-class PSVEventsHandler extends AbstractService {
+export class EventsHandler extends AbstractService {
 
   /**
-   * @param {PhotoSphereViewer} psv
+   * @param {PSV.Viewer} psv
    */
   constructor(psv) {
     super(psv);
@@ -28,7 +28,7 @@ class PSVEventsHandler extends AbstractService {
      * @property {number} mouseY - current y position of the cursor
      * @property {number[][]} mouseHistory - list of latest positions of the cursor, [time, x, y]
      * @property {number} pinchDist - distance between fingers when zooming
-     * @property {PhotoSphereViewer.ClickData} dblclickData - temporary storage of click data between two clicks
+     * @property {PSV.ClickData} dblclickData - temporary storage of click data between two clicks
      * @property {number} dblclickTimeout - timeout id for double click
      * @protected
      */
@@ -47,7 +47,7 @@ class PSVEventsHandler extends AbstractService {
     };
 
     /**
-     * @summary Throttled wrapper of {@link PhotoSphereViewer#autoSize}
+     * @summary Throttled wrapper of {@link PSV.Viewer#autoSize}
      * @type {Function}
      * @private
      */
@@ -320,7 +320,7 @@ class PSVEventsHandler extends AbstractService {
 
   /**
    * @summary Handles fullscreen events
-   * @fires PhotoSphereViewer.fullscreen-updated
+   * @fires PSV.fullscreen-updated
    * @private
    */
   __fullscreenToggled() {
@@ -337,7 +337,7 @@ class PSVEventsHandler extends AbstractService {
 
     /**
      * @event fullscreen-updated
-     * @memberof PhotoSphereViewer
+     * @memberof PSV
      * @summary Triggered when the fullscreen mode is enabled/disabled
      * @param {boolean} enabled
      */
@@ -436,7 +436,7 @@ class PSVEventsHandler extends AbstractService {
 
     const norm = Math.sqrt(direction.x * direction.x + direction.y * direction.y);
 
-    this.prop.animationPromise = new PSVAnimation({
+    this.prop.animationPromise = new Animation({
       properties: {
         clientX: { start: evt.clientX, end: evt.clientX + direction.x },
         clientY: { start: evt.clientY, end: evt.clientY + direction.y },
@@ -455,8 +455,8 @@ class PSVEventsHandler extends AbstractService {
   /**
    * @summary Triggers an event with all coordinates when a simple click is performed
    * @param {MouseEvent|Touch} evt
-   * @fires PhotoSphereViewer.click
-   * @fires PhotoSphereViewer.dblclick
+   * @fires PSV.click
+   * @fires PSV.dblclick
    * @private
    */
   __click(evt) {
@@ -490,9 +490,9 @@ class PSVEventsHandler extends AbstractService {
       if (!this.state.dblclickTimeout) {
         /**
          * @event click
-         * @memberof PhotoSphereViewer
+         * @memberof PSV
          * @summary Triggered when the user clicks on the viewer (everywhere excluding the navbar and the side panel)
-         * @param {PhotoSphereViewer.ClickData} data
+         * @param {PSV.ClickData} data
          */
         this.psv.trigger(EVENTS.CLICK, data);
 
@@ -507,9 +507,9 @@ class PSVEventsHandler extends AbstractService {
           && Math.abs(this.state.dblclickData.clientY - data.clientY) < MOVE_THRESHOLD) {
           /**
            * @event dblclick
-           * @memberof PhotoSphereViewer
+           * @memberof PSV
            * @summary Triggered when the user double clicks on the viewer. The simple `click` event is always fired before `dblclick`
-           * @param {PhotoSphereViewer.ClickData} data
+           * @param {PSV.ClickData} data
            */
           this.psv.trigger(EVENTS.DOUBLE_CLICK, this.state.dblclickData);
         }
@@ -625,5 +625,3 @@ class PSVEventsHandler extends AbstractService {
   }
 
 }
-
-export { PSVEventsHandler };

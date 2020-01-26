@@ -3,18 +3,19 @@ import { each } from './utils';
 
 /**
  * @callback OnTick
- * @memberOf PSVAnimation
+ * @memberOf PSV.Animation
  * @param {Object[]} properties - current values
  * @param {float} progress - 0 to 1
  */
 
 /**
  * @summary Interpolation helper for animations
+ * @memberOf PSV
  * @description
  * Implements the Promise API with an additional "cancel" method.
  * The promise is resolved when the animation is complete and rejected if the animation is cancelled.
  * @example
- * new PSVAnimation({
+ * new Animation({
  *     properties: {
  *         width: {start: 100, end: 200}
  *     },
@@ -22,7 +23,7 @@ import { each } from './utils';
  *     onTick: (properties) => element.style.width = `${properties.width}px`;
  * })
  */
-class PSVAnimation {
+export class Animation {
 
   /**
    * @param {Object} options
@@ -32,7 +33,7 @@ class PSVAnimation {
    * @param {number} options.duration
    * @param {number} [options.delay=0]
    * @param {string} [options.easing='linear']
-   * @param {PSVAnimation.OnTick} options.onTick - called on each frame
+   * @param {PSV.Animation.OnTick} options.onTick - called on each frame
    */
   constructor(options) {
     this.__cancelled = false;
@@ -115,10 +116,10 @@ class PSVAnimation {
    * @summary Animation chaining
    * @param {Function} [onFulfilled] - Called when the animation is complete, can return a new animation
    * @param {Function} [onRejected] - Called when the animation is cancelled
-   * @returns {PSVAnimation}
+   * @returns {PSV.Animation}
    */
   then(onFulfilled = null, onRejected = null) {
-    const p = new PSVAnimation();
+    const p = new Animation();
 
     // Allow cancellation to climb up the promise chain
     p.__promise.then(null, () => this.cancel());
@@ -134,7 +135,7 @@ class PSVAnimation {
   /**
    * @summary Alias to `.then(null, onRejected)`
    * @param {Function} onRejected - Called when the animation has been cancelled
-   * @returns {PSVAnimation}
+   * @returns {PSV.Animation}
    */
   catch(onRejected) {
     return this.then(undefined, onRejected);
@@ -143,7 +144,7 @@ class PSVAnimation {
   /**
    * @summary Alias to `.then(onFinally, onFinally)`
    * @param {Function} onFinally - Called when the animation is either complete or cancelled
-   * @returns {PSVAnimation}
+   * @returns {PSV.Animation}
    */
   finally(onFinally) {
     return this.then(onFinally, onFinally);
@@ -166,7 +167,7 @@ class PSVAnimation {
 
   /**
    * @summary Returns a resolved animation promise
-   * @returns {PSVAnimation}
+   * @returns {PSV.Animation}
    */
   static resolve() {
     const p = Promise.resolve();
@@ -176,5 +177,3 @@ class PSVAnimation {
   }
 
 }
-
-export { PSVAnimation };

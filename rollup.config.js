@@ -1,4 +1,3 @@
-import alias from 'rollup-plugin-alias';
 import babel from 'rollup-plugin-babel';
 import { string } from 'rollup-plugin-string';
 
@@ -40,27 +39,6 @@ export default [
           'src/icons/*.svg'
         ]
       })
-    ]
-  },
-  {
-    input   : 'src/js/PhotoSphereViewerCompat.js',
-    output  : {
-      file   : 'dist/photo-sphere-viewer.compat.js',
-      name   : 'PhotoSphereViewerCompat',
-      format : 'umd',
-      globals: {
-        'photo-sphere-viewer': 'PhotoSphereViewer'
-      },
-      banner : banner
-    },
-    external: [
-      'photo-sphere-viewer'
-    ],
-    plugins : [
-      alias({
-        'photo-sphere-viewer': './src/js'
-      }),
-      babel(babelConfig)
     ]
   }
 ];

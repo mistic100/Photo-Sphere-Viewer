@@ -3,17 +3,17 @@ import { AbstractButton } from './AbstractButton';
 
 /**
  * @summary Navigation bar zoom button class
- * @extends module:components/buttons.AbstractButton
- * @memberof module:components/buttons
+ * @extends PSV.buttons.AbstractButton
+ * @memberof PSV.buttons
  */
-class AbstractZoomButton extends AbstractButton {
+export class AbstractZoomButton extends AbstractButton {
 
   get collapsable() {
     return false;
   }
 
   /**
-   * @param {module:components.PSVNavbar} navbar
+   * @param {PSV.components.Navbar} navbar
    * @param {Function} action
    */
   constructor(navbar, action) {
@@ -130,5 +130,3 @@ class AbstractZoomButton extends AbstractButton {
   }
 
 }
-
-export { AbstractZoomButton };

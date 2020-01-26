@@ -14,13 +14,13 @@ const PANEL_MIN_WIDTH = 200;
 
 /**
  * @summary Panel class
- * @extends module:components.AbstractComponent
- * @memberof module:components
+ * @extends PSV.components.AbstractComponent
+ * @memberof PSV.components
  */
-class PSVPanel extends AbstractComponent {
+export class Panel extends AbstractComponent {
 
   /**
-   * @param {PhotoSphereViewer} psv
+   * @param {PSV.Viewer} psv
    */
   constructor(psv) {
     super(psv, 'psv-panel');
@@ -128,7 +128,7 @@ class PSVPanel extends AbstractComponent {
    * @override
    */
   toggle() {
-    throw new PSVError('PSVPanel cannot be toggled');
+    throw new PSVError('Panel cannot be toggled');
   }
 
   /**
@@ -138,7 +138,7 @@ class PSVPanel extends AbstractComponent {
    * @param {string} config.content
    * @param {boolean} [config.noMargin=false]
    * @param {Function} [config.clickHandler]
-   * @fires module:components.PSVPanel.open-panel
+   * @fires PSV.open-panel
    */
   show(config) {
     if (typeof config === 'string') {
@@ -161,7 +161,7 @@ class PSVPanel extends AbstractComponent {
 
     /**
      * @event open-panel
-     * @memberof module:components.PSVPanel
+     * @memberof PSV
      * @summary Triggered when the panel is opened
      * @param {string} id
      */
@@ -171,7 +171,7 @@ class PSVPanel extends AbstractComponent {
   /**
    * @summary Hides the panel
    * @param {string} [id]
-   * @fires module:components.PSVPanel.close-panel
+   * @fires PSV.close-panel
    */
   hide(id) {
     if (this.prop.visible && (!id || !this.prop.contentId || this.prop.contentId === id)) {
@@ -188,7 +188,7 @@ class PSVPanel extends AbstractComponent {
 
       /**
        * @event close-panel
-       * @memberof module:components.PSVPanel
+       * @memberof PSV
        * @summary Trigered when the panel is closed
        */
       this.psv.trigger(EVENTS.CLOSE_PANEL);
@@ -279,5 +279,3 @@ class PSVPanel extends AbstractComponent {
   }
 
 }
-
-export { PSVPanel };

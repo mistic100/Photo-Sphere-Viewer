@@ -1,7 +1,3 @@
-/**
- * @module data/config
- */
-
 import { PSVError } from '../PSVError';
 import { bound, clone, deepmerge, isInteger, logWarn, parseAngle, parseSpeed } from '../utils';
 import { ACTIONS } from './constants';
@@ -9,11 +5,11 @@ import { SYSTEM } from './system';
 
 /**
  * @summary Default options
- * @type {PhotoSphereViewer.Options}
+ * @type {PSV.Options}
+ * @memberOf PSV
  * @constant
- * @memberOf module:data/config
  */
-const DEFAULTS = {
+export const DEFAULTS = {
   panorama           : null,
   container          : null,
   caption            : null,
@@ -47,7 +43,6 @@ const DEFAULTS = {
   mousemoveHover     : false,
   touchmoveTwoFingers: false,
   clickEventOnMarker : false,
-  webgl              : true,
   useXmpData         : true,
   panoData           : null,
   withCredentials    : false,
@@ -100,15 +95,14 @@ const DEFAULTS = {
 
 /**
  * @summary Merge and clean user config with default config
- * @param {PhotoSphereViewer.Options} options
- * @returns {PhotoSphereViewer.Options}
- * @memberOf module:data/config
+ * @param {PSV.Options} options
+ * @returns {PSV.Options}
+ * @memberOf PSV
+ * @private
  */
-function getConfig(options) {
+export function getConfig(options) {
   const config = clone(DEFAULTS);
   deepmerge(config, options);
-
-  config.webgl &= SYSTEM.isWebGLSupported;
 
   // check container
   if (!config.container) {
@@ -120,9 +114,9 @@ function getConfig(options) {
     throw new PSVError('Canvas is not supported.');
   }
 
-  // additional scripts if webgl not supported/disabled
-  if (!config.webgl && !SYSTEM.checkTHREE('CanvasRenderer', 'Projector')) {
-    throw new PSVError('Missing Three.js components: CanvasRenderer, Projector.');
+  // must support WebGL
+  if (!SYSTEM.isWebGLSupported) {
+    throw new PSVError('WebGL is not supported.');
   }
 
   // longitude range must have two values
@@ -211,5 +205,3 @@ function getConfig(options) {
 
   return config;
 }
-
-export { DEFAULTS, getConfig };
