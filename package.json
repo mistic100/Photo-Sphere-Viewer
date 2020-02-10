@@ -61,7 +61,7 @@
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-string": "^3.0.0",
     "stylelint": "^13.0.0",
-    "stylelint-config-standard": "^19.0.0",
+    "stylelint-config-standard": "^20.0.0",
     "stylelint-scss": "^3.13.0"
   },
   "scripts": {
