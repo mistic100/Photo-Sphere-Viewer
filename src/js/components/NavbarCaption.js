@@ -84,7 +84,7 @@ export class NavbarCaption extends AbstractComponent {
       this.content.style.display = '';
       this.prop.contentWidth = this.content.offsetWidth;
 
-      this.refresh();
+      this.refreshUi();
     }
     else {
       this.hide();
@@ -95,7 +95,7 @@ export class NavbarCaption extends AbstractComponent {
    * @summary Toggles content and icon depending on available space
    * @private
    */
-  refresh() {
+  refreshUi() {
     const availableWidth = this.container.offsetWidth;
     if (availableWidth >= this.prop.contentWidth && !this.prop.contentVisible) {
       this.content.style.display = '';

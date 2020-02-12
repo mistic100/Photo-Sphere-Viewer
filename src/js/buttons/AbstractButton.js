@@ -101,6 +101,9 @@ export class AbstractButton extends AbstractComponent {
       }
 
       supportedOrObject.promise.then((supported) => {
+        if (!this.prop) {
+          return; // the component has been destroyed
+        }
         this.prop.supported = supported;
         if (!supported && this.prop.visible) {
           this.hide();
@@ -146,7 +149,7 @@ export class AbstractButton extends AbstractComponent {
       this.container.style.display = '';
     }
     if (refresh) {
-      this.psv.refresh(`show button ${this.prop.id}`);
+      this.psv.refreshUi(`show button ${this.prop.id}`);
     }
   }
 
@@ -157,7 +160,7 @@ export class AbstractButton extends AbstractComponent {
     this.prop.visible = false;
     this.container.style.display = 'none';
     if (refresh) {
-      this.psv.refresh(`hide button ${this.prop.id}`);
+      this.psv.refreshUi(`hide button ${this.prop.id}`);
     }
   }
 

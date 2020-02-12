@@ -1,19 +1,35 @@
-import { bound, each } from './utils';
 import { DEFAULTS } from './data/config';
+import { bound, each } from './utils';
 import { Viewer } from './Viewer';
 
+/**
+ * @private
+ */
 function snakeCaseToCamelCase(options) {
   if (typeof options === 'object') {
     each(options, (value, key) => {
       if (typeof key === 'string' && key.indexOf('_') !== -1) {
         const camelKey = key.replace(/(_\w)/g, matches => matches[1].toUpperCase());
         options[camelKey] = snakeCaseToCamelCase(value);
+        delete options[key];
       }
     });
   }
 
   return options;
 }
+
+/**
+ * @private
+ */
+const RENAMED_OPTIONS = {
+  animSpeed       : 'autorotateSpeed',
+  animLat         : 'autorotateLat',
+  usexmpdata      : 'useXmpData',
+  mousemoveHover  : 'captureCursor',
+  zoomSpeed       : 'zoomButtonIncrement',
+  mousewheelFactor: 'mousewheelSpeed',
+};
 
 /**
  * @summary Compatibility wrapper for version 3
@@ -30,34 +46,31 @@ export class ViewerCompat extends Viewer {
   constructor(options) {
     snakeCaseToCamelCase(options);
 
-    if ('default_fov' in options) {
+    each(RENAMED_OPTIONS, (newName, oldName) => {
+      if (oldName in options) {
+        options[newName] = options[oldName];
+        delete options[oldName];
+      }
+    });
+
+    if ('defaultFov' in options) {
       const minFov = options.minFov !== undefined ? options.minFov : DEFAULTS.minFov;
       const maxFov = options.maxFov !== undefined ? options.maxFov : DEFAULTS.maxFov;
-      const defaultFov = bound(options.default_fov, minFov, maxFov);
+      const defaultFov = bound(options.defaultFov, minFov, maxFov);
       options.defaultZoomLvl = (defaultFov - minFov) / (maxFov - minFov) * 100;
+      delete options.defaultFov;
     }
 
-    if (!('time_anim' in options)) {
+    if (!('timeAnim' in options)) {
       options.autorotateDelay = 2000;
     }
-    else if (options.time_anim === false) {
+    else if (options.timeAnim === false) {
       options.autorotateDelay = null;
     }
-    else if (typeof options.time_anim === 'number') {
-      options.autorotateDelay = options.time_anim;
+    else if (typeof options.timeAnim === 'number') {
+      options.autorotateDelay = options.timeAnim;
     }
-
-    if ('anim_speed' in options) {
-      options.autorotateSpeed = options.anim_speed;
-    }
-
-    if ('anim_lat' in options) {
-      options.autorotateLat = options.anim_lat;
-    }
-
-    if ('usexmpdata' in options) {
-      options.useXmpData = options.usexmpdata;
-    }
+    delete options.timeAnim;
 
     if (options.transition === false) {
       options.transitionDuration = 0;
@@ -66,10 +79,12 @@ export class ViewerCompat extends Viewer {
       options.transitionDuration = options.transition.duration;
       options.transitionLoader = options.transition.loader;
     }
+    delete options.transition;
 
-    if ('panorama_roll' in options) {
+    if ('panoramaRoll' in options) {
       options.sphereCorrection = options.sphereCorrection || {};
-      options.sphereCorrection.roll = options.panorama_roll;
+      options.sphereCorrection.roll = options.panoramaRoll;
+      delete options.panoramaRoll;
     }
 
     if (typeof options.navbar === 'string') {

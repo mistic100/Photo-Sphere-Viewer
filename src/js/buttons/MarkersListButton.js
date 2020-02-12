@@ -45,7 +45,7 @@ export class MarkersListButton extends AbstractButton {
   /**
    * @override
    */
-  refresh() {
+  refreshUi() {
     const nbMarkers = this.psv.hud.getNbMarkers();
     if (nbMarkers === 0 && this.prop.visible) {
       this.hide();

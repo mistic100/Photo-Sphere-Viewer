@@ -41,30 +41,15 @@ export class Loader extends AbstractComponent {
     /**
      * @override
      * @property {number} thickness
+     * @property {string} current
      */
     this.prop = {
       ...this.prop,
       tickness: (this.loader.offsetWidth - this.loader.clientWidth) / 2 * SYSTEM.pixelRatio,
+      current : null,
     };
 
-    let inner;
-    if (this.psv.config.loadingImg) {
-      inner = document.createElement('img');
-      inner.className = 'psv-loader-image';
-      inner.src = this.psv.config.loadingImg;
-    }
-    else if (this.psv.config.loadingTxt) {
-      inner = document.createElement('div');
-      inner.className = 'psv-loader-text';
-      inner.innerHTML = this.psv.config.loadingTxt;
-    }
-    if (inner) {
-      const size = Math.round(Math.sqrt(2 * Math.pow((this.canvas.width / 2 - this.prop.tickness / 2) / SYSTEM.pixelRatio, 2)));
-      inner.style.maxWidth = size + 'px';
-      inner.style.maxHeight = size + 'px';
-      this.loader.appendChild(inner);
-    }
-
+    this.refreshUi();
     this.hide();
   }
 
@@ -76,6 +61,37 @@ export class Loader extends AbstractComponent {
     delete this.canvas;
 
     super.destroy();
+  }
+
+  /**
+   * @override
+   */
+  refreshUi() {
+    if (this.prop.current !== (this.psv.config.loadingImg || this.psv.config.loadingTxt)) {
+      if (this.prop.current) {
+        this.loader.removeChild(this.loader.lastChild);
+      }
+
+      let inner;
+      if (this.psv.config.loadingImg) {
+        inner = document.createElement('img');
+        inner.className = 'psv-loader-image';
+        inner.src = this.psv.config.loadingImg;
+      }
+      else if (this.psv.config.loadingTxt) {
+        inner = document.createElement('div');
+        inner.className = 'psv-loader-text';
+        inner.innerHTML = this.psv.config.loadingTxt;
+      }
+      if (inner) {
+        const size = Math.round(Math.sqrt(2 * Math.pow((this.canvas.width / 2 - this.prop.tickness / 2) / SYSTEM.pixelRatio, 2)));
+        inner.style.maxWidth = size + 'px';
+        inner.style.maxHeight = size + 'px';
+        this.loader.appendChild(inner);
+      }
+
+      this.prop.current = this.psv.config.loadingImg || this.psv.config.loadingTxt;
+    }
   }
 
   /**

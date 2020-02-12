@@ -6,7 +6,7 @@ import { Navbar } from './components/Navbar';
 import { Notification } from './components/Notification';
 import { Overlay } from './components/Overlay';
 import { Panel } from './components/Panel';
-import { getConfig } from './data/config';
+import { CONFIG_PARSERS, DEFAULTS, getConfig, READONLY_OPTIONS } from './data/config';
 import { EVENTS, IDS, MARKER_DATA, VIEWER_DATA } from './data/constants';
 import { getIcons } from './data/icons';
 import { SYSTEM } from './data/system';
@@ -49,6 +49,16 @@ export class Viewer extends EventEmitter {
     super();
 
     SYSTEM.load();
+
+    // must support canvas
+    if (!SYSTEM.isCanvasSupported) {
+      throw new PSVError('Canvas is not supported.');
+    }
+
+    // must support WebGL
+    if (!SYSTEM.isWebGLSupported) {
+      throw new PSVError('WebGL is not supported.');
+    }
 
     /**
      * @summary Internal properties
@@ -229,7 +239,7 @@ export class Viewer extends EventEmitter {
 
     this.eventsHandler.init();
 
-    this.__resizeRefresh = throttle(() => this.refresh('resize'), 500);
+    this.__resizeRefresh = throttle(() => this.refreshUi('resize'), 500);
 
     // apply container size
     this.resize(this.config.size);
@@ -263,7 +273,7 @@ export class Viewer extends EventEmitter {
       this.prop.ready = true;
 
       setTimeout(() => {
-        this.refresh('init');
+        this.refreshUi('init');
 
         /**
          * @event ready
@@ -293,7 +303,7 @@ export class Viewer extends EventEmitter {
     this.textureLoader.destroy();
     this.dataHelper.destroy();
 
-    this.children.forEach(child => child.destroy());
+    this.children.slice().forEach(child => child.destroy());
     this.children.length = 0;
 
     this.parent.removeChild(this.container);
@@ -319,16 +329,18 @@ export class Viewer extends EventEmitter {
    * @summary Refresh UI
    * @package
    */
-  refresh(reason) {
+  refreshUi(reason) {
     if (!this.prop.ready) {
       return;
     }
 
     if (!this.prop.uiRefresh) {
+      // console.log(`PhotoSphereViewer: UI Refresh, ${reason}`);
+
       this.prop.uiRefresh = true;
 
       this.children.every((child) => {
-        child.refresh();
+        child.refreshUi();
         return this.prop.uiRefresh === true;
       });
 
@@ -340,7 +352,7 @@ export class Viewer extends EventEmitter {
       // wait for current refresh to cancel
       setTimeout(() => {
         this.prop.uiRefresh = false;
-        this.refresh(reason);
+        this.refreshUi(reason);
       });
     }
   }
@@ -473,6 +485,9 @@ export class Viewer extends EventEmitter {
       if (!('sphereCorrection' in options)) {
         options.sphereCorrection = this.config.sphereCorrection;
       }
+      if (!('panoData' in options)) {
+        options.panoData = this.config.panoData;
+      }
     }
 
     if (options.transition === undefined) {
@@ -501,7 +516,7 @@ export class Viewer extends EventEmitter {
       this.loader.show();
       this.renderer.hide();
 
-      this.prop.loadingPromise = this.textureLoader.loadTexture(this.config.panorama)
+      this.prop.loadingPromise = this.textureLoader.loadTexture(this.config.panorama, options.panoData)
         .then((textureData) => {
           this.renderer.setTexture(textureData);
 
@@ -534,6 +549,88 @@ export class Viewer extends EventEmitter {
     }
 
     return this.prop.loadingPromise;
+  }
+
+  /**
+   * @summary Update options
+   * @param {PSV.Options} options
+   */
+  setOptions(options) {
+    each(options, (value, key) => {
+      if (!Object.prototype.hasOwnProperty.call(DEFAULTS, key)) {
+        throw new PSVError(`Unknown option ${key}`);
+      }
+
+      if (READONLY_OPTIONS[key]) {
+        throw new PSVError(READONLY_OPTIONS[key]);
+      }
+
+      if (CONFIG_PARSERS[key]) {
+        this.config[key] = CONFIG_PARSERS[key](value, options);
+      }
+      else {
+        this.config[key] = value;
+      }
+
+      switch (key) {
+        case 'caption':
+          this.navbar.setCaption(value);
+          break;
+
+        case 'size':
+          this.resize(value);
+          break;
+
+        case 'sphereCorrection':
+          this.renderer.setSphereCorrection(value);
+          break;
+
+        case 'longitudeRange':
+        case 'latitudeRange':
+          this.rotate(this.prop.position); // move to same position to use new ranges
+          break;
+
+        case 'cacheTexture':
+          if (this.config.cacheTexture && !value) {
+            this.textureLoader.clearPanoramaCache();
+          }
+          break;
+
+        case 'navbar':
+        case 'lang':
+          this.navbar.setButtons(this.config.navbar);
+          break;
+
+        case 'markers':
+          this.hud.setMarkers(value);
+          break;
+
+        case 'moveSpeed':
+          this.prop.moveSpeed = THREE.Math.degToRad(value / SYSTEM.pixelRatio);
+          break;
+
+        case 'minFov':
+        case 'maxFov':
+          this.prop.zoomLvl = this.dataHelper.fovToZoomLevel(this.prop.vFov);
+          this.trigger(EVENTS.ZOOM_UPDATED, this.getZoomLevel());
+          break;
+
+        default:
+          break;
+      }
+    });
+
+    this.needsUpdate();
+    this.refreshUi('set options');
+  }
+
+  /**
+   * @summary Update options
+   * @param {string} option
+   * @param {any} value
+   */
+  setOption(option, value) {
+    this.setOptions({ [option]: value });
   }
 
   /**
@@ -979,7 +1076,7 @@ export class Viewer extends EventEmitter {
    */
   zoomIn() {
     if (this.prop.zoomLvl < 100) {
-      this.zoom(this.prop.zoomLvl + this.config.zoomSpeed);
+      this.zoom(this.prop.zoomLvl + this.config.zoomButtonIncrement);
     }
   }
 
@@ -988,7 +1085,7 @@ export class Viewer extends EventEmitter {
    */
   zoomOut() {
     if (this.prop.zoomLvl > 0) {
-      this.zoom(this.prop.zoomLvl - this.config.zoomSpeed);
+      this.zoom(this.prop.zoomLvl - this.config.zoomButtonIncrement);
     }
   }
 

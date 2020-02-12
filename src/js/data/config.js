@@ -1,7 +1,6 @@
 import { PSVError } from '../PSVError';
-import { bound, clone, deepmerge, isInteger, logWarn, parseAngle, parseSpeed } from '../utils';
+import { bound, clone, deepmerge, each, isInteger, logWarn, parseAngle, parseSpeed } from '../utils';
 import { ACTIONS } from './constants';
-import { SYSTEM } from './system';
 
 /**
  * @summary Default options
@@ -30,7 +29,7 @@ export const DEFAULTS = {
   longitudeRange     : null,
   latitudeRange      : null,
   moveSpeed          : 1,
-  zoomSpeed          : 2,
+  zoomButtonIncrement: 2,
   autorotateDelay    : null,
   autorotateSpeed    : '2rpm',
   autorotateLat      : null,
@@ -38,9 +37,9 @@ export const DEFAULTS = {
   transitionLoader   : true,
   moveInertia        : true,
   mousewheel         : true,
-  mousewheelFactor   : 1,
+  mousewheelSpeed    : 1,
   mousemove          : true,
-  mousemoveHover     : false,
+  captureCursor      : false,
   touchmoveTwoFingers: false,
   clickEventOnMarker : false,
   useXmpData         : true,
@@ -94,114 +93,152 @@ export const DEFAULTS = {
 };
 
 /**
- * @summary Merge and clean user config with default config
+ * @summary List of unmodifiable options and their error messages
+ * @private
+ */
+export const READONLY_OPTIONS = {
+  panorama : 'Use setPanorama method to change the panorama',
+  panoData : 'Use setPanorama method to change the panorama',
+  container: 'Cannot change viewer container',
+  templates: 'Cannot change templates',
+  icons    : 'Cannot change icons',
+};
+
+/**
+ * @summary Parsers/validators for each option
+ * @private
+ */
+export const CONFIG_PARSERS = {
+  container      : (container) => {
+    if (!container) {
+      throw new PSVError('No value given for container.');
+    }
+    return container;
+  },
+  defaultLat     : (defaultLat) => {
+    // defaultLat is between -PI/2 and PI/2
+    return parseAngle(defaultLat, true);
+  },
+  longitudeRange : (longitudeRange) => {
+    // longitude range must have two values
+    if (longitudeRange && longitudeRange.length !== 2) {
+      logWarn('longitudeRange must have exactly two elements');
+      return null;
+    }
+    // longitudeRange between 0 and 2*PI
+    if (longitudeRange) {
+      return longitudeRange.map(angle => parseAngle(angle));
+    }
+    return null;
+  },
+  latitudeRange  : (latitudeRange) => {
+    // latitude range must have two values
+    if (latitudeRange && latitudeRange.length !== 2) {
+      logWarn('latitudeRange must have exactly two elements');
+      return latitudeRange;
+    }
+    // latitude range must be ordered
+    else if (latitudeRange && latitudeRange[0] > latitudeRange[1]) {
+      logWarn('latitudeRange values must be ordered');
+      // eslint-disable-next-line no-param-reassign
+      latitudeRange = [latitudeRange[1], latitudeRange[0]];
+    }
+    // latitudeRange is between -PI/2 and PI/2
+    if (latitudeRange) {
+      return latitudeRange.map(angle => parseAngle(angle, true));
+    }
+    return null;
+  },
+  minFov         : (minFov, config) => {
+    // minFov and maxFov must be ordered
+    if (config.maxFov < minFov) {
+      logWarn('maxFov cannot be lower than minFov');
+      // eslint-disable-next-line no-param-reassign
+      minFov = config.maxFov;
+    }
+    // minFov between 1 and 179
+    return bound(minFov, 1, 179);
+  },
+  maxFov         : (maxFov, config) => {
+    // minFov and maxFov must be ordered
+    if (maxFov < config.minFov) {
+      // eslint-disable-next-line no-param-reassign
+      maxFov = config.minFov;
+    }
+    // maxFov between 1 and 179
+    return bound(maxFov, 1, 179);
+  },
+  cacheTexture   : (cacheTexture) => {
+    // cacheTexture must be a positive integer or false
+    if (cacheTexture && (!isInteger(cacheTexture) || cacheTexture < 0)) {
+      logWarn('invalid value for cacheTexture');
+      return 0;
+    }
+    return cacheTexture;
+  },
+  lang           : (lang) => {
+    return {
+      ...DEFAULTS.lang,
+      ...lang,
+    };
+  },
+  keyboard       : (keyboard) => {
+    // keyboard=true becomes the default map
+    if (keyboard === true) {
+      return clone(DEFAULTS.keyboard);
+    }
+    return keyboard;
+  },
+  autorotateLat  : (autorotateLat, config) => {
+    // default autorotateLat is defaultLat
+    if (autorotateLat === null) {
+      return parseAngle(config.defaultLat, true);
+    }
+    // autorotateLat is between -PI/2 and PI/2
+    else {
+      return parseAngle(autorotateLat, true);
+    }
+  },
+  autorotateSpeed: (autorotateSpeed) => {
+    return parseSpeed(autorotateSpeed);
+  },
+  fisheye        : (fisheye) => {
+    // translate boolean fisheye to amount
+    if (fisheye === true) {
+      return 1;
+    }
+    else if (fisheye === false) {
+      return 0;
+    }
+    return fisheye;
+  },
+};
+
+/**
+ * @summary Merge user config with default config and performs validation
  * @param {PSV.Options} options
  * @returns {PSV.Options}
  * @memberOf PSV
  * @private
  */
 export function getConfig(options) {
-  const config = clone(DEFAULTS);
-  deepmerge(config, options);
+  const tempConfig = clone(DEFAULTS);
+  deepmerge(tempConfig, options);
 
-  // check container
-  if (!config.container) {
-    throw new PSVError('No value given for container.');
-  }
+  const config = {};
 
-  // must support canvas
-  if (!SYSTEM.isCanvasSupported) {
-    throw new PSVError('Canvas is not supported.');
-  }
-
-  // must support WebGL
-  if (!SYSTEM.isWebGLSupported) {
-    throw new PSVError('WebGL is not supported.');
-  }
-
-  // longitude range must have two values
-  if (config.longitudeRange && config.longitudeRange.length !== 2) {
-    config.longitudeRange = null;
-    logWarn('longitudeRange must have exactly two elements');
-  }
-
-  if (config.latitudeRange) {
-    // latitude range must have two values
-    if (config.latitudeRange.length !== 2) {
-      config.latitudeRange = null;
-      logWarn('latitudeRange must have exactly two elements');
+  each(tempConfig, (value, key) => {
+    if (!Object.prototype.hasOwnProperty.call(DEFAULTS, key)) {
+      throw new PSVError(`Unknown option ${key}`);
     }
-    // latitude range must be ordered
-    else if (config.latitudeRange[0] > config.latitudeRange[1]) {
-      config.latitudeRange = [config.latitudeRange[1], config.latitudeRange[0]];
-      logWarn('latitudeRange values must be ordered');
+
+    if (CONFIG_PARSERS[key]) {
+      config[key] = CONFIG_PARSERS[key](value, tempConfig);
     }
-  }
-
-  // minFov and maxFov must be ordered
-  if (config.maxFov < config.minFov) {
-    [config.maxFov, config.minFov] = [config.minFov, config.maxFov];
-    logWarn('maxFov cannot be lower than minFov');
-  }
-
-  // cacheTexture must be a positive integer or false
-  if (config.cacheTexture && (!isInteger(config.cacheTexture) || config.cacheTexture < 0)) {
-    config.cacheTexture = 0;
-    logWarn('invalid value for cacheTexture');
-  }
-
-  // navbar=true becomes the default array
-  if (config.navbar === true) {
-    config.navbar = clone(DEFAULTS.navbar);
-  }
-  // navbar can be a space separated list
-  else if (typeof config.navbar === 'string') {
-    config.navbar = config.navbar.split(' ');
-  }
-
-  // keyboard=true becomes the default map
-  if (config.keyboard === true) {
-    config.keyboard = clone(DEFAULTS.keyboard);
-  }
-
-  // minFov/maxFov between 1 and 179
-  config.minFov = bound(config.minFov, 1, 179);
-  config.maxFov = bound(config.maxFov, 1, 179);
-
-  // default autorotateLat is defaultLat
-  if (config.autorotateLat === null) {
-    config.autorotateLat = config.defaultLat;
-  }
-  // parse autorotateLat, is between -PI/2 and PI/2
-  else {
-    config.autorotateLat = parseAngle(config.autorotateLat, true);
-  }
-
-  // parse longitudeRange, between 0 and 2*PI
-  if (config.longitudeRange) {
-    config.longitudeRange = config.longitudeRange.map(angle => parseAngle(angle));
-  }
-
-  // parse latitudeRange, between -PI/2 and PI/2
-  if (config.latitudeRange) {
-    config.latitudeRange = config.latitudeRange.map(angle => parseAngle(angle, true));
-  }
-
-  // parse autorotateSpeed
-  config.autorotateSpeed = parseSpeed(config.autorotateSpeed);
-
-  // reactivate the navbar if the caption is provided
-  if (config.caption && !config.navbar) {
-    config.navbar = ['caption'];
-  }
-
-  // translate boolean fisheye to amount
-  if (config.fisheye === true) {
-    config.fisheye = 1;
-  }
-  else if (config.fisheye === false) {
-    config.fisheye = 0;
-  }
+    else {
+      config[key] = value;
+    }
+  });
 
   return config;
 }

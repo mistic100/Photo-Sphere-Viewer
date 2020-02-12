@@ -113,7 +113,7 @@ export class Panel extends AbstractComponent {
   /**
    * @override
    */
-  refresh() {
+  refreshUi() {
     if (this.prop.visible && this.prop.contentId === IDS.MARKERS_LIST) {
       if (this.psv.hud.getNbMarkers() === 0) {
         this.hide();

@@ -59,33 +59,22 @@ export class EventsHandler extends AbstractService {
    * @protected
    */
   init() {
+    // all pointer events are binded to the HUD only
+
     window.addEventListener('resize', this);
     window.addEventListener('keydown', this);
-
-    // all interation events are binded to the HUD only
-    if (this.config.mousemove) {
-      if (this.config.mousemoveHover) {
-        this.psv.hud.container.addEventListener('mouseenter', this);
-        this.psv.hud.container.addEventListener('mouseleave', this);
-      }
-      else {
-        this.psv.hud.container.addEventListener('mousedown', this);
-        window.addEventListener('mouseup', this);
-      }
-
-      this.psv.hud.container.addEventListener('touchstart', this);
-      window.addEventListener('touchend', this);
-
-      this.psv.hud.container.addEventListener('mousemove', this);
-      this.psv.hud.container.addEventListener('touchmove', this);
-    }
+    this.psv.hud.container.addEventListener('mouseenter', this);
+    this.psv.hud.container.addEventListener('mousedown', this);
+    this.psv.hud.container.addEventListener('mouseleave', this);
+    window.addEventListener('mouseup', this);
+    this.psv.hud.container.addEventListener('touchstart', this);
+    window.addEventListener('touchend', this);
+    this.psv.hud.container.addEventListener('mousemove', this);
+    this.psv.hud.container.addEventListener('touchmove', this);
+    this.psv.hud.container.addEventListener(SYSTEM.mouseWheelEvent, this);
 
     if (SYSTEM.fullscreenEvent) {
       document.addEventListener(SYSTEM.fullscreenEvent, this);
-    }
-
-    if (this.config.mousewheel) {
-      this.psv.hud.container.addEventListener(SYSTEM.mouseWheelEvent, this);
     }
   }
 
@@ -95,24 +84,18 @@ export class EventsHandler extends AbstractService {
   destroy() {
     window.removeEventListener('resize', this);
     window.removeEventListener('keydown', this);
-
-    if (this.config.mousemove) {
-      this.psv.hud.container.removeEventListener('mousedown', this);
-      this.psv.hud.container.removeEventListener('mouseenter', this);
-      this.psv.hud.container.removeEventListener('touchstart', this);
-      window.removeEventListener('mouseup', this);
-      window.removeEventListener('touchend', this);
-      this.psv.hud.container.removeEventListener('mouseleave', this);
-      this.psv.hud.container.removeEventListener('mousemove', this);
-      this.psv.hud.container.removeEventListener('touchmove', this);
-    }
+    this.psv.hud.container.removeEventListener('mouseenter', this);
+    this.psv.hud.container.removeEventListener('mousedown', this);
+    this.psv.hud.container.removeEventListener('mouseleave', this);
+    window.removeEventListener('mouseup', this);
+    this.psv.hud.container.removeEventListener('touchstart', this);
+    window.removeEventListener('touchend', this);
+    this.psv.hud.container.removeEventListener('mousemove', this);
+    this.psv.hud.container.removeEventListener('touchmove', this);
+    this.psv.hud.container.removeEventListener(SYSTEM.mouseWheelEvent, this);
 
     if (SYSTEM.fullscreenEvent) {
       document.removeEventListener(SYSTEM.fullscreenEvent, this);
-    }
-
-    if (this.config.mousewheel) {
-      this.psv.hud.container.removeEventListener(SYSTEM.mouseWheelEvent, this);
     }
 
     delete this.state;
@@ -129,18 +112,19 @@ export class EventsHandler extends AbstractService {
     /* eslint-disable */
     switch (evt.type) {
       // @formatter:off
-      case 'resize':     this.__onResize();          break;
-      case 'keydown':    this.__onKeyDown(evt);    break;
-      case 'mousedown':  this.__onMouseDown(evt);  break;
-      case 'mouseenter': this.__onMouseDown(evt);  break;
-      case 'touchstart': this.__onTouchStart(evt); break;
-      case 'mouseup':    this.__onMouseUp(evt);    break;
-      case 'mouseleave': this.__onMouseUp(evt);    break;
-      case 'touchend':   this.__onTouchEnd(evt);   break;
-      case 'mousemove':  this.__onMouseMove(evt);  break;
-      case 'touchmove':  this.__onTouchMove(evt);  break;
-      case SYSTEM.fullscreenEvent: this.__fullscreenToggled(); break;
-      case SYSTEM.mouseWheelEvent: this.__onMouseWheel(evt);   break;
+      case 'resize':     return this.__onResize();
+      case 'keydown':    return this.__onKeyDown(evt);
+      case 'mousedown':  return this.__onMouseDown(evt);
+      case 'mouseenter': return this.__onMouseEnter(evt);
+      case 'touchstart': return this.__onTouchStart(evt);
+      case 'mouseup':    return this.__onMouseUp(evt);
+      case 'mouseleave': return this.__onMouseLeave(evt);
+      case 'touchend':   return this.__onTouchEnd(evt);
+      case 'mousemove':  return this.__onMouseMove(evt);
+      case 'touchmove':  return this.__onTouchMove(evt);
+      case SYSTEM.fullscreenEvent: return this.__fullscreenToggled();
+      case SYSTEM.mouseWheelEvent: return this.__onMouseWheel(evt);
+      default: return;
       // @formatter:on
     }
     /* eslint-enable */
@@ -194,7 +178,7 @@ export class EventsHandler extends AbstractService {
     /* eslint-enable */
 
     if (dZoom !== 0) {
-      this.psv.zoom(this.prop.zoomLvl + dZoom * this.config.zoomSpeed);
+      this.psv.zoom(this.prop.zoomLvl + dZoom * this.config.zoomButtonIncrement);
     }
     else if (dLat !== 0 || dLong !== 0) {
       this.psv.rotate({
@@ -205,20 +189,41 @@ export class EventsHandler extends AbstractService {
   }
 
   /**
-   * @summary Handles mouse button events
+   * @summary Handles mouse down events
    * @param {MouseEvent} evt
    * @private
    */
   __onMouseDown(evt) {
+    if (!this.config.mousemove || this.config.captureCursor) {
+      return;
+    }
+
     this.__startMove(evt);
   }
 
   /**
-   * @summary Handles mouse buttons events
+   * @summary Handles mouse enter events
+   * @param {MouseEvent} evt
+   * @private
+   */
+  __onMouseEnter(evt) {
+    if (!this.config.mousemove || !this.config.captureCursor) {
+      return;
+    }
+
+    this.__startMove(evt);
+  }
+
+  /**
+   * @summary Handles mouse up events
    * @param {MouseEvent} evt
    * @private
    */
   __onMouseUp(evt) {
+    if (!this.config.mousemove || this.config.captureCursor) {
+      return;
+    }
+
     this.__stopMove(evt);
 
     if (this.psv.isStereoEnabled()) {
@@ -227,16 +232,33 @@ export class EventsHandler extends AbstractService {
   }
 
   /**
+   * @summary Handles mouse leave events
+   * @param {MouseEvent} evt
+   * @private
+   */
+  __onMouseLeave(evt) {
+    if (!this.config.mousemove || !this.config.captureCursor) {
+      return;
+    }
+
+    this.__stopMove(evt);
+  }
+
+  /**
    * @summary Handles mouse move events
    * @param {MouseEvent} evt
    * @private
    */
   __onMouseMove(evt) {
+    if (!this.config.mousemove) {
+      return;
+    }
+
     if (evt.buttons !== 0) {
       evt.preventDefault();
       this.__move(evt);
     }
-    else if (this.config.mousemoveHover) {
+    else if (this.config.captureCursor) {
       this.__moveAbsolute(evt);
     }
   }
@@ -247,6 +269,10 @@ export class EventsHandler extends AbstractService {
    * @private
    */
   __onTouchStart(evt) {
+    if (!this.config.mousemove) {
+      return;
+    }
+
     if (evt.touches.length === 1) {
       if (!this.config.touchmoveTwoFingers) {
         this.__startMove(evt.touches[0]);
@@ -265,6 +291,10 @@ export class EventsHandler extends AbstractService {
    * @private
    */
   __onTouchEnd(evt) {
+    if (!this.config.mousemove) {
+      return;
+    }
+
     if (evt.touches.length === 1) {
       this.__stopMoveZoom();
     }
@@ -283,6 +313,10 @@ export class EventsHandler extends AbstractService {
    * @private
    */
   __onTouchMove(evt) {
+    if (!this.config.mousemove) {
+      return;
+    }
+
     if (evt.touches.length === 1) {
       if (this.config.touchmoveTwoFingers) {
         this.psv.overlay.show({
@@ -308,13 +342,17 @@ export class EventsHandler extends AbstractService {
    * @private
    */
   __onMouseWheel(evt) {
+    if (!this.config.mousewheel) {
+      return;
+    }
+
     evt.preventDefault();
     evt.stopPropagation();
 
     const delta = normalizeWheel(evt).spinY * 5;
 
     if (delta !== 0) {
-      this.psv.zoom(this.prop.zoomLvl - delta * this.config.mousewheelFactor);
+      this.psv.zoom(this.prop.zoomLvl - delta * this.config.mousewheelSpeed);
     }
   }
 

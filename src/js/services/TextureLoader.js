@@ -38,12 +38,13 @@ export class TextureLoader extends AbstractService {
   /**
    * @summary Loads the panorama texture(s)
    * @param {string|string[]} panorama
+   * @param {PSV.PanoData} [newPanoData]
    * @returns {Promise.<PSV.TextureData>}
    * @fires PSV.panorama-load-progress
    * @throws {PSV.PSVError} when the image cannot be loaded
    * @package
    */
-  loadTexture(panorama) {
+  loadTexture(panorama, newPanoData) {
     const tempPanorama = [];
 
     if (Array.isArray(panorama)) {
@@ -71,19 +72,20 @@ export class TextureLoader extends AbstractService {
       return this.__loadCubemapTexture(tempPanorama);
     }
     else {
-      return this.__loadEquirectangularTexture(panorama);
+      return this.__loadEquirectangularTexture(panorama, newPanoData);
     }
   }
 
   /**
    * @summary Loads the sphere texture
    * @param {string} panorama
+   * @param {PSV.PanoData} [newPanoData]
    * @returns {Promise.<PSV.TextureData>}
    * @fires PSV.panorama-load-progress
    * @throws {PSV.PSVError} when the image cannot be loaded
    * @private
    */
-  __loadEquirectangularTexture(panorama) {
+  __loadEquirectangularTexture(panorama, newPanoData) {
     if (this.prop.isCubemap === true) {
       throw new PSVError('The viewer was initialized with an cubemap, cannot switch to equirectangular panorama.');
     }
@@ -101,10 +103,10 @@ export class TextureLoader extends AbstractService {
       }
     }
 
-    return this.__loadXMP(panorama)
+    return (newPanoData ? Promise.resolve(newPanoData) : this.__loadXMP(panorama))
       .then(xmpPanoData => new Promise((resolve, reject) => {
         const loader = new THREE.ImageLoader();
-        let progress = xmpPanoData ? 100 : 0;
+        let progress = (xmpPanoData && !newPanoData) ? 100 : 0; // the file is already in browser cache
 
         if (this.config.withCredentials) {
           loader.setCrossOrigin('use-credentials');
@@ -127,7 +129,7 @@ export class TextureLoader extends AbstractService {
            */
           this.psv.trigger(EVENTS.PANORAMA_LOAD_PROGRESS, panorama, progress);
 
-          const panoData = xmpPanoData || this.config.panoData || {
+          const panoData = xmpPanoData || newPanoData || {
             fullWidth    : img.width,
             fullHeight   : img.height,
             croppedWidth : img.width,
@@ -342,7 +344,7 @@ export class TextureLoader extends AbstractService {
    * @private
    */
   __loadXMP(panorama) {
-    if (!this.config.useXmpData || this.config.panoData) {
+    if (!this.config.useXmpData) {
       return Promise.resolve(null);
     }
 

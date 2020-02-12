@@ -78,7 +78,6 @@
     "test:sasslint": "stylelint \"src/scss/**/*.scss\"",
     "start": "npm-run-all --parallel dev:**",
     "dev:serve": "live-server --watch=dist,example --open=example",
-    "dev:watch:js": "nodemon --watch src/ --ext js,svg,html --exec \"npm run compile:js:build\"",
     "dev:watch:js": "nodemon --watch src/ --ext js,svg,html --exec \"npm run compile:js\"",
     "dev:watch:css": "nodemon --watch src/ --ext scss --exec \"npm run compile:css\""
   }

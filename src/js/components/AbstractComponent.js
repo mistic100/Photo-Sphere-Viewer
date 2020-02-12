@@ -69,7 +69,7 @@ export class AbstractComponent {
       this.parent.children.splice(childIdx, 1);
     }
 
-    this.children.forEach(child => child.destroy());
+    this.children.slice().forEach(child => child.destroy());
     this.children.length = 0;
 
     delete this.container;
@@ -83,9 +83,9 @@ export class AbstractComponent {
    * @description Must be be a very lightweight operation
    * @package
    */
-  refresh() {
+  refreshUi() {
     this.children.every((child) => {
-      child.refresh();
+      child.refreshUi();
       return this.psv.prop.uiRefresh === true;
     });
   }

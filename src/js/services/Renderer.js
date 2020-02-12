@@ -257,15 +257,7 @@ export class Renderer extends AbstractService {
     this.renderer.setSize(this.prop.size.width, this.prop.size.height);
     this.renderer.setPixelRatio(SYSTEM.pixelRatio);
 
-    let cameraDistance = SPHERE_RADIUS;
-    if (this.prop.isCubemap) {
-      cameraDistance *= Math.sqrt(3);
-    }
-    if (this.config.fisheye) {
-      cameraDistance += SPHERE_RADIUS;
-    }
-
-    this.camera = new THREE.PerspectiveCamera(this.prop.vFov, this.prop.size.width / this.prop.size.height, 1, cameraDistance);
+    this.camera = new THREE.PerspectiveCamera(this.prop.vFov, this.prop.size.width / this.prop.size.height, 1, 3 * SPHERE_RADIUS);
     this.camera.position.set(0, 0, 0);
 
     if (SYSTEM.checkTHREE('DeviceOrientationControls')) {

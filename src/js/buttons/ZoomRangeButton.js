@@ -63,9 +63,15 @@ export class ZoomRangeButton extends AbstractButton {
     this.psv.container.addEventListener('touchend', this);
 
     this.psv.on(EVENTS.ZOOM_UPDATED, this);
-    this.psv.once(EVENTS.READY, this);
 
-    this.refresh();
+    if (this.psv.prop.ready) {
+      this.__moveZoomValue(this.psv.prop.zoomLvl);
+    }
+    else {
+      this.psv.once(EVENTS.READY, this);
+    }
+
+    this.refreshUi();
   }
 
   /**
@@ -119,7 +125,7 @@ export class ZoomRangeButton extends AbstractButton {
   /**
    * @override
    */
-  refresh() {
+  refreshUi() {
     if (this.prop.supported) {
       if (this.psv.prop.size.width <= this.prop.mediaMinWidth && this.prop.visible) {
         this.hide();

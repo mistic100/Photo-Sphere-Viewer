@@ -190,7 +190,7 @@ export class HUD extends AbstractComponent {
 
     if (render) {
       this.renderMarkers();
-      this.psv.refresh(`add marker ${marker.id}`);
+      this.psv.refreshUi(`add marker ${marker.id}`);
     }
 
     return marker;
@@ -268,7 +268,7 @@ export class HUD extends AbstractComponent {
     delete this.markers[marker.id];
 
     if (render) {
-      this.psv.refresh(`remove marker ${marker.id}`);
+      this.psv.refreshUi(`remove marker ${marker.id}`);
     }
   }
 
@@ -284,7 +284,7 @@ export class HUD extends AbstractComponent {
 
     if (render) {
       this.renderMarkers();
-      this.psv.refresh('set markers');
+      this.psv.refreshUi('set markers');
     }
   }
 
@@ -297,7 +297,7 @@ export class HUD extends AbstractComponent {
 
     if (render) {
       this.renderMarkers();
-      this.psv.refresh('clear markers');
+      this.psv.refreshUi('clear markers');
     }
   }
 
@@ -648,7 +648,7 @@ export class HUD extends AbstractComponent {
   }
 
   /**
-   * @summary Handles mouse move events, refresh the tooltip for polygon markers
+   * @summary Handles mouse move events, refreshUi the tooltip for polygon markers
    * @param {MouseEvent} e
    * @fires PSV.leave-marker
    * @fires PSV.over-marker

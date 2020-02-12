@@ -11,9 +11,10 @@ import { ZoomInButton } from '../buttons/ZoomInButton';
 import { ZoomOutButton } from '../buttons/ZoomOutButton';
 import { ZoomRangeButton } from '../buttons/ZoomRangeButton';
 import { PSVError } from '../PSVError';
-import { logWarn } from '../utils';
+import { clone, logWarn } from '../utils';
 import { AbstractComponent } from './AbstractComponent';
 import { NavbarCaption } from './NavbarCaption';
+import { DEFAULTS } from '../data/config';
 
 const STANDARD_BUTTONS = [
   AutorotateButton,
@@ -67,14 +68,14 @@ export class Navbar extends AbstractComponent {
 
   /**
    * @summary Change the buttons visible on the navbar
-   * @param {Array<string|object>} buttons
+   * @param {string|Array<string|object>} buttons
    */
   setButtons(buttons) {
-    this.children.forEach(item => item.destroy());
+    this.children.slice().forEach(item => item.destroy());
     this.children.length = 0;
 
     /* eslint-disable no-new */
-    buttons.forEach((button) => {
+    this.__cleanButtons(buttons).forEach((button) => {
       if (typeof button === 'object') {
         new CustomButton(this, button);
       }
@@ -157,8 +158,8 @@ export class Navbar extends AbstractComponent {
   /**
    * @override
    */
-  refresh() {
-    super.refresh();
+  refreshUi() {
+    super.refreshUi();
 
     if (this.psv.prop.uiRefresh === true) {
       const availableWidth = this.container.offsetWidth;
@@ -196,8 +197,26 @@ export class Navbar extends AbstractComponent {
 
       const caption = this.getButton(NavbarCaption.id, false);
       if (caption) {
-        caption.refresh();
+        caption.refreshUi();
       }
+    }
+  }
+
+  /**
+   * @summary Ensure the buttons configuration is correct
+   * @private
+   */
+  __cleanButtons(buttons) {
+    // true becomes the default array
+    if (buttons === true) {
+      return clone(DEFAULTS.navbar);
+    }
+    // can be a space or coma separated list
+    else if (typeof buttons === 'string') {
+      return buttons.split(/[ ,]/);
+    }
+    else {
+      return buttons;
     }
   }
 
