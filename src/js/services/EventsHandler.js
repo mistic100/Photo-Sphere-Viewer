@@ -1,6 +1,6 @@
+import { Animation } from '../Animation';
 import { ACTIONS, DBLCLICK_DELAY, EVENTS, IDS, INERTIA_WINDOW, MOVE_THRESHOLD } from '../data/constants';
 import { SYSTEM } from '../data/system';
-import { Animation } from '../Animation';
 import { clone, distance, getClosest, getEventKey, isFullscreenEnabled, normalizeWheel, throttle } from '../utils';
 import { AbstractService } from './AbstractService';
 
@@ -71,6 +71,7 @@ export class EventsHandler extends AbstractService {
     window.addEventListener('touchend', this);
     this.psv.hud.container.addEventListener('mousemove', this);
     this.psv.hud.container.addEventListener('touchmove', this);
+    this.psv.hud.container.addEventListener('contextmenu', this);
     this.psv.hud.container.addEventListener(SYSTEM.mouseWheelEvent, this);
 
     if (SYSTEM.fullscreenEvent) {
@@ -92,6 +93,7 @@ export class EventsHandler extends AbstractService {
     window.removeEventListener('touchend', this);
     this.psv.hud.container.removeEventListener('mousemove', this);
     this.psv.hud.container.removeEventListener('touchmove', this);
+    this.psv.hud.container.removeEventListener('contextmenu', this);
     this.psv.hud.container.removeEventListener(SYSTEM.mouseWheelEvent, this);
 
     if (SYSTEM.fullscreenEvent) {
@@ -112,16 +114,17 @@ export class EventsHandler extends AbstractService {
     /* eslint-disable */
     switch (evt.type) {
       // @formatter:off
-      case 'resize':     return this.__onResize();
-      case 'keydown':    return this.__onKeyDown(evt);
-      case 'mousedown':  return this.__onMouseDown(evt);
-      case 'mouseenter': return this.__onMouseEnter(evt);
-      case 'touchstart': return this.__onTouchStart(evt);
-      case 'mouseup':    return this.__onMouseUp(evt);
-      case 'mouseleave': return this.__onMouseLeave(evt);
-      case 'touchend':   return this.__onTouchEnd(evt);
-      case 'mousemove':  return this.__onMouseMove(evt);
-      case 'touchmove':  return this.__onTouchMove(evt);
+      case 'resize':      return this.__onResize();
+      case 'keydown':     return this.__onKeyDown(evt);
+      case 'mousedown':   return this.__onMouseDown(evt);
+      case 'mouseenter':  return this.__onMouseEnter(evt);
+      case 'touchstart':  return this.__onTouchStart(evt);
+      case 'mouseup':     return this.__onMouseUp(evt);
+      case 'mouseleave':  return this.__onMouseLeave(evt);
+      case 'touchend':    return this.__onTouchEnd(evt);
+      case 'mousemove':   return this.__onMouseMove(evt);
+      case 'touchmove':   return this.__onTouchMove(evt);
+      case 'contextmenu': return this.__onContextMenu(evt);
       case SYSTEM.fullscreenEvent: return this.__fullscreenToggled();
       case SYSTEM.mouseWheelEvent: return this.__onMouseWheel(evt);
       default: return;
@@ -337,6 +340,20 @@ export class EventsHandler extends AbstractService {
   }
 
   /**
+   * @summary Handles context menu events
+   * @param {MouseWheelEvent} evt
+   * @private
+   */
+  __onContextMenu(evt) {
+    if (!getClosest(evt.target, '.psv-marker')) {
+      return true;
+    }
+
+    evt.preventDefault();
+    return false;
+  }
+
+  /**
    * @summary Handles mouse wheel events
    * @param {MouseWheelEvent} evt
    * @private
@@ -500,12 +517,16 @@ export class EventsHandler extends AbstractService {
   __click(evt) {
     const boundingRect = this.psv.container.getBoundingClientRect();
 
+    /**
+     * @type {PSV.ClickData}
+     */
     const data = {
-      target : evt.target,
-      clientX: evt.clientX,
-      clientY: evt.clientY,
-      viewerX: evt.clientX - boundingRect.left,
-      viewerY: evt.clientY - boundingRect.top,
+      rightclick: evt.button === 2,
+      target    : evt.target,
+      clientX   : evt.clientX,
+      clientY   : evt.clientY,
+      viewerX   : evt.clientX - boundingRect.left,
+      viewerY   : evt.clientY - boundingRect.top,
     };
 
     const intersect = this.psv.dataHelper.viewerCoordsToVector3({

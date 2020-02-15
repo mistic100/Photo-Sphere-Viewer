@@ -12,7 +12,7 @@ import { each } from './utils';
  * @summary Interpolation helper for animations
  * @memberOf PSV
  * @description
- * Implements the Promise API with an additional "cancel" method.
+ * Implements the Promise API with an additional "cancel" and "finally" methods.
  * The promise is resolved when the animation is complete and rejected if the animation is cancelled.
  * @example
  * new Animation({
@@ -172,6 +172,9 @@ export class Animation {
   static resolve() {
     const p = Promise.resolve();
     p.cancel = () => {
+    };
+    p.finally = (onFinally) => {
+      return p.then(onFinally, onFinally);
     };
     return p;
   }

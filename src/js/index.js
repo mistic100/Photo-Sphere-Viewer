@@ -113,6 +113,7 @@ export {
 /**
  * @typedef {Object} PSV.ClickData
  * @summary Data of the `click` event
+ * @property {boolean} rightclick - if it's a right click
  * @property {number} clientX - position in the browser window
  * @property {number} clientY - position in the browser window
  * @property {number} viewerX - position in the viewer
@@ -122,6 +123,13 @@ export {
  * @property {number} textureX - position on the texture
  * @property {number} textureY - position on the texture
  * @property {PSV.Marker} [marker] - clicked marker
+ */
+
+/**
+ * @typedef {Object} PSV.SelectMarkerData
+ * @summary Data of the `select-marker` event
+ * @property {boolean} dblclick - if the selection originated from a double click, the simple click is always fired before the double click
+ * @property {boolean} rightclick - if the selection originated from a right click
  */
 
 /**

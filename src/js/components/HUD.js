@@ -91,8 +91,8 @@ export class HUD extends AbstractComponent {
       case 'mouseenter': this.__onMouseEnter(e); break;
       case 'mouseleave': this.__onMouseLeave(e); break;
       case 'mousemove':  this.__onMouseMove(e);  break;
-      case EVENTS.CLICK:        this.__onClick(e, e.args[0],false); break;
-      case EVENTS.DOUBLE_CLICK: this.__onClick(e, e.args[0],true);  break;
+      case EVENTS.CLICK:        this.__onClick(e, e.args[0], false); break;
+      case EVENTS.DOUBLE_CLICK: this.__onClick(e, e.args[0], true);  break;
       case EVENTS.RENDER:       this.renderMarkers();                   break;
       // @formatter:on
     }
@@ -709,9 +709,12 @@ export class HUD extends AbstractComponent {
        * @summary Triggered when the user clicks on a marker. The marker can be retrieved from outside the event handler
        * with {@link PSV.components.HUD.getCurrentMarker}
        * @param {PSV.Marker} marker
-       * @param {boolean} dblclick - the simple click is always fired before the double click
+       * @param {PSV.SelectMarkerData} data
        */
-      this.psv.trigger(EVENTS.SELECT_MARKER, marker, dblclick);
+      this.psv.trigger(EVENTS.SELECT_MARKER, marker, {
+        dblclick  : dblclick,
+        rightclick: data.rightclick,
+      });
 
       if (this.psv.config.clickEventOnMarker) {
         // add the marker to event data

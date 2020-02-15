@@ -415,27 +415,29 @@
   });
 
   PSV.on('click', function(e, data) {
-    PSV.hud.addMarker({
-      id       : '#' + Math.random(),
-      tooltip  : 'Generated marker',
-      longitude: data.longitude,
-      latitude : data.latitude,
-      image    : 'assets/pin1.png',
-      width    : 32,
-      height   : 32,
-      anchor   : 'bottom center',
-      data     : {
-        deletable: true,
-      },
-    });
+    if (!data.rightclick) {
+      PSV.hud.addMarker({
+        id       : '#' + Math.random(),
+        tooltip  : 'Generated marker',
+        longitude: data.longitude,
+        latitude : data.latitude,
+        image    : 'assets/pin1.png',
+        width    : 32,
+        height   : 32,
+        anchor   : 'bottom center',
+        data     : {
+          deletable: true,
+        },
+      });
+    }
   });
 
-  PSV.on('select-marker', function(e, marker, dblclick) {
+  PSV.on('select-marker', function(e, marker, data) {
     if (marker.data && marker.data.deletable) {
-      if (dblclick) {
+      if (data.dblclick) {
         PSV.hud.removeMarker(marker);
       }
-      else {
+      else if (data.rightclick) {
         PSV.hud.updateMarker({
           id   : marker.id,
           image: 'assets/pin2.png',
