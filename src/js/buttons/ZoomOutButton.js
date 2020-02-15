@@ -19,7 +19,7 @@ export class ZoomOutButton extends AbstractZoomButton {
    * @param {PSV.components.Navbar} navbar
    */
   constructor(navbar) {
-    super(navbar, () => navbar.psv.zoomOut());
+    super(navbar, -1);
   }
 
 }

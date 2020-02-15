@@ -1075,18 +1075,14 @@ export class Viewer extends EventEmitter {
    * @summary Increases the zoom level by 1
    */
   zoomIn() {
-    if (this.prop.zoomLvl < 100) {
-      this.zoom(this.prop.zoomLvl + this.config.zoomButtonIncrement);
-    }
+    this.zoom(this.prop.zoomLvl + this.config.zoomButtonIncrement);
   }
 
   /**
    * @summary Decreases the zoom level by 1
    */
   zoomOut() {
-    if (this.prop.zoomLvl > 0) {
-      this.zoom(this.prop.zoomLvl - this.config.zoomButtonIncrement);
-    }
+    this.zoom(this.prop.zoomLvl - this.config.zoomButtonIncrement);
   }
 
   /**

@@ -189,9 +189,6 @@ export class ZoomRangeButton extends AbstractButton {
       return;
     }
 
-    clearInterval(this.prop.longPressInterval);
-    clearTimeout(this.prop.longPressTimeout);
-    this.prop.longPressInterval = null;
     this.prop.mousedown = false;
     this.prop.buttondown = false;
   }

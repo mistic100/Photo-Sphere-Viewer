@@ -1,3 +1,4 @@
+import { Animation } from '../Animation';
 import { SYSTEM } from '../data/system';
 import { AbstractButton } from './AbstractButton';
 
@@ -14,32 +15,27 @@ export class AbstractZoomButton extends AbstractButton {
 
   /**
    * @param {PSV.components.Navbar} navbar
-   * @param {Function} action
+   * @param {number} value
    */
-  constructor(navbar, action) {
+  constructor(navbar, value) {
     super(navbar, 'psv-button--hover-scale psv-zoom-button');
 
     /**
-     * @member {Function}
-     * @private
-     */
-    this.action = action;
-
-    /**
      * @override
+     * @property {number} value
      * @property {boolean} buttondown
-     * @property {*} longPressInterval
      * @property {*} longPressTimeout
+     * @property {PSV.Animation} longPressAnimation
      */
     this.prop = {
       ...this.prop,
-      buttondown       : false,
-      longPressInterval: null,
-      longPressTimeout : null,
+      value             : value,
+      buttondown        : false,
+      longPressTimeout  : null,
+      longPressAnimation: null,
     };
 
-    this.container.addEventListener('mousedown', this.__zoom.bind(this));
-
+    this.container.addEventListener('mousedown', this);
     this.psv.container.addEventListener('mouseup', this);
     this.psv.container.addEventListener('touchend', this);
   }
@@ -48,7 +44,7 @@ export class AbstractZoomButton extends AbstractButton {
    * @override
    */
   destroy() {
-    this.__stopZoomChange();
+    this.__onMouseUp();
 
     this.psv.container.removeEventListener('mouseup', this);
     this.psv.container.removeEventListener('touchend', this);
@@ -65,8 +61,10 @@ export class AbstractZoomButton extends AbstractButton {
     /* eslint-disable */
     switch (e.type) {
       // @formatter:off
-      case 'mouseup':  this.__stopZoomChange(e); break;
-      case 'touchend': this.__stopZoomChange(e); break;
+      case 'mousedown': return this.__onMouseDown();
+      case 'mouseup':   return this.__onMouseUp();
+      case 'touchend':  return this.__onMouseUp();
+      default: return;
       // @formatter:on
     }
     /* eslint-enable */
@@ -91,14 +89,13 @@ export class AbstractZoomButton extends AbstractButton {
    * @description Zooms in and register long press timer
    * @private
    */
-  __zoom() {
+  __onMouseDown() {
     if (!this.prop.enabled) {
       return;
     }
 
     this.prop.buttondown = true;
-    this.action();
-    this.prop.longPressTimeout = setTimeout(() => this.__startLongPressInterval(), 200);
+    this.prop.longPressTimeout = setTimeout(() => this.__startLongPressInterval(), 100);
   }
 
   /**
@@ -106,26 +103,45 @@ export class AbstractZoomButton extends AbstractButton {
    * @private
    */
   __startLongPressInterval() {
-    if (this.prop.buttondown) {
-      this.prop.longPressInterval = setInterval(() => {
-        this.action();
-      }, 50);
+    if (!this.prop.buttondown) {
+      return;
     }
+
+    const end = this.prop.value < 0 ? 0 : 100;
+
+    this.prop.longPressAnimation = new Animation({
+      properties: {
+        zoom: { start: this.psv.prop.zoomLvl, end: end },
+      },
+      duration  : 1500 * Math.abs(this.psv.prop.zoomLvl - end) / 100,
+      easing    : 'linear',
+      onTick    : (properties) => {
+        this.psv.zoom(properties.zoom);
+      },
+    });
   }
 
   /**
    * @summary Handles mouse up events
    * @private
    */
-  __stopZoomChange() {
-    if (!this.prop.enabled) {
+  __onMouseUp() {
+    if (!this.prop.enabled || !this.prop.buttondown) {
       return;
     }
 
-    clearInterval(this.prop.longPressInterval);
-    clearTimeout(this.prop.longPressTimeout);
-    this.prop.longPressInterval = null;
-    this.prop.mousedown = false;
+    if (this.prop.longPressAnimation) {
+      this.prop.longPressAnimation.cancel();
+      this.prop.longPressAnimation = null;
+    }
+    else {
+      this.psv.zoom(this.psv.prop.zoomLvl + this.prop.value * this.psv.config.zoomButtonIncrement);
+    }
+
+    if (this.prop.longPressTimeout) {
+      clearTimeout(this.prop.longPressTimeout);
+    }
+
     this.prop.buttondown = false;
   }
 
