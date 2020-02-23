@@ -37,7 +37,7 @@ export class TextureLoader extends AbstractService {
 
   /**
    * @summary Loads the panorama texture(s)
-   * @param {string|string[]} panorama
+   * @param {string|string[]|PSV.Cubemap} panorama
    * @param {PSV.PanoData} [newPanoData]
    * @returns {Promise.<PSV.TextureData>}
    * @fires PSV.panorama-load-progress
@@ -93,7 +93,7 @@ export class TextureLoader extends AbstractService {
     this.prop.isCubemap = false;
 
     if (this.config.cacheTexture) {
-      const cache = this.getPanoramaCache(panorama);
+      const cache = this.__getPanoramaCache(panorama);
 
       if (cache) {
         return Promise.resolve({
@@ -316,7 +316,7 @@ export class TextureLoader extends AbstractService {
 
       for (let i = 0; i < 6; i++) {
         if (this.config.cacheTexture) {
-          const cache = this.getPanoramaCache(panorama[i]);
+          const cache = this.__getPanoramaCache(panorama[i]);
 
           if (cache) {
             done++;
@@ -457,8 +457,9 @@ export class TextureLoader extends AbstractService {
    * @param {string} panorama
    * @returns {PSV.CacheItem}
    * @throws {PSV.PSVError} when the cache is disabled
+   * @private
    */
-  getPanoramaCache(panorama) {
+  __getPanoramaCache(panorama) {
     if (!this.config.cacheTexture) {
       throw new PSVError('Cannot query cache, cacheTexture is disabled');
     }
@@ -478,7 +479,7 @@ export class TextureLoader extends AbstractService {
       throw new PSVError('Cannot add panorama to cache, cacheTexture is disabled');
     }
 
-    const existingCache = this.getPanoramaCache(cache.panorama);
+    const existingCache = this.__getPanoramaCache(cache.panorama);
 
     if (existingCache) {
       existingCache.image = cache.image;

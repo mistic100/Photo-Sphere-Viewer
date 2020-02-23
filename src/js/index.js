@@ -77,6 +77,17 @@ export {
  */
 
 /**
+ * @typedef {Object} PSV.Cubemap
+ * @summary Object defining a cubemap
+ * @property {string} top
+ * @property {string} right
+ * @property {string} bottom
+ * @property {string} left
+ * @property {string} front
+ * @property {string} back
+ */
+
+/**
  * @typedef {PSV.AnimateOptions} PSV.PanoramaOptions
  * @summary Object defining panorama and animation options
  * @property {boolean} [transition=true] - enable transition between all and new panorama
@@ -130,6 +141,18 @@ export {
  * @summary Data of the `select-marker` event
  * @property {boolean} dblclick - if the selection originated from a double click, the simple click is always fired before the double click
  * @property {boolean} rightclick - if the selection originated from a right click
+ */
+
+/**
+ * @typedef {Object} PSV.NavbarCustomButton
+ * @summary Definition of a custom navbar button
+ * @property {string} [id]
+ * @property {string} [title]
+ * @property {string} [content]
+ * @property {string} [className]
+ * @property {function} onClick
+ * @property {boolean} [disabled=false]
+ * @property {boolean} [visible=true]
  */
 
 /**

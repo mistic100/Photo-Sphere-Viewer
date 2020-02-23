@@ -14,14 +14,7 @@ export class CustomButton extends AbstractButton {
 
   /**
    * @param {PSV.components.Navbar} navbar
-   * @param {Object} config
-   * @param {string} [config.id]
-   * @param {string} [config.className]
-   * @param {string} [config.title]
-   * @param {string} [config.content]
-   * @param {Function} [config.onClick]
-   * @param {boolean} [config.enabled=true]
-   * @param {boolean} [config.visible=true]
+   * @param {PSV.NavbarCustomButton} config
    */
   constructor(navbar, config) {
     super(navbar, 'psv-custom-button');

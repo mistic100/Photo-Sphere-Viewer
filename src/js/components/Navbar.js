@@ -68,7 +68,7 @@ export class Navbar extends AbstractComponent {
 
   /**
    * @summary Change the buttons visible on the navbar
-   * @param {string|Array<string|object>} buttons
+   * @param {string|Array<string|PSV.NavbarCustomButton>} buttons
    */
   setButtons(buttons) {
     this.children.slice().forEach(item => item.destroy());

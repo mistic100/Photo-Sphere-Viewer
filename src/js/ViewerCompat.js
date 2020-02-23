@@ -120,10 +120,6 @@ export class ViewerCompat extends Viewer {
     this.textureLoader.clearPanoramaCache(panorama);
   }
 
-  getPanoramaCache(panorama) {
-    return this.textureLoader.getPanoramaCache(panorama);
-  }
-
   // HUD
 
   addMarker(marker, render) {
