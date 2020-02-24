@@ -114,20 +114,19 @@ export class EventsHandler extends AbstractService {
     /* eslint-disable */
     switch (evt.type) {
       // @formatter:off
-      case 'resize':      return this.__onResize();
-      case 'keydown':     return this.__onKeyDown(evt);
-      case 'mousedown':   return this.__onMouseDown(evt);
-      case 'mouseenter':  return this.__onMouseEnter(evt);
-      case 'touchstart':  return this.__onTouchStart(evt);
-      case 'mouseup':     return this.__onMouseUp(evt);
-      case 'mouseleave':  return this.__onMouseLeave(evt);
-      case 'touchend':    return this.__onTouchEnd(evt);
-      case 'mousemove':   return this.__onMouseMove(evt);
-      case 'touchmove':   return this.__onTouchMove(evt);
-      case 'contextmenu': return this.__onContextMenu(evt);
-      case SYSTEM.fullscreenEvent: return this.__fullscreenToggled();
-      case SYSTEM.mouseWheelEvent: return this.__onMouseWheel(evt);
-      default: return;
+      case 'resize':      this.__onResize(); break;
+      case 'keydown':     this.__onKeyDown(evt); break;
+      case 'mousedown':   this.__onMouseDown(evt); break;
+      case 'mouseenter':  this.__onMouseEnter(evt); break;
+      case 'touchstart':  this.__onTouchStart(evt); break;
+      case 'mouseup':     this.__onMouseUp(evt); break;
+      case 'mouseleave':  this.__onMouseLeave(evt); break;
+      case 'touchend':    this.__onTouchEnd(evt); break;
+      case 'mousemove':   this.__onMouseMove(evt); break;
+      case 'touchmove':   this.__onTouchMove(evt); break;
+      case 'contextmenu': this.__onContextMenu(evt); break;
+      case SYSTEM.fullscreenEvent: this.__fullscreenToggled(); break;
+      case SYSTEM.mouseWheelEvent: this.__onMouseWheel(evt); break;
       // @formatter:on
     }
     /* eslint-enable */
@@ -228,10 +227,6 @@ export class EventsHandler extends AbstractService {
     }
 
     this.__stopMove(evt);
-
-    if (this.psv.isStereoEnabled()) {
-      this.psv.stopStereoView();
-    }
   }
 
   /**
@@ -452,6 +447,10 @@ export class EventsHandler extends AbstractService {
     if (this.state.moving) {
       // move threshold to trigger a click
       if (Math.abs(evt.clientX - this.state.startMouseX) < MOVE_THRESHOLD && Math.abs(evt.clientY - this.state.startMouseY) < MOVE_THRESHOLD) {
+        if (this.psv.isStereoEnabled()) {
+          this.psv.stopStereoView();
+        }
+
         this.__click(evt);
         this.state.moving = false;
       }

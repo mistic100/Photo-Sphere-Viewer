@@ -736,7 +736,7 @@ export class HUD extends AbstractComponent {
       this.prop.currentMarker = null;
     }
 
-    if (marker && marker.config.content) {
+    if (marker && marker.config && marker.config.content) {
       this.psv.panel.show({
         id     : IDS.MARKER,
         content: marker.config.content,

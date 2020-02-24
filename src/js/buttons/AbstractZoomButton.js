@@ -61,10 +61,9 @@ export class AbstractZoomButton extends AbstractButton {
     /* eslint-disable */
     switch (e.type) {
       // @formatter:off
-      case 'mousedown': return this.__onMouseDown();
-      case 'mouseup':   return this.__onMouseUp();
-      case 'touchend':  return this.__onMouseUp();
-      default: return;
+      case 'mousedown': this.__onMouseDown(); break;
+      case 'mouseup':   this.__onMouseUp(); break;
+      case 'touchend':  this.__onMouseUp(); break;
       // @formatter:on
     }
     /* eslint-enable */

@@ -49,6 +49,7 @@
     "jsdoc": "^3.6.3",
     "live-server": "^1.2.0",
     "mocha": "^7.0.0",
+    "ngrok": "^3.2.7",
     "node-sass": "^4.13.0",
     "nodemon": "^2.0.0",
     "nosleep.js": "^0.9.0",
@@ -77,6 +78,7 @@
     "test:eslint": "eslint src/js",
     "test:sasslint": "stylelint \"src/scss/**/*.scss\"",
     "start": "npm-run-all --parallel dev:**",
+    "start:remote": "ngrok http 8080",
     "dev:serve": "live-server --watch=dist,example --open=example",
     "dev:watch:js": "nodemon --watch src/ --ext js,svg,html --exec \"npm run compile:js\"",
     "dev:watch:css": "nodemon --watch src/ --ext scss --exec \"npm run compile:css\""
