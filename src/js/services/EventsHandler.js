@@ -1,5 +1,13 @@
 import { Animation } from '../Animation';
-import { ACTIONS, DBLCLICK_DELAY, EVENTS, IDS, INERTIA_WINDOW, MOVE_THRESHOLD } from '../data/constants';
+import {
+  ACTIONS,
+  DBLCLICK_DELAY,
+  EVENTS,
+  IDS,
+  INERTIA_WINDOW,
+  LONGTOUCH_DELAY,
+  MOVE_THRESHOLD
+} from '../data/constants';
 import { SYSTEM } from '../data/system';
 import { clone, distance, getClosest, getEventKey, isFullscreenEnabled, normalizeWheel, throttle } from '../utils';
 import { AbstractService } from './AbstractService';
@@ -33,17 +41,18 @@ export class EventsHandler extends AbstractService {
      * @protected
      */
     this.state = {
-      keyboardEnabled: false,
-      moving         : false,
-      zooming        : false,
-      startMouseX    : 0,
-      startMouseY    : 0,
-      mouseX         : 0,
-      mouseY         : 0,
-      mouseHistory   : [],
-      pinchDist      : 0,
-      dblclickData   : null,
-      dblclickTimeout: null,
+      keyboardEnabled : false,
+      moving          : false,
+      zooming         : false,
+      startMouseX     : 0,
+      startMouseY     : 0,
+      mouseX          : 0,
+      mouseY          : 0,
+      mouseHistory    : [],
+      pinchDist       : 0,
+      dblclickData    : null,
+      dblclickTimeout : null,
+      longtouchTimeout: null,
     };
 
     /**
@@ -99,6 +108,9 @@ export class EventsHandler extends AbstractService {
     if (SYSTEM.fullscreenEvent) {
       document.removeEventListener(SYSTEM.fullscreenEvent, this);
     }
+
+    clearTimeout(this.state.dblclickTimeout);
+    clearTimeout(this.state.longtouchTimeout);
 
     delete this.state;
 
@@ -276,8 +288,16 @@ export class EventsHandler extends AbstractService {
         this.__startMove(evt.touches[0]);
         evt.preventDefault(); // prevent mouse events emulation
       }
+
+      if (!this.prop.longtouchTimeout) {
+        this.prop.longtouchTimeout = setTimeout(() => {
+          this.__click(evt.touches[0], true);
+          this.prop.longtouchTimeout = null;
+        }, LONGTOUCH_DELAY);
+      }
     }
     else if (evt.touches.length === 2) {
+      this.__cancelLongTouch();
       this.__startMoveZoom(evt);
       evt.preventDefault();
     }
@@ -293,14 +313,18 @@ export class EventsHandler extends AbstractService {
       return;
     }
 
-    if (evt.touches.length === 1) {
-      this.__stopMoveZoom();
-    }
-    else if (evt.touches.length === 0) {
-      this.__stopMove(evt.changedTouches[0]);
+    if (this.prop.longtouchTimeout) {
+      this.__cancelLongTouch();
 
-      if (this.config.touchmoveTwoFingers) {
-        this.psv.overlay.hide(IDS.TWO_FINGERS);
+      if (evt.touches.length === 1) {
+        this.__stopMoveZoom();
+      }
+      else if (evt.touches.length === 0) {
+        this.__stopMove(evt.changedTouches[0]);
+
+        if (this.config.touchmoveTwoFingers) {
+          this.psv.overlay.hide(IDS.TWO_FINGERS);
+        }
       }
     }
   }
@@ -331,6 +355,17 @@ export class EventsHandler extends AbstractService {
     else if (evt.touches.length === 2) {
       evt.preventDefault();
       this.__moveZoom(evt);
+    }
+  }
+
+  /**
+   * @summary Cancel the long touch timer if any
+   * @private
+   */
+  __cancelLongTouch() {
+    if (this.prop.longtouchTimeout) {
+      clearTimeout(this.prop.longtouchTimeout);
+      this.prop.longtouchTimeout = null;
     }
   }
 
@@ -509,18 +544,19 @@ export class EventsHandler extends AbstractService {
   /**
    * @summary Triggers an event with all coordinates when a simple click is performed
    * @param {MouseEvent|Touch} evt
+   * @param {boolean} [longtouch=false]
    * @fires PSV.click
    * @fires PSV.dblclick
    * @private
    */
-  __click(evt) {
+  __click(evt, longtouch = false) {
     const boundingRect = this.psv.container.getBoundingClientRect();
 
     /**
      * @type {PSV.ClickData}
      */
     const data = {
-      rightclick: evt.button === 2,
+      rightclick: longtouch || evt.button === 2,
       target    : evt.target,
       clientX   : evt.clientX,
       clientY   : evt.clientY,

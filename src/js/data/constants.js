@@ -20,6 +20,13 @@ export const MOVE_THRESHOLD = 4;
 export const DBLCLICK_DELAY = 300;
 
 /**
+ * @summary Delay in milliseconds to emulate a long touch
+ * @type {number}
+ * @constant
+ */
+export const LONGTOUCH_DELAY = 500;
+
+/**
  * @summary Time size of the mouse position history used to compute inertia
  * @type {number}
  * @constant
