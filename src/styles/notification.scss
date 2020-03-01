@@ -1,0 +1,30 @@
+@import 'vars';
+
+.psv-notification {
+  position: absolute;
+  z-index: $psv-notification-zindex;
+  bottom: map-get($psv-notification-bottom, from);
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 2em;
+  opacity: 0;
+  transition-property: opacity, bottom;
+  transition-timing-function: ease-in-out;
+  transition-duration: $psv-notification-animate-delay;
+
+  &-content {
+    max-width: 50em;
+    background-color: $psv-notification-background-color;
+    border-radius: $psv-notification-radius;
+    padding: $psv-notification-padding;
+    font: $psv-notification-font;
+    color: $psv-notification-text-color;
+  }
+
+  &--visible {
+    opacity: 100;
+    bottom: map-get($psv-notification-bottom, to);
+  }
+}

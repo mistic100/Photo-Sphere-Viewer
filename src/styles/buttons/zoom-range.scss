@@ -1,0 +1,40 @@
+@import '../vars';
+
+.psv-zoom-range {
+  &.psv-button {
+    width: $psv-zoom-range-width;
+    height: $psv-zoom-range-tickness;
+    margin: $psv-buttons-padding 0;
+    padding: #{($psv-buttons-height - $psv-zoom-range-tickness) / 2} 0;
+    max-width: $psv-zoom-range-media-min-width; // trick for JS access
+  }
+
+  &-line {
+    position: relative;
+    width: $psv-zoom-range-width;
+    height: $psv-zoom-range-tickness;
+    background: $psv-buttons-color;
+    transition: all .3s ease;
+  }
+
+  &-handle {
+    position: absolute;
+    border-radius: 50%;
+    top: #{($psv-zoom-range-tickness - $psv-zoom-disk-diameter) / 2};
+    width: $psv-zoom-disk-diameter;
+    height: $psv-zoom-disk-diameter;
+    background: $psv-buttons-color;
+    transform: scale(1);
+    transition: transform .3s ease;
+  }
+
+  &:not(.psv-button--disabled):hover {
+    .psv-zoom-range-line {
+      box-shadow: 0 0 2px $psv-buttons-color;
+    }
+
+    .psv-zoom-range-handle {
+      transform: scale(1.3);
+    }
+  }
+}

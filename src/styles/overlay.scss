@@ -1,0 +1,39 @@
+@import 'vars';
+
+.psv-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  z-index: $psv-overlay-zindex;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: $psv-main-background;
+  opacity: $psv-overlay-opacity;
+
+  &-image {
+    margin-bottom: 4vh;
+
+    svg {
+      width: map-get($psv-overlay-image-size, portrait);
+
+      @media (orientation: landscape) { /* stylelint-disable-line scss/media-feature-value-dollar-variable */
+        width: map-get($psv-overlay-image-size, landscape);
+      }
+    }
+  }
+
+  &-text {
+    font: $psv-overlay-text-size $psv-overlay-font-family;
+    text-align: center;
+  }
+
+  &-subtext {
+    font: $psv-overlay-subtext-size $psv-overlay-font-family;
+    opacity: .8;
+    text-align: center;
+  }
+}

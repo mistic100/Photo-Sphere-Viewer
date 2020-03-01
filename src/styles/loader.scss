@@ -1,0 +1,49 @@
+@import 'vars';
+
+.psv-loader-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: $psv-loader-zindex;
+}
+
+// Pseudo element trick to vertically center elements
+.psv-loader {
+  position: relative;
+  text-align: center;
+  color: $psv-loader-color;
+  width: $psv-loader-width;
+  height: $psv-loader-width;
+  border: $psv-loader-tickness solid transparent;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+  }
+
+  &,
+  &-image,
+  &-text {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  &-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  &-text {
+    font: $psv-loader-font;
+  }
+}

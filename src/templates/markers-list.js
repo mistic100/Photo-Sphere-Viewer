@@ -1,5 +1,5 @@
-import { MARKER_DATA } from '../js/data/constants';
-import { dasherize } from '../js/utils';
+import { MARKER_DATA } from '../data/constants';
+import { dasherize } from '../utils';
 
 const HTML_MARKER_DATA = 'data-' + dasherize(MARKER_DATA);
 

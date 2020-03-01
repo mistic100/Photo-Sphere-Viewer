@@ -1,5 +1,5 @@
-import { BUTTON_DATA } from '../js/data/constants';
-import { dasherize } from '../js/utils';
+import { BUTTON_DATA } from '../data/constants';
+import { dasherize } from '../utils';
 
 const HTML_BUTTON_DATA = 'data-' + dasherize(BUTTON_DATA);
 
