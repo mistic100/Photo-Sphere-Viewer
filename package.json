@@ -4,7 +4,7 @@
   "description": "A JavaScript library to display Photo Sphere panoramas",
   "homepage": "https://photo-sphere-viewer.js.org",
   "main": "dist/photo-sphere-viewer.js",
-  "module": "src/js/index.js",
+  "module": "src/index.js",
   "files": [
     "src/",
     "dist/"
@@ -54,33 +54,30 @@
     "nodemon": "^2.0.0",
     "nosleep.js": "^0.9.0",
     "npm-run-all": "^4.1.3",
-    "postcss": "^7.0.23",
     "postcss-banner": "^3.0.0",
-    "postcss-cli": "^7.0.0",
     "promise-polyfill": "^8.1.3",
     "rollup": "^1.27.5",
+    "rollup-plugin-alias": "^2.2.0",
     "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-postcss": "^2.1.1",
     "rollup-plugin-string": "^3.0.0",
     "stylelint": "^13.0.0",
     "stylelint-config-standard": "^20.0.0",
     "stylelint-scss": "^3.13.0"
   },
   "scripts": {
-    "compile": "npm-run-all --parallel compile:*",
-    "compile:js": "rollup --config rollup.config.js",
-    "compile:css": "postcss src/scss/index.scss --output dist/photo-sphere-viewer.css",
+    "compile": "rollup --config rollup.config.js",
     "doc": "npm-run-all doc:*",
     "doc:clean": "rm -rf doc/*",
-    "doc:generate": "jsdoc --configure .jsdoc.json --destination doc src/js",
+    "doc:generate": "jsdoc --configure .jsdoc.json --destination doc src",
     "doc:post": "cp build/jsdoc.js doc/js/custom.js && cp build/jsdoc.css doc/css/custom.css",
     "test": "npm-run-all --parallel test:*",
-    "test:mocha": "mocha --require @babel/register --recursive tests",
-    "test:eslint": "eslint src/js",
-    "test:sasslint": "stylelint \"src/scss/**/*.scss\"",
+    "test:mocha": "mocha --require @babel/register --recursive \"src/**/*.spec.js\"",
+    "test:eslint": "eslint src --ignore-pattern \"*.spec.js\"",
+    "test:sasslint": "stylelint \"src/**/*.scss\"",
     "start": "npm-run-all --parallel dev:**",
     "start:remote": "ngrok http 8080",
     "dev:serve": "live-server --watch=dist,example --open=example",
-    "dev:watch:js": "nodemon --watch src/ --ext js,svg,html --exec \"npm run compile:js\"",
-    "dev:watch:css": "nodemon --watch src/ --ext scss --exec \"npm run compile:css\""
+    "dev:watch": "nodemon --watch src/ --ext js,scss,svg,html --exec \"npm run compile\""
   }
 }

@@ -1,0 +1,80 @@
+@import 'vars';
+
+.psv-navbar {
+  display: flex;
+  position: absolute;
+  z-index: $psv-navbar-zindex;
+  bottom: -$psv-navbar-height;
+  left: 0;
+  width: 100%;
+  height: $psv-navbar-height;
+  background: $psv-navbar-background;
+  transition: bottom ease-in-out .1s;
+
+  &--open {
+    bottom: 0;
+  }
+
+  &,
+  & * {
+    box-sizing: content-box;
+  }
+}
+
+.psv-caption {
+  flex: 1 1 100%;
+  color: $psv-caption-color;
+  overflow: hidden;
+  text-align: center;
+
+  &-icon {
+    height: $psv-buttons-height;
+    width: $psv-buttons-height;
+    cursor: pointer;
+
+    * {
+      fill: $psv-buttons-color;
+    }
+  }
+
+  &-content {
+    display: inline-block;
+    padding: $psv-buttons-padding;
+    font: $psv-caption-font;
+    white-space: nowrap;
+  }
+}
+
+.psv-button {
+  flex: 0 0 auto;
+  padding: $psv-buttons-padding;
+  position: relative;
+  cursor: pointer;
+  height: $psv-buttons-height;
+  width: $psv-buttons-height;
+  background: $psv-buttons-background;
+  color: $psv-buttons-color;
+
+  &--active {
+    background: $psv-buttons-active-background;
+  }
+
+  &--disabled {
+    pointer-events: none;
+    opacity: $psv-buttons-disabled-opacity;
+  }
+
+  .psv-button-svg {
+    width: 100%;
+    transform: scale(1);
+    transition: transform $psv-buttons-hover-scale-delay ease;
+
+    * {
+      fill: currentColor;
+    }
+  }
+}
+
+.psv-container:not(.psv--is-touch) .psv-button--hover-scale:not(.psv-button--disabled):hover .psv-button-svg {
+  transform: scale($psv-buttons-hover-scale);
+}

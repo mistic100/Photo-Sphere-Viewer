@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PhotoSphereViewer - compatibility demo</title>
+  <title>PhotoSphereViewer - plugins demo</title>
 
   <link rel="stylesheet" href="../dist/photo-sphere-viewer.css">
+  <link rel="stylesheet" href="../dist/plugins/example-plugin.css">
 
   <style>
     html, body {
@@ -27,22 +28,21 @@
 <div id="photosphere"></div>
 
 <script src="../node_modules/three/build/three.js"></script>
+<script src="../node_modules/promise-polyfill/dist/polyfill.js"></script>
 <script src="../node_modules/uevent/browser.js"></script>
 <script src="../dist/photo-sphere-viewer.js"></script>
-<script src="../dist/viewer-compat.js"></script>
+<script src="../dist/plugins/example-plugin.js"></script>
 
 <script>
-  const PSV = new PhotoSphereViewer.ViewerCompat({
+  const PSV = new PhotoSphereViewer.Viewer({
     container      : 'photosphere',
     panorama       : 'Bryce-Canyon-National-Park-Mark-Doliner.jpg',
     caption        : 'Bryce Canyon National Park <b>&copy; Mark Doliner</b>',
-    loading_img    : 'assets/photosphere-logo.gif',
-    longitude_range: [-7 * Math.PI / 8, 7 * Math.PI / 8],
-    latitude_range : [-3 * Math.PI / 4, 3 * Math.PI / 4],
-    time_anim      : false,
-    anim_speed     : '-2rpm',
-    default_fov    : 50,
+    loadingImg     : 'assets/photosphere-logo.gif',
+    defaultZoomLvl : 50,
   });
+
+  new PhotoSphereViewer.ExamplePlugin(PSV);
 </script>
 </body>
 </html>

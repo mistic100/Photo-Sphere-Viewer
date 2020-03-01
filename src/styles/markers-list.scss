@@ -1,0 +1,70 @@
+@import 'vars';
+
+.psv-markers-list-title {
+  font: $psv-markers-list-title-font;
+  margin: 1em 0;
+  text-align: center;
+  text-shadow: $psv-markers-list-title-shadow;
+}
+
+.psv-markers-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+
+  &-item {
+    clear: both;
+    min-height: $psv-markers-list-image-size;
+    padding: $psv-markers-list-padding;
+    cursor: pointer;
+    transform: translateX(0);
+    transition: transform .3s ease-in-out;
+
+    // pseudo-element used to fill the gap of the hover translation
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: $psv-markers-list-hover-translation;
+      margin-left: -$psv-markers-list-hover-translation;
+    }
+
+    &:nth-child(odd),
+    &:nth-child(odd)::before {
+      background: $psv-markers-list-odd-background;
+    }
+
+    &:nth-child(even),
+    &:nth-child(even)::before {
+      background: $psv-markers-list-even-background;
+    }
+  }
+
+  &-image {
+    float: left;
+    width: $psv-markers-list-image-size;
+  }
+
+  .psv-button-svg {
+    * {
+      fill: currentColor;
+    }
+  }
+
+  &-name {
+    margin: 0;
+    padding: 0;
+  }
+
+  &-image + &-name {
+    padding-left: calc(#{$psv-markers-list-image-size} + #{nth($psv-markers-list-padding, 1)});
+  }
+}
+
+.psv-container:not(.psv--is-touch) .psv-markers-list-item:hover {
+  transform: translateX($psv-markers-list-hover-translation);
+  transition: transform .1s ease-in-out;
+}

@@ -1,0 +1,9 @@
+@import '../vars';
+
+.psv-autorotate-button {
+  &.psv-button {
+    width: #{$psv-buttons-height + $psv-buttons-padding / 2};
+    height: #{$psv-buttons-height + $psv-buttons-padding / 2};
+    padding: #{$psv-buttons-padding / 4 * 3};
+  }
+}

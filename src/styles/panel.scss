@@ -1,0 +1,146 @@
+@import 'vars';
+
+/* stylelint-disable scss/no-duplicate-dollar-variables */
+@function make-dot-shadow($color, $width, $height) {
+  $val: 1px 0 $color;
+  $x: 3;
+  $y: 0;
+  $w: $width / 1px;
+  $h: $height / 1px;
+
+  @while $y < $h {
+    @if $x > $w {
+      $x: 1;
+      $y: $y + 2;
+    } @else {
+      $val: #{$val}, #{$x}px #{$y}px #{$color};
+      $x: $x + 2;
+    }
+  }
+
+  @return $val;
+}
+/* stylelint-enable */
+
+.psv-panel {
+  position: absolute;
+  z-index: $psv-panel-zindex;
+  right: 0;
+  height: 100%;
+  width: $psv-panel-width;
+  max-width: calc(100% - #{$psv-panel-close-button-width});
+  background: $psv-panel-background;
+  transform: translate3d(100%, 0, 0);
+  opacity: 0;
+  transition-property: opacity, transform;
+  transition-timing-function: ease-in-out;
+  transition-duration: .1s;
+  cursor: default;
+  margin-left: $psv-panel-resizer-width;
+
+  .psv--has-navbar & {
+    height: calc(100% - #{$psv-buttons-height + 2 * $psv-buttons-padding});
+  }
+
+  &-close-button {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: -$psv-panel-close-button-width;
+    width: $psv-panel-close-button-width;
+    height: $psv-panel-close-button-width;
+    background: $psv-panel-close-button-background;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 4px;
+      width: $psv-panel-close-button-width - 9px;
+      height: 1px;
+      background-color: $psv-panel-close-button-color;
+      transition: .2s ease-in-out;
+      transition-property: width, left, transform;
+    }
+
+    &::before {
+      transform: rotate(45deg);
+    }
+
+    &::after {
+      transform: rotate(-45deg);
+    }
+
+    &:hover {
+      &::before,
+      &::after {
+        left: 0;
+        width: $psv-panel-close-button-width - 1px;
+      }
+
+      &::before {
+        transform: rotate(135deg);
+      }
+
+      &::after {
+        transform: rotate(45deg);
+      }
+    }
+  }
+
+  &-resizer {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: -$psv-panel-resizer-width;
+    width: $psv-panel-resizer-width;
+    height: 100%;
+    background-color: $psv-panel-resizer-background;
+    cursor: col-resize;
+
+    $psv-panel-resizer-grip-width: $psv-panel-resizer-width - 4px;
+    @if $psv-panel-resizer-grip-width > 0 {
+      &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: ($psv-panel-resizer-width - $psv-panel-resizer-grip-width) / 2 - 1px;
+        margin-top: (-$psv-panel-resizer-grip-height / 2);
+        width: 1px;
+        height: 1px;
+        box-shadow: make-dot-shadow($psv-panel-resizer-grip-color, $psv-panel-resizer-grip-width, $psv-panel-resizer-grip-height);
+        background: transparent;
+      }
+    }
+  }
+
+  &-content {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    color: $psv-panel-text-color;
+    font: $psv-panel-font;
+    overflow: auto;
+
+    &:not(&--no-margin) {
+      padding: $psv-panel-padding;
+    }
+
+    &--no-interaction {
+      user-select: none;
+      pointer-events: none;
+    }
+  }
+
+  &--open {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+    transition-duration: .2s;
+
+    .psv-panel-close-button,
+    .psv-panel-resizer {
+      display: block;
+    }
+  }
+}

@@ -1,0 +1,31 @@
+@import 'vars';
+
+.psv-container {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  background: $psv-main-background;
+  overflow: hidden;
+}
+
+.psv-container--fullscreen {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.psv-canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: $psv-canvas-zindex;
+  transition: opacity linear 100ms;
+}
+
+.psv-canvas {
+  display: block;
+}
