@@ -20,10 +20,9 @@ const cssBanner = `Photo Sphere Viewer ${pkg.version}
 @licence MIT (https://opensource.org/licenses/MIT)`;
 
 function camelize(str) {
-  return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
-    if (+match === 0) return '';
-    return match.toUpperCase();
-  });
+  return str
+    .replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, m => m.toUpperCase())
+    .replace(/(?:\W|_)/g, '');
 }
 
 const baseConfig = {
