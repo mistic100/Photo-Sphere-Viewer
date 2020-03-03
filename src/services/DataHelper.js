@@ -297,7 +297,7 @@ export class DataHelper extends AbstractService {
     const lengths = [];
 
     for (let i = 0; i < polyline.length - 1; i++) {
-      const l = this.__greatArcDistance(polyline[i], polyline[i + 1]);
+      const l = this.greatArcDistance(polyline[i], polyline[i + 1]);
 
       lengths.push(l);
       length += l;
@@ -322,12 +322,11 @@ export class DataHelper extends AbstractService {
 
   /**
    * Returns the distance between two points on the sphere
-   * @param p1
-   * @param p2
+   * @param {number[]} p1
+   * @param {number[]} p2
    * @returns {number}
-   * @private
    */
-  __greatArcDistance(p1, p2) {
+  greatArcDistance(p1, p2) {
     const [λ1, φ1] = p1;
     const [λ2, φ2] = p2;
 
@@ -349,7 +348,7 @@ export class DataHelper extends AbstractService {
     const [λ1, φ1] = p1;
     const [λ2, φ2] = p2;
 
-    const r = this.__greatArcDistance(p1, p2);
+    const r = this.greatArcDistance(p1, p2);
     const a = Math.sin((1 - f) * r) / Math.sin(r / SPHERE_RADIUS);
     const b = Math.sin(f * r) / Math.sin(r);
     const x = a * Math.cos(φ1) * Math.cos(λ1) + b * Math.cos(φ2) * Math.cos(λ2);
