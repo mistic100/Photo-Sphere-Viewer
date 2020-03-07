@@ -1,5 +1,6 @@
 import { AbstractButton } from './AbstractButton';
 import { EVENTS } from '../data/constants';
+import info from '../icons/info.svg';
 
 /**
  * @summary Navigation bar caption button class
@@ -13,7 +14,7 @@ export class CaptionButton extends AbstractButton {
   }
 
   static get icon() {
-    return 'info';
+    return info;
   }
 
   get collapsable() {

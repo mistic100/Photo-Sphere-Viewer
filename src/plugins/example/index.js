@@ -15,14 +15,10 @@ export default class ExamplePlugin extends AbstractPlugin {
 
   /**
    * @param {PSV.Viewer} psv
-   * @param {*} options
    */
-  constructor(psv, options) {
+  constructor(psv) {
     super(psv);
-    this.options = options;
-  }
 
-  init() {
     this.psv.on(CONSTANTS.EVENTS.POSITION_UPDATED, this);
 
     this.container = document.createElement('div');
@@ -35,8 +31,6 @@ export default class ExamplePlugin extends AbstractPlugin {
 
   destroy() {
     this.psv.off(CONSTANTS.EVENTS.POSITION_UPDATED, this);
-
-    delete this.options;
 
     super.destroy();
   }

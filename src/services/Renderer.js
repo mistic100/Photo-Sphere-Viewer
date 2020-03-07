@@ -1,8 +1,8 @@
 import * as THREE from 'three';
+import { Animation } from '../Animation';
 import { CUBE_VERTICES, EVENTS, SPHERE_RADIUS, SPHERE_VERTICES } from '../data/constants';
 import { SYSTEM } from '../data/system';
-import { Animation } from '../Animation';
-import { cleanTHREEScene, getShortestArc, logWarn } from '../utils';
+import { cleanTHREEScene, logWarn } from '../utils';
 import { AbstractService } from './AbstractService';
 
 /**
@@ -32,17 +32,11 @@ export class Renderer extends AbstractService {
     this.canvasContainer = null;
 
     /**
-     * @member {external:THREE.WebGLRenderer | external:THREE.CanvasRenderer}
+     * @member {external:THREE.WebGLRenderer}
      * @readonly
      * @protected
      */
     this.renderer = null;
-
-    /**
-     * @member {external:THREE.StereoEffect}
-     * @protected
-     */
-    this.stereoEffect = null;
 
     /**
      * @member {external:THREE.Scene}
@@ -72,16 +66,9 @@ export class Renderer extends AbstractService {
      */
     this.raycaster = null;
 
-    /**
-     * @member {external:THREE.DeviceOrientationControls}
-     * @readonly
-     * @protected
-     */
-    this.doControls = null;
-
     psv.on(EVENTS.SIZE_UPDATED, (e, size) => {
       if (this.renderer) {
-        (this.stereoEffect || this.renderer).setSize(size.width, size.height);
+        this.renderer.setSize(size.width, size.height);
       }
     });
   }
@@ -100,10 +87,6 @@ export class Renderer extends AbstractService {
       cleanTHREEScene(this.scene);
     }
 
-    if (this.doControls) {
-      this.doControls.disconnect();
-    }
-
     // remove container
     if (this.canvasContainer) {
       this.psv.container.removeChild(this.canvasContainer);
@@ -111,12 +94,10 @@ export class Renderer extends AbstractService {
 
     delete this.canvasContainer;
     delete this.renderer;
-    delete this.stereoEffect;
     delete this.scene;
     delete this.camera;
     delete this.mesh;
     delete this.raycaster;
-    delete this.doControls;
 
     super.destroy();
   }
@@ -181,7 +162,7 @@ export class Renderer extends AbstractService {
     this.camera.fov = this.prop.vFov;
     this.camera.updateProjectionMatrix();
 
-    (this.stereoEffect || this.renderer).render(this.scene, this.camera);
+    this.renderer.render(this.scene, this.camera);
 
     /**
      * @event render
@@ -259,10 +240,6 @@ export class Renderer extends AbstractService {
 
     this.camera = new THREE.PerspectiveCamera(this.prop.vFov, this.prop.size.width / this.prop.size.height, 1, 3 * SPHERE_RADIUS);
     this.camera.position.set(0, 0, 0);
-
-    if (SYSTEM.checkTHREE('DeviceOrientationControls')) {
-      this.doControls = new THREE.DeviceOrientationControls(this.camera);
-    }
 
     this.scene = new THREE.Scene();
     this.scene.add(this.camera);
@@ -475,60 +452,6 @@ export class Renderer extends AbstractService {
         this.config.longitudeRange = range;
         this.config.autorotateSpeed = newSpeed;
       });
-  }
-
-  /**
-   * @summary Attaches the {@link DeviceOrientationControls} to the camera
-   * @package
-   */
-  startGyroscopeControl() {
-    // compute the alpha offset to keep the current orientation
-    this.doControls.alphaOffset = 0;
-    this.doControls.update();
-
-    const direction = this.camera.getWorldDirection(new THREE.Vector3());
-    const sphericalDirection = this.psv.dataHelper.vector3ToSphericalCoords(direction);
-    this.prop.gyroAlphaOffset = getShortestArc(this.prop.position.longitude, sphericalDirection.longitude);
-
-    this.prop.orientationCb = () => {
-      this.doControls.alphaOffset = this.prop.gyroAlphaOffset;
-      this.doControls.update();
-
-      this.camera.getWorldDirection(this.prop.direction);
-      this.prop.direction.multiplyScalar(SPHERE_RADIUS);
-
-      const sphericalCoords = this.psv.dataHelper.vector3ToSphericalCoords(this.prop.direction);
-      this.prop.position.longitude = sphericalCoords.longitude;
-      this.prop.position.latitude = sphericalCoords.latitude;
-      this.psv.needsUpdate();
-    };
-
-    this.psv.on(EVENTS.BEFORE_RENDER, this.prop.orientationCb);
-  }
-
-  /**
-   * @summary Destroys the {@link DeviceOrientationControls}
-   * @package
-   */
-  stopGyroscopeControl() {
-    this.psv.off(EVENTS.BEFORE_RENDER, this.prop.orientationCb);
-    this.prop.orientationCb = null;
-  }
-
-  /**
-   * @summary Attaches the {@link StereoEffect} to the renderer
-   * @package
-   */
-  startStereoView() {
-    this.stereoEffect = new THREE.StereoEffect(this.renderer);
-  }
-
-  /**
-   * @summary Destroys the {@link StereoEffect}
-   * @package
-   */
-  stopStereoView() {
-    this.stereoEffect = null;
   }
 
 }

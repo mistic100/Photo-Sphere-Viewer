@@ -55,26 +55,20 @@ export const DEFAULTS = {
     'markers',
     'markersList',
     'caption',
-    'gyroscope',
-    'stereo',
     'fullscreen',
   ],
   lang               : {
-    autorotate        : 'Automatic rotation',
-    zoom              : 'Zoom',
-    zoomOut           : 'Zoom out',
-    zoomIn            : 'Zoom in',
-    download          : 'Download',
-    fullscreen        : 'Fullscreen',
-    markers           : 'Markers',
-    markersList       : 'Markers list',
-    menu              : 'Menu',
-    gyroscope         : 'Gyroscope',
-    stereo            : 'Stereo view',
-    stereoNotification: 'Click anywhere to exit stereo view.',
-    pleaseRotate      : ['Please rotate your device', '(or tap to continue)'],
-    twoFingers        : ['Use two fingers to navigate'],
-    loadError         : 'The panorama can\'t be loaded',
+    autorotate : 'Automatic rotation',
+    zoom       : 'Zoom',
+    zoomOut    : 'Zoom out',
+    zoomIn     : 'Zoom in',
+    download   : 'Download',
+    fullscreen : 'Fullscreen',
+    markers    : 'Markers',
+    markersList: 'Markers list',
+    menu       : 'Menu',
+    twoFingers : ['Use two fingers to navigate'],
+    loadError  : 'The panorama can\'t be loaded',
   },
   keyboard           : {
     'ArrowUp'   : ACTIONS.ROTATE_LAT_UP,
@@ -87,9 +81,8 @@ export const DEFAULTS = {
     '-'         : ACTIONS.ZOOM_OUT,
     ' '         : ACTIONS.TOGGLE_AUTOROTATE,
   },
-  templates          : {},
-  icons              : {},
   markers            : [],
+  plugins            : [],
 };
 
 /**
@@ -100,8 +93,7 @@ export const READONLY_OPTIONS = {
   panorama : 'Use setPanorama method to change the panorama',
   panoData : 'Use setPanorama method to change the panorama',
   container: 'Cannot change viewer container',
-  templates: 'Cannot change templates',
-  icons    : 'Cannot change icons',
+  plugins  : 'Cannot change plugins',
 };
 
 /**
@@ -211,6 +203,16 @@ export const CONFIG_PARSERS = {
       return 0;
     }
     return fisheye;
+  },
+  plugins        : (plugins) => {
+    return plugins.map((plugin) => {
+      if (Array.isArray(plugin)) {
+        return plugin;
+      }
+      else {
+        return [plugin];
+      }
+    });
   },
 };
 

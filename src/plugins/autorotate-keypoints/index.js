@@ -18,22 +18,13 @@ import { AbstractPlugin, CONSTANTS, PSVError, utils } from 'photo-sphere-viewer'
 /**
  * @summary Number of steps between each points
  * @type {number}
- * @memberOf PSV.plugins.AutorotateKeypointsPlugin
  * @constant
+ * @private
  */
 const NUM_STEPS = 16;
 
-/**
- * @summary Default options
- * @type {PSV.plugins.AutorotateKeypointsPlugin.Options}
- * @memberOf PSV.plugins.AutorotateKeypointsPlugin
- * @constant
- */
-const DEFAULTS = {
-  startFromClosest: true,
-};
-
 const serializePt = position => [position.longitude, position.latitude];
+
 
 /**
  * @summary Replace the standard autorotate animations by a smooth transition between multiple points
@@ -45,6 +36,16 @@ export default class AutorotateKeypointsPlugin extends AbstractPlugin {
   static get id() {
     return 'autorotate-keypoints';
   }
+
+  /**
+   * @summary Default options
+   * @type {PSV.plugins.AutorotateKeypointsPlugin.Options}
+   * @memberOf PSV.plugins.AutorotateKeypointsPlugin
+   * @constant
+   */
+  static DEFAULTS = {
+    startFromClosest: true,
+  };
 
   /**
    * @param {PSV.Viewer} psv
@@ -73,7 +74,7 @@ export default class AutorotateKeypointsPlugin extends AbstractPlugin {
      * @private
      */
     this.config = {
-      ...DEFAULTS,
+      ...AutorotateKeypointsPlugin.DEFAULTS,
       ...options,
       keypoints: null,
     };
@@ -81,17 +82,12 @@ export default class AutorotateKeypointsPlugin extends AbstractPlugin {
     if (options && options.keypoints) {
       this.setKeypoints(options.keypoints);
     }
-  }
 
-  init() {
-    super.init();
 
     this.psv.on(CONSTANTS.EVENTS.AUTOROTATE, this);
   }
 
   destroy() {
-    this.psv.stopAutorotate();
-
     this.psv.off(CONSTANTS.EVENTS.AUTOROTATE, this);
 
     delete this.keypoints;

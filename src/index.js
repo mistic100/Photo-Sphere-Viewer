@@ -1,23 +1,23 @@
-import * as utils from './utils';
-import { DEFAULTS } from './data/config';
-import { TEMPLATES } from './data/templates';
-import * as CONSTANTS from './data/constants';
-import { ICONS } from './data/icons';
-import { SYSTEM } from './data/system';
-import { PSVError } from './PSVError';
 import { Animation } from './Animation';
-import { Viewer } from './Viewer';
+import { AbstractButton } from './buttons/AbstractButton';
+import { registerButton } from './components/Navbar';
+import { DEFAULTS } from './data/config';
+import * as CONSTANTS from './data/constants';
+import { SYSTEM } from './data/system';
 import { AbstractPlugin } from './plugins/AbstractPlugin';
+import { PSVError } from './PSVError';
+import * as utils from './utils';
+import { Viewer } from './Viewer';
 
 export {
+  AbstractButton,
   AbstractPlugin,
   Animation,
   CONSTANTS,
   DEFAULTS,
-  ICONS,
   PSVError,
+  registerButton,
   SYSTEM,
-  TEMPLATES,
   Viewer,
   utils
 };

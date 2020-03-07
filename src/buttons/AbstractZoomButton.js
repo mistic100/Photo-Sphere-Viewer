@@ -72,7 +72,7 @@ export class AbstractZoomButton extends AbstractButton {
   /**
    * @override
    */
-  checkSupported() {
+  isSupported() {
     return { initial: true, promise: SYSTEM.isTouchEnabled.then(enabled => !enabled) };
   }
 

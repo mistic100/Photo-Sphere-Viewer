@@ -1,4 +1,6 @@
 import { BUTTON_DATA, EVENTS, IDS } from '../data/constants';
+import menuIcon from '../icons/menu.svg';
+import menuTemplate from '../templates/menu';
 import { getClosest } from '../utils';
 import { AbstractButton } from './AbstractButton';
 
@@ -14,7 +16,7 @@ export class MenuButton extends AbstractButton {
   }
 
   static get icon() {
-    return 'menu';
+    return menuIcon;
   }
 
   get collapsable() {
@@ -94,7 +96,7 @@ export class MenuButton extends AbstractButton {
   __showMenu() {
     this.psv.panel.show({
       id          : IDS.MENU,
-      content     : this.psv.templates.menu(this.parent.collapsed, this.psv),
+      content     : menuTemplate(this.parent.collapsed, this.psv),
       noMargin    : true,
       clickHandler: (e) => {
         const li = e.target ? getClosest(e.target, 'li') : undefined;

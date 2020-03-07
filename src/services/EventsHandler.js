@@ -9,6 +9,7 @@ import {
   MOVE_THRESHOLD
 } from '../data/constants';
 import { SYSTEM } from '../data/system';
+import gestureIcon from '../icons/gesture.svg';
 import { clone, distance, getClosest, getEventKey, isFullscreenEnabled, normalizeWheel, throttle } from '../utils';
 import { AbstractService } from './AbstractService';
 
@@ -343,7 +344,7 @@ export class EventsHandler extends AbstractService {
       if (this.config.touchmoveTwoFingers) {
         this.psv.overlay.show({
           id   : IDS.TWO_FINGERS,
-          image: this.psv.icons.gesture,
+          image: gestureIcon,
           text : this.config.lang.twoFingers[0],
         });
       }
@@ -482,15 +483,11 @@ export class EventsHandler extends AbstractService {
     if (this.state.moving) {
       // move threshold to trigger a click
       if (Math.abs(evt.clientX - this.state.startMouseX) < MOVE_THRESHOLD && Math.abs(evt.clientY - this.state.startMouseY) < MOVE_THRESHOLD) {
-        if (this.psv.isStereoEnabled()) {
-          this.psv.stopStereoView();
-        }
-
         this.__click(evt);
         this.state.moving = false;
       }
       // inertia animation
-      else if (this.config.moveInertia && !this.psv.isGyroscopeEnabled()) {
+      else if (this.config.moveInertia) {
         this.__logMouseMove(evt);
         this.__stopMoveInertia(evt);
       }
@@ -631,15 +628,10 @@ export class EventsHandler extends AbstractService {
         latitude : (y - this.state.mouseY) / this.prop.size.height * this.prop.moveSpeed * this.prop.vFov * SYSTEM.pixelRatio,
       };
 
-      if (this.psv.isGyroscopeEnabled()) {
-        this.prop.gyroAlphaOffset += rotation.longitude;
-      }
-      else {
-        this.psv.rotate({
-          longitude: this.prop.position.longitude - rotation.longitude,
-          latitude : this.prop.position.latitude + rotation.latitude,
-        });
-      }
+      this.psv.rotate({
+        longitude: this.prop.position.longitude - rotation.longitude,
+        latitude : this.prop.position.latitude + rotation.latitude,
+      });
 
       this.state.mouseX = x;
       this.state.mouseY = y;

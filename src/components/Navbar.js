@@ -2,23 +2,40 @@ import { AutorotateButton } from '../buttons/AutorotateButton';
 import { CustomButton } from '../buttons/CustomButton';
 import { DownloadButton } from '../buttons/DownloadButton';
 import { FullscreenButton } from '../buttons/FullscreenButton';
-import { GyroscopeButton } from '../buttons/GyroscopeButton';
 import { MarkersButton } from '../buttons/MarkersButton';
 import { MarkersListButton } from '../buttons/MarkersListButton';
 import { MenuButton } from '../buttons/MenuButton';
-import { StereoButton } from '../buttons/StereoButton';
 import { ZoomInButton } from '../buttons/ZoomInButton';
 import { ZoomOutButton } from '../buttons/ZoomOutButton';
 import { ZoomRangeButton } from '../buttons/ZoomRangeButton';
+import { DEFAULTS } from '../data/config';
 import { PSVError } from '../PSVError';
+import '../styles/navbar.scss';
 import { clone, logWarn } from '../utils';
 import { AbstractComponent } from './AbstractComponent';
 import { NavbarCaption } from './NavbarCaption';
-import { DEFAULTS } from '../data/config';
 
-import '../styles/navbar.scss';
+/**
+ * @summary List of available buttons
+ * @type {Object<string, typeof PSV.buttons.AbstractButton>}
+ * @private
+ */
+const AVAILABLE_BUTTONS = {};
 
-const STANDARD_BUTTONS = [
+/**
+ * @summary Register a new button available for all viewers
+ * @param {typeof PSV.buttons.AbstractButton} button
+ * @memberOf PSV
+ */
+export function registerButton(button) {
+  if (!button.id) {
+    throw new PSVError('Button ID is required');
+  }
+
+  AVAILABLE_BUTTONS[button.id] = button;
+}
+
+[
   AutorotateButton,
   ZoomInButton,
   ZoomRangeButton,
@@ -27,14 +44,7 @@ const STANDARD_BUTTONS = [
   MarkersButton,
   MarkersListButton,
   FullscreenButton,
-  StereoButton,
-  GyroscopeButton,
-];
-
-const STANDARD_BUTTONS_BY_ID = STANDARD_BUTTONS.reduce((map, item) => {
-  map[item.id] = item;
-  return map;
-}, {});
+].forEach(registerButton);
 
 /**
  * @summary Navigation bar class
@@ -62,10 +72,6 @@ export class Navbar extends AbstractComponent {
      * @private
      */
     this.collapsed = [];
-
-    if (this.psv.config.navbar) {
-      this.setButtons(this.psv.config.navbar);
-    }
   }
 
   /**
@@ -81,8 +87,8 @@ export class Navbar extends AbstractComponent {
       if (typeof button === 'object') {
         new CustomButton(this, button);
       }
-      else if (STANDARD_BUTTONS_BY_ID[button]) {
-        new STANDARD_BUTTONS_BY_ID[button](this);
+      else if (AVAILABLE_BUTTONS[button]) {
+        new AVAILABLE_BUTTONS[button](this);
       }
       else if (button === 'caption') {
         new NavbarCaption(this, this.psv.config.caption);
@@ -99,6 +105,12 @@ export class Navbar extends AbstractComponent {
 
     new MenuButton(this);
     /* eslint-enable no-new */
+
+    this.children.forEach((item) => {
+      if (typeof item.checkSupported === 'function') {
+        item.checkSupported();
+      }
+    });
   }
 
   /**
@@ -218,7 +230,7 @@ export class Navbar extends AbstractComponent {
       return buttons.split(/[ ,]/);
     }
     else {
-      return buttons;
+      return buttons || [];
     }
   }
 

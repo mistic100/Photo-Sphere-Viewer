@@ -1,4 +1,5 @@
 import { AbstractZoomButton } from './AbstractZoomButton';
+import zoomIn from '../icons/zoom-in.svg';
 
 /**
  * @summary Navigation bar zoom-in button class
@@ -12,7 +13,7 @@ export class ZoomInButton extends AbstractZoomButton {
   }
 
   static get icon() {
-    return 'zoomIn';
+    return zoomIn;
   }
 
   /**

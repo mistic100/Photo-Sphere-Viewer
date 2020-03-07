@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import alias from 'rollup-plugin-alias';
 import babel from 'rollup-plugin-babel';
+import inject from 'rollup-plugin-inject';
 import postcss from 'rollup-plugin-postcss'
 import { string } from 'rollup-plugin-string';
 
@@ -62,6 +63,12 @@ const baseConfig = {
         'src/**/*.svg',
       ],
     }),
+    inject({
+      include: 'src/three-examples/**',
+      modules: {
+        THREE: 'three',
+      },
+    }),
   ],
 };
 
@@ -70,7 +77,7 @@ const secondaryConfig = {
   output  : {
     ...baseConfig.output,
     globals: {
-      ...baseConfig.output.global,
+      ...baseConfig.output.globals,
       'photo-sphere-viewer': 'PhotoSphereViewer'
     },
   },
@@ -100,11 +107,11 @@ export default [
   },
   {
     ...secondaryConfig,
-    input  : `src/ViewerCompat`,
+    input  : 'src/ViewerCompat',
     output : {
       ...secondaryConfig.output,
-      file: `dist/viewer-compat.js`,
-      name: `PhotoSphereViewer.ViewerCompat`,
+      file: 'dist/viewer-compat.js',
+      name: 'PhotoSphereViewer.ViewerCompat',
     },
     plugins: secondaryConfig.plugins(),
   },

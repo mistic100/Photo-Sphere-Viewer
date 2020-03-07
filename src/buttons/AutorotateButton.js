@@ -1,5 +1,7 @@
-import { AbstractButton } from './AbstractButton';
 import { EVENTS } from '../data/constants';
+import playActive from '../icons/play-active.svg';
+import play from '../icons/play.svg';
+import { AbstractButton } from './AbstractButton';
 
 import '../styles/buttons/autorotate.scss';
 
@@ -15,11 +17,11 @@ export class AutorotateButton extends AbstractButton {
   }
 
   static get icon() {
-    return 'play';
+    return play;
   }
 
   static get iconActive() {
-    return 'playActive';
+    return playActive;
   }
 
   get collapsable() {

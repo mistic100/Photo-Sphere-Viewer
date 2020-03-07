@@ -113,12 +113,12 @@ export const ACTIONS = {
 export const EVENTS = {
   AUTOROTATE            : 'autorotate',
   BEFORE_RENDER         : 'before-render',
+  BEFORE_ROTATE         : 'before-rotate',
   CLICK                 : 'click',
   CLOSE_PANEL           : 'close-panel',
   DOUBLE_CLICK          : 'dblclick',
   FULLSCREEN_UPDATED    : 'fullscreen-updated',
   GOTO_MARKER_DONE      : 'goto-marker-done',
-  GYROSCOPE_UPDATED     : 'gyroscope-updated',
   HIDE_HUD              : 'hide-hud',
   HIDE_NOTIFICATION     : 'hide-notification',
   HIDE_OVERLAY          : 'hide-overlay',
@@ -140,7 +140,7 @@ export const EVENTS = {
   SHOW_OVERLAY          : 'show-overlay',
   SHOW_TOOLTIP          : 'show-tooltip',
   SIZE_UPDATED          : 'size-updated',
-  STEREO_UPATED         : 'stereo-updated',
+  STOP_ALL              : 'stop-all',
   UNSELECT_MARKER       : 'unselect-marker',
   ZOOM_UPDATED          : 'zoom-updated',
 };
@@ -170,12 +170,11 @@ export const MARKER_TYPES = {
  * @constant
  */
 export const IDS = {
-  MARKERS_LIST : 'markersList',
-  MARKER       : 'marker',
-  MENU         : 'menu',
-  PLEASE_ROTATE: 'pleaseRotate',
-  TWO_FINGERS  : 'twoFingers',
-  ERROR        : 'error',
+  MARKERS_LIST: 'markersList',
+  MARKER      : 'marker',
+  MENU        : 'menu',
+  TWO_FINGERS : 'twoFingers',
+  ERROR       : 'error',
 };
 
 /* eslint-disable */

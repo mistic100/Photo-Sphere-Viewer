@@ -1,4 +1,6 @@
 import { EVENTS } from '../data/constants';
+import fullscreenIn from '../icons/fullscreen-in.svg';
+import fullscreenOut from '../icons/fullscreen-out.svg';
 import { AbstractButton } from './AbstractButton';
 
 /**
@@ -13,11 +15,11 @@ export class FullscreenButton extends AbstractButton {
   }
 
   static get icon() {
-    return 'fullscreenIn';
+    return fullscreenIn;
   }
 
   static get iconActive() {
-    return 'fullscreenOut';
+    return fullscreenOut;
   }
 
   get collapsable() {

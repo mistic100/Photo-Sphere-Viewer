@@ -9,15 +9,17 @@ import { Overlay } from './components/Overlay';
 import { Panel } from './components/Panel';
 import { CONFIG_PARSERS, DEFAULTS, getConfig, READONLY_OPTIONS } from './data/config';
 import { EVENTS, IDS, MARKER_DATA, VIEWER_DATA } from './data/constants';
-import { getIcons } from './data/icons';
 import { SYSTEM } from './data/system';
-import { getTemplates } from './data/templates';
+import errorIcon from './icons/error.svg';
 import { PSVError } from './PSVError';
 import { DataHelper } from './services/DataHelper';
 import { EventsHandler } from './services/EventsHandler';
 import { Renderer } from './services/Renderer';
 import { TextureLoader } from './services/TextureLoader';
 import { TooltipRenderer } from './services/TooltipRenderer';
+import './styles/markers-list.scss';
+import './styles/viewer.scss';
+import markersListTemplate from './templates/markers-list';
 import {
   bound,
   each,
@@ -27,14 +29,10 @@ import {
   getShortestArc,
   intersect,
   isFullscreenEnabled,
-  logWarn,
   requestFullscreen,
   throttle,
   toggleClass
 } from './utils';
-
-import './styles/viewer.scss';
-import './styles/markers-list.scss';
 
 /**
  * @summary Main class
@@ -77,15 +75,12 @@ export class Viewer extends EventEmitter {
      * @property {number} hFov - horizontal FOV
      * @property {number} aspect - viewer aspect ratio
      * @property {number} moveSpeed - move speed (computed with pixel ratio and configuration moveSpeed)
-     * @property {number} gyroAlphaOffset - current alpha offset for gyroscope controls
-     * @property {Function} orientationCb - update callback of the device orientation
      * @property {Function} autorotateCb - update callback of the automatic rotation
      * @property {PSV.Animation} animationPromise - promise of the current animation (either go to position or image transition)
      * @property {Promise} loadingPromise - promise of the setPanorama method
      * @property startTimeout - timeout id of the automatic rotation delay
      * @property {PSV.Size} size - size of the container
      * @property {PSV.PanoData} panoData - panorama metadata
-     * @property {external:NoSleep} noSleep - NoSleep.js instance
      */
     this.prop = {
       ready           : false,
@@ -103,8 +98,6 @@ export class Viewer extends EventEmitter {
       hFov            : null,
       aspect          : null,
       moveSpeed       : 0.1,
-      gyroAlphaOffset : 0,
-      orientationCb   : null,
       autorotateCb    : null,
       animationPromise: null,
       loadingPromise  : null,
@@ -121,7 +114,6 @@ export class Viewer extends EventEmitter {
         croppedX     : 0,
         croppedY     : 0,
       },
-      noSleep         : null,
     };
 
     /**
@@ -147,20 +139,6 @@ export class Viewer extends EventEmitter {
     this.container = document.createElement('div');
     this.container.classList.add('psv-container');
     this.parent.appendChild(this.container);
-
-    /**
-     * @summary Templates holder
-     * @type {Object<string, Function>}
-     * @readonly
-     */
-    this.templates = getTemplates(options.templates);
-
-    /**
-     * @summary Icons holder
-     * @type {Object<string, string>}
-     * @readonly
-     */
-    this.icons = getIcons(options.icons);
 
     /**
      * @summary All child components
@@ -258,20 +236,29 @@ export class Viewer extends EventEmitter {
     // actual move speed depends on pixel-ratio
     this.prop.moveSpeed = THREE.Math.degToRad(this.config.moveSpeed / SYSTEM.pixelRatio);
 
+    // init plugins
+    this.config.plugins.forEach(([plugin, opts]) => {
+      this.plugins[plugin.id] = new plugin(this, opts); // eslint-disable-line new-cap
+    });
+
+    // init buttons
+    this.navbar.setButtons(this.config.navbar);
+
     // load panorama
     if (this.config.panorama) {
       this.setPanorama(this.config.panorama);
     }
 
+    SYSTEM.isTouchEnabled.then(enabled => toggleClass(this.container, 'psv--is-touch', enabled));
+
     // enable GUI after first render
-    this.once('render', () => {
+    this.once(EVENTS.RENDER, () => {
       if (this.config.navbar) {
         this.container.classList.add('psv--has-navbar');
         this.navbar.show();
       }
 
       this.hud.show();
-
       if (this.config.markers) {
         this.hud.setMarkers(this.config.markers);
       }
@@ -280,8 +267,6 @@ export class Viewer extends EventEmitter {
       if (this.config.autorotateDelay) {
         this.prop.startTimeout = setTimeout(() => this.startAutorotate(), this.config.autorotateDelay);
       }
-
-      each(this.plugins, plugin => plugin.init());
 
       this.prop.ready = true;
 
@@ -296,8 +281,6 @@ export class Viewer extends EventEmitter {
         this.trigger(EVENTS.READY);
       }, 0);
     });
-
-    SYSTEM.isTouchEnabled.then(enabled => toggleClass(this.container, 'psv--is-touch', enabled));
   }
 
   /**
@@ -307,9 +290,7 @@ export class Viewer extends EventEmitter {
   destroy() {
     this.__stopAll();
     this.stopKeyboardControl();
-    this.stopNoSleep();
     this.exitFullscreen();
-    this.unlockOrientation();
 
     this.eventsHandler.destroy();
     this.renderer.destroy();
@@ -337,8 +318,6 @@ export class Viewer extends EventEmitter {
     delete this.overlay;
 
     delete this.config;
-    delete this.templates;
-    delete this.icons;
   }
 
   /**
@@ -370,27 +349,6 @@ export class Viewer extends EventEmitter {
         this.prop.uiRefresh = false;
         this.refreshUi(reason);
       });
-    }
-  }
-
-  /**
-   * @summary Register a new plugin
-   * @param {PSV.plugins.AbstractPlugin} plugin
-   * @package
-   */
-  registerPlugin(plugin) {
-    if (!plugin.constructor.id) {
-      throw new PSVError('Plugin ID is required');
-    }
-
-    if (this.plugins[plugin.constructor.id]) {
-      throw new PSVError(`Plugin ${plugin.constructor.id} id already registered`);
-    }
-
-    this.plugins[plugin.constructor.id] = plugin;
-
-    if (this.prop.ready) {
-      setTimeout(() => plugin.init());
     }
   }
 
@@ -439,22 +397,6 @@ export class Viewer extends EventEmitter {
    */
   isAutorotateEnabled() {
     return !!this.prop.autorotateCb;
-  }
-
-  /**
-   * @summary Checks if the gyroscope is enabled
-   * @returns {boolean}
-   */
-  isGyroscopeEnabled() {
-    return !!this.prop.orientationCb;
-  }
-
-  /**
-   * @summary Checks if the stereo viewx is enabled
-   * @returns {boolean}
-   */
-  isStereoEnabled() {
-    return !!this.renderer.stereoEffect;
   }
 
   /**
@@ -743,176 +685,13 @@ export class Viewer extends EventEmitter {
   }
 
   /**
-   * @summary Enables the gyroscope navigation if available
-   * @fires PSV.gyroscope-updated
-   * @throws {PSV.PSVError} if DeviceOrientationControls.js is missing
-   */
-  startGyroscopeControl() {
-    if (SYSTEM.checkTHREE('DeviceOrientationControls')) {
-      return SYSTEM.isDeviceOrientationSupported.then((supported) => {
-        if (supported) {
-          this.__stopAll();
-
-          this.renderer.startGyroscopeControl();
-
-          /**
-           * @event gyroscope-updated
-           * @memberof PSV
-           * @summary Triggered when the gyroscope mode is enabled/disabled
-           * @param {boolean} enabled
-           */
-          this.trigger(EVENTS.GYROSCOPE_UPDATED, true);
-
-          return true;
-        }
-        else {
-          logWarn('gyroscope not available');
-          return Promise.reject();
-        }
-      });
-    }
-    else {
-      throw new PSVError('Missing Three.js components: DeviceOrientationControls.');
-    }
-  }
-
-  /**
-   * @summary Disables the gyroscope navigation
-   * @fires PSV.gyroscope-updated
-   */
-  stopGyroscopeControl() {
-    if (this.isGyroscopeEnabled()) {
-      this.renderer.stopGyroscopeControl();
-
-      this.trigger(EVENTS.GYROSCOPE_UPDATED, false);
-    }
-  }
-
-  /**
-   * @summary Enables or disables the gyroscope navigation
-   */
-  toggleGyroscopeControl() {
-    if (this.isGyroscopeEnabled()) {
-      this.stopGyroscopeControl();
-    }
-    else {
-      this.startGyroscopeControl();
-    }
-  }
-
-  /**
-   * @summary Enables NoSleep.js
-   */
-  startNoSleep() {
-    if (!('NoSleep' in window)) {
-      logWarn('NoSleep is not available');
-      return;
-    }
-
-    if (!this.prop.noSleep) {
-      this.prop.noSleep = new window.NoSleep();
-    }
-
-    this.prop.noSleep.enable();
-  }
-
-  /**
-   * @summary Disables NoSleep.js
-   */
-  stopNoSleep() {
-    if (this.prop.noSleep) {
-      this.prop.noSleep.disable();
-    }
-  }
-
-  /**
-   * @summary Enables the stereo view
-   * @description
-   *  - enables NoSleep.js
-   *  - enables full screen
-   *  - starts gyroscope controle
-   *  - hides hud, navbar and panel
-   *  - instanciate StereoEffect
-   * @throws {PSV.PSVError} if StereoEffect.js is not available
-   */
-  startStereoView() {
-    if (SYSTEM.checkTHREE('DeviceOrientationControls', 'StereoEffect')) {
-      // Need to be in the main event queue
-      this.startNoSleep();
-      this.enterFullscreen();
-      this.lockOrientation();
-
-      this.startGyroscopeControl().then(() => {
-        this.renderer.startStereoView();
-        this.needsUpdate();
-
-        this.hud.hide();
-        this.navbar.hide();
-        this.panel.hide();
-
-        /**
-         * @event stereo-updated
-         * @memberof PSV
-         * @summary Triggered when the stereo view is enabled/disabled
-         * @param {boolean} enabled
-         */
-        this.trigger(EVENTS.STEREO_UPATED, true);
-
-        this.notification.show({
-          content: this.config.lang.stereoNotification,
-          timeout: 3000,
-        });
-      }, () => {
-        this.unlockOrientation();
-        this.exitFullscreen();
-        this.stopNoSleep();
-      });
-    }
-    else {
-      throw new PSVError('Missing Three.js components: StereoEffect, DeviceOrientationControls.');
-    }
-  }
-
-  /**
-   * @summary Disables the stereo view
-   */
-  stopStereoView() {
-    if (this.isStereoEnabled()) {
-      this.renderer.stopStereoView();
-      this.needsUpdate();
-
-      this.hud.show();
-      this.navbar.show();
-
-      this.unlockOrientation();
-      this.exitFullscreen();
-      this.stopNoSleep();
-      this.stopGyroscopeControl();
-
-      this.trigger(EVENTS.STEREO_UPATED, false);
-    }
-  }
-
-  /**
-   * @summary Enables or disables the stereo view
-   */
-  toggleStereoView() {
-    if (this.isStereoEnabled()) {
-      this.stopStereoView();
-    }
-    else {
-      this.startStereoView();
-    }
-  }
-
-  /**
    * @summary Displays an error message
    * @param {string} message
    */
   showError(message) {
     this.overlay.show({
       id         : IDS.ERROR,
-      image      : this.icons.error,
+      image      : errorIcon,
       text       : message,
       dissmisable: false,
     });
@@ -926,55 +705,23 @@ export class Viewer extends EventEmitter {
   }
 
   /**
-   * @summary Tries to lock the device in landscape or display a message
-   */
-  lockOrientation() {
-    let displayRotateMessageTimeout;
-
-    const displayRotateMessage = () => {
-      if (this.isStereoEnabled() && window.innerHeight > window.innerWidth) {
-        this.overlay.show({
-          id     : IDS.PLEASE_ROTATE,
-          image  : this.icons.mobileRotate,
-          text   : this.config.lang.pleaseRotate[0],
-          subtext: this.config.lang.pleaseRotate[1],
-        });
-      }
-
-      if (displayRotateMessageTimeout) {
-        clearTimeout(displayRotateMessageTimeout);
-        displayRotateMessageTimeout = null;
-      }
-    };
-
-    if (window.screen && window.screen.orientation) {
-      window.screen.orientation.lock('landscape').then(null, () => displayRotateMessage());
-      displayRotateMessageTimeout = setTimeout(() => displayRotateMessage(), 500);
-    }
-    else {
-      displayRotateMessage();
-    }
-  }
-
-  /**
-   * @summary Unlock the device orientation
-   */
-  unlockOrientation() {
-    if (window.screen && window.screen.orientation) {
-      window.screen.orientation.unlock();
-    }
-    else {
-      this.overlay.hide(IDS.PLEASE_ROTATE);
-    }
-  }
-
-  /**
    * @summary Rotates the view to specific longitude and latitude
    * @param {PSV.ExtendedPosition} position
    * @param {boolean} [ignoreRange=false] - ignore longitudeRange and latitudeRange
    * @fires PSV.position-updated
    */
   rotate(position, ignoreRange = false) {
+    /**
+     * @event before-rotate
+     * @memberOf PSV
+     * @summary Triggered before a rotate operation, can be cancelled
+     * @param {PSV.ExtendedPosition}
+     */
+    const e = this.trigger(EVENTS.BEFORE_ROTATE, position);
+    if (e.isDefaultPrevented()) {
+      return;
+    }
+
     let cleanPosition = this.dataHelper.cleanPosition(position);
 
     if (!ignoreRange) {
@@ -1211,8 +958,13 @@ export class Viewer extends EventEmitter {
   __stopAll() {
     this.stopAutorotate();
     this.stopAnimation();
-    this.stopGyroscopeControl();
-    this.stopStereoView();
+
+    /**
+     * @event stop-all
+     * @memberof PSV
+     * @summary Triggered when all current animations are stopped
+     */
+    this.trigger(EVENTS.STOP_ALL);
   }
 
   /**
@@ -1250,7 +1002,7 @@ export class Viewer extends EventEmitter {
 
     this.panel.show({
       id          : IDS.MARKERS_LIST,
-      content     : this.templates.markersList(markers, this),
+      content     : markersListTemplate(markers, this),
       noMargin    : true,
       clickHandler: (e) => {
         const li = e.target ? getClosest(e.target, 'li') : undefined;

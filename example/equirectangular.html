@@ -45,9 +45,9 @@
 <script src="../node_modules/promise-polyfill/dist/polyfill.js"></script>
 <script src="../node_modules/uevent/browser.js"></script>
 <script src="../node_modules/nosleep.js/dist/NoSleep.js"></script>
-<script src="../node_modules/three/examples/js/controls/DeviceOrientationControls.js"></script>
-<script src="../node_modules/three/examples/js/effects/StereoEffect.js"></script>
 <script src="../dist/photo-sphere-viewer.js"></script>
+<script src="../dist/plugins/gyroscope-plugin.js"></script>
+<script src="../dist/plugins/stereo-plugin.js"></script>
 
 <!-- text used for the marker description -->
 <script type="text/template" id="pin-content">
@@ -149,11 +149,11 @@
         title    : 'Change image',
         className: 'custom-button',
         content  : '🔄',
-        onClick  : (function() {
+        onClick  : (function () {
           var i = 0;
           var loading = false;
 
-          return function() {
+          return function () {
             if (loading) {
               return;
             }
@@ -163,7 +163,7 @@
             PSV.hud.clearMarkers();
 
             PSV.setPanorama(panos[i].url, panos[i].target, true)
-              .then(function() {
+              .then(function () {
                 PSV.navbar.setCaption(panos[i].desc);
                 loading = false;
               });
@@ -174,7 +174,7 @@
         title    : 'Random position',
         className: 'custom-button',
         content  : '🔀',
-        onClick  : function() {
+        onClick  : function () {
           PSV.animate({
             longitude: (Math.random() - 0.5) * 3 / 2 * Math.PI,
             latitude : (Math.random() - 0.5) * 3 / 4 * Math.PI,
@@ -184,7 +184,11 @@
       },
       'caption', 'gyroscope', 'stereo', 'fullscreen',
     ],
-    markers        : (function() {
+    plugins        : [
+      PhotoSphereViewer.GyroscopePlugin,
+      PhotoSphereViewer.StereoPlugin,
+    ],
+    markers        : (function () {
       var a = [];
 
       for (var i = 0; i < Math.PI * 2; i += Math.PI / 4) {
@@ -225,7 +229,7 @@
         svgStyle  : {
           fill: 'rgba(0, 190, 255, 0.1)',
         },
-        polygonRad: (function() {
+        polygonRad: (function () {
           var points = [];
 
           for (var i = 0; i < Math.PI * 2; i += Math.PI / 8) {
@@ -414,7 +418,7 @@
     }()),
   });
 
-  PSV.on('click', function(e, data) {
+  PSV.on('click', function (e, data) {
     if (!data.rightclick) {
       PSV.hud.addMarker({
         id       : '#' + Math.random(),
@@ -432,7 +436,7 @@
     }
   });
 
-  PSV.on('select-marker', function(e, marker, data) {
+  PSV.on('select-marker', function (e, marker, data) {
     if (marker.data && marker.data.deletable) {
       if (data.dblclick) {
         PSV.hud.removeMarker(marker);
@@ -446,19 +450,19 @@
     }
   });
 
-  PSV.on('over-marker', function(e, marker) {
+  PSV.on('over-marker', function (e, marker) {
     console.log('over', marker.id);
   });
 
-  PSV.on('leave-marker', function(e, marker) {
+  PSV.on('leave-marker', function (e, marker) {
     console.log('leave', marker.id);
   });
 
-  PSV.on('select-marker-list', function(e, marker) {
+  PSV.on('select-marker-list', function (e, marker) {
     console.log('select-list', marker.id);
   });
 
-  PSV.on('goto-marker-done', function(e, marker) {
+  PSV.on('goto-marker-done', function (e, marker) {
     console.log('goto-done', marker.id);
   });
 

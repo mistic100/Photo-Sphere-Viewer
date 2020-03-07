@@ -1,5 +1,3 @@
-import { Viewer } from '../Viewer';
-
 /**
  * @namespace PSV.components
  */
@@ -21,7 +19,7 @@ export class AbstractComponent {
      * @type {PSV.Viewer}
      * @readonly
      */
-    this.psv = parent instanceof Viewer ? parent : parent.psv;
+    this.psv = parent.psv || parent;
 
     /**
      * @member {PSV.Viewer|PSV.components.AbstractComponent}

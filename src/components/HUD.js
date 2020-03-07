@@ -356,8 +356,6 @@ export class HUD extends AbstractComponent {
    * @summary Updates the visibility and the position of all markers
    */
   renderMarkers() {
-    const rotation = !this.psv.isGyroscopeEnabled() ? 0 : THREE.Math.radToDeg(this.psv.renderer.camera.rotation.z);
-
     each(this.markers, (marker) => {
       let isVisible = this.prop.visible && marker.visible;
 
@@ -390,9 +388,6 @@ export class HUD extends AbstractComponent {
             if (scale !== 1) {
               transform += ` scale(${scale}, ${scale})`;
             }
-            if (!marker.config.lockRotation && rotation) {
-              transform += ` rotate(${rotation})`;
-            }
 
             marker.$el.setAttributeNS(null, 'transform', transform);
           }
@@ -400,9 +395,6 @@ export class HUD extends AbstractComponent {
             let transform = `translate3D(${position.x}px, ${position.y}px, 0px)`;
             if (scale !== 1) {
               transform += ` scale(${scale}, ${scale})`;
-            }
-            if (!marker.config.lockRotation && rotation) {
-              transform += ` rotateZ(${rotation}deg)`;
             }
 
             marker.$el.style.transform = transform;

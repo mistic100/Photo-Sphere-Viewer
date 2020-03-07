@@ -33,22 +33,13 @@ export class AbstractPlugin extends EventEmitter {
      * @readonly
      */
     this.psv = psv;
-
-    psv.registerPlugin(this);
-  }
-
-  /**
-   * @summary Initializes the plugin
-   */
-  init() {
-
   }
 
   /**
    * @summary Destroys the plugin
+   * @package
    */
   destroy() {
-    delete this.psv.plugins[this.constructor.id];
     delete this.psv;
   }
 

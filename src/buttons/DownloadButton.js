@@ -1,4 +1,5 @@
 import { AbstractButton } from './AbstractButton';
+import download from '../icons/download.svg';
 
 /**
  * @summary Navigation bar download button class
@@ -12,7 +13,7 @@ export class DownloadButton extends AbstractButton {
   }
 
   static get icon() {
-    return 'download';
+    return download;
   }
 
   get collapsable() {

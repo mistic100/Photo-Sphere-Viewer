@@ -92,8 +92,13 @@ export class AbstractButton extends AbstractComponent {
       }
       e.stopPropagation();
     });
+  }
 
-    const supportedOrObject = this.checkSupported();
+  /**
+   * @package
+   */
+  checkSupported() {
+    const supportedOrObject = this.isSupported();
     if (isPlainObject(supportedOrObject)) {
       if (supportedOrObject.initial === false) {
         this.hide();
@@ -123,7 +128,7 @@ export class AbstractButton extends AbstractComponent {
    * @summary Checks if the button can be displayed
    * @returns {boolean|{initial: boolean, promise: Promise<boolean>}}
    */
-  checkSupported() {
+  isSupported() {
     return true;
   }
 
@@ -199,14 +204,14 @@ export class AbstractButton extends AbstractComponent {
   }
 
   /**
-   * @summary Set the button icon from {@link ICONS}
-   * @param {string} icon
+   * @summary Set the button icon
+   * @param {string} icon SVG
    * @param {HTMLElement} [container] - default is the main button container
    * @private
    */
   __setIcon(icon, container = this.container) {
     if (icon) {
-      container.innerHTML = this.psv.icons[icon];
+      container.innerHTML = icon;
       // classList not supported on IE11, className is read-only !!!!
       container.querySelector('svg').setAttribute('class', 'psv-button-svg');
     }

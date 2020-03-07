@@ -53,9 +53,10 @@
       'caption',
       'fullscreen',
     ],
+    plugins        : [
+      PhotoSphereViewer.AutorotateKeypointsPlugin,
+    ],
   });
-
-  const AKP = new PhotoSphereViewer.AutorotateKeypointsPlugin(PSV);
 
   PSV.once('ready', randomPoints);
 
@@ -83,7 +84,7 @@
       anchor   : 'bottom center',
     })));
 
-    AKP.setKeypoints(points);
+    PSV.getPlugin(PhotoSphereViewer.AutorotateKeypointsPlugin.id).setKeypoints(points);
   }
 </script>
 </body>

@@ -1,4 +1,5 @@
 import { EVENTS } from '../data/constants';
+import pin from '../icons/pin.svg';
 import { AbstractButton } from './AbstractButton';
 
 /**
@@ -13,7 +14,7 @@ export class MarkersButton extends AbstractButton {
   }
 
   static get icon() {
-    return 'pin';
+    return pin;
   }
 
   get collapsable() {

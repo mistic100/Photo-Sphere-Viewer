@@ -13,7 +13,6 @@ import * as THREE from 'three';
  * @property {number} maxTextureWidth
  * @property {string} mouseWheelEvent
  * @property {string} fullscreenEvent
- * @property {Promise<boolean>} isDeviceOrientationSupported
  * @property {Promise<boolean>} isTouchEnabled
  */
 export const SYSTEM = {
@@ -22,7 +21,6 @@ export const SYSTEM = {
   pixelRatio                  : 1,
   isWebGLSupported            : false,
   isCanvasSupported           : false,
-  isDeviceOrientationSupported: null,
   isTouchEnabled              : null,
   maxTextureWidth             : 0,
   mouseWheelEvent             : null,
@@ -38,7 +36,6 @@ SYSTEM.load = () => {
     SYSTEM.pixelRatio = window.devicePixelRatio || 1;
     SYSTEM.isWebGLSupported = isWebGLSupported();
     SYSTEM.isCanvasSupported = isCanvasSupported();
-    SYSTEM.isDeviceOrientationSupported = isDeviceOrientationSupported();
     SYSTEM.isTouchEnabled = isTouchEnabled();
     SYSTEM.maxTextureWidth = SYSTEM.isWebGLSupported ? getMaxTextureWidth() : 4096;
     SYSTEM.mouseWheelEvent = getMouseWheelEvent();
@@ -103,38 +100,6 @@ function getWebGLCtx() {
  */
 function isWebGLSupported() {
   return 'WebGLRenderingContext' in window && getWebGLCtx() !== null;
-}
-
-/**
- * @summary Detects if device orientation is supported
- * @description We can only be sure device orientation is supported once received an event with coherent data
- * @returns {Promise<boolean>}
- * @private
- */
-function isDeviceOrientationSupported() {
-  return new Promise((resolve) => {
-    if ('DeviceOrientationEvent' in window) {
-      const listener = (e) => {
-        /* eslint-disable-next-line no-restricted-globals */
-        if (e && e.alpha !== null && !isNaN(e.alpha)) {
-          resolve(true);
-        }
-        else {
-          resolve(false);
-        }
-
-        window.removeEventListener('deviceorientation', listener);
-      };
-
-      window.addEventListener('deviceorientation', listener, false);
-
-      // after 2 secs, auto-reject the promise
-      setTimeout(listener, 2000);
-    }
-    else {
-      resolve(false);
-    }
-  });
 }
 
 /**

@@ -1,6 +1,6 @@
-import { SYSTEM } from '../data/system';
-import { AbstractButton } from './AbstractButton';
-import { EVENTS } from '../data/constants';
+import { AbstractButton } from 'photo-sphere-viewer';
+import compass from '../../icons/compass.svg';
+import GyroscopePlugin from './index';
 
 /**
  * @summary Navigation bar gyroscope button class
@@ -14,7 +14,7 @@ export class GyroscopeButton extends AbstractButton {
   }
 
   static get icon() {
-    return 'compass';
+    return compass;
   }
 
   get collapsable() {
@@ -27,14 +27,25 @@ export class GyroscopeButton extends AbstractButton {
   constructor(navbar) {
     super(navbar, 'psv-button--hover-scale psv-gyroscope-button');
 
-    this.psv.on(EVENTS.GYROSCOPE_UPDATED, this);
+    /**
+     * @type {PSV.plugins.GyroscopePlugin}
+     */
+    this.plugin = this.psv.getPlugin(GyroscopePlugin.id);
+
+    if (this.plugin) {
+      this.plugin.on(GyroscopePlugin.EVENTS.GYROSCOPE_UPDATED, this);
+    }
   }
 
   /**
    * @override
    */
   destroy() {
-    this.psv.off(EVENTS.GYROSCOPE_UPDATED, this);
+    if (this.plugin) {
+      this.plugin.off(GyroscopePlugin.EVENTS.GYROSCOPE_UPDATED, this);
+    }
+
+    delete this.plugin;
 
     super.destroy();
   }
@@ -42,13 +53,8 @@ export class GyroscopeButton extends AbstractButton {
   /**
    * @override
    */
-  checkSupported() {
-    if (!SYSTEM.checkTHREE('DeviceOrientationControls')) {
-      return false;
-    }
-    else {
-      return { initial: false, promise: SYSTEM.isDeviceOrientationSupported };
-    }
+  isSupported() {
+    return !this.plugin ? false : { initial: false, promise: this.plugin.prop.isSupported };
   }
 
   /**
@@ -57,13 +63,9 @@ export class GyroscopeButton extends AbstractButton {
    * @private
    */
   handleEvent(e) {
-    /* eslint-disable */
-    switch (e.type) {
-      // @formatter:off
-      case EVENTS.GYROSCOPE_UPDATED: this.toggleActive(e.args[0]); break;
-      // @formatter:on
+    if (e.type === GyroscopePlugin.EVENTS.GYROSCOPE_UPDATED) {
+      this.toggleActive(e.args[0]);
     }
-    /* eslint-enable */
   }
 
   /**
@@ -71,7 +73,7 @@ export class GyroscopeButton extends AbstractButton {
    * @description Toggles gyroscope control
    */
   __onClick() {
-    this.psv.toggleGyroscopeControl();
+    this.plugin.toggle();
   }
 
 }
