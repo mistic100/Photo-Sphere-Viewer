@@ -182,7 +182,8 @@ export default class GyroscopePlugin extends AbstractPlugin {
   __configure() {
     if (!this.controls) {
       this.controls = new THREE.DeviceOrientationControls(this.psv.renderer.camera);
-    } else {
+    }
+    else {
       this.controls.connect();
     }
 
