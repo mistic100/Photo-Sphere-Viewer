@@ -1,10 +1,10 @@
-import { EVENTS, IDS } from '../data/constants';
+import { EVENTS } from '../data/constants';
 import { SYSTEM } from '../data/system';
-import { toggleClass } from '../utils';
-import { AbstractComponent } from './AbstractComponent';
 import { PSVError } from '../PSVError';
 
 import '../styles/panel.scss';
+import { toggleClass } from '../utils';
+import { AbstractComponent } from './AbstractComponent';
 
 /**
  * @summary Minimum width of the panel
@@ -114,16 +114,10 @@ export class Panel extends AbstractComponent {
 
   /**
    * @override
+   * @param {string} [id]
    */
-  refreshUi() {
-    if (this.prop.visible && this.prop.contentId === IDS.MARKERS_LIST) {
-      if (this.psv.hud.getNbMarkers() === 0) {
-        this.hide();
-      }
-      else {
-        this.psv.showMarkersList();
-      }
-    }
+  isVisible(id) {
+    return this.prop.visible && (!id || !this.prop.contentId || this.prop.contentId === id);
   }
 
   /**
@@ -176,7 +170,7 @@ export class Panel extends AbstractComponent {
    * @fires PSV.close-panel
    */
   hide(id) {
-    if (this.prop.visible && (!id || !this.prop.contentId || this.prop.contentId === id)) {
+    if (this.isVisible(id)) {
       this.prop.visible = false;
       this.prop.contentId = undefined;
 

@@ -8,6 +8,9 @@ import { string } from 'rollup-plugin-string';
 
 import pkg from './package.json';
 
+const plugins = fs.readdirSync(path.join(__dirname, 'src/plugins'))
+  .filter(p => p !== 'AbstractPlugin.js');
+
 const banner = `/*!
 * Photo Sphere Viewer ${pkg.version}
 * @copyright 2014-2015 Jérémy Heleine
@@ -78,18 +81,27 @@ const secondaryConfig = {
     ...baseConfig.output,
     globals: {
       ...baseConfig.output.globals,
-      'photo-sphere-viewer': 'PhotoSphereViewer'
+      'photo-sphere-viewer': 'PhotoSphereViewer',
+      ...plugins.reduce((globals, p) => {
+        globals[`photo-sphere-viewer/plugins/${p}`] = `PhotoSphereViewer.${camelize(p)}Plugin`;
+        return globals;
+      }, {}),
     },
   },
   external: [
     ...baseConfig.external,
-    'photo-sphere-viewer'
+    'photo-sphere-viewer',
+    ...plugins.map(p => `photo-sphere-viewer/plugins/${p}`),
   ],
 
   plugins: () => [
     ...baseConfig.plugins(),
     alias({
       'photo-sphere-viewer': './src',
+      ...plugins.reduce((alias, p) => {
+        alias[`photo-sphere-viewer/plugins/${p}`] = `./src/plugins/${p}`;
+        return alias;
+      }, {}),
     }),
   ],
 };
@@ -116,16 +128,14 @@ export default [
     plugins: secondaryConfig.plugins(),
   },
 ].concat(
-  fs.readdirSync(path.join(__dirname, 'src/plugins'))
-    .filter(p => p !== 'AbstractPlugin.js')
-    .map(p => ({
-      ...secondaryConfig,
-      input  : `src/plugins/${p}/index.js`,
-      output : {
-        ...secondaryConfig.output,
-        file: `dist/plugins/${p}-plugin.js`,
-        name: `PhotoSphereViewer.${camelize(p)}Plugin`,
-      },
-      plugins: secondaryConfig.plugins(),
-    }))
+  plugins.map(p => ({
+    ...secondaryConfig,
+    input  : `src/plugins/${p}/index.js`,
+    output : {
+      ...secondaryConfig.output,
+      file: `dist/plugins/${p}.js`,
+      name: `PhotoSphereViewer.${camelize(p)}Plugin`,
+    },
+    plugins: secondaryConfig.plugins(),
+  }))
 );

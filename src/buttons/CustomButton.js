@@ -8,16 +8,12 @@ import { AbstractButton } from './AbstractButton';
  */
 export class CustomButton extends AbstractButton {
 
-  get collapsable() {
-    return this.config.collapsable !== false;
-  }
-
   /**
    * @param {PSV.components.Navbar} navbar
    * @param {PSV.NavbarCustomButton} config
    */
   constructor(navbar, config) {
-    super(navbar, 'psv-custom-button');
+    super(navbar, 'psv-custom-button', config.collapsable !== false);
 
     /**
      * @member {Object}

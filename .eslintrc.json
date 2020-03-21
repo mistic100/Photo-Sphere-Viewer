@@ -17,6 +17,7 @@
     "no-restricted-properties": "off",
     "no-underscore-dangle": "off",
     "no-useless-constructor": "off",
+    "no-unused-expressions": "off",
     "object-curly-newline": "off",
     "prefer-destructuring": "off",
     "prefer-template": "off",
@@ -94,7 +95,8 @@
       "error",
       {
         "ignore": [
-          "^photo-sphere-viewer$"
+          "^photo-sphere-viewer$",
+          "^photo-sphere-viewer\/plugins\/([a-z-]+)$"
         ]
       }
     ]

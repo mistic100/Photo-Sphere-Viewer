@@ -6,6 +6,7 @@
   <title>PhotoSphereViewer - visit demo</title>
 
   <link rel="stylesheet" href="../dist/photo-sphere-viewer.css">
+  <link rel="stylesheet" href="../dist/plugins/markers.css">
 
   <style>
     html, body {
@@ -30,7 +31,8 @@
 <script src="../node_modules/promise-polyfill/dist/polyfill.js"></script>
 <script src="../node_modules/uevent/browser.js"></script>
 <script src="../dist/photo-sphere-viewer.js"></script>
-<script src="../dist/plugins/autorotate-keypoints-plugin.js"></script>
+<script src="../dist/plugins/autorotate-keypoints.js"></script>
+<script src="../dist/plugins/markers.js"></script>
 
 <script>
 
@@ -55,8 +57,12 @@
     ],
     plugins        : [
       PhotoSphereViewer.AutorotateKeypointsPlugin,
+      PhotoSphereViewer.MarkersPlugin,
     ],
   });
+
+  var markers = PSV.getPlugin(PhotoSphereViewer.MarkersPlugin);
+  var autorotate = PSV.getPlugin(PhotoSphereViewer.AutorotateKeypointsPlugin);
 
   PSV.once('ready', randomPoints);
 
@@ -74,7 +80,7 @@
       });
     }
 
-    PSV.hud.setMarkers(points.map((pt, i) => ({
+    markers.setMarkers(points.map((pt, i) => ({
       id       : '#' + i,
       latitude : pt.position.latitude,
       longitude: pt.position.longitude,
@@ -84,7 +90,7 @@
       anchor   : 'bottom center',
     })));
 
-    PSV.getPlugin(PhotoSphereViewer.AutorotateKeypointsPlugin.id).setKeypoints(points);
+    autorotate.setKeypoints(points);
   }
 </script>
 </body>

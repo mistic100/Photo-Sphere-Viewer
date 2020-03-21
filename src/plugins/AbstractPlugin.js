@@ -17,9 +17,7 @@ export class AbstractPlugin extends EventEmitter {
    * @readonly
    * @static
    */
-  static get id() {
-    return null;
-  }
+  static id = null;
 
   /**
    * @param {PSV.Viewer} psv

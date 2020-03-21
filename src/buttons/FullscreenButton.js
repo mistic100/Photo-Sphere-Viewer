@@ -10,21 +10,9 @@ import { AbstractButton } from './AbstractButton';
  */
 export class FullscreenButton extends AbstractButton {
 
-  static get id() {
-    return 'fullscreen';
-  }
-
-  static get icon() {
-    return fullscreenIn;
-  }
-
-  static get iconActive() {
-    return fullscreenOut;
-  }
-
-  get collapsable() {
-    return false;
-  }
+  static id = 'fullscreen';
+  static icon = fullscreenIn;
+  static iconActive = fullscreenOut;
 
   /**
    * @param {PSV.components.Navbar} navbar

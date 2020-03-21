@@ -8,23 +8,14 @@ import download from '../icons/download.svg';
  */
 export class DownloadButton extends AbstractButton {
 
-  static get id() {
-    return 'download';
-  }
-
-  static get icon() {
-    return download;
-  }
-
-  get collapsable() {
-    return true;
-  }
+  static id = 'download';
+  static icon = download;
 
   /**
    * @param {PSV.components.Navbar} navbar
    */
   constructor(navbar) {
-    super(navbar, 'psv-button--hover-scale psv-download-button');
+    super(navbar, 'psv-button--hover-scale psv-download-button', true);
   }
 
   /**

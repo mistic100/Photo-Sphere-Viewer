@@ -1,4 +1,7 @@
 import { DEFAULTS, utils, Viewer } from 'photo-sphere-viewer';
+import GyroscopePlugin from 'photo-sphere-viewer/plugins/gyroscope';
+import StereoPlugin from 'photo-sphere-viewer/plugins/stereo';
+import MarkersPlugin from 'photo-sphere-viewer/plugins/markers';
 
 /**
  * @private
@@ -88,6 +91,19 @@ export default class ViewerCompat extends Viewer {
     if (typeof options.navbar === 'string') {
       options.navbar = options.navbar.split(' ');
     }
+
+    let clickEventOnMarker;
+    if ('clickEventOnMarker' in options) {
+      clickEventOnMarker = options.clickEventOnMarker;
+      delete options.clickEventOnMarker;
+    }
+
+    let markers;
+    if ('markers' in options) {
+      markers = options.markers;
+      delete options.markers;
+    }
+
     if (Array.isArray(options.navbar)) {
       const markersIdx = options.navbar.indexOf('markers');
       if (markersIdx !== -1) {
@@ -95,7 +111,17 @@ export default class ViewerCompat extends Viewer {
       }
     }
 
+    options.plugins = [
+      GyroscopePlugin,
+      StereoPlugin,
+      [MarkersPlugin, { clickEventOnMarker, markers }],
+    ];
+
     super(options);
+
+    this.gyroscope = this.getPlugin(GyroscopePlugin);
+    this.stereo = this.getPlugin(StereoPlugin);
+    this.markers = this.getPlugin(MarkersPlugin);
   }
 
   // GENERAL
@@ -118,42 +144,76 @@ export default class ViewerCompat extends Viewer {
     this.textureLoader.clearPanoramaCache(panorama);
   }
 
-  // HUD
+  // GYROSCOPE / STEREO
+
+  isGyroscopeEnabled() {
+    return this.gyroscope && this.gyroscope.isEnabled();
+  }
+
+  startGyroscopeControl() {
+    return this.gyroscope && this.gyroscope.start();
+  }
+
+  stopGyroscopeControl() {
+    this.gyroscope && this.gyroscope.stop();
+  }
+
+  toggleGyroscopeControl() {
+    this.gyroscope && this.gyroscope.toggle();
+  }
+
+  isStereoEnabled() {
+    return this.stereo && this.stereo.isEnabled();
+  }
+
+  startStereoView() {
+    return this.stereo && this.stereo.start();
+  }
+
+  stopStereoView() {
+    this.stereo && this.stereo.stop();
+  }
+
+  toggleStereoView() {
+    this.stereo && this.stereo.toggle();
+  }
+
+  // MARKERS
 
   addMarker(marker, render) {
-    return this.hud.addMarker(snakeCaseToCamelCase(marker), render);
+    return this.markers && this.markers.addMarker(snakeCaseToCamelCase(marker), render);
   }
 
   getMarker(markerId) {
-    return this.hud.getMarker(markerId);
+    return this.markers && this.markers.getMarker(markerId);
   }
 
   updateMarker(marker, render) {
-    return this.hud.updateMarker(snakeCaseToCamelCase(marker), render);
+    return this.markers && this.markers.updateMarker(snakeCaseToCamelCase(marker), render);
   }
 
   removeMarker(marker, render) {
-    this.hud.removeMarker(marker, render);
+    this.markers && this.markers.removeMarker(marker, render);
   }
 
   gotoMarker(markerOrId, duration) {
-    this.hud.gotoMarker(markerOrId, duration);
+    this.markers && this.markers.gotoMarker(markerOrId, duration);
   }
 
   hideMarker(markerId) {
-    this.hud.hideMarker(markerId);
+    this.markers && this.markers.hideMarker(markerId);
   }
 
   showMarker(markerId) {
-    this.hud.showMarker(markerId);
+    this.markers && this.markers.showMarker(markerId);
   }
 
   clearMarkers(render) {
-    this.hud.clearMarkers(render);
+    this.markers && this.markers.clearMarkers(render);
   }
 
   getCurrentMarker() {
-    return this.hud.getCurrentMarker();
+    return this.markers && this.markers.getCurrentMarker();
   }
 
   // NAVBAR

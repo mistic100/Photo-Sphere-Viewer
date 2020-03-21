@@ -12,27 +12,15 @@ import '../styles/buttons/autorotate.scss';
  */
 export class AutorotateButton extends AbstractButton {
 
-  static get id() {
-    return 'autorotate';
-  }
-
-  static get icon() {
-    return play;
-  }
-
-  static get iconActive() {
-    return playActive;
-  }
-
-  get collapsable() {
-    return true;
-  }
+  static id = 'autorotate';
+  static icon = play;
+  static iconActive = playActive;
 
   /**
    * @param {PSV.components.Navbar} navbar
    */
   constructor(navbar) {
-    super(navbar, 'psv-button--hover-scale psv-autorotate-button');
+    super(navbar, 'psv-button--hover-scale psv-autorotate-button', true);
 
     this.psv.on(EVENTS.AUTOROTATE, this);
   }

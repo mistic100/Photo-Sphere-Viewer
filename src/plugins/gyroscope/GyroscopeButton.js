@@ -1,5 +1,5 @@
 import { AbstractButton } from 'photo-sphere-viewer';
-import compass from '../../icons/compass.svg';
+import compass from './compass.svg';
 import GyroscopePlugin from './index';
 
 /**
@@ -9,26 +9,19 @@ import GyroscopePlugin from './index';
  */
 export class GyroscopeButton extends AbstractButton {
 
-  static get id() {
-    return 'gyroscope';
-  }
-
-  static get icon() {
-    return compass;
-  }
-
-  get collapsable() {
-    return true;
-  }
+  static id = 'gyroscope';
+  static icon = compass;
 
   /**
    * @param {PSV.components.Navbar} navbar
    */
   constructor(navbar) {
-    super(navbar, 'psv-button--hover-scale psv-gyroscope-button');
+    super(navbar, 'psv-button--hover-scale psv-gyroscope-button', true);
 
     /**
      * @type {PSV.plugins.GyroscopePlugin}
+     * @readonly
+     * @private
      */
     this.plugin = this.psv.getPlugin(GyroscopePlugin.id);
 

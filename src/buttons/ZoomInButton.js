@@ -8,13 +8,8 @@ import zoomIn from '../icons/zoom-in.svg';
  */
 export class ZoomInButton extends AbstractZoomButton {
 
-  static get id() {
-    return 'zoomIn';
-  }
-
-  static get icon() {
-    return zoomIn;
-  }
+  static id = 'zoomIn';
+  static icon = zoomIn;
 
   /**
    * @param {PSV.components.Navbar} navbar

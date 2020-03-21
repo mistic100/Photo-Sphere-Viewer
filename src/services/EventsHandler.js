@@ -69,20 +69,17 @@ export class EventsHandler extends AbstractService {
    * @protected
    */
   init() {
-    // all pointer events are binded to the HUD only
-
     window.addEventListener('resize', this);
     window.addEventListener('keydown', this);
-    this.psv.hud.container.addEventListener('mouseenter', this);
-    this.psv.hud.container.addEventListener('mousedown', this);
-    this.psv.hud.container.addEventListener('mouseleave', this);
+    this.psv.container.addEventListener('mouseenter', this);
+    this.psv.container.addEventListener('mousedown', this);
+    this.psv.container.addEventListener('mouseleave', this);
     window.addEventListener('mouseup', this);
-    this.psv.hud.container.addEventListener('touchstart', this);
+    this.psv.container.addEventListener('touchstart', this);
     window.addEventListener('touchend', this);
-    this.psv.hud.container.addEventListener('mousemove', this);
-    this.psv.hud.container.addEventListener('touchmove', this);
-    this.psv.hud.container.addEventListener('contextmenu', this);
-    this.psv.hud.container.addEventListener(SYSTEM.mouseWheelEvent, this);
+    this.psv.container.addEventListener('mousemove', this);
+    this.psv.container.addEventListener('touchmove', this);
+    this.psv.container.addEventListener(SYSTEM.mouseWheelEvent, this);
 
     if (SYSTEM.fullscreenEvent) {
       document.addEventListener(SYSTEM.fullscreenEvent, this);
@@ -95,16 +92,15 @@ export class EventsHandler extends AbstractService {
   destroy() {
     window.removeEventListener('resize', this);
     window.removeEventListener('keydown', this);
-    this.psv.hud.container.removeEventListener('mouseenter', this);
-    this.psv.hud.container.removeEventListener('mousedown', this);
-    this.psv.hud.container.removeEventListener('mouseleave', this);
+    this.psv.container.removeEventListener('mouseenter', this);
+    this.psv.container.removeEventListener('mousedown', this);
+    this.psv.container.removeEventListener('mouseleave', this);
     window.removeEventListener('mouseup', this);
-    this.psv.hud.container.removeEventListener('touchstart', this);
+    this.psv.container.removeEventListener('touchstart', this);
     window.removeEventListener('touchend', this);
-    this.psv.hud.container.removeEventListener('mousemove', this);
-    this.psv.hud.container.removeEventListener('touchmove', this);
-    this.psv.hud.container.removeEventListener('contextmenu', this);
-    this.psv.hud.container.removeEventListener(SYSTEM.mouseWheelEvent, this);
+    this.psv.container.removeEventListener('mousemove', this);
+    this.psv.container.removeEventListener('touchmove', this);
+    this.psv.container.removeEventListener(SYSTEM.mouseWheelEvent, this);
 
     if (SYSTEM.fullscreenEvent) {
       document.removeEventListener(SYSTEM.fullscreenEvent, this);
@@ -127,22 +123,30 @@ export class EventsHandler extends AbstractService {
     /* eslint-disable */
     switch (evt.type) {
       // @formatter:off
-      case 'resize':      this.__onResize(); break;
-      case 'keydown':     this.__onKeyDown(evt); break;
-      case 'mousedown':   this.__onMouseDown(evt); break;
-      case 'mouseenter':  this.__onMouseEnter(evt); break;
-      case 'touchstart':  this.__onTouchStart(evt); break;
-      case 'mouseup':     this.__onMouseUp(evt); break;
-      case 'mouseleave':  this.__onMouseLeave(evt); break;
-      case 'touchend':    this.__onTouchEnd(evt); break;
-      case 'mousemove':   this.__onMouseMove(evt); break;
-      case 'touchmove':   this.__onTouchMove(evt); break;
-      case 'contextmenu': this.__onContextMenu(evt); break;
+      case 'resize':   this.__onResize(); break;
+      case 'keydown':  this.__onKeyDown(evt); break;
+      case 'mouseup':  this.__onMouseUp(evt); break;
+      case 'touchend': this.__onTouchEnd(evt); break;
       case SYSTEM.fullscreenEvent: this.__fullscreenToggled(); break;
-      case SYSTEM.mouseWheelEvent: this.__onMouseWheel(evt); break;
       // @formatter:on
     }
     /* eslint-enable */
+
+    if (!getClosest(evt.target, '.psv-navbar')) {
+      /* eslint-disable */
+      switch (evt.type) {
+        // @formatter:off
+        case 'mousedown':  this.__onMouseDown(evt); break;
+        case 'mouseenter': this.__onMouseEnter(evt); break;
+        case 'touchstart': this.__onTouchStart(evt); break;
+        case 'mouseleave': this.__onMouseLeave(evt); break;
+        case 'mousemove':  this.__onMouseMove(evt); break;
+        case 'touchmove':   this.__onTouchMove(evt); break;
+        case SYSTEM.mouseWheelEvent: this.__onMouseWheel(evt); break;
+        // @formatter:on
+      }
+      /* eslint-enable */
+    }
   }
 
   /**
@@ -371,20 +375,6 @@ export class EventsHandler extends AbstractService {
   }
 
   /**
-   * @summary Handles context menu events
-   * @param {MouseWheelEvent} evt
-   * @private
-   */
-  __onContextMenu(evt) {
-    if (!getClosest(evt.target, '.psv-marker')) {
-      return true;
-    }
-
-    evt.preventDefault();
-    return false;
-  }
-
-  /**
    * @summary Handles mouse wheel events
    * @param {MouseWheelEvent} evt
    * @private
@@ -476,7 +466,9 @@ export class EventsHandler extends AbstractService {
    * @private
    */
   __stopMove(evt) {
-    if (!getClosest(evt.target, '.psv-hud')) {
+    if (!getClosest(evt.target, '.psv-container')) {
+      this.state.moving = false;
+      this.state.mouseHistory.length = 0;
       return;
     }
 

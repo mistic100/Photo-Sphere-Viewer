@@ -12,13 +12,7 @@ import '../styles/buttons/zoom-range.scss';
  */
 export class ZoomRangeButton extends AbstractButton {
 
-  static get id() {
-    return 'zoomRange';
-  }
-
-  get collapsable() {
-    return false;
-  }
+  static id = 'zoomRange';
 
   /**
    * @param {PSV.components.Navbar} navbar

@@ -3,6 +3,11 @@ import * as THREE from 'three';
 import '../../three-examples/controls/DeviceOrientationControls';
 import { GyroscopeButton } from './GyroscopeButton';
 
+/**
+ * @typedef {Object} external:THREE.DeviceOrientationControls
+ * @summary {@link https://github.com/mrdoob/three.js/blob/dev/examples/js/controls/DeviceOrientationControls.js}
+ */
+
 
 // add gyroscope button
 DEFAULTS.navbar.splice(-1, 0, GyroscopeButton.id);
@@ -17,9 +22,7 @@ registerButton(GyroscopeButton);
  */
 export default class GyroscopePlugin extends AbstractPlugin {
 
-  static get id() {
-    return 'gyroscope';
-  }
+  static id = 'gyroscope';
 
   /**
    * @summary Available events
@@ -39,7 +42,7 @@ export default class GyroscopePlugin extends AbstractPlugin {
 
     /**
      * @member {Object}
-     * @protected
+     * @private
      * @property {Promise<boolean>} isSupported - indicates of the gyroscope API is available
      * @property {number} alphaOffset - current alpha offset for gyroscope controls
      * @property {Function} orientationCb - update callback of the device orientation
@@ -54,7 +57,7 @@ export default class GyroscopePlugin extends AbstractPlugin {
 
     /**
      * @member {external:THREE.DeviceOrientationControls}
-     * @protected
+     * @private
      */
     this.controls = null;
 

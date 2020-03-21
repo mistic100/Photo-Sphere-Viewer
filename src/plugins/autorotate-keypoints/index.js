@@ -33,19 +33,7 @@ const serializePt = position => [position.longitude, position.latitude];
  */
 export default class AutorotateKeypointsPlugin extends AbstractPlugin {
 
-  static get id() {
-    return 'autorotate-keypoints';
-  }
-
-  /**
-   * @summary Default options
-   * @type {PSV.plugins.AutorotateKeypointsPlugin.Options}
-   * @memberOf PSV.plugins.AutorotateKeypointsPlugin
-   * @constant
-   */
-  static DEFAULTS = {
-    startFromClosest: true,
-  };
+  static id = 'autorotate-keypoints';
 
   /**
    * @param {PSV.Viewer} psv
@@ -74,15 +62,20 @@ export default class AutorotateKeypointsPlugin extends AbstractPlugin {
      * @private
      */
     this.config = {
-      ...AutorotateKeypointsPlugin.DEFAULTS,
+      startFromClosest: true,
       ...options,
-      keypoints: null,
+      keypoints       : null,
     };
 
-    if (options && options.keypoints) {
+    /**
+     * @type {PSV.plugins.MarkersPlugin}
+     * @private
+     */
+    this.markers = this.psv.getPlugin('markers');
+
+    if (options?.keypoints) {
       this.setKeypoints(options.keypoints);
     }
-
 
     this.psv.on(CONSTANTS.EVENTS.AUTOROTATE, this);
   }
@@ -107,7 +100,7 @@ export default class AutorotateKeypointsPlugin extends AbstractPlugin {
    * @param {Array<PSV.ExtendedPosition|string|PSV.plugins.AutorotateKeypointsPlugin.Keypoints>} keypoints
    */
   setKeypoints(keypoints) {
-    if (keypoints && keypoints.length < 2) {
+    if (keypoints?.length < 2) {
       throw new PSVError('At least two points are required');
     }
 
@@ -124,7 +117,10 @@ export default class AutorotateKeypointsPlugin extends AbstractPlugin {
           pt = { position: pt };
         }
         if (pt.markerId) {
-          const marker = this.psv.hud.getMarker(pt.markerId);
+          if (!this.markers) {
+            throw new PSVError(`Keypoint #${i} references a marker but markers plugin is not loaded`);
+          }
+          const marker = this.markers.getMarker(pt.markerId);
           pt.position = serializePt(marker.props.position);
         }
         else if (pt.position) {
@@ -220,7 +216,7 @@ export default class AutorotateKeypointsPlugin extends AbstractPlugin {
       });
     }
     else if (keypoint.markerId) {
-      const marker = this.psv.hud.getMarker(keypoint.markerId);
+      const marker = this.markers.getMarker(keypoint.markerId);
       marker.showTooltip();
       this.state.tooltip = marker.tooltip;
     }
@@ -237,7 +233,7 @@ export default class AutorotateKeypointsPlugin extends AbstractPlugin {
         this.state.tooltip.hide();
       }
       else if (keypoint.markerId) {
-        const marker = this.psv.hud.getMarker(keypoint.markerId);
+        const marker = this.markers.getMarker(keypoint.markerId);
         marker.hideTooltip();
       }
 

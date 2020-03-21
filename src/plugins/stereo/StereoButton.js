@@ -1,6 +1,6 @@
 import { AbstractButton } from 'photo-sphere-viewer';
-import stereo from '../../icons/stereo.svg';
 import StereoPlugin from './index';
+import stereo from './stereo.svg';
 
 /**
  * @summary Navigation bar stereo button class
@@ -9,26 +9,19 @@ import StereoPlugin from './index';
  */
 export class StereoButton extends AbstractButton {
 
-  static get id() {
-    return 'stereo';
-  }
-
-  static get icon() {
-    return stereo;
-  }
-
-  get collapsable() {
-    return true;
-  }
+  static id = 'stereo';
+  static icon = stereo;
 
   /**
    * @param {PSV.components.Navbar} navbar
    */
   constructor(navbar) {
-    super(navbar, 'psv-button--hover-scale psv-stereo-button');
+    super(navbar, 'psv-button--hover-scale psv-stereo-button', true);
 
     /**
      * @type {PSV.plugins.StereoPlugin}
+     * @private
+     * @readonly
      */
     this.plugin = this.psv.getPlugin(StereoPlugin.id);
 

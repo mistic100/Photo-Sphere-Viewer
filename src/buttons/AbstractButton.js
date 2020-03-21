@@ -20,9 +20,7 @@ export class AbstractButton extends AbstractComponent {
    * @readonly
    * @static
    */
-  static get id() {
-    return null;
-  }
+  static id = null;
 
   /**
    * @summary SVG icon name injected in the button
@@ -30,9 +28,7 @@ export class AbstractButton extends AbstractComponent {
    * @readonly
    * @static
    */
-  static get icon() {
-    return null;
-  }
+  static icon = null;
 
   /**
    * @summary SVG icon name injected in the button when it is active
@@ -40,23 +36,14 @@ export class AbstractButton extends AbstractComponent {
    * @readonly
    * @static
    */
-  static get iconActive() {
-    return null;
-  }
-
-  /**
-   * @summary `true` if the button can be moved to menu when the navbar is too small
-   * @returns {boolean}
-   */
-  get collapsable() {
-    return false;
-  }
+  static iconActive = null;
 
   /**
    * @param {PSV.components.Navbar} navbar
-   * @param {string} className
+   * @param {string} [className] - Additional CSS classes
+   * @param {boolean} [collapsable=false] - `true` if the button can be moved to menu when the navbar is too small
    */
-  constructor(navbar, className) {
+  constructor(navbar, className = '', collapsable = false) {
     super(navbar, 'psv-button ' + className);
 
     /**
@@ -70,12 +57,13 @@ export class AbstractButton extends AbstractComponent {
      */
     this.prop = {
       ...this.prop,
-      id       : this.constructor.id,
-      enabled  : true,
-      supported: true,
-      collapsed: false,
-      active   : false,
-      width    : this.container.offsetWidth,
+      id         : this.constructor.id,
+      collapsable: collapsable,
+      enabled    : true,
+      supported  : true,
+      collapsed  : false,
+      active     : false,
+      width      : this.container.offsetWidth,
     };
 
     if (this.constructor.icon) {
@@ -149,12 +137,14 @@ export class AbstractButton extends AbstractComponent {
    * @override
    */
   show(refresh = true) {
-    this.prop.visible = true;
-    if (!this.prop.collapsed) {
-      this.container.style.display = '';
-    }
-    if (refresh) {
-      this.psv.refreshUi(`show button ${this.prop.id}`);
+    if (!this.isVisible()) {
+      this.prop.visible = true;
+      if (!this.prop.collapsed) {
+        this.container.style.display = '';
+      }
+      if (refresh) {
+        this.psv.refreshUi(`show button ${this.prop.id}`);
+      }
     }
   }
 
@@ -162,10 +152,12 @@ export class AbstractButton extends AbstractComponent {
    * @override
    */
   hide(refresh = true) {
-    this.prop.visible = false;
-    this.container.style.display = 'none';
-    if (refresh) {
-      this.psv.refreshUi(`hide button ${this.prop.id}`);
+    if (this.isVisible()) {
+      this.prop.visible = false;
+      this.container.style.display = 'none';
+      if (refresh) {
+        this.psv.refreshUi(`hide button ${this.prop.id}`);
+      }
     }
   }
 

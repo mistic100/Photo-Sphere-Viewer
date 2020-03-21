@@ -1,8 +1,20 @@
 import { AbstractPlugin, CONSTANTS, DEFAULTS, PSVError, registerButton, utils } from 'photo-sphere-viewer';
+import GyroscopePlugin from 'photo-sphere-viewer/plugins/gyroscope';
 import * as THREE from 'three';
-import mobileRotateIcon from '../../icons/mobile-rotate.svg';
 import '../../three-examples/effects/StereoEffect';
+import mobileRotateIcon from './mobile-rotate.svg';
 import { StereoButton } from './StereoButton';
+
+
+/**
+ * @typedef {Object} external:THREE.StereoEffect
+ * @summary {@link https://github.com/mrdoob/three.js/blob/dev/examples/js/effects/StereoEffect.js}
+ */
+
+/**
+ * @external NoSleep
+ * @description {@link https://github.com/richtr/NoSleep.js}
+ */
 
 
 // add stereo button
@@ -14,8 +26,6 @@ registerButton(StereoButton);
 DEFAULTS.lang.stereoNotification = 'Click anywhere to exit stereo view.';
 DEFAULTS.lang.pleaseRotate = ['Please rotate your device', '(or tap to continue)'];
 
-const ID_PLEASE_ROTATE = 'pleaseRotate';
-
 
 /**
  * @summary Adds stereo controls on mobile devices
@@ -24,9 +34,14 @@ const ID_PLEASE_ROTATE = 'pleaseRotate';
  */
 export default class StereoPlugin extends AbstractPlugin {
 
-  static get id() {
-    return 'stereo';
-  }
+  static id = 'stereo';
+
+  /**
+   * @summary Identifier of the overlay "please rotate your screen"
+   * @type {string}
+   * @constant
+   */
+  static ID_OVERLAY_PLEASE_ROTATE = 'pleaseRotate';
 
   /**
    * @summary Available events
@@ -46,18 +61,20 @@ export default class StereoPlugin extends AbstractPlugin {
 
     /**
      * @type {PSV.plugins.GyroscopePlugin}
+     * @readonly
+     * @private
      */
-    this.gyroscope = psv.getPlugin('gyroscope');
+    this.gyroscope = psv.getPlugin(GyroscopePlugin);
 
     if (!this.gyroscope) {
-      throw new PSVError('Stereo plugins requires the gyroscope plugin');
+      throw new PSVError('Stereo plugin requires the gyroscope plugin');
     }
 
     /**
      * @member {Object}
      * @protected
      * @property {Promise<boolean>} isSupported - indicates of the gyroscope API is available
-     * @property {external:THREE.StereoEffect} stereoEffect
+     * @property {external:THREE.WebGLRenderer} renderer - original renderer
      * @property {external:NoSleep} noSleep
      */
     this.prop = {
@@ -65,6 +82,12 @@ export default class StereoPlugin extends AbstractPlugin {
       renderer   : null,
       noSleep    : null,
     };
+
+    /**
+     * @type {PSV.plugins.MarkersPlugin}
+     * @private
+     */
+    this.markers = this.psv.getPlugin('markers');
 
     this.psv.on(CONSTANTS.EVENTS.STOP_ALL, this);
     this.psv.on(CONSTANTS.EVENTS.CLICK, this);
@@ -88,8 +111,6 @@ export default class StereoPlugin extends AbstractPlugin {
   handleEvent(e) {
     switch (e.type) {
       case CONSTANTS.EVENTS.STOP_ALL:
-        this.stop();
-        break;
       case CONSTANTS.EVENTS.CLICK:
         this.stop();
         break;
@@ -112,8 +133,8 @@ export default class StereoPlugin extends AbstractPlugin {
    *  - enables NoSleep.js
    *  - enables full screen
    *  - starts gyroscope controle
-   *  - hides hud, navbar and panel
-   *  - instanciate StereoEffect
+   *  - hides markers, navbar and panel
+   *  - instanciate {@link external:THREE.StereoEffect}
    * @returns {Promise}
    * @fires PSV.plugins.StereoPlugin.stereo-updated
    * @throws {PSV.PSVError} if the gyroscope API is not available/granted
@@ -131,7 +152,9 @@ export default class StereoPlugin extends AbstractPlugin {
 
       this.psv.needsUpdate();
 
-      this.psv.hud.hide();
+      if (this.markers) {
+        this.markers.hide();
+      }
       this.psv.navbar.hide();
       this.psv.panel.hide();
 
@@ -165,7 +188,9 @@ export default class StereoPlugin extends AbstractPlugin {
 
       this.psv.needsUpdate();
 
-      this.psv.hud.show();
+      if (this.markers) {
+        this.markers.show();
+      }
       this.psv.navbar.show();
 
       this.__unlockOrientation();
@@ -227,7 +252,7 @@ export default class StereoPlugin extends AbstractPlugin {
     const displayRotateMessage = () => {
       if (this.isEnabled() && window.innerHeight > window.innerWidth) {
         this.psv.overlay.show({
-          id     : ID_PLEASE_ROTATE,
+          id     : StereoPlugin.ID_OVERLAY_PLEASE_ROTATE,
           image  : mobileRotateIcon,
           text   : this.psv.config.lang.pleaseRotate[0],
           subtext: this.psv.config.lang.pleaseRotate[1],
@@ -240,7 +265,7 @@ export default class StereoPlugin extends AbstractPlugin {
       }
     };
 
-    if (window.screen && window.screen.orientation) {
+    if (window.screen?.orientation) {
       window.screen.orientation.lock('landscape').then(null, () => displayRotateMessage());
       displayRotateMessageTimeout = setTimeout(() => displayRotateMessage(), 500);
     }
@@ -254,11 +279,11 @@ export default class StereoPlugin extends AbstractPlugin {
    * @private
    */
   __unlockOrientation() {
-    if (window.screen && window.screen.orientation) {
+    if (window.screen?.orientation) {
       window.screen.orientation.unlock();
     }
     else {
-      this.psv.overlay.hide(ID_PLEASE_ROTATE);
+      this.psv.overlay.hide(StereoPlugin.ID_OVERLAY_PLEASE_ROTATE);
     }
   }
 

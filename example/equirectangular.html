@@ -25,16 +25,6 @@
       font-size: 22px;
       line-height: 20px;
     }
-
-    .demo-label {
-      color: white;
-      font-size: 20px;
-      font-family: Helvetica, sans-serif;
-      text-align: center;
-      padding: 5px;
-      border: 1px solid white;
-      background: rgba(0, 0, 0, 0.4);
-    }
   </style>
 </head>
 <body>
@@ -46,60 +36,8 @@
 <script src="../node_modules/uevent/browser.js"></script>
 <script src="../node_modules/nosleep.js/dist/NoSleep.js"></script>
 <script src="../dist/photo-sphere-viewer.js"></script>
-<script src="../dist/plugins/gyroscope-plugin.js"></script>
-<script src="../dist/plugins/stereo-plugin.js"></script>
-
-<!-- text used for the marker description -->
-<script type="text/template" id="pin-content">
-  <h1>HTML Ipsum Presents</h1>
-
-  <p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis egestas.
-    Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas
-    semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. Quisque sit amet est et sapien
-    ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit amet, wisi.
-    Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. <a
-      href="#">Donec non enim</a> in turpis pulvinar facilisis. Ut felis.</p>
-
-  <h2>Header Level 2</h2>
-
-  <ol>
-    <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
-    <li>Aliquam tincidunt mauris eu risus.</li>
-  </ol>
-
-  <blockquote><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus magna. Cras in mi at felis aliquet
-    congue. Ut a est eget ligula molestie gravida. Curabitur massa. Donec eleifend, libero at sagittis mollis, tellus
-    est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretium ornare est.</p></blockquote>
-
-  <h3>Header Level 3</h3>
-
-  <ul>
-    <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
-    <li>Aliquam tincidunt mauris eu risus.</li>
-  </ul>
-
-  <img src="assets/pin2.png" style="width:100%"/>
-
-  <pre><code>
-#header h1 a {
-	display: block;
-	width: 300px;
-	height: 80px;
-}
-</code></pre>
-</script>
-
-<!-- pattern used for the polygon marker -->
-<svg id="patterns">
-  <defs>
-    <pattern id="dots" x="10" y="10" width="30" height="30" patternUnits="userSpaceOnUse">
-      <circle cx="10" cy="10" r="10" style="stroke: none; fill: rgba(255,0,0,0.4)"/>
-    </pattern>
-    <pattern id="points" x="10" y="10" width="15" height="15" patternUnits="userSpaceOnUse">
-      <circle cx="10" cy="10" r="0.8" style="stroke: none; fill: red"/>
-    </pattern>
-  </defs>
-</svg>
+<script src="../dist/plugins/gyroscope.js"></script>
+<script src="../dist/plugins/stereo.js"></script>
 
 <script>
   var panos = [
@@ -127,24 +65,16 @@
     panorama       : panos[0].url,
     caption        : panos[0].desc,
     loadingImg     : 'assets/photosphere-logo.gif',
-    longitudeRange : [-7 * Math.PI / 8, 7 * Math.PI / 8],
-    latitudeRange  : [-3 * Math.PI / 4, 3 * Math.PI / 4],
+    // longitudeRange : [-7 * Math.PI / 8, 7 * Math.PI / 8],
+    // latitudeRange  : [-3 * Math.PI / 4, 3 * Math.PI / 4],
     autorotateSpeed: '-2rpm',
     defaultZoomLvl : 50,
     fisheye        : false,
     moveSpeed      : 1.1,
 //    touchmoveTwoFingers: true,
-//    mousemoveHover: true,
+//    captureCursor: true,
     navbar         : [
-      'autorotate', 'zoom', 'download', 'markers', 'markersList',
-      {
-        content  : '💬',
-        title    : 'Show all tooltips',
-        className: 'custom-button',
-        onClick  : function () {
-          PSV.hud.toggleAllTooltips();
-        }
-      },
+      'autorotate', 'zoom', 'download',
       {
         title    : 'Change image',
         className: 'custom-button',
@@ -160,7 +90,6 @@
 
             i = 1 - i;
             loading = true;
-            PSV.hud.clearMarkers();
 
             PSV.setPanorama(panos[i].url, panos[i].target, true)
               .then(function () {
@@ -187,290 +116,9 @@
     plugins        : [
       PhotoSphereViewer.GyroscopePlugin,
       PhotoSphereViewer.StereoPlugin,
-    ],
-    markers        : (function () {
-      var a = [];
-
-      for (var i = 0; i < Math.PI * 2; i += Math.PI / 4) {
-        for (var j = -Math.PI / 2 + Math.PI / 4; j < Math.PI / 2; j += Math.PI / 4) {
-          a.push({
-            id       : '#' + a.length,
-            tooltip  : '#' + a.length,
-            latitude : j,
-            longitude: i,
-            image    : 'assets/pin1.png',
-            width    : 32,
-            height   : 32,
-            anchor   : 'bottom center',
-            data     : {
-              deletable: true,
-            },
-          });
-        }
-      }
-
-      a.push({
-        id       : 'lorem',
-        tooltip  : {
-          content : 'Lorem ipsum dolor ist amet et consecturo.',
-          position: 'bottom right',
-        },
-        content  : document.getElementById('pin-content').innerHTML,
-        latitude : 0,
-        longitude: 0.20,
-        image    : 'assets/pin2.png',
-        width    : 32,
-        height   : 32,
-        anchor   : 'bottom center',
-      });
-
-      a.push({
-        id        : 'polygon-sky',
-        svgStyle  : {
-          fill: 'rgba(0, 190, 255, 0.1)',
-        },
-        polygonRad: (function () {
-          var points = [];
-
-          for (var i = 0; i < Math.PI * 2; i += Math.PI / 8) {
-            points.push(i);
-            points.push(Math.PI / 8);
-          }
-
-          return points;
-        }()),
-      });
-
-      a.push({
-        id       : 'polygon',
-        content  : 'This mountain is so great it has dots on it!',
-        polygonPx: [3184, 794, 3268, 841, 3367, 1194, 3327, 1307, 3065, 1221, 3097, 847],
-        svgStyle : {
-          fill       : 'url(#points)', //'rgba(255,0,0,0.3)',
-          stroke     : 'rgba(255, 0, 50, 0.8)',
-          strokeWidth: '2px',
-        },
-        tooltip  : {
-          content : 'This is a mountain',
-          position: 'right bottom',
-        },
-      });
-
-      a.push({
-        id         : 'polyline',
-        polylineRad: [5.924, 0.064, 5.859, -0.061, 5.710, -0.132, 5.410, -0.287, 4.329, -0.490, 3.838, -0.370, 3.725, -0.241],
-        svgStyle   : {
-          stroke        : 'rgba(80, 100, 50, 0.8)',
-          strokeLinecap : 'round',
-          strokeLinejoin: 'round',
-          strokeWidth   : '10px',
-        },
-        tooltip    : 'This is a track',
-      });
-
-      a.push({
-        id       : 'html-img-demo',
-        html     : 'HTML & Image',
-        scale    : [0.5, 1.5],
-        className: 'demo-label',
-        longitude: 0.5,
-        latitude : -0.48,
-        hideList : true,
-      });
-
-      a.push({
-        id         : 'gif',
-        image      : 'assets/photosphere-logo.gif',
-        width      : 100,
-        height     : 100,
-        longitude  : 0.60,
-        latitude   : -0.35,
-        listContent: 'An animated gif',
-      });
-
-      a.push({
-        id       : 'text',
-        html     : 'This <b>is</b> text <img src="assets/pin3.png" style="height: 24px; vertical-align: top;"/>',
-        anchor   : 'bottom right',
-        style    : {
-          color     : 'white',
-          fontSize  : '20px',
-          fontFamily: 'Helvetica, sans-serif',
-          textAlign : 'center',
-        },
-        longitude: 0.45,
-        latitude : -0.4,
-      });
-
-      a.push({
-        id       : 'svg-demo',
-        html     : 'SVG marker demo',
-        scale    : [0.5, 1.5],
-        className: 'demo-label',
-        longitude: -0.5,
-        latitude : -0.48,
-        hideList : true,
-      });
-
-      a.push({
-        id       : 'circle',
-        tooltip  : 'A circle of radius 30',
-        circle   : 30,
-        svgStyle : {
-          fill       : 'rgba(255,255,0,0.3)',
-          stroke     : 'yellow',
-          strokeWidth: '2px',
-        },
-        longitude: -0.5,
-        latitude : -0.28,
-        anchor   : 'center right',
-      });
-
-      a.push({
-        id       : 'ellipse',
-        tooltip  : 'An ellipse of radius 60/30',
-        ellipse  : [60, 30],
-        svgStyle : {
-          fill       : 'rgba(255,255,0,0.3)',
-          stroke     : 'yellow',
-          strokeWidth: '2px',
-        },
-        longitude: -0.5,
-        latitude : -0.28,
-        anchor   : 'center left',
-      });
-
-      a.push({
-        id       : 'rect',
-        tooltip  : 'A square a side 60',
-        rect     : [60, 60],
-        svgStyle : {
-          fill       : 'rgba(255,255,0,0.3)',
-          stroke     : 'yellow',
-          strokeWidth: '2px',
-        },
-        longitude: -0.5,
-        latitude : -0.38,
-        anchor   : 'center right',
-      });
-
-      a.push({
-        id       : 'path',
-        tooltip  : 'A custom path',
-        path     : 'M 0 0 L 60 60 L 60 0 L 0 60 L 0 0',
-        svgStyle : {
-          fill       : 'rgba(255,255,0,0.3)',
-          stroke     : 'yellow',
-          strokeWidth: '2px',
-        },
-        longitude: -0.5,
-        latitude : -0.38,
-        anchor   : 'center left',
-      });
-
-      a.push({
-        id       : 'scale-demo',
-        html     : 'Marker scale demo',
-        scale    : [0.5, 1.5],
-        className: 'demo-label',
-        longitude: 0,
-        latitude : -0.48,
-        hideList : true,
-      });
-
-      a.push({
-        id       : 'scale-0',
-        tooltip  : 'No scale',
-        scale    : false,
-        circle   : 20,
-        svgStyle : {
-          fill: 'rgba(0, 0, 0, 0.5)',
-        },
-        longitude: -0.1,
-        latitude : -0.4,
-      });
-
-      a.push({
-        id       : 'scale-1',
-        tooltip  : '<code>zoom x2</code>',
-        scale    : 2,
-        circle   : 20,
-        svgStyle : {
-          fill: 'rgba(0, 0, 0, 0.5)',
-        },
-        longitude: 0,
-        latitude : -0.4,
-      });
-
-      a.push({
-        id       : 'scale-2',
-        tooltip  : '<code>zoom x0.5 ; zoom x1.5</code>',
-        scale    : [0.5, 1.5],
-        circle   : 20,
-        svgStyle : {
-          fill: 'rgba(0, 0, 0, 0.5)',
-        },
-        longitude: 0.1,
-        latitude : -0.4,
-      });
-
-      return a;
-    }()),
+    ]
   });
 
-  PSV.on('click', function (e, data) {
-    if (!data.rightclick) {
-      PSV.hud.addMarker({
-        id       : '#' + Math.random(),
-        tooltip  : 'Generated marker',
-        longitude: data.longitude,
-        latitude : data.latitude,
-        image    : 'assets/pin1.png',
-        width    : 32,
-        height   : 32,
-        anchor   : 'bottom center',
-        data     : {
-          deletable: true,
-        },
-      });
-    }
-  });
-
-  PSV.on('select-marker', function (e, marker, data) {
-    if (marker.data && marker.data.deletable) {
-      if (data.dblclick) {
-        PSV.hud.removeMarker(marker);
-      }
-      else if (data.rightclick) {
-        PSV.hud.updateMarker({
-          id   : marker.id,
-          image: 'assets/pin2.png',
-        });
-      }
-    }
-  });
-
-  PSV.on('over-marker', function (e, marker) {
-    console.log('over', marker.id);
-  });
-
-  PSV.on('leave-marker', function (e, marker) {
-    console.log('leave', marker.id);
-  });
-
-  PSV.on('select-marker-list', function (e, marker) {
-    console.log('select-list', marker.id);
-  });
-
-  PSV.on('goto-marker-done', function (e, marker) {
-    console.log('goto-done', marker.id);
-  });
-
-  PSV.on('show-tooltip', function (e, marker) {
-    if (marker) {
-      console.log('show-tooltip', marker.id);
-    }
-  });
 </script>
 </body>
 </html>

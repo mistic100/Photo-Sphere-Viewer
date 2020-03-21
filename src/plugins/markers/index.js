@@ -1,68 +1,179 @@
+import { AbstractPlugin, CONSTANTS, DEFAULTS, PSVError, registerButton, utils } from 'photo-sphere-viewer';
 import * as THREE from 'three';
-import { EVENTS, IDS, MARKER_DATA, SPHERE_RADIUS, SVG_NS } from '../data/constants';
-import { PSVError } from '../PSVError';
-import { Marker } from '../Marker';
-import { addClasses, each, getClosest, hasParent, removeClasses, toggleClass } from '../utils';
-import { AbstractComponent } from './AbstractComponent';
-
-import '../styles/hud.scss';
+import { Marker } from './Marker';
+import { MarkersButton } from './MarkersButton';
+import { MarkersListButton } from './MarkersListButton';
+import './style.scss';
 
 /**
- * @summary HUD class
- * @extends PSV.components.AbstractComponent
- * @memberof PSV.components
+ * @typedef {Object} PSV.plugins.MarkersPlugin.Options
+ * @property {boolean} [clickEventOnMarker=false]
+ * @property {PSV.plugins.MarkersPlugin.Properties[]} [markers]
  */
-export class HUD extends AbstractComponent {
+
+/**
+ * @typedef {Object} PSV.plugins.MarkersPlugin.SelectMarkerData
+ * @summary Data of the `select-marker` event
+ * @property {boolean} dblclick - if the selection originated from a double click, the simple click is always fired before the double click
+ * @property {boolean} rightclick - if the selection originated from a right click
+ */
+
+
+// add markers buttons
+DEFAULTS.navbar.splice(DEFAULTS.navbar.indexOf('caption'), 0, MarkersButton.id, MarkersListButton.id);
+DEFAULTS.lang[MarkersButton.id] = 'Markers';
+DEFAULTS.lang[MarkersListButton.id] = 'Markers list';
+registerButton(MarkersButton);
+registerButton(MarkersListButton);
+
+
+/**
+ * @summary Displays various markers on the viewer
+ * @extends PSV.plugins.AbstractPlugin
+ * @memberof PSV.plugins
+ */
+export default class MarkersPlugin extends AbstractPlugin {
+
+  static id = 'markers';
+
+  /**
+   * @summary Available events
+   * @enum {string}
+   * @constant
+   */
+  static EVENTS = {
+    GOTO_MARKER_DONE   : 'goto-marker-done',
+    LEAVE_MARKER       : 'leave-marker',
+    OVER_MARKER        : 'over-marker',
+    RENDER_MARKERS_LIST: 'render-markers-list',
+    SELECT_MARKER      : 'select-marker',
+    SELECT_MARKER_LIST : 'select-marker-list',
+    UNSELECT_MARKER    : 'unselect-marker',
+    HIDE_MARKERS       : 'hide-markers',
+    SHOW_MARKERS       : 'show-markers',
+  };
+
+  /**
+   * @summary Namespace for SVG creation
+   * @type {string}
+   * @constant
+   */
+  static SVG_NS = 'http://www.w3.org/2000/svg';
+
+  /**
+   * @summary Property name added to marker elements
+   * @type {string}
+   * @constant
+   */
+  static MARKER_DATA = 'psvMarker';
+
+  /**
+   * @summary Panel identifier for marker content
+   * @type {string}
+   * @constant
+   */
+  static ID_PANEL_MARKER = 'marker';
+
+  /**
+   * @summary Panel identifier for markers list
+   * @type {string}
+   * @constant
+   */
+  static ID_PANEL_MARKERS_LIST = 'markersList';
+
+  /**
+   * @summary Markers list template
+   * @param {PSV.Marker[]} markers
+   * @param {string} title
+   * @param {string} dataKey
+   * @returns {string}
+   */
+  static MARKERS_LIST_TEMPLATE = (markers, title, dataKey) => `
+<div class="psv-markers-list-container">
+  <h1 class="psv-markers-list-title">${title}</h1>
+  <ul class="psv-markers-list">
+    ${markers.map(marker => `
+    <li data-${dataKey}="${marker.config.id}" class="psv-markers-list-item ${marker.config.className || ''}">
+      ${marker.type === 'image' ? `<img class="psv-markers-list-image" src="${marker.config.image}"/>` : ''}
+      <p class="psv-markers-list-name">${marker.getListContent()}</p>
+    </li>
+    `).join('')}
+  </ul>
+</div>
+`;
 
   /**
    * @param {PSV.Viewer} psv
+   * @param {PSV.plugins.MarkersPlugin.Options} [options]
    */
-  constructor(psv) {
-    super(psv, 'psv-hud');
+  constructor(psv, options) {
+    super(psv);
+
+    /**
+     * @member {HTMLElement}
+     * @readonly
+     */
+    this.container = document.createElement('div');
+    this.container.className = 'psv-markers';
+    this.container.style.cursor = this.psv.config.mousemove ? 'move' : 'default';
+    this.psv.container.appendChild(this.container);
 
     /**
      * @summary All registered markers
-     * @member {Object<string, PSV.Marker>}
-     * @readonly
+     * @member {Object<string, PSV.plugins.MarkersPlugin.Marker>}
      */
     this.markers = {};
 
     /**
-     * @override
-     * @property {PSV.Marker} currentMarker - Last selected marker
-     * @property {PSV.Marker} hoveringMarker - Marker under the cursor
+     * @type {Object}
+     * @property {boolean} visible - Visibility of the component
+     * @property {PSV.plugins.MarkersPlugin.Marker} currentMarker - Last selected marker
+     * @property {PSV.plugins.MarkersPlugin.Marker} hoveringMarker - Marker under the cursor
+     * @private
      */
     this.prop = {
-      ...this.prop,
+      visible       : true,
       currentMarker : null,
       hoveringMarker: null,
     };
 
-    if (this.psv.config.mousemove) {
-      this.container.style.cursor = 'move';
-    }
+    /**
+     * @type {PSV.plugins.MarkersPlugin.Options}
+     */
+    this.config = {
+      clickEventOnMarker: false,
+      ...options,
+    };
 
     /**
      * @member {SVGElement}
      * @readonly
      */
-    this.svgContainer = document.createElementNS(SVG_NS, 'svg');
-    this.svgContainer.setAttribute('class', 'psv-hud-svg-container');
+    this.svgContainer = document.createElementNS(MarkersPlugin.SVG_NS, 'svg');
+    this.svgContainer.setAttribute('class', 'psv-markers-svg-container');
     this.container.appendChild(this.svgContainer);
 
     // Markers events via delegation
     this.container.addEventListener('mouseenter', this, true);
     this.container.addEventListener('mouseleave', this, true);
     this.container.addEventListener('mousemove', this, true);
+    this.container.addEventListener('contextmenu', this);
 
     // Viewer events
-    this.psv.on(EVENTS.CLICK, this);
-    this.psv.on(EVENTS.DOUBLE_CLICK, this);
-    this.psv.on(EVENTS.RENDER, this);
+    this.psv.on(CONSTANTS.EVENTS.CLICK, this);
+    this.psv.on(CONSTANTS.EVENTS.DOUBLE_CLICK, this);
+    this.psv.on(CONSTANTS.EVENTS.RENDER, this);
+    this.psv.on(CONSTANTS.EVENTS.CONFIG_CHANGED, this);
+
+    if (options?.markers) {
+      this.psv.once(CONSTANTS.EVENTS.READY, () => {
+        this.setMarkers(options.markers);
+      });
+    }
   }
 
   /**
-   * @override
+   * @package
    */
   destroy() {
     this.clearMarkers(false);
@@ -70,13 +181,19 @@ export class HUD extends AbstractComponent {
     this.container.removeEventListener('mouseenter', this);
     this.container.removeEventListener('mouseleave', this);
     this.container.removeEventListener('mousemove', this);
+    this.container.removeEventListener('contextmenu', this);
 
-    this.psv.off(EVENTS.CLICK, this);
-    this.psv.off(EVENTS.DOUBLE_CLICK, this);
-    this.psv.off(EVENTS.RENDER, this);
+    this.psv.off(CONSTANTS.EVENTS.CLICK, this);
+    this.psv.off(CONSTANTS.EVENTS.DOUBLE_CLICK, this);
+    this.psv.off(CONSTANTS.EVENTS.RENDER, this);
+    this.psv.off(CONSTANTS.EVENTS.CONFIG_CHANGED, this);
+
+    this.psv.container.removeChild(this.container);
 
     delete this.svgContainer;
     delete this.markers;
+    delete this.container;
+    delete this.prop;
 
     super.destroy();
   }
@@ -90,12 +207,16 @@ export class HUD extends AbstractComponent {
     /* eslint-disable */
     switch (e.type) {
       // @formatter:off
-      case 'mouseenter': this.__onMouseEnter(e); break;
-      case 'mouseleave': this.__onMouseLeave(e); break;
-      case 'mousemove':  this.__onMouseMove(e);  break;
-      case EVENTS.CLICK:        this.__onClick(e, e.args[0], false); break;
-      case EVENTS.DOUBLE_CLICK: this.__onClick(e, e.args[0], true);  break;
-      case EVENTS.RENDER:       this.renderMarkers();                   break;
+      case 'mouseenter':  this.__onMouseEnter(e);  break;
+      case 'mouseleave':  this.__onMouseLeave(e);  break;
+      case 'mousemove':   this.__onMouseMove(e);   break;
+      case 'contextmenu': this.__onContextMenu(e); break;
+      case CONSTANTS.EVENTS.CLICK:        this.__onClick(e, e.args[0], false); break;
+      case CONSTANTS.EVENTS.DOUBLE_CLICK: this.__onClick(e, e.args[0], true);  break;
+      case CONSTANTS.EVENTS.RENDER:       this.renderMarkers();                        break;
+      case CONSTANTS.EVENTS.CONFIG_CHANGED:
+        this.container.style.cursor = this.psv.config.mousemove ? 'move' : 'default';
+        break;
       // @formatter:on
     }
     /* eslint-enable */
@@ -103,7 +224,7 @@ export class HUD extends AbstractComponent {
 
   /**
    * @override
-   * @fires PSV.show-hud
+   * @fires PSV.plugins.MarkersPlugin.show-markers
    */
   show() {
     this.prop.visible = true;
@@ -111,16 +232,16 @@ export class HUD extends AbstractComponent {
     this.renderMarkers();
 
     /**
-     * @event show-hud
-     * @memberof PSV
-     * @summary Triggered when the HUD is shown
+     * @event show-markers
+     * @memberof PSV.plugins.MarkersPlugin
+     * @summary Triggered when the markers are shown
      */
-    this.psv.trigger(EVENTS.SHOW_HUD);
+    this.trigger(MarkersPlugin.EVENTS.SHOW_MARKERS);
   }
 
   /**
    * @override
-   * @fires PSV.hide-hud
+   * @fires PSV.plugins.MarkersPlugin.hide-markers
    */
   hide() {
     this.prop.visible = false;
@@ -128,11 +249,11 @@ export class HUD extends AbstractComponent {
     this.renderMarkers();
 
     /**
-     * @event hide-hud
-     * @memberof PSV
-     * @summary Triggered when the HUD is hidden
+     * @event hide-markers
+     * @memberof PSV.plugins.MarkersPlugin
+     * @summary Triggered when the markers are hidden
      */
-    this.psv.trigger(EVENTS.HIDE_HUD);
+    this.trigger(MarkersPlugin.EVENTS.HIDE_MARKERS);
   }
 
   /**
@@ -169,9 +290,9 @@ export class HUD extends AbstractComponent {
 
   /**
    * @summary Adds a new marker to viewer
-   * @param {PSV.Marker.Properties} properties
+   * @param {PSV.plugins.MarkersPlugin.Properties} properties
    * @param {boolean} [render=true] - renders the marker immediately
-   * @returns {PSV.Marker}
+   * @returns {PSV.plugins.MarkersPlugin.Marker}
    * @throws {PSV.PSVError} when the marker's id is missing or already exists
    */
   addMarker(properties, render = true) {
@@ -192,7 +313,7 @@ export class HUD extends AbstractComponent {
 
     if (render) {
       this.renderMarkers();
-      this.psv.refreshUi(`add marker ${marker.id}`);
+      this.__refreshUi();
     }
 
     return marker;
@@ -200,8 +321,8 @@ export class HUD extends AbstractComponent {
 
   /**
    * @summary Returns the internal marker object for a marker id
-   * @param {*} markerId
-   * @returns {PSV.Marker}
+   * @param {string} markerId
+   * @returns {PSV.plugins.MarkersPlugin.Marker}
    * @throws {PSV.PSVError} when the marker cannot be found
    */
   getMarker(markerId) {
@@ -216,7 +337,7 @@ export class HUD extends AbstractComponent {
 
   /**
    * @summary Returns the last marker selected by the user
-   * @returns {PSV.Marker}
+   * @returns {PSV.plugins.MarkersPlugin.Marker}
    */
   getCurrentMarker() {
     return this.prop.currentMarker;
@@ -225,17 +346,18 @@ export class HUD extends AbstractComponent {
   /**
    * @summary Updates the existing marker with the same id
    * @description Every property can be changed but you can't change its type (Eg: `image` to `html`).
-   * @param {PSV.Marker.Properties|PSV.Marker} properties
+   * @param {PSV.plugins.MarkersPlugin.Properties} properties
    * @param {boolean} [render=true] - renders the marker immediately
-   * @returns {PSV.Marker}
+   * @returns {PSV.plugins.MarkersPlugin.Marker}
    */
   updateMarker(properties, render = true) {
-    const marker = this.getMarker(properties);
+    const marker = this.getMarker(properties.id);
 
     marker.update(properties);
 
     if (render) {
       this.renderMarkers();
+      this.__refreshUi();
     }
 
     return marker;
@@ -270,23 +392,23 @@ export class HUD extends AbstractComponent {
     delete this.markers[marker.id];
 
     if (render) {
-      this.psv.refreshUi(`remove marker ${marker.id}`);
+      this.__refreshUi();
     }
   }
 
   /**
    * @summary Replaces all markers
-   * @param {array} markers
+   * @param {PSV.plugins.MarkersPlugin.Properties[]} markers
    * @param {boolean} [render=true] - renders the marker immediately
    */
   setMarkers(markers, render = true) {
     this.clearMarkers(false);
 
-    each(markers, marker => this.addMarker(marker, false));
+    utils.each(markers, marker => this.addMarker(marker, false));
 
     if (render) {
       this.renderMarkers();
-      this.psv.refreshUi('set markers');
+      this.__refreshUi();
     }
   }
 
@@ -295,68 +417,156 @@ export class HUD extends AbstractComponent {
    * @param {boolean} [render=true] - renders the markers immediately
    */
   clearMarkers(render = true) {
-    each(this.markers, marker => this.removeMarker(marker, false));
+    utils.each(this.markers, marker => this.removeMarker(marker, false));
 
     if (render) {
       this.renderMarkers();
-      this.psv.refreshUi('clear markers');
+      this.__refreshUi();
     }
   }
 
   /**
    * @summary Rotate the view to face the marker
-   * @param {*} markerOrId
+   * @param {string} markerId
    * @param {string|number} [duration] - rotates smoothy, see {@link PSV.Viewer#animate}
-   * @fires PSV.goto-marker-done
+   * @fires PSV.plugins.MarkersPlugin.goto-marker-done
    * @return {PSV.Animation}  A promise that will be resolved when the animation finishes
    */
-  gotoMarker(markerOrId, duration) {
-    const marker = this.getMarker(markerOrId);
+  gotoMarker(markerId, duration) {
+    const marker = this.getMarker(markerId);
 
     return this.psv.animate(marker.props.position, duration)
       .then(() => {
         /**
          * @event goto-marker-done
-         * @memberof PSV
+         * @memberof PSV.plugins.MarkersPlugin
          * @summary Triggered when the animation to a marker is done
-         * @param {PSV.Marker} marker
+         * @param {PSV.plugins.MarkersPlugin.Marker} marker
          */
-        this.psv.trigger(EVENTS.GOTO_MARKER_DONE, marker);
+        this.trigger(MarkersPlugin.EVENTS.GOTO_MARKER_DONE, marker);
       });
   }
 
   /**
    * @summary Hides a marker
-   * @param {*} marker
+   * @param {string} markerId
    */
-  hideMarker(marker) {
-    this.getMarker(marker).visible = false;
+  hideMarker(markerId) {
+    this.getMarker(markerId).visible = false;
     this.renderMarkers();
   }
 
   /**
    * @summary Shows a marker
-   * @param {*} marker
+   * @param {string} markerId
    */
-  showMarker(marker) {
-    this.getMarker(marker).visible = true;
+  showMarker(markerId) {
+    this.getMarker(markerId).visible = true;
     this.renderMarkers();
   }
 
   /**
    * @summary Toggles a marker
-   * @param {*} marker
+   * @param {string} markerId
    */
-  toggleMarker(marker) {
-    this.getMarker(marker).visible ^= true;
+  toggleMarker(markerId) {
+    this.getMarker(markerId).visible ^= true;
     this.renderMarkers();
+  }
+
+  /**
+   * @summary Toggles the visibility of markers list
+   */
+  toggleMarkersList() {
+    if (this.psv.panel.prop.contentId === MarkersPlugin.ID_PANEL_MARKERS_LIST) {
+      this.hideMarkersList();
+    }
+    else {
+      this.showMarkersList();
+    }
+  }
+
+  /**
+   * @summary Opens the panel with the content of the marker
+   * @param {string} markerId
+   */
+  showMarkerPanel(markerId) {
+    const marker = this.getMarker(markerId);
+
+    if (marker?.config?.content) {
+      this.psv.panel.show({
+        id     : MarkersPlugin.ID_PANEL_MARKER,
+        content: marker.config.content,
+      });
+    }
+    else {
+      this.psv.panel.hide(MarkersPlugin.ID_PANEL_MARKER);
+    }
+  }
+
+  /**
+   * @summary Opens side panel with list of markers
+   * @fires PSV.plugins.MarkersPlugin.filter:render-markers-list
+   */
+  showMarkersList() {
+    let markers = [];
+    utils.each(this.markers, (marker) => {
+      if (marker.visible && !marker.config.hideList) {
+        markers.push(marker);
+      }
+    });
+
+    /**
+     * @event filter:render-markers-list
+     * @memberof PSV.plugins.MarkersPlugin
+     * @summary Used to alter the list of markers displayed on the side-panel
+     * @param {PSV.plugins.MarkersPlugin.Marker[]} markers
+     * @returns {PSV.plugins.MarkersPlugin.Marker[]}
+     */
+    markers = this.change(MarkersPlugin.EVENTS.RENDER_MARKERS_LIST, markers);
+
+    this.psv.panel.show({
+      id          : MarkersPlugin.ID_PANEL_MARKERS_LIST,
+      content     : MarkersPlugin.MARKERS_LIST_TEMPLATE(
+        markers,
+        this.psv.config.lang.markers,
+        utils.dasherize(MarkersPlugin.MARKER_DATA)
+      ),
+      noMargin    : true,
+      clickHandler: (e) => {
+        const li = e.target ? utils.getClosest(e.target, 'li') : undefined;
+        const markerId = li ? li.dataset[MarkersPlugin.MARKER_DATA] : undefined;
+
+        if (markerId) {
+          const marker = this.getMarker(markerId);
+
+          /**
+           * @event select-marker-list
+           * @memberof PSV.plugins.MarkersPlugin
+           * @summary Triggered when a marker is selected from the side panel
+           * @param {PSV.plugins.MarkersPlugin.Marker} marker
+           */
+          this.trigger(MarkersPlugin.EVENTS.SELECT_MARKER_LIST, marker);
+
+          this.gotoMarker(marker, 1000);
+          this.hideMarkersList();
+        }
+      },
+    });
+  }
+
+  /**
+   * @summary Closes side panel if it contains the list of markers
+   */
+  hideMarkersList() {
+    this.psv.panel.hide(MarkersPlugin.ID_PANEL_MARKERS_LIST);
   }
 
   /**
    * @summary Updates the visibility and the position of all markers
    */
   renderMarkers() {
-    each(this.markers, (marker) => {
+    utils.each(this.markers, (marker) => {
       let isVisible = this.prop.visible && marker.visible;
 
       if (isVisible && marker.isPoly()) {
@@ -403,7 +613,7 @@ export class HUD extends AbstractComponent {
       }
 
       marker.props.inViewport = isVisible;
-      toggleClass(marker.$el, 'psv-marker--visible', isVisible);
+      utils.toggleClass(marker.$el, 'psv-marker--visible', isVisible);
 
       if (marker.props.inViewport && (this.prop.showAllTooltips || (marker === this.prop.hoveringMarker && !marker.isPoly()))) {
         marker.showTooltip();
@@ -417,7 +627,7 @@ export class HUD extends AbstractComponent {
   /**
    * @summary Determines if a point marker is visible<br>
    * It tests if the point is in the general direction of the camera, then check if it's in the viewport
-   * @param {PSV.Marker} marker
+   * @param {PSV.plugins.MarkersPlugin.Marker} marker
    * @param {PSV.Point} position
    * @returns {boolean}
    * @private
@@ -434,11 +644,11 @@ export class HUD extends AbstractComponent {
    * @summary Computes the real size of a marker
    * @description This is done by removing all it's transformations (if any) and making it visible
    * before querying its bounding rect
-   * @param {PSV.Marker} marker
+   * @param {PSV.plugins.MarkersPlugin.Marker} marker
    * @private
    */
   __updateMarkerSize(marker) {
-    addClasses(marker.$el, 'psv-marker--transparent');
+    utils.addClasses(marker.$el, 'psv-marker--transparent');
 
     let transform;
     if (marker.isSvg()) {
@@ -454,7 +664,7 @@ export class HUD extends AbstractComponent {
     marker.props.width = rect.width;
     marker.props.height = rect.height;
 
-    removeClasses(marker.$el, 'psv-marker--transparent');
+    utils.removeClasses(marker.$el, 'psv-marker--transparent');
 
     if (transform) {
       if (marker.isSvg()) {
@@ -470,8 +680,8 @@ export class HUD extends AbstractComponent {
   }
 
   /**
-   * @summary Computes HUD coordinates of a marker
-   * @param {PSV.Marker} marker
+   * @summary Computes viewer coordinates of a marker
+   * @param {PSV.plugins.MarkersPlugin.Marker} marker
    * @param {number} [scale=1]
    * @returns {PSV.Point}
    * @private
@@ -491,9 +701,9 @@ export class HUD extends AbstractComponent {
   }
 
   /**
-   * @summary Computes HUD coordinates of each point of a polygon/polyline<br>
+   * @summary Computes viewer coordinates of each point of a polygon/polyline<br>
    * It handles points behind the camera by creating intermediary points suitable for the projector
-   * @param {PSV.Marker} marker
+   * @param {PSV.plugins.MarkersPlugin.Marker} marker
    * @returns {PSV.Point[]}
    * @private
    */
@@ -562,19 +772,19 @@ export class HUD extends AbstractComponent {
     const Y = V.clone().multiplyScalar(C.dot(P1));
     const H = new THREE.Vector3().addVectors(X, Y).normalize();
     const a = new THREE.Vector3().crossVectors(H, C);
-    return H.applyAxisAngle(a, 0.01).multiplyScalar(SPHERE_RADIUS);
+    return H.applyAxisAngle(a, 0.01).multiplyScalar(CONSTANTS.SPHERE_RADIUS);
   }
 
   /**
    * @summary Returns the marker associated to an event target
    * @param {EventTarget} target
    * @param {boolean} [closest=false]
-   * @returns {PSV.Marker}
+   * @returns {PSV.plugins.MarkersPlugin.Marker}
    * @private
    */
   __getTargetMarker(target, closest = false) {
-    const target2 = closest ? getClosest(target, '.psv-marker') : target;
-    return target2 ? target2[MARKER_DATA] : undefined;
+    const target2 = closest ? utils.getClosest(target, '.psv-marker') : target;
+    return target2 ? target2[MarkersPlugin.MARKER_DATA] : undefined;
   }
 
   /**
@@ -585,13 +795,13 @@ export class HUD extends AbstractComponent {
    * @private
    */
   __targetOnTooltip(target, tooltip) {
-    return target && tooltip ? hasParent(target, tooltip.container) : false;
+    return target && tooltip ? utils.hasParent(target, tooltip.container) : false;
   }
 
   /**
    * @summary Handles mouse enter events, show the tooltip for non polygon markers
    * @param {MouseEvent} e
-   * @fires PSV.over-marker
+   * @fires PSV.plugins.MarkersPlugin.over-marker
    * @private
    */
   __onMouseEnter(e) {
@@ -602,11 +812,11 @@ export class HUD extends AbstractComponent {
 
       /**
        * @event over-marker
-       * @memberof PSV
+       * @memberof PSV.plugins.MarkersPlugin
        * @summary Triggered when the user puts the cursor hover a marker
-       * @param {PSV.Marker} marker
+       * @param {PSV.plugins.MarkersPlugin.Marker} marker
        */
-      this.psv.trigger(EVENTS.OVER_MARKER, marker);
+      this.trigger(MarkersPlugin.EVENTS.OVER_MARKER, marker);
 
       if (!this.prop.showAllTooltips) {
         marker.showTooltip(e);
@@ -617,7 +827,7 @@ export class HUD extends AbstractComponent {
   /**
    * @summary Handles mouse leave events, hide the tooltip
    * @param {MouseEvent} e
-   * @fires PSV.leave-marker
+   * @fires PSV.plugins.MarkersPlugin.leave-marker
    * @private
    */
   __onMouseLeave(e) {
@@ -627,11 +837,11 @@ export class HUD extends AbstractComponent {
     if (marker && !(marker.isPoly() && this.__targetOnTooltip(e.relatedTarget, marker.tooltip))) {
       /**
        * @event leave-marker
-       * @memberof PSV
+       * @memberof PSV.plugins.MarkersPlugin
        * @summary Triggered when the user puts the cursor away from a marker
-       * @param {PSV.Marker} marker
+       * @param {PSV.plugins.MarkersPlugin.Marker} marker
        */
-      this.psv.trigger(EVENTS.LEAVE_MARKER, marker);
+      this.trigger(MarkersPlugin.EVENTS.LEAVE_MARKER, marker);
 
       this.prop.hoveringMarker = null;
 
@@ -644,15 +854,15 @@ export class HUD extends AbstractComponent {
   /**
    * @summary Handles mouse move events, refreshUi the tooltip for polygon markers
    * @param {MouseEvent} e
-   * @fires PSV.leave-marker
-   * @fires PSV.over-marker
+   * @fires PSV.plugins.MarkersPlugin.leave-marker
+   * @fires PSV.plugins.MarkersPlugin.over-marker
    * @private
    */
   __onMouseMove(e) {
     let marker;
     const targetMarker = this.__getTargetMarker(e.target);
 
-    if (targetMarker && targetMarker.isPoly()) {
+    if (targetMarker?.isPoly()) {
       marker = targetMarker;
     }
     // do not hide if we enter the tooltip itself while hovering a polygon
@@ -662,7 +872,7 @@ export class HUD extends AbstractComponent {
 
     if (marker) {
       if (!this.prop.hoveringMarker) {
-        this.psv.trigger(EVENTS.OVER_MARKER, marker);
+        this.trigger(MarkersPlugin.EVENTS.OVER_MARKER, marker);
 
         this.prop.hoveringMarker = marker;
       }
@@ -671,8 +881,8 @@ export class HUD extends AbstractComponent {
         marker.showTooltip(e);
       }
     }
-    else if (this.prop.hoveringMarker && this.prop.hoveringMarker.isPoly()) {
-      this.psv.trigger(EVENTS.LEAVE_MARKER, this.prop.hoveringMarker);
+    else if (this.prop.hoveringMarker?.isPoly()) {
+      this.trigger(MarkersPlugin.EVENTS.LEAVE_MARKER, this.prop.hoveringMarker);
 
       if (!this.prop.showAllTooltips) {
         this.prop.hoveringMarker.hideTooltip();
@@ -683,12 +893,26 @@ export class HUD extends AbstractComponent {
   }
 
   /**
+   * @summary Handles context menu events
+   * @param {MouseWheelEvent} evt
+   * @private
+   */
+  __onContextMenu(evt) {
+    if (!utils.getClosest(evt.target, '.psv-marker')) {
+      return true;
+    }
+
+    evt.preventDefault();
+    return false;
+  }
+
+  /**
    * @summary Handles mouse click events, select the marker and open the panel if necessary
    * @param {Event} e
    * @param {Object} data
    * @param {boolean} dblclick
-   * @fires PSV.select-marker
-   * @fires PSV.unselect-marker
+   * @fires PSV.plugins.MarkersPlugin.select-marker
+   * @fires PSV.plugins.MarkersPlugin.unselect-marker
    * @private
    */
   __onClick(e, data, dblclick) {
@@ -699,45 +923,75 @@ export class HUD extends AbstractComponent {
 
       /**
        * @event select-marker
-       * @memberof PSV
+       * @memberof PSV.plugins.MarkersPlugin
        * @summary Triggered when the user clicks on a marker. The marker can be retrieved from outside the event handler
-       * with {@link PSV.components.HUD.getCurrentMarker}
-       * @param {PSV.Marker} marker
-       * @param {PSV.SelectMarkerData} data
+       * with {@link PSV.plugins.MarkersPlugin.getCurrentMarker}
+       * @param {PSV.plugins.MarkersPlugin.Marker} marker
+       * @param {PSV.plugins.MarkersPlugin.SelectMarkerData} data
        */
-      this.psv.trigger(EVENTS.SELECT_MARKER, marker, {
+      this.trigger(MarkersPlugin.EVENTS.SELECT_MARKER, marker, {
         dblclick  : dblclick,
         rightclick: data.rightclick,
       });
 
-      if (this.psv.config.clickEventOnMarker) {
+      if (this.config.clickEventOnMarker) {
         // add the marker to event data
         data.marker = marker;
       }
       else {
         e.stopPropagation();
       }
+
+      // the marker could have been deleted in an event handler
+      if (this.markers[marker.id]) {
+        this.showMarkerPanel(marker.id);
+      }
     }
     else if (this.prop.currentMarker) {
       /**
        * @event unselect-marker
-       * @memberof PSV
+       * @memberof PSV.plugins.MarkersPlugin
        * @summary Triggered when a marker was selected and the user clicks elsewhere
-       * @param {PSV.Marker} marker
+       * @param {PSV.plugins.MarkersPlugin.Marker} marker
        */
-      this.psv.trigger(EVENTS.UNSELECT_MARKER, this.prop.currentMarker);
+      this.trigger(MarkersPlugin.EVENTS.UNSELECT_MARKER, this.prop.currentMarker);
+
+      this.psv.panel.hide(MarkersPlugin.ID_PANEL_MARKER);
 
       this.prop.currentMarker = null;
     }
+  }
 
-    if (marker && marker.config && marker.config.content) {
-      this.psv.panel.show({
-        id     : IDS.MARKER,
-        content: marker.config.content,
-      });
+  /**
+   * @summary Updates the visiblity of the panel and the buttons
+   * @private
+   */
+  __refreshUi() {
+    const nbMarkers = this.getNbMarkers();
+    const markersButton = this.psv.navbar.getButton(MarkersButton.id, false);
+    const markersListButton = this.psv.navbar.getButton(MarkersListButton.id, false);
+
+    if (nbMarkers === 0) {
+      markersButton?.hide();
+      markersListButton?.hide();
+
+      if (this.psv.panel.isVisible(MarkersPlugin.ID_PANEL_MARKERS_LIST)) {
+        this.psv.panel.hide();
+      }
+      else if (this.psv.panel.isVisible(MarkersPlugin.ID_PANEL_MARKER)) {
+        this.psv.panel.hide();
+      }
     }
     else {
-      this.psv.panel.hide(IDS.MARKER);
+      markersButton?.show();
+      markersListButton?.show();
+
+      if (this.psv.panel.isVisible(MarkersPlugin.ID_PANEL_MARKERS_LIST)) {
+        this.showMarkersList();
+      }
+      else if (this.psv.panel.isVisible(MarkersPlugin.ID_PANEL_MARKER)) {
+        this.prop.currentMarker ? this.showMarkerPanel(this.prop.currentMarker) : this.psv.panel.hide();
+      }
     }
   }
 

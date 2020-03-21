@@ -135,14 +135,7 @@ export {
  * @property {number} latitude - position in spherical coordinates
  * @property {number} textureX - position on the texture
  * @property {number} textureY - position on the texture
- * @property {PSV.Marker} [marker] - clicked marker
- */
-
-/**
- * @typedef {Object} PSV.SelectMarkerData
- * @summary Data of the `select-marker` event
- * @property {boolean} dblclick - if the selection originated from a double click, the simple click is always fired before the double click
- * @property {boolean} rightclick - if the selection originated from a right click
+ * @property {PSV.plugins.MarkersPlugin.Marker} [marker] - clicked marker
  */
 
 /**
@@ -155,16 +148,12 @@ export {
  * @property {function} onClick
  * @property {boolean} [disabled=false]
  * @property {boolean} [visible=true]
+ * @property {boolean} [collapsable=true]
  */
 
 /**
  * @typedef {Object} PSV.Options
  * @summary Viewer options, see {@link http://photo-sphere-viewer.js.org/#options}
- */
-
-/**
- * @external NoSleep
- * @description {@link https://github.com/richtr/NoSleep.js}
  */
 
 /**
@@ -193,16 +182,6 @@ export {
  */
 
 /**
- * @typedef {Object} external:THREE.CanvasRenderer
- * @summary {@link https://github.com/mrdoob/three.js/blob/r97/examples/js/renderers/CanvasRenderer.js}
- */
-
-/**
- * @typedef {Object} external:THREE.StereoEffect
- * @summary {@link https://github.com/mrdoob/three.js/blob/dev/examples/js/effects/StereoEffect.js}
- */
-
-/**
  * @typedef {Object} external:THREE.PerspectiveCamera
  * @summary {@link https://threejs.org/docs/index.html#api/en/cameras/PerspectiveCamera}
  */
@@ -215,11 +194,6 @@ export {
 /**
  * @typedef {Object} external:THREE.Raycaster
  * @summary {@link https://threejs.org/docs/index.html#api/en/core/Raycaster}
- */
-
-/**
- * @typedef {Object} external:THREE.DeviceOrientationControls
- * @summary {@link https://github.com/mrdoob/three.js/blob/dev/examples/js/controls/DeviceOrientationControls.js}
  */
 
 /**

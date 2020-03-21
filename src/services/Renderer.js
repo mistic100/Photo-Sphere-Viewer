@@ -25,13 +25,6 @@ export class Renderer extends AbstractService {
     this.mainReqid = undefined;
 
     /**
-     * @member {HTMLElement}
-     * @readonly
-     * @protected
-     */
-    this.canvasContainer = null;
-
-    /**
      * @member {external:THREE.WebGLRenderer}
      * @readonly
      * @protected
@@ -66,11 +59,27 @@ export class Renderer extends AbstractService {
      */
     this.raycaster = null;
 
+    /**
+     * @member {HTMLElement}
+     * @readonly
+     * @protected
+     */
+    this.canvasContainer = document.createElement('div');
+    this.canvasContainer.className = 'psv-canvas-container';
+    this.canvasContainer.style.cursor = this.psv.config.mousemove ? 'move' : 'default';
+    this.psv.container.appendChild(this.canvasContainer);
+
     psv.on(EVENTS.SIZE_UPDATED, (e, size) => {
       if (this.renderer) {
         this.renderer.setSize(size.width, size.height);
       }
     });
+
+    psv.on(EVENTS.CONFIG_CHANGED, () => {
+      this.canvasContainer.style.cursor = this.psv.config.mousemove ? 'move' : 'default';
+    });
+
+    this.hide();
   }
 
   /**
@@ -88,9 +97,7 @@ export class Renderer extends AbstractService {
     }
 
     // remove container
-    if (this.canvasContainer) {
-      this.psv.container.removeChild(this.canvasContainer);
-    }
+    this.psv.container.removeChild(this.canvasContainer);
 
     delete this.canvasContainer;
     delete this.renderer;
@@ -106,18 +113,14 @@ export class Renderer extends AbstractService {
    * @summary Hides the viewer
    */
   hide() {
-    if (this.canvasContainer) {
-      this.canvasContainer.style.opacity = 0;
-    }
+    this.canvasContainer.style.opacity = 0;
   }
 
   /**
    * @summary Shows the viewer
    */
   show() {
-    if (this.canvasContainer) {
-      this.canvasContainer.style.opacity = 1;
-    }
+    this.canvasContainer.style.opacity = 1;
   }
 
   /**
@@ -254,12 +257,8 @@ export class Renderer extends AbstractService {
     this.scene.add(this.mesh);
 
     // create canvas container
-    this.canvasContainer = document.createElement('div');
-    this.canvasContainer.className = 'psv-canvas-container';
     this.renderer.domElement.className = 'psv-canvas';
-    this.psv.container.appendChild(this.canvasContainer);
     this.canvasContainer.appendChild(this.renderer.domElement);
-    this.hide();
   }
 
   /**
@@ -273,7 +272,7 @@ export class Renderer extends AbstractService {
     const geometry = new THREE.SphereGeometry(SPHERE_RADIUS * scale, SPHERE_VERTICES, SPHERE_VERTICES, -Math.PI / 2);
 
     const material = new THREE.MeshBasicMaterial({
-      side: THREE.DoubleSide, // TODO needed for CanvasRenderer, can it be removed ?
+      side: THREE.BackSide,
     });
 
     const mesh = new THREE.Mesh(geometry, material);

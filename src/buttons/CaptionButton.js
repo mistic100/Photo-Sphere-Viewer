@@ -9,17 +9,8 @@ import info from '../icons/info.svg';
  */
 export class CaptionButton extends AbstractButton {
 
-  static get id() {
-    return 'caption';
-  }
-
-  static get icon() {
-    return info;
-  }
-
-  get collapsable() {
-    return false;
-  }
+  static id = 'caption';
+  static icon = info;
 
   /**
    * @param {PSV.components.NavbarCaption} caption
@@ -56,7 +47,7 @@ export class CaptionButton extends AbstractButton {
 
   /**
    * @override
-   * @description Toggles markers list
+   * @description Toggles caption
    */
   __onClick() {
     if (this.psv.notification.prop.visible) {

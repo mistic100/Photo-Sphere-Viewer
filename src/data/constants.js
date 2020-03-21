@@ -1,11 +1,4 @@
 /**
- * @summary Namespace for SVG creation
- * @type {string}
- * @constant
- */
-export const SVG_NS = 'http://www.w3.org/2000/svg';
-
-/**
  * @summary Number of pixels bellow which a mouse move will be considered as a click
  * @type {number}
  * @constant
@@ -70,13 +63,6 @@ export const CUBE_MAP = [0, 2, 4, 5, 3, 1];
 export const CUBE_HASHMAP = ['left', 'right', 'top', 'bottom', 'back', 'front'];
 
 /**
- * @summary Property name added to marker elements
- * @type {string}
- * @constant
- */
-export const MARKER_DATA = 'psvMarker';
-
-/**
  * @summary Property name added to buttons list
  * @type {string}
  * @constant
@@ -116,52 +102,25 @@ export const EVENTS = {
   BEFORE_ROTATE         : 'before-rotate',
   CLICK                 : 'click',
   CLOSE_PANEL           : 'close-panel',
+  CONFIG_CHANGED        : 'config-changed',
   DOUBLE_CLICK          : 'dblclick',
   FULLSCREEN_UPDATED    : 'fullscreen-updated',
-  GOTO_MARKER_DONE      : 'goto-marker-done',
-  HIDE_HUD              : 'hide-hud',
   HIDE_NOTIFICATION     : 'hide-notification',
   HIDE_OVERLAY          : 'hide-overlay',
   HIDE_TOOLTIP          : 'hide-tooltip',
-  LEAVE_MARKER          : 'leave-marker',
   OPEN_PANEL            : 'open-panel',
-  OVER_MARKER           : 'over-marker',
   PANORAMA_CACHED       : 'panorama-cached',
   PANORAMA_LOAD_PROGRESS: 'panorama-load-progress',
   PANORAMA_LOADED       : 'panorama-loaded',
   POSITION_UPDATED      : 'position-updated',
   READY                 : 'ready',
   RENDER                : 'render',
-  RENDER_MARKERS_LIST   : 'render-markers-list',
-  SELECT_MARKER         : 'select-marker',
-  SELECT_MARKER_LIST    : 'select-marker-list',
-  SHOW_HUD              : 'show-hud',
   SHOW_NOTIFICATION     : 'show-notification',
   SHOW_OVERLAY          : 'show-overlay',
   SHOW_TOOLTIP          : 'show-tooltip',
   SIZE_UPDATED          : 'size-updated',
   STOP_ALL              : 'stop-all',
-  UNSELECT_MARKER       : 'unselect-marker',
   ZOOM_UPDATED          : 'zoom-updated',
-};
-
-/**
- * @summary Types of marker
- * @enum {string}
- * @constant
- */
-export const MARKER_TYPES = {
-  image      : 'image',
-  html       : 'html',
-  polygonPx  : 'polygonPx',
-  polygonRad : 'polygonRad',
-  polylinePx : 'polylinePx',
-  polylineRad: 'polylineRad',
-  square     : 'square',
-  rect       : 'rect',
-  circle     : 'circle',
-  ellipse    : 'ellipse',
-  path       : 'path',
 };
 
 /**
@@ -170,11 +129,9 @@ export const MARKER_TYPES = {
  * @constant
  */
 export const IDS = {
-  MARKERS_LIST: 'markersList',
-  MARKER      : 'marker',
-  MENU        : 'menu',
-  TWO_FINGERS : 'twoFingers',
-  ERROR       : 'error',
+  MENU       : 'menu',
+  TWO_FINGERS: 'twoFingers',
+  ERROR      : 'error',
 };
 
 /* eslint-disable */
@@ -210,11 +167,11 @@ export const EASINGS = {
 
   inExpo    : (t) => Math.pow(2, 10*(t-1)),
   outExpo   : (t) => 1-Math.pow(2, -10*t),
-  inOutExpo : (t) => { t=t*2-1; return t<0 ? .5*Math.pow(2, 10*t) : 1-.5*Math.pow(2, -10*t); },
+  inOutExpo : (t) => (t=t*2-1)<0 ? .5*Math.pow(2, 10*t) : 1-.5*Math.pow(2, -10*t),
 
   inCirc    : (t) => 1-Math.sqrt(1-t*t),
   outCirc   : (t) => Math.sqrt(1-(t-1)*(t-1)),
-  inOutCirc : (t) => { t*=2; return t<1 ? .5-.5*Math.sqrt(1-t*t) : .5+.5*Math.sqrt(1-(t-=2)*t); }
+  inOutCirc : (t) => (t*=2)<1 ? .5-.5*Math.sqrt(1-t*t) : .5+.5*Math.sqrt(1-(t-=2)*t)
 };
 // @formatter:on
 /* eslint-enable */

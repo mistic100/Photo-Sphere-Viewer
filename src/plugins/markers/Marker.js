@@ -1,20 +1,38 @@
-import { EASINGS, MARKER_DATA, MARKER_TYPES, SVG_NS } from './data/constants';
-import { PSVError } from './PSVError';
-import { addClasses, dasherize, deepmerge, each, parseAngle, parsePosition } from './utils';
+import { CONSTANTS, PSVError, utils } from 'photo-sphere-viewer';
+import MarkersPlugin from './index';
 
 /**
- * @typedef {Object} PSV.Marker.Properties
+ * @summary Types of marker
+ * @enum {string}
+ * @constant
+ */
+const MARKER_TYPES = {
+  image      : 'image',
+  html       : 'html',
+  polygonPx  : 'polygonPx',
+  polygonRad : 'polygonRad',
+  polylinePx : 'polylinePx',
+  polylineRad: 'polylineRad',
+  square     : 'square',
+  rect       : 'rect',
+  circle     : 'circle',
+  ellipse    : 'ellipse',
+  path       : 'path',
+};
+
+/**
+ * @typedef {Object} PSV.plugins.MarkersPlugin.Properties
  * @summary Marker properties, see {@link http://photo-sphere-viewer.js.org/markers.html#config}
  */
 
 /**
  * @summary Object representing a marker
- * @memberOf PSV
+ * @memberOf PSV.plugins.MarkersPlugin
  */
 export class Marker {
 
   /**
-   * @param {PSV.Marker.Properties} properties
+   * @param {PSV.plugins.MarkersPlugin.Properties} properties
    * @param {PSV.Viewer} psv
    * @throws {PSV.PSVError} when the configuration is incorrect
    */
@@ -48,7 +66,6 @@ export class Marker {
 
     /**
      * @member {string}
-     * @see Marker.types
      * @readonly
      */
     this.type = Marker.getType(properties, false);
@@ -67,7 +84,7 @@ export class Marker {
 
     /**
      * @summary Original configuration of the marker
-     * @member {Marker.Properties}
+     * @member {PSV.plugins.MarkersPlugin.Properties}
      * @readonly
      */
     this.config = {};
@@ -115,17 +132,17 @@ export class Marker {
       this.$el = document.createElement('div');
     }
     else if (this.isPolygon()) {
-      this.$el = document.createElementNS(SVG_NS, 'polygon');
+      this.$el = document.createElementNS(MarkersPlugin.SVG_NS, 'polygon');
     }
     else if (this.isPolyline()) {
-      this.$el = document.createElementNS(SVG_NS, 'polyline');
+      this.$el = document.createElementNS(MarkersPlugin.SVG_NS, 'polyline');
     }
     else {
-      this.$el = document.createElementNS(SVG_NS, this.type);
+      this.$el = document.createElementNS(MarkersPlugin.SVG_NS, this.type);
     }
 
     this.$el.id = `psv-marker-${this.id}`;
-    this.$el[MARKER_DATA] = this;
+    this.$el[MarkersPlugin.MARKER_DATA] = this;
 
     this.update(properties);
   }
@@ -134,7 +151,7 @@ export class Marker {
    * @summary Destroys the marker
    */
   destroy() {
-    delete this.$el[MARKER_DATA];
+    delete this.$el[MarkersPlugin.MARKER_DATA];
     delete this.$el;
     delete this.config;
     delete this.props;
@@ -214,13 +231,13 @@ export class Marker {
    */
   getScale(zoomLevel) {
     if (Array.isArray(this.config.scale)) {
-      return this.config.scale[0] + (this.config.scale[1] - this.config.scale[0]) * EASINGS.inQuad(zoomLevel / 100);
+      return this.config.scale[0] + (this.config.scale[1] - this.config.scale[0]) * CONSTANTS.EASINGS.inQuad(zoomLevel / 100);
     }
     else if (typeof this.config.scale === 'function') {
       return this.config.scale(zoomLevel);
     }
     else if (typeof this.config.scale === 'number') {
-      return this.config.scale * EASINGS.inQuad(zoomLevel / 100);
+      return this.config.scale * CONSTANTS.EASINGS.inQuad(zoomLevel / 100);
     }
     else {
       return 1;
@@ -309,22 +326,20 @@ export class Marker {
 
   /**
    * @summary Updates the marker with new properties
-   * @param {Marker.Properties} [properties]
+   * @param {PSV.plugins.MarkersPlugin.Properties} properties
    * @throws {PSV.PSVError} when trying to change the marker's type
    */
   update(properties) {
-    if (properties && properties !== this.config) {
-      const newType = Marker.getType(properties, true);
+    const newType = Marker.getType(properties, true);
 
-      if (newType !== undefined && newType !== this.type) {
-        throw new PSVError('cannot change marker type');
-      }
-
-      deepmerge(this.config, properties);
-      this.data = this.config.data;
-
-      this.visible = properties.visible !== false;
+    if (newType !== undefined && newType !== this.type) {
+      throw new PSVError('cannot change marker type');
     }
+
+    utils.deepmerge(this.config, properties);
+    this.data = this.config.data;
+
+    this.visible = properties.visible !== false;
 
     // reset CSS class
     if (this.isNormal()) {
@@ -336,25 +351,25 @@ export class Marker {
 
     // add CSS classes
     if (this.config.className) {
-      addClasses(this.$el, this.config.className);
+      utils.addClasses(this.$el, this.config.className);
     }
     if (this.config.tooltip) {
-      addClasses(this.$el, 'psv-marker--has-tooltip');
+      utils.addClasses(this.$el, 'psv-marker--has-tooltip');
       if (typeof this.config.tooltip === 'string') {
         this.config.tooltip = { content: this.config.tooltip };
       }
     }
     if (this.config.content) {
-      addClasses(this.$el, 'psv-marler--has-content');
+      utils.addClasses(this.$el, 'psv-marler--has-content');
     }
 
     // apply style
     if (this.config.style) {
-      deepmerge(this.$el.style, this.config.style);
+      utils.deepmerge(this.$el.style, this.config.style);
     }
 
     // parse anchor
-    this.props.anchor = parsePosition(this.config.anchor);
+    this.props.anchor = utils.parsePosition(this.config.anchor);
 
     if (this.isNormal()) {
       this.__updateNormal();
@@ -475,14 +490,14 @@ export class Marker {
       // no default
     }
 
-    each(this.props.def, (value, prop) => {
+    utils.each(this.props.def, (value, prop) => {
       this.$el.setAttributeNS(null, prop, value);
     });
 
     // set style
     if (this.config.svgStyle) {
-      each(this.config.svgStyle, (value, prop) => {
-        this.$el.setAttributeNS(null, dasherize(prop), value);
+      utils.each(this.config.svgStyle, (value, prop) => {
+        this.$el.setAttributeNS(null, utils.dasherize(prop), value);
       });
     }
     else {
@@ -505,8 +520,8 @@ export class Marker {
 
     // set style
     if (this.config.svgStyle) {
-      each(this.config.svgStyle, (value, prop) => {
-        this.$el.setAttributeNS(null, dasherize(prop), value);
+      utils.each(this.config.svgStyle, (value, prop) => {
+        this.$el.setAttributeNS(null, utils.dasherize(prop), value);
       });
 
       if (this.isPolyline() && !this.config.svgStyle.fill) {
@@ -539,7 +554,7 @@ export class Marker {
     // clean angles
     else {
       this.props.def = actualPoly.map((coord) => {
-        return [parseAngle(coord[0]), parseAngle(coord[1], true)];
+        return [utils.parseAngle(coord[0]), utils.parseAngle(coord[1], true)];
       });
     }
 
@@ -568,7 +583,7 @@ export class Marker {
   static getType(properties, allowNone = false) {
     const found = [];
 
-    each(MARKER_TYPES, (type) => {
+    utils.each(MARKER_TYPES, (type) => {
       if (type in properties) {
         found.push(type);
       }

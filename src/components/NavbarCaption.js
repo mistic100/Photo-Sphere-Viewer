@@ -8,13 +8,7 @@ import { AbstractComponent } from './AbstractComponent';
  */
 export class NavbarCaption extends AbstractComponent {
 
-  static get id() {
-    return 'caption';
-  }
-
-  get collapsable() {
-    return false;
-  }
+  static id = 'caption';
 
   /**
    * @param {PSV.components.Navbar} navbar
@@ -34,6 +28,7 @@ export class NavbarCaption extends AbstractComponent {
     /**
      * @override
      * @property {string} id
+     * @property {boolean} collapsable
      * @property {number} width
      * @property {string} caption
      * @property {boolean} contentVisible - if the content is visible in the navbar
@@ -42,6 +37,7 @@ export class NavbarCaption extends AbstractComponent {
     this.prop = {
       ...this.prop,
       id            : this.constructor.id,
+      collapsable   : false,
       width         : this.button.prop.width,
       caption       : '',
       contentVisible: true,

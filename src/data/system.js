@@ -1,5 +1,3 @@
-import * as THREE from 'three';
-
 /**
  * @summary General information about the system
  * @constant
@@ -17,7 +15,6 @@ import * as THREE from 'three';
  */
 export const SYSTEM = {
   loaded                      : false,
-  checkTHREE                  : checkTHREE,
   pixelRatio                  : 1,
   isWebGLSupported            : false,
   isCanvasSupported           : false,
@@ -42,16 +39,6 @@ SYSTEM.load = () => {
     SYSTEM.fullscreenEvent = getFullscreenEvent();
   }
 };
-
-/**
- * @summary Checks if some three.js components are loaded
- * @param {...string} components
- * @returns {boolean}
- * @private
- */
-function checkTHREE(...components) {
-  return !components.some(component => !(component in THREE));
-}
 
 /**
  * @summary Detects if canvas is supported

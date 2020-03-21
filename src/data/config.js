@@ -41,7 +41,6 @@ export const DEFAULTS = {
   mousemove          : true,
   captureCursor      : false,
   touchmoveTwoFingers: false,
-  clickEventOnMarker : false,
   useXmpData         : true,
   panoData           : null,
   withCredentials    : false,
@@ -52,23 +51,19 @@ export const DEFAULTS = {
     'zoomRange',
     'zoomIn',
     'download',
-    'markers',
-    'markersList',
     'caption',
     'fullscreen',
   ],
   lang               : {
-    autorotate : 'Automatic rotation',
-    zoom       : 'Zoom',
-    zoomOut    : 'Zoom out',
-    zoomIn     : 'Zoom in',
-    download   : 'Download',
-    fullscreen : 'Fullscreen',
-    markers    : 'Markers',
-    markersList: 'Markers list',
-    menu       : 'Menu',
-    twoFingers : ['Use two fingers to navigate'],
-    loadError  : 'The panorama can\'t be loaded',
+    autorotate: 'Automatic rotation',
+    zoom      : 'Zoom',
+    zoomOut   : 'Zoom out',
+    zoomIn    : 'Zoom in',
+    download  : 'Download',
+    fullscreen: 'Fullscreen',
+    menu      : 'Menu',
+    twoFingers: ['Use two fingers to navigate'],
+    loadError : 'The panorama can\'t be loaded',
   },
   keyboard           : {
     'ArrowUp'   : ACTIONS.ROTATE_LAT_UP,
@@ -81,7 +76,6 @@ export const DEFAULTS = {
     '-'         : ACTIONS.ZOOM_OUT,
     ' '         : ACTIONS.TOGGLE_AUTOROTATE,
   },
-  markers            : [],
   plugins            : [],
 };
 
@@ -205,14 +199,16 @@ export const CONFIG_PARSERS = {
     return fisheye;
   },
   plugins        : (plugins) => {
-    return plugins.map((plugin) => {
-      if (Array.isArray(plugin)) {
-        return plugin;
-      }
-      else {
-        return [plugin];
-      }
-    });
+    return plugins
+      .map((plugin) => {
+        if (Array.isArray(plugin)) {
+          return plugin;
+        }
+        else {
+          return [plugin];
+        }
+      })
+      .filter(plugin => !!plugin[0]);
   },
 };
 

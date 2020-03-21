@@ -1,14 +1,13 @@
 import * as THREE from 'three';
 import { EventEmitter } from 'uevent';
 import { Animation } from './Animation';
-import { HUD } from './components/HUD';
 import { Loader } from './components/Loader';
 import { Navbar } from './components/Navbar';
 import { Notification } from './components/Notification';
 import { Overlay } from './components/Overlay';
 import { Panel } from './components/Panel';
 import { CONFIG_PARSERS, DEFAULTS, getConfig, READONLY_OPTIONS } from './data/config';
-import { EVENTS, IDS, MARKER_DATA, VIEWER_DATA } from './data/constants';
+import { EVENTS, IDS, VIEWER_DATA } from './data/constants';
 import { SYSTEM } from './data/system';
 import errorIcon from './icons/error.svg';
 import { PSVError } from './PSVError';
@@ -17,15 +16,12 @@ import { EventsHandler } from './services/EventsHandler';
 import { Renderer } from './services/Renderer';
 import { TextureLoader } from './services/TextureLoader';
 import { TooltipRenderer } from './services/TooltipRenderer';
-import './styles/markers-list.scss';
 import './styles/viewer.scss';
-import markersListTemplate from './templates/markers-list';
 import {
   bound,
   each,
   exitFullscreen,
   getAngle,
-  getClosest,
   getShortestArc,
   intersect,
   isFullscreenEnabled,
@@ -197,12 +193,6 @@ export class Viewer extends EventEmitter {
     this.navbar = new Navbar(this);
 
     /**
-     * @member {PSV.components.HUD}
-     * @readonly
-     */
-    this.hud = new HUD(this);
-
-    /**
      * @member {PSV.components.Panel}
      * @readonly
      */
@@ -258,11 +248,6 @@ export class Viewer extends EventEmitter {
         this.navbar.show();
       }
 
-      this.hud.show();
-      if (this.config.markers) {
-        this.hud.setMarkers(this.config.markers);
-      }
-
       // Queue autorotate
       if (this.config.autorotateDelay) {
         this.prop.startTimeout = setTimeout(() => this.startAutorotate(), this.config.autorotateDelay);
@@ -311,7 +296,6 @@ export class Viewer extends EventEmitter {
 
     delete this.loader;
     delete this.navbar;
-    delete this.hud;
     delete this.panel;
     delete this.tooltip;
     delete this.notification;
@@ -354,11 +338,11 @@ export class Viewer extends EventEmitter {
 
   /**
    * @summary Returns the instance of a plugin if it exists
-   * @param {string} pluginId
+   * @param {typeof PSV.plugins.AbstractPlugin|string} pluginId
    * @returns {PSV.plugins.AbstractPlugin}
    */
   getPlugin(pluginId) {
-    return this.plugins[pluginId];
+    return this.plugins[typeof pluginId === 'function' ? pluginId.id : pluginId];
   }
 
   /**
@@ -542,6 +526,7 @@ export class Viewer extends EventEmitter {
   /**
    * @summary Update options
    * @param {PSV.Options} options
+   * @fires PSV.config-changed
    */
   setOptions(options) {
     each(options, (value, key) => {
@@ -589,10 +574,6 @@ export class Viewer extends EventEmitter {
           this.navbar.setButtons(this.config.navbar);
           break;
 
-        case 'markers':
-          this.hud.setMarkers(value);
-          break;
-
         case 'moveSpeed':
           this.prop.moveSpeed = THREE.Math.degToRad(value / SYSTEM.pixelRatio);
           break;
@@ -610,12 +591,21 @@ export class Viewer extends EventEmitter {
 
     this.needsUpdate();
     this.refreshUi('set options');
+
+    /**
+     * @event config-changed
+     * @memberOf PSV
+     * @summary Triggered after a call to setOption/setOptions
+     * @param {string[]} name of changed options
+     */
+    this.trigger(EVENTS.CONFIG_CHANGED, Object.keys(options));
   }
 
   /**
    * @summary Update options
    * @param {string} option
    * @param {any} value
+   * @fires PSV.config-changed
    */
   setOption(option, value) {
     this.setOptions({ [option]: value });
@@ -965,72 +955,6 @@ export class Viewer extends EventEmitter {
      * @summary Triggered when all current animations are stopped
      */
     this.trigger(EVENTS.STOP_ALL);
-  }
-
-  /**
-   * @summary Toggles the visibility of markers list
-   */
-  toggleMarkersList() {
-    if (this.panel.prop.contentId === IDS.MARKERS_LIST) {
-      this.hideMarkersList();
-    }
-    else {
-      this.showMarkersList();
-    }
-  }
-
-  /**
-   * @summary Opens side panel with list of markers
-   * @fires PSV.components.PSVHUD.filter:render-markers-list
-   */
-  showMarkersList() {
-    let markers = [];
-    each(this.hud.markers, (marker) => {
-      if (marker.visible && !marker.config.hideList) {
-        markers.push(marker);
-      }
-    });
-
-    /**
-     * @event filter:render-markers-list
-     * @memberof PSV.components.PSVHUD
-     * @summary Used to alter the list of markers displayed on the side-panel
-     * @param {PSV.Marker[]} markers
-     * @returns {PSV.Marker[]}
-     */
-    markers = this.change(EVENTS.RENDER_MARKERS_LIST, markers);
-
-    this.panel.show({
-      id          : IDS.MARKERS_LIST,
-      content     : markersListTemplate(markers, this),
-      noMargin    : true,
-      clickHandler: (e) => {
-        const li = e.target ? getClosest(e.target, 'li') : undefined;
-        const markerId = li ? li.dataset[MARKER_DATA] : undefined;
-
-        if (markerId) {
-          const marker = this.hud.getMarker(markerId);
-
-          /**
-           * @event select-marker-list
-           * @memberof PSV.components.PSVHUD
-           * @summary Triggered when a marker is selected from the side panel
-           * @param {PSV.Marker} marker
-           */
-          this.trigger(EVENTS.SELECT_MARKER_LIST, marker);
-
-          this.hud.gotoMarker(marker, 1000);
-          this.hideMarkersList();
-        }
-      },
-    });
-  }
-
-  /**
-   * @summary Closes side panel if it contains the list of markers
-   */
-  hideMarkersList() {
-    this.panel.hide(IDS.MARKERS_LIST);
   }
 
 }

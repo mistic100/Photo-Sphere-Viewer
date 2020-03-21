@@ -11,17 +11,8 @@ import { AbstractButton } from './AbstractButton';
  */
 export class MenuButton extends AbstractButton {
 
-  static get id() {
-    return 'menu';
-  }
-
-  static get icon() {
-    return menuIcon;
-  }
-
-  get collapsable() {
-    return false;
-  }
+  static id = 'menu';
+  static icon = menuIcon;
 
   /**
    * @param {PSV.components.Navbar} navbar

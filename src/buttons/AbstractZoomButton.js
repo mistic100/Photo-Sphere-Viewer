@@ -9,16 +9,12 @@ import { AbstractButton } from './AbstractButton';
  */
 export class AbstractZoomButton extends AbstractButton {
 
-  get collapsable() {
-    return false;
-  }
-
   /**
    * @param {PSV.components.Navbar} navbar
    * @param {number} value
    */
   constructor(navbar, value) {
-    super(navbar, 'psv-button--hover-scale psv-zoom-button');
+    super(navbar, 'psv-button--hover-scale psv-zoom-button', true);
 
     /**
      * @override

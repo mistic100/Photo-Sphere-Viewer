@@ -8,13 +8,8 @@ import zoomOut from '../icons/zoom-out.svg';
  */
 export class ZoomOutButton extends AbstractZoomButton {
 
-  static get id() {
-    return 'zoomOut';
-  }
-
-  static get icon() {
-    return zoomOut;
-  }
+  static id = 'zoomOut';
+  static icon = zoomOut;
 
   /**
    * @param {PSV.components.Navbar} navbar

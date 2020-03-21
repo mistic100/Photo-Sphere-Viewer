@@ -2,8 +2,6 @@ import { AutorotateButton } from '../buttons/AutorotateButton';
 import { CustomButton } from '../buttons/CustomButton';
 import { DownloadButton } from '../buttons/DownloadButton';
 import { FullscreenButton } from '../buttons/FullscreenButton';
-import { MarkersButton } from '../buttons/MarkersButton';
-import { MarkersListButton } from '../buttons/MarkersListButton';
 import { MenuButton } from '../buttons/MenuButton';
 import { ZoomInButton } from '../buttons/ZoomInButton';
 import { ZoomOutButton } from '../buttons/ZoomOutButton';
@@ -41,8 +39,6 @@ export function registerButton(button) {
   ZoomRangeButton,
   ZoomOutButton,
   DownloadButton,
-  MarkersButton,
-  MarkersListButton,
   FullscreenButton,
 ].forEach(registerButton);
 
@@ -186,7 +182,7 @@ export class Navbar extends AbstractComponent {
         if (item.prop.visible) {
           totalWidth += item.prop.width;
           visibleButtons.push(item);
-          if (item.collapsable) {
+          if (item.prop.collapsable) {
             collapsableButtons.push(item);
           }
         }
