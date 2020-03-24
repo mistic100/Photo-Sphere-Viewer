@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { DEFAULTS } from '../data/config';
-import { CUBE_HASHMAP, CUBE_MAP, EVENTS } from '../data/constants';
+import { CUBE_HASHMAP, CUBE_MAP } from '../data/constants';
 import { SYSTEM } from '../data/system';
 import { PSVError } from '../PSVError';
 import { clone, getXMPValue, logWarn, sum } from '../utils';
@@ -18,20 +17,12 @@ export class TextureLoader extends AbstractService {
    */
   constructor(psv) {
     super(psv);
-
-    /**
-     * @member {PSV.CacheItem[]}
-     * @protected
-     */
-    this.cache = [];
   }
 
   /**
    * @override
    */
   destroy() {
-    this.cache.length = 0;
-
     super.destroy();
   }
 
@@ -40,7 +31,6 @@ export class TextureLoader extends AbstractService {
    * @param {string|string[]|PSV.Cubemap} panorama
    * @param {PSV.PanoData} [newPanoData]
    * @returns {Promise.<PSV.TextureData>}
-   * @fires PSV.panorama-load-progress
    * @throws {PSV.PSVError} when the image cannot be loaded
    * @package
    */
@@ -77,11 +67,86 @@ export class TextureLoader extends AbstractService {
   }
 
   /**
+   * @summary Loads a Blob with FileLoader
+   * @param {string} url
+   * @param {function<number>} [onProgress]
+   * @returns {Promise<Blob>}
+   * @private
+   */
+  __loadFile(url, onProgress) {
+    return new Promise((resolve, reject) => {
+      let progress = 0;
+      onProgress && onProgress(progress);
+
+      const loader = new THREE.FileLoader();
+
+      if (this.config.withCredentials) {
+        loader.setWithCredentials(true);
+      }
+
+      loader.setResponseType('blob');
+
+      loader.load(
+        url,
+        (result) => {
+          progress = 100;
+          onProgress && onProgress(progress);
+          resolve(result);
+        },
+        (e) => {
+          if (e.lengthComputable) {
+            const newProgress = e.loaded / e.total * 100;
+            if (newProgress > progress) {
+              progress = newProgress;
+              onProgress && onProgress(progress);
+            }
+          }
+        },
+        reject
+      );
+    });
+  }
+
+  /**
+   * @summary Loads an Image using FileLoader to have progress events
+   * @param {string} url
+   * @param {function<number>} [onProgress]
+   * @returns {Promise<Image>}
+   * @private
+   */
+  __loadImage(url, onProgress) {
+    return this.__loadFile(url, onProgress)
+      .then(result => new Promise((resolve, reject) => {
+        const img = document.createElementNS('http://www.w3.org/1999/xhtml', 'img');
+        img.onload = () => {
+          URL.revokeObjectURL(img.src);
+          resolve(img);
+        };
+        img.onerror = reject;
+        img.src = URL.createObjectURL(result);
+      }));
+  }
+
+  /**
+   * @summmary read a Blob as string
+   * @param {Blob} blob
+   * @returns {Promise<string>}
+   * @private
+   */
+  __loadBlobAsString(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsText(blob);
+    });
+  }
+
+  /**
    * @summary Loads the sphere texture
    * @param {string} panorama
    * @param {PSV.PanoData} [newPanoData]
    * @returns {Promise.<PSV.TextureData>}
-   * @fires PSV.panorama-load-progress
    * @throws {PSV.PSVError} when the image cannot be loaded
    * @private
    */
@@ -92,134 +157,130 @@ export class TextureLoader extends AbstractService {
 
     this.prop.isCubemap = false;
 
-    if (this.config.cacheTexture) {
-      const cache = this.__getPanoramaCache(panorama);
+    return (
+      newPanoData || !this.config.useXmpData
+        ? this.__loadImage(panorama, p => this.psv.loader.setProgress(p))
+          .then(img => ({ img }))
+        : this.__loadXMP(panorama, p => this.psv.loader.setProgress(p))
+          .then(xmpPanoData => this.__loadImage(panorama).then(img => ({ img, xmpPanoData })))
+    )
+      .then(({ img, xmpPanoData }) => {
+        const panoData = newPanoData || xmpPanoData || {
+          fullWidth    : img.width,
+          fullHeight   : img.height,
+          croppedWidth : img.width,
+          croppedHeight: img.height,
+          croppedX     : 0,
+          croppedY     : 0,
+        };
 
-      if (cache) {
-        return Promise.resolve({
-          texture : cache.image,
-          panoData: cache.panoData,
-        });
-      }
-    }
-
-    return (newPanoData ? Promise.resolve(newPanoData) : this.__loadXMP(panorama))
-      .then(xmpPanoData => new Promise((resolve, reject) => {
-        const loader = new THREE.ImageLoader();
-        let progress = (xmpPanoData && !newPanoData) ? 100 : 0; // the file is already in browser cache
-
-        if (this.config.withCredentials) {
-          loader.setCrossOrigin('use-credentials');
+        if (panoData.croppedWidth !== img.width || panoData.croppedHeight !== img.height) {
+          logWarn(`Invalid panoData, croppedWidth and/or croppedHeight is not coherent with loaded image
+    panoData: ${panoData.croppedWidth}x${panoData.croppedHeight}, image: ${img.width}x${img.height}`);
         }
-        else {
-          loader.setCrossOrigin('anonymous');
-        }
 
-        const onload = (img) => {
-          progress = 100;
+        const texture = this.__createEquirectangularTexture(img, panoData);
 
-          this.psv.loader.setProgress(progress);
+        return { texture, panoData };
+      })
+      .catch((e) => {
+        this.psv.showError(this.config.lang.loadError);
+        return Promise.reject(e);
+      });
+  }
 
-          /**
-           * @event panorama-load-progress
-           * @memberof PSV
-           * @summary Triggered while a panorama image is loading
-           * @param {string} panorama
-           * @param {number} progress
-           */
-          this.psv.trigger(EVENTS.PANORAMA_LOAD_PROGRESS, panorama, progress);
+  /**
+   * @summary Loads the XMP data of an image
+   * @param {string} panorama
+   * @param {function<number>} [onProgress]
+   * @returns {Promise.<PSV.PanoData>}
+   * @throws {PSV.PSVError} when the image cannot be loaded
+   * @private
+   */
+  __loadXMP(panorama, onProgress) {
+    return this.__loadFile(panorama, onProgress)
+      .then(blob => this.__loadBlobAsString(blob))
+      .then((binary) => {
+        const a = binary.indexOf('<x:xmpmeta');
+        const b = binary.indexOf('</x:xmpmeta>');
+        const data = binary.substring(a, b);
+        let panoData = null;
 
-          const panoData = xmpPanoData || newPanoData || {
-            fullWidth    : img.width,
-            fullHeight   : img.height,
-            croppedWidth : img.width,
-            croppedHeight: img.height,
-            croppedX     : 0,
-            croppedY     : 0,
+        if (a !== -1 && b !== -1 && data.indexOf('GPano:') !== -1) {
+          panoData = {
+            fullWidth    : parseInt(getXMPValue(data, 'FullPanoWidthPixels'), 10),
+            fullHeight   : parseInt(getXMPValue(data, 'FullPanoHeightPixels'), 10),
+            croppedWidth : parseInt(getXMPValue(data, 'CroppedAreaImageWidthPixels'), 10),
+            croppedHeight: parseInt(getXMPValue(data, 'CroppedAreaImageHeightPixels'), 10),
+            croppedX     : parseInt(getXMPValue(data, 'CroppedAreaLeftPixels'), 10),
+            croppedY     : parseInt(getXMPValue(data, 'CroppedAreaTopPixels'), 10),
           };
 
-          if (panoData.croppedWidth !== img.width || panoData.croppedHeight !== img.height) {
-            logWarn(`Invalid panoData, croppedWidth and/or croppedHeight is not coherent with loaded image
-    panoData: ${panoData.croppedWidth}x${panoData.croppedHeight}, image: ${img.width}x${img.height}`);
+          if (!panoData.fullWidth || !panoData.fullHeight || !panoData.croppedWidth || !panoData.croppedHeight) {
+            logWarn('invalid XMP data');
+            panoData = null;
           }
+        }
 
-          let texture;
+        return panoData;
+      });
+  }
 
-          const ratio = Math.min(panoData.fullWidth, SYSTEM.maxTextureWidth) / panoData.fullWidth;
+  /**
+   * @summary Creates the final texture from image and panorama data
+   * @param {Image} img
+   * @param {PSV.PanoData} panoData
+   * @returns {external:THREE.Texture}
+   * @private
+   */
+  __createEquirectangularTexture(img, panoData) {
+    let texture;
 
-          // resize image / fill cropped parts with black
-          if (ratio !== 1
-            || panoData.croppedWidth !== panoData.fullWidth
-            || panoData.croppedHeight !== panoData.fullHeight
-          ) {
-            const resizedPanoData = clone(panoData);
+    const ratio = Math.min(panoData.fullWidth, SYSTEM.maxTextureWidth) / panoData.fullWidth;
 
-            resizedPanoData.fullWidth *= ratio;
-            resizedPanoData.fullHeight *= ratio;
-            resizedPanoData.croppedWidth *= ratio;
-            resizedPanoData.croppedHeight *= ratio;
-            resizedPanoData.croppedX *= ratio;
-            resizedPanoData.croppedY *= ratio;
+    // resize image / fill cropped parts with black
+    if (ratio !== 1
+      || panoData.croppedWidth !== panoData.fullWidth
+      || panoData.croppedHeight !== panoData.fullHeight
+    ) {
+      const resizedPanoData = clone(panoData);
 
-            img.width = resizedPanoData.croppedWidth;
-            img.height = resizedPanoData.croppedHeight;
+      resizedPanoData.fullWidth *= ratio;
+      resizedPanoData.fullHeight *= ratio;
+      resizedPanoData.croppedWidth *= ratio;
+      resizedPanoData.croppedHeight *= ratio;
+      resizedPanoData.croppedX *= ratio;
+      resizedPanoData.croppedY *= ratio;
 
-            const buffer = document.createElement('canvas');
-            buffer.width = resizedPanoData.fullWidth;
-            buffer.height = resizedPanoData.fullHeight;
+      img.width = resizedPanoData.croppedWidth;
+      img.height = resizedPanoData.croppedHeight;
 
-            const ctx = buffer.getContext('2d');
-            ctx.drawImage(img,
-              resizedPanoData.croppedX, resizedPanoData.croppedY,
-              resizedPanoData.croppedWidth, resizedPanoData.croppedHeight);
+      const buffer = document.createElement('canvas');
+      buffer.width = resizedPanoData.fullWidth;
+      buffer.height = resizedPanoData.fullHeight;
 
-            texture = new THREE.Texture(buffer);
-          }
-          else {
-            texture = new THREE.Texture(img);
-          }
+      const ctx = buffer.getContext('2d');
+      ctx.drawImage(img,
+        resizedPanoData.croppedX, resizedPanoData.croppedY,
+        resizedPanoData.croppedWidth, resizedPanoData.croppedHeight);
 
-          texture.needsUpdate = true;
-          texture.minFilter = THREE.LinearFilter;
-          texture.generateMipmaps = false;
+      texture = new THREE.Texture(buffer);
+    }
+    else {
+      texture = new THREE.Texture(img);
+    }
 
-          if (this.config.cacheTexture) {
-            this.__putPanoramaCache({
-              panorama: panorama,
-              image   : texture,
-              panoData: clone(panoData),
-            });
-          }
+    texture.needsUpdate = true;
+    texture.minFilter = THREE.LinearFilter;
+    texture.generateMipmaps = false;
 
-          resolve({ texture, panoData });
-        };
-
-        const onprogress = (e) => {
-          if (e.lengthComputable) {
-            const newProgress = e.loaded / e.total * 100;
-
-            if (newProgress > progress) {
-              progress = newProgress;
-              this.psv.loader.setProgress(progress);
-              this.psv.trigger(EVENTS.PANORAMA_LOAD_PROGRESS, panorama, progress);
-            }
-          }
-        };
-
-        const onerror = (e) => {
-          this.psv.showError(this.config.lang.loadError);
-          reject(e);
-        };
-
-        loader.load(panorama, onload, onprogress, onerror);
-      }));
+    return texture;
   }
 
   /**
    * @summary Load the six textures of the cube
    * @param {string[]} panorama
    * @returns {Promise.<PSV.TextureData>}
-   * @fires PSV.panorama-load-progress
    * @throws {PSV.PSVError} when the image cannot be loaded
    * @private
    */
@@ -232,271 +293,71 @@ export class TextureLoader extends AbstractService {
       logWarn('fisheye effect with cubemap texture can generate distorsion');
     }
 
-    if (this.config.cacheTexture === DEFAULTS.cacheTexture) {
-      this.config.cacheTexture *= 6;
-    }
-
     this.prop.isCubemap = true;
 
-    return new Promise((resolve, reject) => {
-      const loader = new THREE.ImageLoader();
-      const progress = [0, 0, 0, 0, 0, 0];
-      const loaded = [];
-      let done = 0;
+    const promises = [];
+    const progress = [0, 0, 0, 0, 0, 0];
 
-      if (this.config.withCredentials) {
-        loader.setCrossOrigin('use-credentials');
-      }
-      else {
-        loader.setCrossOrigin('anonymous');
-      }
+    for (let i = 0; i < 6; i++) {
+      promises.push(
+        this.__loadImage(panorama[i], (p) => {
+          progress[i] = p;
+          this.psv.loader.setProgress(sum(progress) / 6);
+        })
+          .then(img => this.__createCubemapTexture(img))
+      );
+    }
 
-      const onend = () => {
-        loaded.forEach((img) => {
-          img.needsUpdate = true;
-          img.minFilter = THREE.LinearFilter;
-          img.generateMipmaps = false;
-        });
-
-        resolve({ texture: loaded });
-      };
-
-      const onload = (i, img) => {
-        done++;
-        progress[i] = 100;
-
-        this.psv.loader.setProgress(sum(progress) / 6);
-        this.psv.trigger(EVENTS.PANORAMA_LOAD_PROGRESS, panorama[i], progress[i]);
-
-        const ratio = Math.min(img.width, SYSTEM.maxTextureWidth / 2) / img.width;
-
-        // resize image
-        if (ratio !== 1) {
-          const buffer = document.createElement('canvas');
-          buffer.width = img.width * ratio;
-          buffer.height = img.height * ratio;
-
-          const ctx = buffer.getContext('2d');
-          ctx.drawImage(img, 0, 0, buffer.width, buffer.height);
-
-          loaded[i] = new THREE.Texture(buffer);
-        }
-        else {
-          loaded[i] = new THREE.Texture(img);
-        }
-
-        if (this.config.cacheTexture) {
-          this.__putPanoramaCache({
-            panorama: panorama[i],
-            image   : loaded[i],
-          });
-        }
-
-        if (done === 6) {
-          onend();
-        }
-      };
-
-      const onprogress = (i, e) => {
-        if (e.lengthComputable) {
-          const newProgress = e.loaded / e.total * 100;
-
-          if (newProgress > progress[i]) {
-            progress[i] = newProgress;
-            this.psv.loader.setProgress(sum(progress) / 6);
-            this.psv.trigger(EVENTS.PANORAMA_LOAD_PROGRESS, panorama[i], progress[i]);
-          }
-        }
-      };
-
-      const onerror = (i, e) => {
+    return Promise.all(promises)
+      .then((texture) => {
+        return { texture };
+      })
+      .catch((e) => {
         this.psv.showError(this.config.lang.loadError);
-        reject(e);
-      };
-
-      for (let i = 0; i < 6; i++) {
-        if (this.config.cacheTexture) {
-          const cache = this.__getPanoramaCache(panorama[i]);
-
-          if (cache) {
-            done++;
-            progress[i] = 100;
-            loaded[i] = cache.image;
-          }
-        }
-
-        if (!loaded[i]) {
-          loader.load(panorama[i], onload.bind(this, i), onprogress.bind(this, i), onerror.bind(this, i));
-        }
-      }
-
-      if (done === 6) {
-        resolve({ texture: loaded });
-      }
-    });
+        return Promise.reject(e);
+      });
   }
 
   /**
-   * @summary Loads the XMP data with AJAX
-   * @param {string} panorama
-   * @returns {Promise.<PSV.PanoData>}
-   * @throws {PSV.PSVError} when the image cannot be loaded
+   * @summary Creates the final texture from image
+   * @param {Image} img
+   * @returns {external:THREE.Texture}
    * @private
    */
-  __loadXMP(panorama) {
-    if (!this.config.useXmpData) {
-      return Promise.resolve(null);
+  __createCubemapTexture(img) {
+    let texture;
+
+    const ratio = Math.min(img.width, SYSTEM.maxTextureWidth / 2) / img.width;
+
+    // resize image
+    if (ratio !== 1) {
+      const buffer = document.createElement('canvas');
+      buffer.width = img.width * ratio;
+      buffer.height = img.height * ratio;
+
+      const ctx = buffer.getContext('2d');
+      ctx.drawImage(img, 0, 0, buffer.width, buffer.height);
+
+      texture = new THREE.Texture(buffer);
+    }
+    else {
+      texture = new THREE.Texture(img);
     }
 
-    return new Promise((resolve, reject) => {
-      let progress = 0;
+    texture.needsUpdate = true;
+    texture.minFilter = THREE.LinearFilter;
+    texture.generateMipmaps = false;
 
-      const xhr = new XMLHttpRequest();
-      if (this.config.withCredentials) {
-        xhr.withCredentials = true;
-      }
-
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200 || xhr.status === 201 || xhr.status === 202 || xhr.status === 0) {
-            this.psv.loader.setProgress(100);
-
-            const binary = xhr.responseText;
-            const a = binary.indexOf('<x:xmpmeta');
-            const b = binary.indexOf('</x:xmpmeta>');
-            const data = binary.substring(a, b);
-            let panoData = null;
-
-            if (a !== -1 && b !== -1 && data.indexOf('GPano:') !== -1) {
-              panoData = {
-                fullWidth    : parseInt(getXMPValue(data, 'FullPanoWidthPixels'), 10),
-                fullHeight   : parseInt(getXMPValue(data, 'FullPanoHeightPixels'), 10),
-                croppedWidth : parseInt(getXMPValue(data, 'CroppedAreaImageWidthPixels'), 10),
-                croppedHeight: parseInt(getXMPValue(data, 'CroppedAreaImageHeightPixels'), 10),
-                croppedX     : parseInt(getXMPValue(data, 'CroppedAreaLeftPixels'), 10),
-                croppedY     : parseInt(getXMPValue(data, 'CroppedAreaTopPixels'), 10),
-              };
-
-              if (!panoData.fullWidth || !panoData.fullHeight || !panoData.croppedWidth || !panoData.croppedHeight) {
-                logWarn('invalid XMP data');
-                panoData = null;
-              }
-            }
-
-            resolve(panoData);
-          }
-          else {
-            this.psv.showError(this.config.lang.loadError);
-            reject();
-          }
-        }
-        else if (xhr.readyState === 3) {
-          this.psv.loader.setProgress(progress += 10);
-        }
-      };
-
-      xhr.onprogress = (e) => {
-        if (e.lengthComputable) {
-          const newProgress = e.loaded / e.total * 100;
-          if (newProgress > progress) {
-            progress = newProgress;
-            this.psv.loader.setProgress(progress);
-          }
-        }
-      };
-
-      xhr.onerror = (e) => {
-        this.psv.showError(this.config.lang.loadError);
-        reject(e);
-      };
-
-      xhr.open('GET', panorama, true);
-      xhr.send(null);
-    });
+    return texture;
   }
 
   /**
    * @summary Preload a panorama file without displaying it
    * @param {string} panorama
    * @returns {Promise}
-   * @throws {PSV.PSVError} when the cache is disabled
    */
   preloadPanorama(panorama) {
-    if (!this.config.cacheTexture) {
-      throw new PSVError('Cannot preload panorama, cacheTexture is disabled');
-    }
-
     return this.loadTexture(panorama);
-  }
-
-  /**
-   * @summary Removes a panorama from the cache or clears the entire cache
-   * @param {string} [panorama]
-   * @throws {PSV.PSVError} when the cache is disabled
-   */
-  clearPanoramaCache(panorama) {
-    if (!this.config.cacheTexture) {
-      throw new PSVError('Cannot clear cache, cacheTexture is disabled');
-    }
-
-    if (panorama) {
-      for (let i = 0, l = this.cache.length; i < l; i++) {
-        if (this.cache[i].panorama === panorama) {
-          this.cache.splice(i, 1);
-          break;
-        }
-      }
-    }
-    else {
-      this.cache.length = 0;
-    }
-  }
-
-  /**
-   * @summary Retrieves the cache for a panorama
-   * @param {string} panorama
-   * @returns {PSV.CacheItem}
-   * @throws {PSV.PSVError} when the cache is disabled
-   * @private
-   */
-  __getPanoramaCache(panorama) {
-    if (!this.config.cacheTexture) {
-      throw new PSVError('Cannot query cache, cacheTexture is disabled');
-    }
-
-    return this.cache.filter(cache => cache.panorama === panorama).shift();
-  }
-
-  /**
-   * @summary Adds a panorama to the cache
-   * @param {PSV.CacheItem} cache
-   * @fires PSV.panorama-cached
-   * @throws {PSV.PSVError} when the cache is disabled
-   * @private
-   */
-  __putPanoramaCache(cache) {
-    if (!this.config.cacheTexture) {
-      throw new PSVError('Cannot add panorama to cache, cacheTexture is disabled');
-    }
-
-    const existingCache = this.__getPanoramaCache(cache.panorama);
-
-    if (existingCache) {
-      existingCache.image = cache.image;
-      existingCache.panoData = cache.panoData;
-    }
-    else {
-      this.cache.splice(0, 1); // remove most ancient elements
-      this.cache.push(cache);
-    }
-
-    /**
-     * @event panorama-cached
-     * @memberof PSV
-     * @summary Triggered when a panorama is stored in the cache
-     * @param {string} panorama
-     */
-    this.psv.trigger(EVENTS.PANORAMA_CACHED, cache.panorama);
   }
 
 }

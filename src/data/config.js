@@ -1,5 +1,5 @@
 import { PSVError } from '../PSVError';
-import { bound, clone, deepmerge, each, isInteger, logWarn, parseAngle, parseSpeed } from '../utils';
+import { bound, clone, deepmerge, each, logWarn, parseAngle, parseSpeed } from '../utils';
 import { ACTIONS } from './constants';
 
 /**
@@ -44,7 +44,6 @@ export const DEFAULTS = {
   useXmpData         : true,
   panoData           : null,
   withCredentials    : false,
-  cacheTexture       : 0,
   navbar             : [
     'autorotate',
     'zoomOut',
@@ -153,14 +152,6 @@ export const CONFIG_PARSERS = {
     }
     // maxFov between 1 and 179
     return bound(maxFov, 1, 179);
-  },
-  cacheTexture   : (cacheTexture) => {
-    // cacheTexture must be a positive integer or false
-    if (cacheTexture && (!isInteger(cacheTexture) || cacheTexture < 0)) {
-      logWarn('invalid value for cacheTexture');
-      return 0;
-    }
-    return cacheTexture;
   },
   lang           : (lang) => {
     return {

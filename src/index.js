@@ -98,14 +98,6 @@ export {
  */
 
 /**
- * @typedef {Object} PSV.CacheItem
- * @summary An entry in the memory cache
- * @property {string} panorama
- * @property {external:THREE.Texture} image
- * @property {PSV.PanoData} panoData
- */
-
-/**
  * @typedef {Object} PSV.TextureData
  * @summary Result of the {@link PSV.TextureLoader#loadTexture} method
  * @property {external:THREE.Texture|external:THREE.Texture[]} texture

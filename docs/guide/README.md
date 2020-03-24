@@ -32,8 +32,6 @@ You can also [download the latest release](https://github.com/mistic100/Photo-Sp
 
 #### Optionals
  * [promise-polyfill](https://github.com/taylorhakes/promise-polyfill) for IE compatibility
- * [three/DeviceOrientationControls.js](https://github.com/mrdoob/three.js/blob/master/examples/js/controls/DeviceOrientationControls.js) for gyroscope support
- * [three/StereoEffect.js](https://github.com/mrdoob/three.js/blob/master/examples/js/effects/StereoEffect.js) for VR support
  * [NoSleep.js](https://github.com/richtr/NoSleep.js) for better VR experience
 
 
@@ -61,4 +59,10 @@ Include all JS & CSS files in your page manually or with your favorite bundler a
 
 ::: tip Cropped panoramas
 If your image is not covering a full 360°×180° sphere, it will be deformed. You can fix it by providing [cropping data](./cropped-panorama).
+:::
+
+::: tip Caching
+Previous version of Photo Sphere Viewer had a caching system, which was buggy and thus disabled by default.
+
+Photo Sphere Viewer 4 uses [THREE.js Cache](https://threejs.org/docs/index.html#api/en/loaders/Cache), enabled by default. You can disable this cache by calling `THREE.Cache.enabled = false;` after importing Photo Sphere Viewer.
 :::

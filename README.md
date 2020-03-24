@@ -15,7 +15,7 @@ Forked from [JeremyHeleine/Photo-Sphere-Viewer](https://github.com/JeremyHeleine
 
 ### Required
  * [three.js](https://threejs.org)
- * [uEvent](https://github.com/mistic100/uEvent)
+ * [uEvent 2](https://github.com/mistic100/uEvent)
 
 ### Optionals
  * [promise-polyfill](https://github.com/taylorhakes/promise-polyfill) for IE compatibility

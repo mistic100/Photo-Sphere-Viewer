@@ -257,14 +257,6 @@ panoData: {
 }
 ```
 
-#### `cacheTexture`
-- type: `integer`
-- default: `0`
-
-Number of texture objects to cache into memory, this is to prevent network overload when calling `setPanorama` multiple times.
-
-!> This option has been reported to prevent display on some unknown cases.
-
 #### `moveInertia`
 - type: `boolean`
 - default: `true`

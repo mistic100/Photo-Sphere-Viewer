@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { DEFAULTS, utils, Viewer } from 'photo-sphere-viewer';
 import GyroscopePlugin from 'photo-sphere-viewer/plugins/gyroscope';
 import StereoPlugin from 'photo-sphere-viewer/plugins/stereo';
@@ -111,11 +112,16 @@ export default class ViewerCompat extends Viewer {
       }
     }
 
-    options.plugins = [
-      GyroscopePlugin,
-      StereoPlugin,
-      [MarkersPlugin, { clickEventOnMarker, markers }],
-    ];
+    options.plugins = [];
+    if (GyroscopePlugin) {
+      options.plugins.push(GyroscopePlugin);
+    }
+    if (StereoPlugin) {
+      options.plugins.push(StereoPlugin);
+    }
+    if (MarkersPlugin) {
+      options.plugins.push([MarkersPlugin, { clickEventOnMarker, markers }]);
+    }
 
     super(options);
 
@@ -141,7 +147,12 @@ export default class ViewerCompat extends Viewer {
   }
 
   clearPanoramaCache(panorama) {
-    this.textureLoader.clearPanoramaCache(panorama);
+    if (panorama) {
+      THREE.Cache.remove(panorama);
+    }
+    else {
+      THREE.Cache.clear();
+    }
   }
 
   // GYROSCOPE / STEREO

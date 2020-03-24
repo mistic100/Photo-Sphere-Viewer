@@ -30,6 +30,8 @@ import {
   toggleClass
 } from './utils';
 
+THREE.Cache.enabled = true;
+
 /**
  * @summary Main class
  * @memberOf PSV
@@ -561,12 +563,6 @@ export class Viewer extends EventEmitter {
         case 'longitudeRange':
         case 'latitudeRange':
           this.rotate(this.prop.position); // move to same position to use new ranges
-          break;
-
-        case 'cacheTexture':
-          if (this.config.cacheTexture && !value) {
-            this.textureLoader.clearPanoramaCache();
-          }
           break;
 
         case 'navbar':
