@@ -194,18 +194,6 @@ Rotate the panorama just by moving the cursor above the view instead of click+mo
 
 Requires two fingers to rotate the panorama. This allows standard touch-scroll navigation in the page containing the viewer. If enabled, an overlay asking the user to use two fingers is displayed when only one touch is detected.
 
-#### `transitionDuration`
-- type: `integer`
-- default: `1500`
-
-Duration if the transition effect between panoramas when using `setPanorama()` method.
-
-#### `transitionLoader`
-- type: `boolean`
-- default: `true`
-
-Display the loader when changing panoramas.
-
 
 ## Advanced options
 

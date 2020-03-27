@@ -93,7 +93,7 @@
     "start": "npm-run-all --parallel dev:**",
     "start:doc": "vuepress dev docs",
     "start:remote": "ngrok http 8080",
-    "dev:serve": "live-server --watch=dist,example --open=example",
+    "dev:serve": "live-server --watch=dist,example --wait=2000 --open=example",
     "dev:watch": "nodemon --watch src/ --ext js,scss,svg,html --exec \"npm run compile\""
   }
 }

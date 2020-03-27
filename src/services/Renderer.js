@@ -206,6 +206,8 @@ export class Renderer extends AbstractService {
       this.mesh.material.map = texture;
     }
 
+    this.psv.needsUpdate();
+
     /**
      * @event panorama-loaded
      * @memberof PSV
@@ -373,7 +375,7 @@ export class Renderer extends AbstractService {
         opacity: { start: 0.0, end: 1.0 },
         zoom   : zoomProvided ? { start: this.prop.zoomLvl, end: options.zoom } : undefined,
       },
-      duration  : this.config.transitionDuration,
+      duration  : options.transition,
       easing    : 'outCubic',
       onTick    : (properties) => {
         if (this.prop.isCubemap) {

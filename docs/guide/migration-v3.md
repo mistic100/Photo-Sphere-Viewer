@@ -41,7 +41,7 @@ Be sure to rename your configuration properties, the old naming is not supported
 
 ### Deleted options
 
-- `transition` → splitted in `transitionDuration` and `transitionLoader`
+- `transition` → use `transitionn` and `showLoader` options of `setPanorama()`
 - `tooltip` → the properties of the tooltip are now extracted from the stylesheet
 - `webgl` → WebGL is now always enabled since three.js deprecated the CanvasRenderer
 - `panorama_roll` → use `sphereCorrection` with the `roll` property

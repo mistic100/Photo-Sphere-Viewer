@@ -464,8 +464,11 @@ export class Viewer extends EventEmitter {
       }
     }
 
-    if (options.transition === undefined) {
-      options.transition = true;
+    if (options.transition === undefined || options.transition === true) {
+      options.transition = 1500;
+    }
+    if (options.showLoader === undefined) {
+      options.showLoader = true;
     }
 
     const positionProvided = this.dataHelper.isExtendedPosition(options);
@@ -486,9 +489,10 @@ export class Viewer extends EventEmitter {
       this.prop.loadingPromise = null;
     };
 
-    if (!options.transition || !this.config.transitionDuration || !this.prop.ready) {
-      this.loader.show();
-      this.renderer.hide();
+    if (!options.transition || !this.prop.ready) {
+      if (options.showLoader || !this.prop.ready) {
+        this.loader.show();
+      }
 
       this.prop.loadingPromise = this.textureLoader.loadTexture(this.config.panorama, options.panoData)
         .then((textureData) => {
@@ -508,7 +512,7 @@ export class Viewer extends EventEmitter {
         .then(done, done);
     }
     else {
-      if (this.config.transitionLoader) {
+      if (options.showLoader) {
         this.loader.show();
       }
 

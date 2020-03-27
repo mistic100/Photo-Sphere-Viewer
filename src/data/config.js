@@ -33,8 +33,6 @@ export const DEFAULTS = {
   autorotateDelay    : null,
   autorotateSpeed    : '2rpm',
   autorotateLat      : null,
-  transitionDuration : 1500,
-  transitionLoader   : true,
   moveInertia        : true,
   mousewheel         : true,
   mousewheelSpeed    : 1,

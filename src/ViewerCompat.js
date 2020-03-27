@@ -74,13 +74,6 @@ export default class ViewerCompat extends Viewer {
     }
     delete options.timeAnim;
 
-    if (options.transition === false) {
-      options.transitionDuration = 0;
-    }
-    else if (typeof options.transition === 'object') {
-      options.transitionDuration = options.transition.duration;
-      options.transitionLoader = options.transition.loader;
-    }
     delete options.transition;
 
     if ('panoramaRoll' in options) {
