@@ -3,8 +3,10 @@ import MarkersPlugin from './index';
 
 /**
  * @summary Types of marker
+ * @memberOf PSV.plugins.MarkersPlugin
  * @enum {string}
  * @constant
+ * @private
  */
 const MARKER_TYPES = {
   image      : 'image',

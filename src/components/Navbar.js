@@ -15,14 +15,14 @@ import { NavbarCaption } from './NavbarCaption';
 
 /**
  * @summary List of available buttons
- * @type {Object<string, typeof PSV.buttons.AbstractButton>}
+ * @type {Object<string, Class<PSV.buttons.AbstractButton>>}
  * @private
  */
 const AVAILABLE_BUTTONS = {};
 
 /**
  * @summary Register a new button available for all viewers
- * @param {typeof PSV.buttons.AbstractButton} button
+ * @param {Class<PSV.buttons.AbstractButton>} button
  * @memberOf PSV
  */
 export function registerButton(button) {

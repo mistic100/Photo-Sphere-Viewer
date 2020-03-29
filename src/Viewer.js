@@ -340,7 +340,7 @@ export class Viewer extends EventEmitter {
 
   /**
    * @summary Returns the instance of a plugin if it exists
-   * @param {typeof PSV.plugins.AbstractPlugin|string} pluginId
+   * @param {Class<PSV.plugins.AbstractPlugin>|string} pluginId
    * @returns {PSV.plugins.AbstractPlugin}
    */
   getPlugin(pluginId) {

@@ -86,7 +86,7 @@
     "doc:clean": "rm -rf public/*",
     "doc:vuepress": "vuepress build docs",
     "doc:jsdoc": "jsdoc --configure .jsdoc.json --destination public/api src",
-    "doc:assets": "cp example/assets/pin-blue.png public/assets && cp example/assets/pin-red.png public/assets && cp example/Bryce-Canyon-National-Park-Mark-Doliner.jpg public/assets && cp -r example/suntemple-cubemap public/assets",
+    "doc:assets": "cpx \"example/assets/*\" public/assets && cpx example/Bryce-Canyon-National-Park-Mark-Doliner.jpg public/assets && cpx \"example/suntemple-cubemap/*\" public/assets/suntemple-cubemap",
     "test": "npm-run-all --parallel test:*",
     "test:mocha": "mocha --require @babel/register --recursive \"src/**/*.spec.js\"",
     "test:eslint": "eslint src --ignore-path .gitignore --ignore-pattern \"*.spec.js\"",

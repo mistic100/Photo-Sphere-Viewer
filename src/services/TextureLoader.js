@@ -69,7 +69,7 @@ export class TextureLoader extends AbstractService {
   /**
    * @summary Loads a Blob with FileLoader
    * @param {string} url
-   * @param {function<number>} [onProgress]
+   * @param {function(number)} [onProgress]
    * @returns {Promise<Blob>}
    * @private
    */
@@ -110,7 +110,7 @@ export class TextureLoader extends AbstractService {
   /**
    * @summary Loads an Image using FileLoader to have progress events
    * @param {string} url
-   * @param {function<number>} [onProgress]
+   * @param {function(number)} [onProgress]
    * @returns {Promise<Image>}
    * @private
    */
@@ -192,8 +192,8 @@ export class TextureLoader extends AbstractService {
   /**
    * @summary Loads the XMP data of an image
    * @param {string} panorama
-   * @param {function<number>} [onProgress]
-   * @returns {Promise.<PSV.PanoData>}
+   * @param {function(number)} [onProgress]
+   * @returns {Promise<PSV.PanoData>}
    * @throws {PSV.PSVError} when the image cannot be loaded
    * @private
    */
