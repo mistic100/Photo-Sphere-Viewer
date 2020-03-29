@@ -6,6 +6,8 @@
 
 This plugin is available in the core `photo-sphere-viewer` package at `plugins/autorotate-keypoints.js`.
 
+[[toc]]
+
 
 ## Usage
 
@@ -40,12 +42,14 @@ keypointsPlugin.setKeypoints([
 ]);
 ```
 
-The plugins reacts to the standard `autorotateDelay` and `autorotateSpeed` options and can be started with `startAutorotate` or the button in the navbar.
+The plugin reacts to the standard `autorotateDelay` and `autorotateSpeed` options and can be started with `startAutorotate` or the button in the navbar.
 
 
-## Demo
+## Example
 
-TODO
+The following demo randomly generates some markers and automatically pan between them.
+
+<iframe style="width: 100%; height: 500px;" src="//jsfiddle.net/mistic100/qsp01or4/embedded/result,js/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
 
 
 ## Configuration

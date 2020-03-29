@@ -211,6 +211,18 @@ Same as `polygonRad` but generates a polyline.
 
 ## Configuration
 
+#### `lang`
+- type: `object`
+- default:
+```js
+lang: {
+    markers : 'Markers',
+    markersList : 'Markers list',
+}
+```
+
+_Note: this option is not part of the plugin but is merged with the main [`lang`](../guide/config#lang) object._
+
 #### `clickEventOnMarker`
 - type: `boolean`
 - default: `false`

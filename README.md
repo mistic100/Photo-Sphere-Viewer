@@ -19,7 +19,6 @@ Forked from [JeremyHeleine/Photo-Sphere-Viewer](https://github.com/JeremyHeleine
 
 ### Optionals
  * [promise-polyfill](https://github.com/taylorhakes/promise-polyfill) for IE compatibility
- * [NoSleep.js](https://github.com/richtr/NoSleep.js) for better VR experience
 
 ## Install
 

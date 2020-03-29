@@ -20,6 +20,15 @@ const viewer = new PhotoSphereViewer.Viewer({
 ```
 
 
-## Demo
+## Configuration
 
-TODO
+#### `lang`
+- type: `object`
+- default:
+```js
+lang: {
+    gyroscope : 'Gyroscope',
+}
+```
+
+_Note: this option is not part of the plugin but is merged with the main [`lang`](../guide/config#lang) object._

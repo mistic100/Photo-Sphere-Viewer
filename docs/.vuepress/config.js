@@ -29,6 +29,7 @@ module.exports = {
           'methods-events',
           'navbar',
           'markers',
+          'cubemap',
           'cropped-panorama',
           'migration-v3',
         ],

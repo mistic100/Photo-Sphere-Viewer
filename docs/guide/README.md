@@ -32,12 +32,13 @@ You can also [download the latest release](https://github.com/mistic100/Photo-Sp
 
 #### Optionals
  * [promise-polyfill](https://github.com/taylorhakes/promise-polyfill) for IE compatibility
- * [NoSleep.js](https://github.com/richtr/NoSleep.js) for better VR experience
 
 
 ## Your first viewer
 
 Include all JS & CSS files in your page manually or with your favorite bundler and init the viewer.
+
+The `panorama` must be an [equirectangular projection](https://en.wikipedia.org/wiki/Equirectangular_projection) of your photo. You can also use [cubemap projection](cubemap) with a special syntax.
 
 ```html
 <div id="viewer"></div>
