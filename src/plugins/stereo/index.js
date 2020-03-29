@@ -1,7 +1,7 @@
 import { AbstractPlugin, CONSTANTS, DEFAULTS, PSVError, registerButton, utils } from 'photo-sphere-viewer';
 import GyroscopePlugin from 'photo-sphere-viewer/plugins/gyroscope';
 import * as THREE from 'three';
-import '../../three-examples/effects/StereoEffect';
+import 'three/examples/js/effects/StereoEffect';
 import mobileRotateIcon from './mobile-rotate.svg';
 import { StereoButton } from './StereoButton';
 

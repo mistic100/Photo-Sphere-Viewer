@@ -1,6 +1,6 @@
 import { AbstractPlugin, CONSTANTS, DEFAULTS, registerButton, utils } from 'photo-sphere-viewer';
 import * as THREE from 'three';
-import '../../three-examples/controls/DeviceOrientationControls';
+import 'three/examples/js/controls/DeviceOrientationControls';
 import { GyroscopeButton } from './GyroscopeButton';
 
 /**
