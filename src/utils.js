@@ -504,6 +504,21 @@ export function parseAngle(angle, zeroCenter = false, halfCircle = zeroCenter) {
 }
 
 /**
+ * Returns the distance between two points on a sphere of radius one
+ * @param {number[]} p1
+ * @param {number[]} p2
+ * @returns {number}
+ */
+export function greatArcDistance(p1, p2) {
+  const [λ1, φ1] = p1;
+  const [λ2, φ2] = p2;
+
+  const x = (λ2 - λ1) * Math.cos((φ1 + φ2) / 2);
+  const y = (φ2 - φ1);
+  return Math.sqrt(x * x + y * y);
+}
+
+/**
  * @summary Calls `dispose` on all objects and textures
  * @memberOf PSV.utils
  * @param {external:THREE.Object3D} object

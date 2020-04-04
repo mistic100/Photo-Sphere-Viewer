@@ -165,7 +165,7 @@ export default class AutorotateKeypointsPlugin extends AbstractPlugin {
 
     if (this.config.startFromClosest) {
       const index = this.__findMinIndex(this.keypoints, (keypoint) => {
-        return this.psv.dataHelper.greatArcDistance(keypoint.position, serializePt(this.psv.prop.position));
+        return utils.greatArcDistance(keypoint.position, serializePt(this.psv.prop.position));
       });
 
       this.keypoints.push(...this.keypoints.splice(0, index));
@@ -320,7 +320,7 @@ export default class AutorotateKeypointsPlugin extends AbstractPlugin {
     this.state.endPt = this.state.curve.shift();
 
     // compute duration from distance and speed
-    const distance = this.psv.dataHelper.greatArcDistance(this.state.startPt, this.state.endPt) / CONSTANTS.SPHERE_RADIUS;
+    const distance = utils.greatArcDistance(this.state.startPt, this.state.endPt);
     this.state.stepDuration = distance * 1000 / Math.abs(this.psv.config.autorotateSpeed);
 
     if (distance === 0) { // edge case

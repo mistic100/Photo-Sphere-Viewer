@@ -1,5 +1,6 @@
 import { CONSTANTS, PSVError, utils } from 'photo-sphere-viewer';
 import MarkersPlugin from './index';
+import { getPolygonCenter, getPolylineCenter } from './utils';
 
 /**
  * @summary Types of marker
@@ -561,8 +562,8 @@ export class Marker {
     }
 
     const centroid = this.isPolygon()
-      ? this.psv.dataHelper.getPolygonCenter(this.props.def)
-      : this.psv.dataHelper.getPolylineCenter(this.props.def);
+      ? getPolygonCenter(this.props.def)
+      : getPolylineCenter(this.props.def);
 
     this.props.position = {
       longitude: centroid[0],
