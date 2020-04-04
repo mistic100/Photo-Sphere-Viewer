@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhotoSphereViewer - visit demo</title>
+
+  <link rel="stylesheet" href="../dist/photo-sphere-viewer.css">
+  <link rel="stylesheet" href="../dist/plugins/markers.css">
+
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    #photosphere {
+      width: 100%;
+      height: 100%;
+    }
+
+    .custom-button {
+      font-family: sans-serif;
+      width: auto;
+    }
+  </style>
+</head>
+<body>
+
+<div id="photosphere"></div>
+
+<script src="../node_modules/three/build/three.js"></script>
+<script src="../node_modules/promise-polyfill/dist/polyfill.js"></script>
+<script src="../node_modules/uevent/browser.js"></script>
+<script src="../dist/photo-sphere-viewer.js"></script>
+<script src="../dist/plugins/visible-range.js"></script>
+
+<script>
+
+  const ranges = {
+    longitudeRange: [-7 * Math.PI / 8, 7 * Math.PI / 8],
+    latitudeRange : [-Math.PI / 3, Math.PI / 3],
+  };
+
+  const viewer = new PhotoSphereViewer.Viewer({
+    container     : 'photosphere',
+    panorama      : 'Bryce-Canyon-National-Park-Mark-Doliner.jpg',
+    caption       : 'Bryce Canyon National Park <b>&copy; Mark Doliner</b>',
+    loadingImg    : 'assets/photosphere-logo.gif',
+    defaultZoomLvl: 50,
+    navbar: [
+      'autorotate',
+      {
+        content: 'Clear range',
+        className: 'custom-button',
+        onClick: function() {
+          visibleRange.setLongitudeRange(null);
+          visibleRange.setLatitudeRange(null);
+        },
+      },
+      {
+        content: 'Set range',
+        className: 'custom-button',
+        onClick: function() {
+          visibleRange.setLongitudeRange(ranges.longitudeRange);
+          visibleRange.setLatitudeRange(ranges.latitudeRange);
+        },
+      },
+      'caption',
+      'fullscreen',
+    ],
+    plugins       : [
+      [PhotoSphereViewer.VisibleRangePlugin, ranges],
+    ],
+  });
+
+  const visibleRange = viewer.getPlugin(PhotoSphereViewer.VisibleRangePlugin);
+
+</script>
+</body>
+</html>

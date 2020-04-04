@@ -26,8 +26,6 @@ export const DEFAULTS = {
     tilt: 0,
     roll: 0,
   },
-  longitudeRange     : null,
-  latitudeRange      : null,
   moveSpeed          : 1,
   zoomButtonIncrement: 2,
   autorotateDelay    : null,
@@ -101,36 +99,6 @@ export const CONFIG_PARSERS = {
   defaultLat     : (defaultLat) => {
     // defaultLat is between -PI/2 and PI/2
     return parseAngle(defaultLat, true);
-  },
-  longitudeRange : (longitudeRange) => {
-    // longitude range must have two values
-    if (longitudeRange && longitudeRange.length !== 2) {
-      logWarn('longitudeRange must have exactly two elements');
-      return null;
-    }
-    // longitudeRange between 0 and 2*PI
-    if (longitudeRange) {
-      return longitudeRange.map(angle => parseAngle(angle));
-    }
-    return null;
-  },
-  latitudeRange  : (latitudeRange) => {
-    // latitude range must have two values
-    if (latitudeRange && latitudeRange.length !== 2) {
-      logWarn('latitudeRange must have exactly two elements');
-      return latitudeRange;
-    }
-    // latitude range must be ordered
-    else if (latitudeRange && latitudeRange[0] > latitudeRange[1]) {
-      logWarn('latitudeRange values must be ordered');
-      // eslint-disable-next-line no-param-reassign
-      latitudeRange = [latitudeRange[1], latitudeRange[0]];
-    }
-    // latitudeRange is between -PI/2 and PI/2
-    if (latitudeRange) {
-      return latitudeRange.map(angle => parseAngle(angle, true));
-    }
-    return null;
   },
   minFov         : (minFov, config) => {
     // minFov and maxFov must be ordered

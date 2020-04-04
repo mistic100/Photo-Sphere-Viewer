@@ -51,6 +51,7 @@ module.exports = {
           'plugin-gyroscope',
           'plugin-markers',
           'plugin-stereo',
+          'plugin-visible-range',
         ],
       }],
     },

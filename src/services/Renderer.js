@@ -416,43 +416,4 @@ export class Renderer extends AbstractService {
       });
   }
 
-  /**
-   * @summary Reverses autorotate direction with smooth transition
-   * @package
-   */
-  reverseAutorotate() {
-    if (!this.psv.isAutorotateEnabled()) {
-      return;
-    }
-
-    const newSpeed = -this.config.autorotateSpeed;
-    const range = this.config.longitudeRange;
-    this.config.longitudeRange = null;
-
-    new Animation({
-      properties: {
-        speed: { start: this.config.autorotateSpeed, end: 0 },
-      },
-      duration  : 300,
-      easing    : 'inSine',
-      onTick    : (properties) => {
-        this.config.autorotateSpeed = properties.speed;
-      },
-    })
-      .then(() => new Animation({
-        properties: {
-          speed: { start: 0, end: newSpeed },
-        },
-        duration  : 300,
-        easing    : 'outSine',
-        onTick    : (properties) => {
-          this.config.autorotateSpeed = properties.speed;
-        },
-      }))
-      .then(() => {
-        this.config.longitudeRange = range;
-        this.config.autorotateSpeed = newSpeed;
-      });
-  }
-
 }

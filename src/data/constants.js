@@ -134,6 +134,17 @@ export const EVENTS = {
 };
 
 /**
+ * @summary Available change events
+ * @memberOf PSV.CONSTANTS
+ * @enum {string}
+ * @constant
+ */
+export const CHANGE_EVENTS = {
+  GET_ANIMATE_POSITION: 'get-animate-position',
+  GET_ROTATE_POSITION : 'get-rotate-position',
+};
+
+/**
  * @summary Internal identifiers for various stuff
  * @memberOf PSV.CONSTANTS
  * @enum {string}

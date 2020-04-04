@@ -7,7 +7,7 @@ import { Notification } from './components/Notification';
 import { Overlay } from './components/Overlay';
 import { Panel } from './components/Panel';
 import { CONFIG_PARSERS, DEFAULTS, getConfig, READONLY_OPTIONS } from './data/config';
-import { EVENTS, IDS, VIEWER_DATA } from './data/constants';
+import { CHANGE_EVENTS, EVENTS, IDS, VIEWER_DATA } from './data/constants';
 import { SYSTEM } from './data/system';
 import errorIcon from './icons/error.svg';
 import { PSVError } from './PSVError';
@@ -23,7 +23,6 @@ import {
   exitFullscreen,
   getAngle,
   getShortestArc,
-  intersect,
   isFullscreenEnabled,
   requestFullscreen,
   throttle,
@@ -564,11 +563,6 @@ export class Viewer extends EventEmitter {
           this.renderer.setSphereCorrection(value);
           break;
 
-        case 'longitudeRange':
-        case 'latitudeRange':
-          this.rotate(this.prop.position); // move to same position to use new ranges
-          break;
-
         case 'navbar':
         case 'lang':
           this.navbar.setButtons(this.config.navbar);
@@ -697,10 +691,9 @@ export class Viewer extends EventEmitter {
   /**
    * @summary Rotates the view to specific longitude and latitude
    * @param {PSV.ExtendedPosition} position
-   * @param {boolean} [ignoreRange=false] - ignore longitudeRange and latitudeRange
    * @fires PSV.position-updated
    */
-  rotate(position, ignoreRange = false) {
+  rotate(position) {
     /**
      * @event before-rotate
      * @memberOf PSV
@@ -712,16 +705,7 @@ export class Viewer extends EventEmitter {
       return;
     }
 
-    let cleanPosition = this.dataHelper.cleanPosition(position);
-
-    if (!ignoreRange) {
-      const { rangedPosition, sidesReached } = this.dataHelper.applyRanges(cleanPosition);
-      cleanPosition = rangedPosition;
-
-      if (intersect(['left', 'right'], sidesReached).length > 0) {
-        this.renderer.reverseAutorotate();
-      }
-    }
+    const cleanPosition = this.change(CHANGE_EVENTS.GET_ROTATE_POSITION, this.dataHelper.cleanPosition(position));
 
     if (this.prop.position.longitude !== cleanPosition.longitude || this.prop.position.latitude !== cleanPosition.latitude) {
       this.prop.position.longitude = cleanPosition.longitude;
@@ -756,16 +740,15 @@ export class Viewer extends EventEmitter {
 
     // clean/filter position and compute duration
     if (positionProvided) {
-      const cleanPosition = this.dataHelper.cleanPosition(options);
-      const { rangedPosition } = this.dataHelper.applyRanges(cleanPosition);
+      const cleanPosition = this.change(CHANGE_EVENTS.GET_ANIMATE_POSITION, this.dataHelper.cleanPosition(options));
 
       // longitude offset for shortest arc
-      const tOffset = getShortestArc(this.prop.position.longitude, rangedPosition.longitude);
+      const tOffset = getShortestArc(this.prop.position.longitude, cleanPosition.longitude);
 
       animProperties.longitude = { start: this.prop.position.longitude, end: this.prop.position.longitude + tOffset };
-      animProperties.latitude = { start: this.prop.position.latitude, end: rangedPosition.latitude };
+      animProperties.latitude = { start: this.prop.position.latitude, end: cleanPosition.latitude };
 
-      duration = this.dataHelper.speedToDuration(speed, getAngle(this.prop.position, rangedPosition));
+      duration = this.dataHelper.speedToDuration(speed, getAngle(this.prop.position, cleanPosition));
     }
 
     // clean/filter zoom and compute duration
@@ -798,7 +781,7 @@ export class Viewer extends EventEmitter {
       easing    : 'inOutSine',
       onTick    : (properties) => {
         if (positionProvided) {
-          this.rotate(properties, true);
+          this.rotate(properties);
         }
         if (zoomProvided) {
           this.zoom(properties.zoom);

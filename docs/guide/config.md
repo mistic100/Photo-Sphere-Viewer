@@ -111,16 +111,12 @@ Initial longitude, between 0 and 2π.
 Initial latitude, between -π/2 and π/2.
 
 #### `longitudeRange`
-- type: `double[] | string[]`
-- default: `[0, 2*π]`
 
-Viewable longitude range.
+Now part of a [plugin](../plugins/plugin-visible-range).
 
 #### `latitudeRange`
-- type: `double[] | string[]`
-- default: `[π/2, -π/2]`
 
-Viewable latitude range.
+Now part of a [plugin](../plugins/plugin-visible-range).
 
 #### `autorotateDelay`
 - type: `integer`
@@ -252,10 +248,8 @@ panoData: {
 Enabled smooth animation after a manual move.
 
 #### `clickEventOnMarker`
-- type: `boolean`
-- default: `false`
 
-A click on a marker will trigger a `click` event as well as `select-marker`.
+Now part of a [plugin](../plugins/plugin-markers).
 
 #### `withCredentials`
 - type: `boolean`

@@ -3,6 +3,7 @@ import { DEFAULTS, utils, Viewer } from 'photo-sphere-viewer';
 import GyroscopePlugin from 'photo-sphere-viewer/plugins/gyroscope';
 import StereoPlugin from 'photo-sphere-viewer/plugins/stereo';
 import MarkersPlugin from 'photo-sphere-viewer/plugins/markers';
+import VisibleRangePlugin from 'photo-sphere-viewer/plugins/visible-range';
 
 /**
  * @private
@@ -86,24 +87,24 @@ export default class ViewerCompat extends Viewer {
       options.navbar = options.navbar.split(' ');
     }
 
-    let clickEventOnMarker;
-    if ('clickEventOnMarker' in options) {
-      clickEventOnMarker = options.clickEventOnMarker;
-      delete options.clickEventOnMarker;
-    }
-
-    let markers;
-    if ('markers' in options) {
-      markers = options.markers;
-      delete options.markers;
-    }
-
     if (Array.isArray(options.navbar)) {
       const markersIdx = options.navbar.indexOf('markers');
       if (markersIdx !== -1) {
         options.navbar.splice(markersIdx, 1, 'markersList');
       }
     }
+
+    const clickEventOnMarker = options.clickEventOnMarker;
+    delete options.clickEventOnMarker;
+
+    const markers = options.markers;
+    delete options.markers;
+
+    const longitudeRange = options.longitudeRange;
+    delete options.longitudeRange;
+
+    const latitudeRange = options.latitudeRange;
+    delete options.latitudeRange;
 
     options.plugins = [];
     if (GyroscopePlugin) {
@@ -114,6 +115,9 @@ export default class ViewerCompat extends Viewer {
     }
     if (MarkersPlugin) {
       options.plugins.push([MarkersPlugin, { clickEventOnMarker, markers }]);
+    }
+    if (VisibleRangePlugin) {
+      options.plugins.push([VisibleRangePlugin, { longitudeRange, latitudeRange }]);
     }
 
     super(options);

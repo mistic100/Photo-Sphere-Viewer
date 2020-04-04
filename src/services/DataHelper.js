@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { SPHERE_RADIUS } from '../data/constants';
 import { PSVError } from '../PSVError';
-import { clone, parseAngle, parseSpeed } from '../utils';
+import { parseAngle, parseSpeed } from '../utils';
 import { AbstractService } from './AbstractService';
 
 /**
@@ -209,70 +209,6 @@ export class DataHelper extends AbstractService {
       tilt: parseAngle(sphereCorrection.tilt || 0, true),
       roll: parseAngle(sphereCorrection.roll || 0, true, false),
     };
-  }
-
-  /**
-   * @summary Apply "longitudeRange" and "latitudeRange"
-   * @param {PSV.Position} position
-   * @returns {{rangedPosition: PSV.Position, sidesReached: string[]}}
-   */
-  applyRanges(position) {
-    const rangedPosition = {
-      longitude: position.longitude,
-      latitude : position.latitude,
-    };
-    const sidesReached = [];
-
-    let range;
-    let offset;
-
-    if (this.config.longitudeRange) {
-      range = clone(this.config.longitudeRange);
-      offset = THREE.Math.degToRad(this.prop.hFov) / 2;
-
-      range[0] = parseAngle(range[0] + offset);
-      range[1] = parseAngle(range[1] - offset);
-
-      if (range[0] > range[1]) { // when the range cross longitude 0
-        if (position.longitude > range[1] && position.longitude < range[0]) {
-          if (position.longitude > (range[0] / 2 + range[1] / 2)) { // detect which side we are closer too
-            rangedPosition.longitude = range[0];
-            sidesReached.push('left');
-          }
-          else {
-            rangedPosition.longitude = range[1];
-            sidesReached.push('right');
-          }
-        }
-      }
-      else if (position.longitude < range[0]) {
-        rangedPosition.longitude = range[0];
-        sidesReached.push('left');
-      }
-      else if (position.longitude > range[1]) {
-        rangedPosition.longitude = range[1];
-        sidesReached.push('right');
-      }
-    }
-
-    if (this.config.latitudeRange) {
-      range = clone(this.config.latitudeRange);
-      offset = THREE.Math.degToRad(this.prop.vFov) / 2;
-
-      range[0] = parseAngle(Math.min(range[0] + offset, range[1]), true);
-      range[1] = parseAngle(Math.max(range[1] - offset, range[0]), true);
-
-      if (position.latitude < range[0]) {
-        rangedPosition.latitude = range[0];
-        sidesReached.push('bottom');
-      }
-      else if (position.latitude > range[1]) {
-        rangedPosition.latitude = range[1];
-        sidesReached.push('top');
-      }
-    }
-
-    return { rangedPosition, sidesReached };
   }
 
   /**
