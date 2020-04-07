@@ -18,7 +18,7 @@ yarn add photo-sphere-viewer
 
 #### Via CDN
 
-Photo Sphere Viewer is available on [jsDelivr](https://cdn.jsdelivr.net/npm/photo-sphere-viewer/dist/)
+Photo Sphere Viewer is available on [jsDelivr](https://www.jsdelivr.com/package/npm/photo-sphere-viewer)
 
 #### Manually
 
@@ -27,11 +27,11 @@ You can also [download the latest release](https://github.com/mistic100/Photo-Sp
 ## Dependencies
 
 #### Required
- * [three.js](https://threejs.org)
- * [uEvent 2](https://github.com/mistic100/uEvent)
+ * [three.js](https://threejs.org) (use `build/three.min.js` file)
+ * [uEvent 2](https://github.com/mistic100/uEvent) (use `browser.js` file)
 
 #### Optionals
- * [promise-polyfill](https://github.com/taylorhakes/promise-polyfill) for IE compatibility
+ * [promise-polyfill](https://github.com/taylorhakes/promise-polyfill) for IE compatibility (use `dist/polyfill.min.js` file)
 
 
 ## Your first viewer
@@ -41,9 +41,18 @@ Include all JS & CSS files in your page manually or with your favorite bundler a
 The `panorama` must be an [equirectangular projection](https://en.wikipedia.org/wiki/Equirectangular_projection) of your photo. You can also use [cubemap projection](cubemap) with a special syntax.
 
 ```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photo-sphere-viewer@4/dist/photo-sphere-viewer.min.css"/>
+<!-- other CSS files from Photo Sphere Viewer plugins -->
+
+<script src="https://cdn.jsdelivr.net/npm/three/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uevent@2/browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photo-sphere-viewer@4/dist/photo-sphere-viewer.min.js"></script>
+<!-- other JS files from Photo Sphere Viewer plugins -->
+
 <div id="viewer"></div>
 
 <style>
+  /* the viewer container must have a defined size */
   #viewer {
     width: 100vw;
     height: 50vh;
@@ -51,7 +60,7 @@ The `panorama` must be an [equirectangular projection](https://en.wikipedia.org/
 </style>
 
 <script>
-  const viewer = new PhotoSphereViewer.Viewer({
+  var viewer = new PhotoSphereViewer.Viewer({
     container: document.querySelector('#viewer'),
     panorama: 'path/to/panorama.jpg'
   });
