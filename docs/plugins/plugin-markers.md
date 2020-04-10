@@ -4,7 +4,7 @@
 
 > Displays various markers/hotspots on the viewer.
 
-This plugin is available in the core `photo-sphere-viewer` package at `plugins/markers.js` and `plugins/markers.css`.
+This plugin is available in the core `photo-sphere-viewer` package in `dist/plugins/markers.js` and `dist/plugins/markers.css`.
 
 [[toc]]
 

@@ -4,7 +4,7 @@
 
 > Locks visible longitude and/or latitude.
 
-This plugin is available in the core `photo-sphere-viewer` package at `plugins/visible-range.js`.
+This plugin is available in the core `photo-sphere-viewer` package in `dist/plugins/visible-range.js`.
 
 [[toc]]
 

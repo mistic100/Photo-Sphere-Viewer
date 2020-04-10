@@ -4,7 +4,7 @@
 
 > Adds gyroscope controls on mobile devices.
 
-This plugin is available in the core `photo-sphere-viewer` package at `plugins/gyroscope.js`.
+This plugin is available in the core `photo-sphere-viewer` package in `dist/plugins/gyroscope.js`.
 
 
 ## Usage

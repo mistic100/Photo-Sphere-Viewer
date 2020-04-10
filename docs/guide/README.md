@@ -40,14 +40,15 @@ Include all JS & CSS files in your page manually or with your favorite bundler a
 
 The `panorama` must be an [equirectangular projection](https://en.wikipedia.org/wiki/Equirectangular_projection) of your photo. You can also use [cubemap projection](cubemap) with a special syntax.
 
+:::: tabs
+
+::: tab "Direct import"
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photo-sphere-viewer@4/dist/photo-sphere-viewer.min.css"/>
-<!-- other CSS files from Photo Sphere Viewer plugins -->
 
 <script src="https://cdn.jsdelivr.net/npm/three/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/uevent@2/browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/photo-sphere-viewer@4/dist/photo-sphere-viewer.min.js"></script>
-<!-- other JS files from Photo Sphere Viewer plugins -->
 
 <div id="viewer"></div>
 
@@ -66,6 +67,36 @@ The `panorama` must be an [equirectangular projection](https://en.wikipedia.org/
   });
 </script>
 ```
+:::
+
+::: tab "ES import"
+Import `photo-sphere-viewer/dist/photo-sphere-viewer.css` with the prefered way depending on your tooling.
+
+```html
+<div id="viewer"></div>
+
+<style>
+  /* the viewer container must have a defined size */
+  #viewer {
+    width: 100vw;
+    height: 50vh;
+  }
+</style>
+```
+
+```js
+import { Viewer } from 'photo-sphere-viewer';
+
+const viewer = new Viewer({
+  container: document.querySelector('#viewer'),
+  panorama: 'path/to/panorama.jpg'
+});
+```
+:::
+
+::::
+
+---
 
 ::: tip Cropped panoramas
 If your image is not covering a full 360°×180° sphere, it will be deformed. You can fix it by providing [cropping data](./cropped-panorama).

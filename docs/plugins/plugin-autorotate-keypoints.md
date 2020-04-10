@@ -4,7 +4,7 @@
 
 > Replaces the standard autorotate animation by a smooth transition between multiple points.
 
-This plugin is available in the core `photo-sphere-viewer` package at `plugins/autorotate-keypoints.js`.
+This plugin is available in the core `photo-sphere-viewer` package in `dist/plugins/autorotate-keypoints.js`.
 
 [[toc]]
 

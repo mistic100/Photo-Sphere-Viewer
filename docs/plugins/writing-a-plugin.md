@@ -197,7 +197,6 @@ Your `package.json` must be properly configured to allow application bundlers to
   "name": "photo-sphere-viewer-custom-plugin",
   "version": "1.0.0",
   "main": "browser.js",
-  "module": "index.js",
   "peerDependencies": {
     "photo-sphere-viewer": "^4.0.0"
   }

@@ -184,10 +184,3 @@
     }
   }
 </script>
-
-<style>
-  .md-tab {
-    padding: 0;
-    overflow: auto;
-  }
-</style>
