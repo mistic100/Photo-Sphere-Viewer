@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Animation } from '../Animation';
 import { CUBE_VERTICES, EVENTS, SPHERE_RADIUS, SPHERE_VERTICES } from '../data/constants';
 import { SYSTEM } from '../data/system';
-import { cleanTHREEScene, logWarn } from '../utils';
+import { logWarn } from '../utils';
 import { AbstractService } from './AbstractService';
 
 /**
@@ -93,7 +93,7 @@ export class Renderer extends AbstractService {
 
     // destroy ThreeJS view
     if (this.scene) {
-      cleanTHREEScene(this.scene);
+      this.__cleanTHREEScene(this.scene);
     }
 
     // remove container
@@ -414,6 +414,46 @@ export class Renderer extends AbstractService {
           this.psv.rotate(options);
         }
       });
+  }
+
+  /**
+   * @summary Calls `dispose` on all objects and textures
+   * @param {external:THREE.Object3D} object
+   * @private
+   */
+  __cleanTHREEScene(object) {
+    object.traverse((item) => {
+      if (item.geometry) {
+        item.geometry.dispose();
+      }
+
+      if (item.material) {
+        if (Array.isArray(item.material)) {
+          item.material.forEach((material) => {
+            if (material.map) {
+              material.map.dispose();
+            }
+
+            material.dispose();
+          });
+        }
+        else {
+          if (item.material.map) {
+            item.material.map.dispose();
+          }
+
+          item.material.dispose();
+        }
+      }
+
+      if (item.dispose) {
+        item.dispose();
+      }
+
+      if (item !== object) {
+        this.__cleanTHREEScene(item);
+      }
+    });
   }
 
 }

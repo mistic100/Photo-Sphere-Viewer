@@ -4,6 +4,7 @@ import replace from '@rollup/plugin-replace';
 import fs from 'fs';
 import path from 'path';
 import babel from 'rollup-plugin-babel';
+import localResolve from 'rollup-plugin-local-resolve';
 import postcss from 'rollup-plugin-postcss'
 import { string } from 'rollup-plugin-string';
 
@@ -47,6 +48,7 @@ const baseConfig = {
   // wrapped in a function to ensure unique plugin instances for each entry-point
   // https://github.com/egoist/rollup-plugin-postcss/issues/158
   plugins : () => [
+    localResolve(),
     babel({
       exclude: 'node_modules/**',
     }),

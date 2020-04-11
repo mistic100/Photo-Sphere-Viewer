@@ -70,6 +70,7 @@
     "raw-loader": "^4.0.0",
     "rollup": "^2.0.2",
     "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-local-resolve": "^1.0.7",
     "rollup-plugin-postcss": "^2.1.1",
     "rollup-plugin-string": "^3.0.0",
     "stylelint": "^13.0.0",

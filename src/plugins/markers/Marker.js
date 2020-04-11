@@ -25,7 +25,7 @@ const MARKER_TYPES = {
 
 /**
  * @typedef {Object} PSV.plugins.MarkersPlugin.Properties
- * @summary Marker properties, see {@link http://photo-sphere-viewer.js.org/markers.html#config}
+ * @summary Marker properties, see {@link http://photo-sphere-viewer.js.org/plugins/plugin-markers.html#markers-options}
  */
 
 /**

@@ -1,16 +1,16 @@
 import assert from 'assert';
 
-import * as utils from './utils';
+import { parseAngle, parsePosition, parseSpeed, getXMPValue } from './psv';
 
-describe('utils::parseAngle', () => {
+describe('utils:psv:parseAngle', () => {
   it('should normalize number', () => {
-    assert.strictEqual(utils.parseAngle(0), 0, '0');
-    assert.strictEqual(utils.parseAngle(Math.PI), Math.PI, 'PI');
-    assert.strictEqual(utils.parseAngle(3 * Math.PI), Math.PI, '3xPI');
+    assert.strictEqual(parseAngle(0), 0, '0');
+    assert.strictEqual(parseAngle(Math.PI), Math.PI, 'PI');
+    assert.strictEqual(parseAngle(3 * Math.PI), Math.PI, '3xPI');
 
-    assert.strictEqual(utils.parseAngle(0, true), 0, '0 centered');
-    assert.strictEqual(utils.parseAngle(Math.PI * 3 / 4, true), Math.PI / 2, '3/4xPI centered');
-    assert.strictEqual(utils.parseAngle(-Math.PI * 3 / 4, true), -Math.PI / 2, '-3/4xPI centered');
+    assert.strictEqual(parseAngle(0, true), 0, '0 centered');
+    assert.strictEqual(parseAngle(Math.PI * 3 / 4, true), Math.PI / 2, '3/4xPI centered');
+    assert.strictEqual(parseAngle(-Math.PI * 3 / 4, true), -Math.PI / 2, '-3/4xPI centered');
   });
 
   it('should parse radians angles', () => {
@@ -23,7 +23,7 @@ describe('utils::parseAngle', () => {
     };
 
     for (const pos in values) {
-      assert.strictEqual(utils.parseAngle(pos).toFixed(16), values[pos].toFixed(16), pos);
+      assert.strictEqual(parseAngle(pos).toFixed(16), values[pos].toFixed(16), pos);
     }
   });
 
@@ -37,7 +37,7 @@ describe('utils::parseAngle', () => {
     };
 
     for (const pos in values) {
-      assert.strictEqual(utils.parseAngle(pos).toFixed(16), values[pos].toFixed(16), pos);
+      assert.strictEqual(parseAngle(pos).toFixed(16), values[pos].toFixed(16), pos);
     }
   });
 
@@ -51,7 +51,7 @@ describe('utils::parseAngle', () => {
     };
 
     for (const pos in values) {
-      assert.strictEqual(utils.parseAngle(pos).toFixed(16), values[pos].toFixed(16), pos);
+      assert.strictEqual(parseAngle(pos).toFixed(16), values[pos].toFixed(16), pos);
     }
   });
 
@@ -62,34 +62,34 @@ describe('utils::parseAngle', () => {
     };
 
     for (const pos in values) {
-      assert.strictEqual(utils.parseAngle(pos, true).toFixed(16), values[pos].toFixed(16), pos);
+      assert.strictEqual(parseAngle(pos, true).toFixed(16), values[pos].toFixed(16), pos);
     }
   });
 
-  it('should normalize angles between -Pi and Pi', function() {
+  it('should normalize angles between -Pi and Pi', function () {
     const values = {
       '45deg': Math.PI / 4,
       '4'    : -2 * Math.PI + 4
     };
 
     for (const pos in values) {
-      assert.strictEqual(utils.parseAngle(pos, true, false).toFixed(16), values[pos].toFixed(16), pos);
+      assert.strictEqual(parseAngle(pos, true, false).toFixed(16), values[pos].toFixed(16), pos);
     }
   });
 
   it('should throw exception on invalid values', () => {
     assert.throws(() => {
-      utils.parseAngle('foobar');
+      parseAngle('foobar');
     }, /Unknown angle "foobar"/, 'foobar');
 
     assert.throws(() => {
-      utils.parseAngle('200gr')
+      parseAngle('200gr')
     }, /Unknown angle unit "gr"/, '200gr');
   });
 });
 
 
-describe('utils::parsePosition', () => {
+describe('utils:psv:parsePosition', () => {
   it('should parse 2 keywords', () => {
     const values = {
       'top left'     : { x: 0, y: 0 },
@@ -104,10 +104,10 @@ describe('utils::parsePosition', () => {
     };
 
     for (const pos in values) {
-      assert.deepStrictEqual(utils.parsePosition(pos), values[pos], pos);
+      assert.deepStrictEqual(parsePosition(pos), values[pos], pos);
 
       const rev = pos.split(' ').reverse().join(' ');
-      assert.deepStrictEqual(utils.parsePosition(rev), values[pos], rev);
+      assert.deepStrictEqual(parsePosition(rev), values[pos], rev);
     }
   });
 
@@ -121,7 +121,7 @@ describe('utils::parsePosition', () => {
     };
 
     for (const pos in values) {
-      assert.deepStrictEqual(utils.parsePosition(pos), values[pos], pos);
+      assert.deepStrictEqual(parsePosition(pos), values[pos], pos);
     }
   });
 
@@ -135,7 +135,7 @@ describe('utils::parsePosition', () => {
     };
 
     for (const pos in values) {
-      assert.deepStrictEqual(utils.parsePosition(pos), values[pos], pos);
+      assert.deepStrictEqual(parsePosition(pos), values[pos], pos);
     }
   });
 
@@ -148,7 +148,7 @@ describe('utils::parsePosition', () => {
     };
 
     for (const pos in values) {
-      assert.deepStrictEqual(utils.parsePosition(pos), values[pos], pos);
+      assert.deepStrictEqual(parsePosition(pos), values[pos], pos);
     }
   });
 
@@ -163,7 +163,7 @@ describe('utils::parsePosition', () => {
     };
 
     for (const pos in values) {
-      assert.deepStrictEqual(utils.parsePosition(pos), values[pos], pos);
+      assert.deepStrictEqual(parsePosition(pos), values[pos], pos);
     }
   });
 
@@ -177,7 +177,7 @@ describe('utils::parsePosition', () => {
     };
 
     for (const pos in values) {
-      assert.deepStrictEqual(utils.parsePosition(pos), values[pos], pos);
+      assert.deepStrictEqual(parsePosition(pos), values[pos], pos);
     }
   });
 
@@ -189,7 +189,7 @@ describe('utils::parsePosition', () => {
     };
 
     for (const pos in values) {
-      assert.deepStrictEqual(utils.parsePosition(pos), values[pos], pos);
+      assert.deepStrictEqual(parsePosition(pos), values[pos], pos);
     }
   });
 
@@ -200,13 +200,13 @@ describe('utils::parsePosition', () => {
     };
 
     for (const pos in values) {
-      assert.deepStrictEqual(utils.parsePosition(pos), values[pos], pos);
+      assert.deepStrictEqual(parsePosition(pos), values[pos], pos);
     }
   });
 });
 
 
-describe('utils::parseSpeed', () => {
+describe('utils:psv:parseSpeed', () => {
   it('should parse all units', () => {
     const values = {
       '360dpm'                    : 360 * Math.PI / 180 / 60,
@@ -222,7 +222,7 @@ describe('utils::parseSpeed', () => {
     };
 
     for (const speed in values) {
-      assert.strictEqual(utils.parseSpeed(speed).toFixed(16), values[speed].toFixed(16), speed);
+      assert.strictEqual(parseSpeed(speed).toFixed(16), values[speed].toFixed(16), speed);
     }
   });
 
@@ -239,81 +239,22 @@ describe('utils::parseSpeed', () => {
     };
 
     for (const speed in values) {
-      assert.strictEqual(utils.parseSpeed(speed).toFixed(16), values[speed].toFixed(16), speed);
+      assert.strictEqual(parseSpeed(speed).toFixed(16), values[speed].toFixed(16), speed);
     }
   });
 
   it('should throw exception on invalid unit', () => {
     assert.throws(() => {
-      utils.parseSpeed('10rpsec');
+      parseSpeed('10rpsec');
     }, /Unknown speed unit "rpsec"/, '10rpsec');
   });
 
   it('should passthrough when number', () => {
-    assert.strictEqual(utils.parseSpeed(Math.PI), Math.PI);
+    assert.strictEqual(parseSpeed(Math.PI), Math.PI);
   });
 });
 
-describe('utils::deepmerge', () => {
-  it('should merge basic plain objects', () => {
-    const one = { a: 'z', b: { c: { d: 'e' } } };
-    const two = { b: { c: { f: 'g', j: 'i' } } };
-
-    const result = utils.deepmerge(one, two);
-
-    assert.deepStrictEqual(one, { a: 'z', b: { c: { d: 'e', f: 'g', j: 'i' } } });
-    assert.strictEqual(result, one);
-  });
-
-  it('should merge arrays by replace', () => {
-    const one = { a: [1, 2, 3] };
-    const two = { a: [2, 4] };
-
-    const result = utils.deepmerge(one, two);
-
-    assert.deepStrictEqual(one, { a: [2, 4] });
-    assert.strictEqual(result, one);
-  });
-
-  it('should clone object', () => {
-    const one = { b: { c: { d: 'e' } } };
-
-    const result = utils.deepmerge(null, one);
-
-    assert.deepStrictEqual(result, { b: { c: { d: 'e' } } });
-    assert.notStrictEqual(result, one);
-    assert.notStrictEqual(result.b.c, one.b.c);
-  });
-
-  it('should clone array', () => {
-    const one = [{ a: 'b' }, { c: 'd' }];
-
-    const result = utils.deepmerge(null, one);
-
-    assert.deepStrictEqual(result, [{ a: 'b' }, { c: 'd' }]);
-    assert.notStrictEqual(result[0], one[1]);
-  });
-
-  it('should accept primitives', () => {
-    const one = 'foo';
-    const two = 'bar';
-
-    const result = utils.deepmerge(one, two);
-
-    assert.strictEqual(result, 'bar');
-  });
-
-  it('should stop on recursion', () => {
-    const one = { a: 'foo' };
-    one.b = one;
-
-    const result = utils.deepmerge(null, one);
-
-    assert.deepStrictEqual(result, { a: 'foo' });
-  });
-});
-
-describe('utils::getXMPValue', () => {
+describe('utils:psv:getXMPValue', () => {
   it('should parse XMP data with children', () => {
     const data = '<rdf:Description rdf:about="" xmlns:GPano="http://ns.google.com/photos/1.0/panorama/">\
       <GPano:ProjectionType>equirectangular</GPano:ProjectionType>\
@@ -330,12 +271,12 @@ describe('utils::getXMPValue', () => {
     </rdf:Description>';
 
     assert.deepStrictEqual([
-      utils.getXMPValue(data, 'FullPanoWidthPixels'),
-      utils.getXMPValue(data, 'FullPanoHeightPixels'),
-      utils.getXMPValue(data, 'CroppedAreaImageWidthPixels'),
-      utils.getXMPValue(data, 'CroppedAreaImageHeightPixels'),
-      utils.getXMPValue(data, 'CroppedAreaLeftPixels'),
-      utils.getXMPValue(data, 'CroppedAreaTopPixels')
+      getXMPValue(data, 'FullPanoWidthPixels'),
+      getXMPValue(data, 'FullPanoHeightPixels'),
+      getXMPValue(data, 'CroppedAreaImageWidthPixels'),
+      getXMPValue(data, 'CroppedAreaImageHeightPixels'),
+      getXMPValue(data, 'CroppedAreaLeftPixels'),
+      getXMPValue(data, 'CroppedAreaTopPixels')
     ], [
       '5376', '2688', '5376', '2688', '0', '0'
     ])
@@ -356,25 +297,15 @@ describe('utils::getXMPValue', () => {
       GPano:PoseRollDegrees="0"/>';
 
     assert.deepStrictEqual([
-      utils.getXMPValue(data, 'FullPanoWidthPixels'),
-      utils.getXMPValue(data, 'FullPanoHeightPixels'),
-      utils.getXMPValue(data, 'CroppedAreaImageWidthPixels'),
-      utils.getXMPValue(data, 'CroppedAreaImageHeightPixels'),
-      utils.getXMPValue(data, 'CroppedAreaLeftPixels'),
-      utils.getXMPValue(data, 'CroppedAreaTopPixels')
+      getXMPValue(data, 'FullPanoWidthPixels'),
+      getXMPValue(data, 'FullPanoHeightPixels'),
+      getXMPValue(data, 'CroppedAreaImageWidthPixels'),
+      getXMPValue(data, 'CroppedAreaImageHeightPixels'),
+      getXMPValue(data, 'CroppedAreaLeftPixels'),
+      getXMPValue(data, 'CroppedAreaTopPixels')
     ], [
       '5376', '2688', '5376', '2688', '0', '0'
     ])
   });
 
-});
-
-describe('utils::dasherize', () => {
-  it('should dasherize from camelCase', () => {
-    assert.strictEqual(utils.dasherize('strokeWidth'), 'stroke-width');
-  });
-
-  it('should not change existing dash-case', () => {
-    assert.strictEqual(utils.dasherize('stroke-width'), 'stroke-width');
-  });
 });
