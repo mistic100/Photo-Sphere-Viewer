@@ -9,6 +9,7 @@ Photo Sphere Viewer is a JavaScript library that allows you to display 360×180 
 
 Forked from [JeremyHeleine/Photo-Sphere-Viewer](https://github.com/JeremyHeleine/Photo-Sphere-Viewer).
 
+
 ## Documentation
 [photo-sphere-viewer.js.org](https://photo-sphere-viewer.js.org)
 

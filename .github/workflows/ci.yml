@@ -12,6 +12,5 @@ jobs:
     - name: build
       run: |
         npm install
-        npm run compile:prepare
         npm run compile
         npm run test
