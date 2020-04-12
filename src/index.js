@@ -75,6 +75,7 @@ export {
 /**
  * @typedef {PSV.ExtendedPosition} PSV.AnimateOptions
  * @summary Object defining animation options
+ * @property {number|string} speed - animation speed or duration (in milliseconds)
  * @property {number} [zoom] - new zoom level between 0 and 100
  */
 

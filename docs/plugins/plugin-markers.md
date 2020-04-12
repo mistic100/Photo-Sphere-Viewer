@@ -8,7 +8,7 @@ This plugin is available in the core `photo-sphere-viewer` package in `dist/plug
 
 [[toc]]
 
----
+## Usage
 
 The plugin provides a powerful markers system allowing to define points of interest on the panorama with optional tooltip and description. Markers can be dynamically added/removed and you can react to user click/tap.
 
@@ -20,6 +20,32 @@ There are four types of markers :
 - **Dynamic polygons & polylines** defined with the `polygonPx`/`polygonRad`/`polylinePx`/`polylineRad` attribute
 
 Markers can be added at startup with the `markers` option or after load with the various methods.
+
+```js
+const viewer = new PhotoSphereViewer.Viewer({
+  plugins: [
+    [PhotoSphereViewer.MarkersPlugin, {
+      markers: [ 
+        {
+          id: 'new-marker',
+          longitude: '45deg',
+          latitude: '0deg',
+          image: 'assets/pin-red.png',
+        },
+      ],
+    }], 
+  ],
+});
+
+const markersPlugin = viewer.getPlugin(PhotoSphereViewer.MarkersPlugin);
+
+markersPlugin.on('select-marker', (e, marker) => {
+  markersPlugin.updateMarker({
+    id: marker.id,
+    image: 'assets/pin-blue.png'
+  });
+});
+```
 
 
 ## Example
@@ -72,8 +98,8 @@ CSS properties to set on the marker (background, border, etc.).
 
 ```js
 style: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    cursor         : 'help'
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  cursor         : 'help'
 }
 ```
 
@@ -84,9 +110,9 @@ SVG properties to set on the marker (fill, stroke, etc.). _Only for SVG and poly
 
 ```js
 svgStyle: {
-    fill       : 'rgba(0, 0, 0, 0.5)',
-    stroke     : '#ff0000',
-    strokeWidth: '2px'
+  fill       : 'rgba(0, 0, 0, 0.5)',
+  stroke     : '#ff0000',
+  strokeWidth: '2px'
 }
 ```
 
@@ -216,8 +242,8 @@ Same as `polygonRad` but generates a polyline.
 - default:
 ```js
 lang: {
-    markers : 'Markers',
-    markersList : 'Markers list',
+  markers : 'Markers',
+  markersList : 'Markers list',
 }
 ```
 
@@ -228,3 +254,80 @@ _Note: this option is not part of the plugin but is merged with the main [`lang`
 - default: `false`
 
 If a `click` event is triggered on the viewer additionally to the `select-marker` event.
+
+
+## Methods
+
+#### `addMarker(properties)`
+
+Adds a new marker to the viewer.
+
+```js
+markersPlugin.addMarker({
+  id: 'new-marker',
+  longitude: '45deg',
+  latitude: '0deg',
+  image: 'assets/pin-red.png',
+});
+```
+
+#### `clearMarkers()`
+
+Removes all markers.
+
+#### `getCurrentMarker(): Marker`
+
+Returns the last marker clicked by the user.
+
+#### `gotoMarker(id, speed): Animation`
+
+Moves the view to center a specific marker, with optional [animation](/guide/methods.html#animate-options-animation).
+
+```js
+markersPlugin.gotoMarker('marker-1', 1500)
+  .then(() => /* animation complete */);
+```
+
+#### `hideMarker(id)` | `showMarker(id)` | `toggleMarker(id)`
+
+Changes the visiblity of a marker.
+
+#### `removeMarker(id)`
+
+Removes a marker.
+
+#### `setMarkers(properties[])`
+
+Replaces all markers by new ones.
+
+#### `updateMarker(properties)`
+
+Updates a marker with new properties. The type of marker cannot be changed.
+
+```js
+markersPlugin.updateMarker({
+  id: 'existing-marker',
+  image: 'assets/pin-blue.png'
+});
+```
+
+
+## Events
+
+#### `over-marker(marker)` | `leave-marker(marker)`
+
+Triggered when the user puts the cursor hover or away a marker.
+
+```js
+markersPlugin.on('over-marker', (e, marker) => {
+  console.log(`Cursor is over marker ${marker.id}`);
+});
+```
+
+#### `select-marker(marker, data)`
+
+Triggered when the user clicks on a marker. The `data` object indicates if the marker was selected with a double a click on a right click.
+
+#### `unselect-marker(marker)`
+
+Triggered when a marker was selected and the user clicks elsewhere.

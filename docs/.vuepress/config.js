@@ -26,7 +26,8 @@ module.exports = {
         children    : [
           '',
           'config',
-          'methods-events',
+          'methods',
+          'events',
           'navbar',
           'markers',
           'cubemap',

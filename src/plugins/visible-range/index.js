@@ -64,7 +64,7 @@ export default class VisibleRangePlugin extends AbstractPlugin {
       const { rangedPosition, sidesReached } = this.applyRanges(e.value);
 
       if (utils.intersect(['left', 'right'], sidesReached).length > 0 && this.psv.isAutorotateEnabled()) {
-        this.reverseAutorotate();
+        this.__reverseAutorotate();
         return e.value;
       }
 
@@ -193,9 +193,9 @@ export default class VisibleRangePlugin extends AbstractPlugin {
 
   /**
    * @summary Reverses autorotate direction with smooth transition
-   * @package
+   * @private
    */
-  reverseAutorotate() {
+  __reverseAutorotate() {
     const newSpeed = -this.psv.config.autorotateSpeed;
     const range = this.config.longitudeRange;
     this.config.longitudeRange = null;

@@ -48,3 +48,10 @@ Visible longitude as two angles.
 - default: `null`
 
 Visible latitude as two angles.
+
+
+## Methods
+
+#### `setLatitudeRange(range)` | `setLongitudeRange(range)`
+
+Change or remove the ranges.

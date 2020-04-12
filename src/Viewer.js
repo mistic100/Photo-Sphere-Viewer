@@ -724,12 +724,11 @@ export class Viewer extends EventEmitter {
   }
 
   /**
-   * @summary Rotates the view to specific longitude and latitude with a smooth animation
+   * @summary Rotates and zooms the view with a smooth animation
    * @param {PSV.AnimateOptions} options - position and/or zoom level
-   * @param {string|number} speed - animation speed or duration (in milliseconds)
    * @returns {PSV.Animation}
    */
-  animate(options, speed) {
+  animate(options) {
     this.__stopAll();
 
     const positionProvided = this.dataHelper.isExtendedPosition(options);
@@ -748,7 +747,7 @@ export class Viewer extends EventEmitter {
       animProperties.longitude = { start: this.prop.position.longitude, end: this.prop.position.longitude + tOffset };
       animProperties.latitude = { start: this.prop.position.latitude, end: cleanPosition.latitude };
 
-      duration = this.dataHelper.speedToDuration(speed, getAngle(this.prop.position, cleanPosition));
+      duration = this.dataHelper.speedToDuration(options.speed, getAngle(this.prop.position, cleanPosition));
     }
 
     // clean/filter zoom and compute duration
@@ -759,7 +758,7 @@ export class Viewer extends EventEmitter {
 
       if (!duration) {
         // if animating zoom only and a speed is given, use an arbitrary PI/4 to compute the duration
-        duration = this.dataHelper.speedToDuration(speed, Math.PI / 4 * dZoom / 100);
+        duration = this.dataHelper.speedToDuration(options.speed, Math.PI / 4 * dZoom / 100);
       }
     }
 

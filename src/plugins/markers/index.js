@@ -428,14 +428,17 @@ export default class MarkersPlugin extends AbstractPlugin {
   /**
    * @summary Rotate the view to face the marker
    * @param {string} markerId
-   * @param {string|number} [duration] - rotates smoothy, see {@link PSV.Viewer#animate}
+   * @param {string|number} [speed] - rotates smoothy, see {@link PSV.Viewer#animate}
    * @fires PSV.plugins.MarkersPlugin.goto-marker-done
    * @return {PSV.Animation}  A promise that will be resolved when the animation finishes
    */
-  gotoMarker(markerId, duration) {
+  gotoMarker(markerId, speed) {
     const marker = this.getMarker(markerId);
 
-    return this.psv.animate(marker.props.position, duration)
+    return this.psv.animate({
+      ...marker.props.position,
+      speed,
+    })
       .then(() => {
         /**
          * @event goto-marker-done

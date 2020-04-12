@@ -64,3 +64,10 @@ Start from the closest keypoint instead of the first keypoint of the array.
 - type: `Keypoints[]`
 
 Initial keypoints, does the same thing as calling `setKeypoints` just after initialisation.
+
+
+## Methods
+
+#### `setKeypoints(keypoints)`
+
+Changes or remove the keypoints.
