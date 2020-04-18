@@ -38,10 +38,10 @@ It does not cover the signature changes of event methods (`on` and `once`).
 ## Plugins
 
 The following features have been moved into separated plugins :
- - markers : [MarkersPlugin](../plugins/plugin-markers)
- - gyroscope support : [GyroscopePlugin](../plugins/plugin-gyroscope)
- - stereo view : [StereoPlugin](../plugins/plugin-stereo)
- - longitude and latitude ranges : [VisibleRangePlugin](../plugins/plugin-visible-range)
+ - markers : [MarkersPlugin](../plugins/plugin-markers.md)
+ - gyroscope support : [GyroscopePlugin](../plugins/plugin-gyroscope.md)
+ - stereo view : [StereoPlugin](../plugins/plugin-stereo.md)
+ - longitude and latitude ranges : [VisibleRangePlugin](../plugins/plugin-visible-range.md)
 
 
 ## Options
@@ -68,7 +68,6 @@ Be sure to rename your configuration properties, the old naming is not supported
 - `tooltip` → the properties of the tooltip are now extracted from the stylesheet
 - `webgl` → WebGL is now always enabled since three.js deprecated the CanvasRenderer
 - `panorama_roll` → use `sphereCorrection` with the `roll` property
-- `longitude_range` and `latitude_range` → moved to [VisibleRange plugin](../plugins/plugin-visible-range)
 
 
 ## Methods
@@ -84,14 +83,6 @@ Bellow is the mapping of the most common methods, please check the [API document
 - `preloadPanorama()` → `textureLoader.preloadPanorama()`
 - `clearPanoramaCache()` → `textureLoader.clearPanoramaCache()`
 - `getPanoramaCache()` → `textureLoader.getPanoramaCache()`
-
-#### Markers
-
-Moved to [Markers plugin](../plugins/plugin-markers).
-
-#### Gyroscope and stereo view
-
-Moved to [Gyroscope plugin](../plugins/plugin-gyroscope) and [Stereo plugin](../plugins/plugin-stereo).
 
 #### Navbar
 

@@ -22,7 +22,7 @@ In both case the data contains six important values:
 
 The `Full panorama width` / `Full panorama height` ratio must always be 2:1. `Cropped area width` and `Cropped area height` are the actual size of your image. `Cropped area left` and `Cropped area right` are used to define the cropped area position.
 
-![](/assets/XMP_pano_pixels.png)
+![XMP_pano_pixels](/assets/XMP_pano_pixels.png)
 
 More information on [Google documentation](https://developers.google.com/streetview/spherical-metadata).
 

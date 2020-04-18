@@ -50,7 +50,7 @@ panorama: {
 #### `plugins`
 - type: `array`
 
-List of enabled [plugins](../plugins).
+List of enabled [plugins](../plugins/README.md).
 
 #### `caption`
 - type: `string`
@@ -64,11 +64,11 @@ The final size if the panorama container. By default the size of `container` is 
 
 #### `markers`
 
-Now part of a [plugin](../plugins/plugin-markers).
+Now part of a [plugin](../plugins/plugin-markers.md).
 
 #### `navbar`
 
-Configuration of the [navbar](./navbar.html).
+Configuration of the [navbar](./navbar.md).
 
 #### `minFov`
 - type: `integer`
@@ -112,11 +112,11 @@ Initial latitude, between -π/2 and π/2.
 
 #### `longitudeRange`
 
-Now part of a [plugin](../plugins/plugin-visible-range).
+Now part of a [plugin](../plugins/plugin-visible-range.md).
 
 #### `latitudeRange`
 
-Now part of a [plugin](../plugins/plugin-visible-range).
+Now part of a [plugin](../plugins/plugin-visible-range.md).
 
 #### `autorotateDelay`
 - type: `integer`
@@ -199,7 +199,7 @@ Requires two fingers to rotate the panorama. This allows standard touch-scroll n
 
 Sphere rotation angles, in radians.
 
-![](/assets//pan-tilt-roll.png)
+![pan-tilt-toll](/assets//pan-tilt-roll.png)
 
 #### `moveSpeed`
 - type: `double`
@@ -249,7 +249,7 @@ Enabled smooth animation after a manual move.
 
 #### `clickEventOnMarker`
 
-Now part of a [plugin](../plugins/plugin-markers).
+Now part of a [plugin](../plugins/plugin-markers.md).
 
 #### `withCredentials`
 - type: `boolean`

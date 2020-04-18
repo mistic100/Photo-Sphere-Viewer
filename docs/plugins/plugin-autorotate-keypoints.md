@@ -11,7 +11,7 @@ This plugin is available in the core `photo-sphere-viewer` package in `dist/plug
 
 ## Usage
 
-The plugin is configured with `keypoints` which can be either a position object (`longitude` + `latitude`) or the identifier of an existing [marker](../guide/markers).
+The plugin is configured with `keypoints` which can be either a position object (`longitude` + `latitude`) or the identifier of an existing [marker](./plugin-markers.md).
 
 It is also possible to configure each keypoint with a pause time and a tooltip.
 

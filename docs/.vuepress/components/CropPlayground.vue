@@ -53,16 +53,16 @@
 
     <md-button class="md-raised md-primary" :disabled="loading" v-on:click="apply">Apply</md-button>
 
-    <md-tabs v-show="!loading">
-      <md-tab id="preview" md-label="Preview">
+    <Tabs v-show="!loading" type="border-card">
+      <Tab label="Preview">
         <div id="viewer"></div>
-      </md-tab>
-      <md-tab id="xmp" md-label="XMP Data">
+      </Tab>
+      <Tab label="XMP Data">
         <div class="language-xml" v-if="xmpData">
           <pre class="language-xml"><code>{{xmpData}}</code></pre>
         </div>
-      </md-tab>
-    </md-tabs>
+      </Tab>
+    </Tabs>
 
   </div>
 </template>

@@ -14,10 +14,10 @@ The `navbar` option is an array which can contain the following elements:
   - `download` : download the source image
   - `caption` : the caption
   - `fullscreen` : toggles fullscreen view
-  - ~~`markers` : toggles the markers~~ now part of a [plugin](../plugins/plugin-markers)
-  - ~~`markersList` : shows the markers list~~ now part of a [plugin](../plugins/plugin-markers)
-  - ~~`gyroscope` : toggles the gyroscope~~ now part of a [plugin](../plugins/plugin-gyroscope)
-  - ~~`stereo` : toggles stereo view (VR)~~ now part of a [plugin](../plugins/plugin-stereo)
+  - ~~`markers` : toggles the markers~~ now part of a [plugin](../plugins/plugin-markers.md)
+  - ~~`markersList` : shows the markers list~~ now part of a [plugin](../plugins/plugin-markers.md)
+  - ~~`gyroscope` : toggles the gyroscope~~ now part of a [plugin](../plugins/plugin-gyroscope.md)
+  - ~~`stereo` : toggles stereo view (VR)~~ now part of a [plugin](../plugins/plugin-stereo.md)
 
 
 ## Custom buttons

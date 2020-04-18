@@ -3,7 +3,7 @@
 [[toc]]
 
 ::: danger New version
-Photo Sphere Viewer 4 is not compatible with previous versions. If you are using version 3 , please follow the [migration guide](./migration-v3.html). You can also read the [version 3 documentation](https://photo-sphere-viewer-3.netlify.com).
+Photo Sphere Viewer 4 is not compatible with previous versions. If you are using version 3 , please follow the [migration guide](./migration-v3.md). You can also read the [version 3 documentation](https://photo-sphere-viewer-3.netlify.com).
 :::
 
 ## Install Photo Sphere Viewer
@@ -38,11 +38,11 @@ You can also [download the latest release](https://github.com/mistic100/Photo-Sp
 
 Include all JS & CSS files in your page manually or with your favorite bundler and init the viewer.
 
-The `panorama` must be an [equirectangular projection](https://en.wikipedia.org/wiki/Equirectangular_projection) of your photo. You can also use [cubemap projection](cubemap) with a special syntax.
+The `panorama` must be an [equirectangular projection](https://en.wikipedia.org/wiki/Equirectangular_projection) of your photo. You can also use [cubemap projection](./cubemap.md) with a special syntax.
 
 :::: tabs
 
-::: tab "Direct import"
+::: tab Direct import
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photo-sphere-viewer@4/dist/photo-sphere-viewer.min.css"/>
 
@@ -69,7 +69,7 @@ The `panorama` must be an [equirectangular projection](https://en.wikipedia.org/
 ```
 :::
 
-::: tab "ES import"
+::: tab ES import
 Import `photo-sphere-viewer/dist/photo-sphere-viewer.css` with the prefered way depending on your tooling.
 
 ```html
@@ -99,7 +99,7 @@ const viewer = new Viewer({
 ---
 
 ::: tip Cropped panoramas
-If your image is not covering a full 360°×180° sphere, it will be deformed. You can fix it by providing [cropping data](./cropped-panorama).
+If your image is not covering a full 360°×180° sphere, it will be deformed. You can fix it by providing [cropping data](./cropped-panorama.md).
 :::
 
 ::: tip Caching

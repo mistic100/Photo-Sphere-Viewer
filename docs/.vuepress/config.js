@@ -9,52 +9,64 @@ module.exports = {
   ],
   themeConfig: {
     logo        : '/favicon.png',
+    repo        : 'mistic100/Photo-Sphere-Viewer',
+    docsDir     : 'docs',
+    docsBranch  : 'dev',
+    editLinks   : true,
     smoothScroll: true,
     sidebarDepth: 3,
+    // algolia: {
+    //   apiKey: '<API_KEY>',
+    //   indexName: '<INDEX_NAME>'
+    // },
     nav         : [
       { text: 'Guide', link: '/guide/' },
       { text: 'Plugins', link: '/plugins/' },
       { text: 'API', link: 'https://photo-sphere-viewer.js.org/api/' },
       { text: 'Changelog', link: '/changelog' },
-      { text: 'GitHub', link: 'https://github.com/mistic100/Photo-Sphere-Viewer' },
     ],
     sidebar     : {
-      '/guide/'  : [{
-        title       : 'Guide',
-        sidebarDepth: 3,
-        collapsable : false,
-        children    : [
-          '',
-          'config',
-          'methods',
-          'events',
-          'navbar',
-          'markers',
-          'cubemap',
-          'cropped-panorama',
-          'migration-v3',
-        ],
-      }],
-      '/plugins/': [{
-        title       : 'Plugins',
-        sidebarDepth: 3,
-        collapsable : false,
-        children    : [
-          '',
-          'writing-a-plugin',
-        ],
-      }, {
-        title       : 'Official plugins',
-        sidebarDepth: 3,
-        collapsable : false,
-        children    : [
-          'plugin-autorotate-keypoints',
-          'plugin-gyroscope',
-          'plugin-markers',
-          'plugin-stereo',
-          'plugin-visible-range',
-        ],
-      }],
+      '/guide/'  : [
+        {
+          title       : 'Guide',
+          sidebarDepth: 3,
+          collapsable : false,
+          children    : [
+            '',
+            'config',
+            'methods',
+            'events',
+            'navbar',
+            'markers',
+            'cubemap',
+            'cropped-panorama',
+            'migration-v3',
+          ],
+        },
+      ],
+      '/plugins/': [
+        {
+          title       : 'Plugins',
+          sidebarDepth: 3,
+          collapsable : false,
+          children    : [
+            '',
+            'writing-a-plugin',
+          ],
+        },
+        {
+          title       : 'Official plugins',
+          sidebarDepth: 3,
+          collapsable : false,
+          children    : [
+            'plugin-autorotate-keypoints',
+            'plugin-gyroscope',
+            'plugin-markers',
+            'plugin-stereo',
+            'plugin-visible-range',
+          ],
+        },
+      ],
     },
   },
   plugins    : [
@@ -62,8 +74,8 @@ module.exports = {
       'ga': 'UA-28192323-3',
     }],
     ['@vuepress/back-to-top'],
-    ['@vuepress/active-header-links'],
-    [require('./plugins/tabs')],
+    ['vuepress-plugin-element-tabs'],
+    [require('./plugins/version')],
   ],
   alias      : {
     'photo-sphere-viewer'           : path.resolve(process.cwd(), 'dist/photo-sphere-viewer.js'),

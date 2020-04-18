@@ -32,7 +32,9 @@ visibleRangePlugin.setLatitudeRange(null);
 
 ## Example
 
-TODO
+In this example only the front portion of the sphere is visible.
+
+<iframe style="width: 100%; height: 500px;" src="//jsfiddle.net/mistic100/m2fw1oLd/embedded/result,js/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
 
 
 ## Configuration

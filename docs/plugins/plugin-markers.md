@@ -247,7 +247,7 @@ lang: {
 }
 ```
 
-_Note: this option is not part of the plugin but is merged with the main [`lang`](../guide/config#lang) object._
+_Note: this option is not part of the plugin but is merged with the main [`lang`](../guide/config.md#lang) object._
 
 #### `clickEventOnMarker`
 - type: `boolean`
@@ -281,7 +281,7 @@ Returns the last marker clicked by the user.
 
 #### `gotoMarker(id, speed): Animation`
 
-Moves the view to center a specific marker, with optional [animation](/guide/methods.html#animate-options-animation).
+Moves the view to center a specific marker, with optional [animation](../guide/methods.md#animate-options-animation).
 
 ```js
 markersPlugin.gotoMarker('marker-1', 1500)

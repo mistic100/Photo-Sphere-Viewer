@@ -16,6 +16,7 @@ It is recommended to install [NoSleep.js](http://richtr.github.io/NoSleep.js) to
 ```js
 const viewer = new PhotoSphereViewer.Viewer({
   plugins: [
+    PhotoSphereViewer.GyroscopePlugin,
     PhotoSphereViewer.StereoPlugin,
   ],
 });
@@ -35,4 +36,4 @@ lang: {
 }
 ```
 
-_Note: this option is not part of the plugin but is merged with the main [`lang`](../guide/config#lang) object._
+_Note: this option is not part of the plugin but is merged with the main [`lang`](../guide/config.md#lang) object._
