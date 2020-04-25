@@ -81,6 +81,14 @@ export class Overlay extends AbstractComponent {
 
   /**
    * @override
+   * @param {string} [id]
+   */
+  isVisible(id) {
+    return this.prop.visible && (!id || !this.prop.contentId || this.prop.contentId === id);
+  }
+
+  /**
+   * @override
    */
   toggle() {
     throw new PSVError('Overlay cannot be toggled');
@@ -120,7 +128,7 @@ export class Overlay extends AbstractComponent {
      * @event show-overlay
      * @memberof PSV
      * @summary Trigered when the overlay is shown
-     * @param {string} id
+     * @param {string} [id]
      */
     this.psv.trigger(EVENTS.SHOW_OVERLAY, config.id);
   }
@@ -132,6 +140,8 @@ export class Overlay extends AbstractComponent {
    */
   hide(id) {
     if (this.isVisible() && (!id || !this.prop.contentId || this.prop.contentId === id)) {
+      const contentId = this.prop.contentId;
+
       super.hide();
 
       this.prop.contentId = undefined;
@@ -140,8 +150,9 @@ export class Overlay extends AbstractComponent {
        * @event hide-overlay
        * @memberof PSV
        * @summary Trigered when the overlay is hidden
+       * @param {string} [id]
        */
-      this.psv.trigger(EVENTS.HIDE_OVERLAY);
+      this.psv.trigger(EVENTS.HIDE_OVERLAY, contentId);
     }
   }
 

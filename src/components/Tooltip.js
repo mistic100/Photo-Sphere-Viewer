@@ -10,17 +10,22 @@ const TOP_MAP = { 0: 'top', 0.5: 'center', 1: 'bottom' };
 const STATE = { NONE: 0, SHOWING: 1, HIDING: 2, READY: 3 };
 
 /**
- * @typedef {Object} Tooltip.Config
- * @summary Object defining the tooltip configuration
- * @property {string} content - HTML content of the tooltip
+ * @typedef {Object} PSV.components.Tooltip.Position
+ * @summary Object defining the tooltip position
  * @property {number} top - Position of the tip of the arrow of the tooltip, in pixels
  * @property {number} left - Position of the tip of the arrow of the tooltip, in pixels
  * @property {string|string[]} [position='top center'] - Tooltip position toward it's arrow tip.
  *           Accepted values are combinations of `top`, `center`, `bottom` and `left`, `center`, `right`
- * @property {string} [className] - Additional CSS class added to the tooltip
  * @property {Object} [box] - Used when displaying a tooltip on a marker
  * @property {number} [box.width=0]
  * @property {number} [box.height=0]
+ */
+
+/**
+ * @typedef {PSV.components.Tooltip.Position} PSV.components.Tooltip.Config
+ * @summary Object defining the tooltip configuration
+ * @property {string} content - HTML content of the tooltip
+ * @property {string} [className] - Additional CSS class added to the tooltip
  * @property {*} [data] - Userdata associated to the tooltip
  */
 
@@ -117,14 +122,14 @@ export class Tooltip extends AbstractComponent {
   }
 
   /**
-   * @summary Displays a tooltip on the viewer
-   * @param {Tooltip.Config} config
+   * @summary Displays the tooltip on the viewer
+   * Do not call this method directly, use {@link PSV.services.TooltipRenderer} instead.
+   * @param {PSV.components.Tooltip.Config} config
    *
    * @fires PSV.show-tooltip
    * @throws {PSV.PSVError} when the configuration is incorrect
    *
-   * @example
-   * viewer.showTooltip({ content: 'Hello world', top: 200, left: 450, position: 'center bottom'})
+   * @package
    */
   show(config) {
     if (this.prop.state !== STATE.NONE) {
@@ -160,7 +165,7 @@ export class Tooltip extends AbstractComponent {
 
   /**
    * @summary Moves the tooltip to a new position
-   * @param {Tooltip.Config} config
+   * @param {PSV.components.Tooltip.Position} config
    *
    * @throws {PSV.PSVError} when the configuration is incorrect
    */
@@ -256,9 +261,8 @@ export class Tooltip extends AbstractComponent {
      * @memberof PSV
      * @summary Trigered when the tooltip is hidden
      * @param {*} Data associated to this tooltip
-     * @param {PSV.components.Tooltip} Instance of the tooltip
      */
-    this.psv.trigger(EVENTS.HIDE_TOOLTIP, this.prop.data, this);
+    this.psv.trigger(EVENTS.HIDE_TOOLTIP, this.prop.data);
   }
 
   /**

@@ -705,6 +705,13 @@ export class Viewer extends EventEmitter {
       return;
     }
 
+    /**
+     * @event get-rotate-position
+     * @memberof PSV
+     * @param {Position} position
+     * @returns {Position}
+     * @summary Called to alter the target position of a rotation
+     */
     const cleanPosition = this.change(CHANGE_EVENTS.GET_ROTATE_POSITION, this.dataHelper.cleanPosition(position));
 
     if (this.prop.position.longitude !== cleanPosition.longitude || this.prop.position.latitude !== cleanPosition.latitude) {
@@ -739,6 +746,13 @@ export class Viewer extends EventEmitter {
 
     // clean/filter position and compute duration
     if (positionProvided) {
+      /**
+       * @event get-animate-position
+       * @memberof PSV
+       * @param {Position} position
+       * @returns {Position}
+       * @summary Called to alter the target position of an animation
+       */
       const cleanPosition = this.change(CHANGE_EVENTS.GET_ANIMATE_POSITION, this.dataHelper.cleanPosition(options));
 
       // longitude offset for shortest arc

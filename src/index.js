@@ -127,8 +127,8 @@ export {
  * @property {number} viewerY - position in the viewer
  * @property {number} longitude - position in spherical coordinates
  * @property {number} latitude - position in spherical coordinates
- * @property {number} textureX - position on the texture
- * @property {number} textureY - position on the texture
+ * @property {number} [textureX] - position on the texture, undefined for cubemaps
+ * @property {number} [textureY] - position on the texture, undefined for cubemaps
  * @property {PSV.plugins.MarkersPlugin.Marker} [marker] - clicked marker
  */
 

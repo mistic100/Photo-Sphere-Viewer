@@ -30,7 +30,7 @@ export default class PhotoSphereViewerCustomPlugin extends AbstractPlugin {
   }
   
   destroy() {
-    // do you cleanup logic here
+    // do your cleanup logic here
     
     super.destroy();
   }
@@ -134,7 +134,7 @@ export class CustomButton extends AbstractButton {
   }
   
   destroy() {
-    // do you cleanup logic here
+    // do your cleanup logic here
     
     super.destroy();
   }

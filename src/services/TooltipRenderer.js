@@ -42,9 +42,15 @@ export class TooltipRenderer extends AbstractService {
   }
 
   /**
-   * @summary Displays a new tooltip
-   * @param {Tooltip.Config} config
+   * @summary Displays a tooltip on the viewer
+   * @param {PSV.components.Tooltip.Config} config
    * @returns {PSV.components.Tooltip}
+   *
+   * @fires PSV.show-tooltip
+   * @throws {PSV.PSVError} when the configuration is incorrect
+   *
+   * @example
+   * viewer.tooltip.create({ content: 'Hello world', top: 200, left: 450, position: 'center bottom'})
    */
   create(config) {
     const tooltip = new Tooltip(this.psv, this.size);

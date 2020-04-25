@@ -159,7 +159,7 @@ export class Panel extends AbstractComponent {
      * @event open-panel
      * @memberof PSV
      * @summary Triggered when the panel is opened
-     * @param {string} id
+     * @param {string} [id]
      */
     this.psv.trigger(EVENTS.OPEN_PANEL, config.id);
   }
@@ -171,6 +171,8 @@ export class Panel extends AbstractComponent {
    */
   hide(id) {
     if (this.isVisible(id)) {
+      const contentId = this.prop.contentId;
+
       this.prop.visible = false;
       this.prop.contentId = undefined;
 
@@ -186,8 +188,9 @@ export class Panel extends AbstractComponent {
        * @event close-panel
        * @memberof PSV
        * @summary Trigered when the panel is closed
+       * @param {string} [id]
        */
-      this.psv.trigger(EVENTS.CLOSE_PANEL);
+      this.psv.trigger(EVENTS.CLOSE_PANEL, contentId);
     }
   }
 
