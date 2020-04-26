@@ -1,6 +1,6 @@
 # VisibleRangePlugin
 
-<md-button class="md-raised md-primary" href="https://photo-sphere-viewer.js.org/api/PSV.plugins.VisibleRangePlugin.html">API Documentation</md-button>
+<ApiButton href="https://photo-sphere-viewer.js.org/api/PSV.plugins.VisibleRangePlugin.html"/>
 
 > Locks visible longitude and/or latitude.
 

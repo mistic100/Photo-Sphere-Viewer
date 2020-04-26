@@ -75,7 +75,7 @@ Size of the marker.
 _(This option is ignored for polygons and polylines)_
 
 #### `scale`
-- type : 'double | double[]'
+- type : `double | double[]`
 
 Scale factor multiplied by the zoom level. Provide an array of two values for min and max.
 By default the scale is constant.

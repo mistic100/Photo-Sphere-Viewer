@@ -1,6 +1,6 @@
 # AutorotateKeypointsPlugin
 
-<md-button class="md-raised md-primary" href="https://photo-sphere-viewer.js.org/api/PSV.plugins.AutorotateKeypointsPlugin.html">API Documentation</md-button>
+<ApiButton href="https://photo-sphere-viewer.js.org/api/PSV.plugins.AutorotateKeypointsPlugin.html"/>
 
 > Replaces the standard autorotate animation by a smooth transition between multiple points.
 

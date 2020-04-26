@@ -1,4 +1,8 @@
 /**
+ * @namespace PSV.CONSTANTS
+ */
+
+/**
  * @summary Number of pixels bellow which a mouse move will be considered as a click
  * @memberOf PSV.CONSTANTS
  * @type {number}

@@ -31,6 +31,7 @@ export function greatArcIntermediaryPoint(p1, p2, f) {
  * @todo Get "visual center" (https://blog.mapbox.com/a-new-algorithm-for-finding-a-visual-center-of-a-polygon-7c77e6492fbc)
  * @param {number[][]} polygon
  * @returns {number[]}
+ * @private
  */
 export function getPolygonCenter(polygon) {
   const sum = polygon.reduce((intermediary, point) => [intermediary[0] + point[0], intermediary[1] + point[1]]);
@@ -41,6 +42,7 @@ export function getPolygonCenter(polygon) {
  * @summary Computes the middle point of a polyline
  * @param {number[][]} polyline
  * @returns {number[]}
+ * @private
  */
 export function getPolylineCenter(polyline) {
   // compute each segment length + total length

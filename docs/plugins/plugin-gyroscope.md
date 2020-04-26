@@ -1,6 +1,6 @@
 # GyroscopePlugin
 
-<md-button class="md-raised md-primary" href="https://photo-sphere-viewer.js.org/api/PSV.plugins.GyroscopePlugin.html">API Documentation</md-button>
+<ApiButton href="https://photo-sphere-viewer.js.org/api/PSV.plugins.GyroscopePlugin.html"/>
 
 > Adds gyroscope controls on mobile devices.
 

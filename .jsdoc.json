@@ -6,11 +6,12 @@
     "recurse": true,
     "private": false,
     "template": "node_modules/@pixi/jsdoc-template",
-    "readme": "docs/jsdoc.md"
+    "readme": "docs/.jsdoc/index.md"
   },
   "plugins": [
     "plugins/markdown",
-    "@pixi/jsdoc-template/plugins/es6-fix"
+    "@pixi/jsdoc-template/plugins/es6-fix",
+    "docs/.jsdoc/cleanup-exports"
   ],
   "templates": {
     "applicationName": "Photo Sphere Viewer",
