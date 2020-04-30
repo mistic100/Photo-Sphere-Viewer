@@ -17,6 +17,13 @@ export class TextureLoader extends AbstractService {
    */
   constructor(psv) {
     super(psv);
+
+    /**
+     * @summary Current HTTP requests
+     * @type {XMLHttpRequest[]}
+     * @private
+     */
+    this.requests = [];
   }
 
   /**
@@ -67,6 +74,13 @@ export class TextureLoader extends AbstractService {
   }
 
   /**
+   * @summary Cancels current HTTP requests
+   */
+  abortLoading() {
+    [...this.requests].forEach(r => r.abort());
+  }
+
+  /**
    * @summary Loads a Blob with FileLoader
    * @param {string} url
    * @param {function(number)} [onProgress]
@@ -86,9 +100,12 @@ export class TextureLoader extends AbstractService {
 
       loader.setResponseType('blob');
 
-      loader.load(
+      const request = loader.load(
         url,
         (result) => {
+          const rIdx = this.requests.indexOf(request);
+          if (rIdx !== -1) this.requests.splice(rIdx, 1);
+
           progress = 100;
           onProgress && onProgress(progress);
           resolve(result);
@@ -102,8 +119,18 @@ export class TextureLoader extends AbstractService {
             }
           }
         },
-        reject
+        (err) => {
+          const rIdx = this.requests.indexOf(request);
+          if (rIdx !== -1) this.requests.splice(rIdx, 1);
+
+          reject(err);
+        }
       );
+
+      // when we hit the cache, the result is the cache value
+      if (request instanceof XMLHttpRequest) {
+        this.requests.push(request);
+      }
     });
   }
 
@@ -182,10 +209,6 @@ export class TextureLoader extends AbstractService {
         const texture = this.__createEquirectangularTexture(img, panoData);
 
         return { texture, panoData };
-      })
-      .catch((e) => {
-        this.psv.showError(this.config.lang.loadError);
-        return Promise.reject(e);
       });
   }
 
@@ -309,13 +332,7 @@ export class TextureLoader extends AbstractService {
     }
 
     return Promise.all(promises)
-      .then((texture) => {
-        return { texture };
-      })
-      .catch((e) => {
-        this.psv.showError(this.config.lang.loadError);
-        return Promise.reject(e);
-      });
+      .then(texture => ({ texture }));
   }
 
   /**

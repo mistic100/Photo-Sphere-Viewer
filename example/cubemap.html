@@ -80,22 +80,15 @@
         content  : '🔄',
         onClick  : (function () {
           var i = 0;
-          var loading = false;
 
           return function () {
-            if (loading) {
-              return;
-            }
-
             i = 1 - i;
-            loading = true;
             markers.clearMarkers();
 
-            PSV.setPanorama(panos[i].url, { zoom: 50 }, true)
+            PSV.setPanorama(panos[i].url, { zoom: 50 })
               .then(function () {
                 PSV.navbar.setCaption(panos[i].desc);
-                loading = false;
-              });
+              }, function () {});
           };
         }()),
       },

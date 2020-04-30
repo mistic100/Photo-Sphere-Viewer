@@ -434,22 +434,22 @@ export class Viewer extends EventEmitter {
   /**
    * @summary Loads a new panorama file
    * @description Loads a new panorama file, optionally changing the camera position/zoom and activating the transition animation.<br>
-   * If the "options" parameter is not defined, the camera will not move and the ongoing animation will continue
+   * If the "options" parameter is not defined, the camera will not move and the ongoing animation will continue.<br>
+   * If another loading is already in progress it will be aborted.
    * @param {string|string[]|PSV.Cubemap} path - URL of the new panorama file
    * @param {PSV.PanoramaOptions} [options]
    * @returns {Promise}
-   * @throws {PSV.PSVError} when another panorama is already loading
    */
   setPanorama(path, options = {}) {
     if (this.prop.loadingPromise !== null) {
-      return Promise.reject(new PSVError('Loading already in progress'));
+      this.textureLoader.abortLoading();
     }
 
     if (!this.prop.isReady) {
-      if (!('longitude' in options)) {
+      if (!('longitude' in options) && !this.prop.isCubemap) {
         options.longitude = this.config.defaultLong;
       }
-      if (!('latitude' in options)) {
+      if (!('latitude' in options) && !this.prop.isCubemap) {
         options.latitude = this.config.defaultLat;
       }
       if (!('zoom' in options)) {
@@ -481,11 +481,26 @@ export class Viewer extends EventEmitter {
 
     this.config.panorama = path;
 
-    const done = () => {
+    const done = (err) => {
+      if (err && err.type === 'abort') {
+        console.warn(err);
+      }
+      else if (err) {
+        this.showError(this.config.lang.loadError);
+        console.error(err);
+      }
+
       this.loader.hide();
       this.renderer.show();
 
       this.prop.loadingPromise = null;
+
+      if (err) {
+        return Promise.reject(err);
+      }
+      else {
+        return true;
+      }
     };
 
     if (!options.transition || !this.prop.ready) {
@@ -507,7 +522,6 @@ export class Viewer extends EventEmitter {
             this.rotate(options);
           }
         })
-        .catch(e => console.error(e))
         .then(done, done);
     }
     else {
@@ -521,7 +535,6 @@ export class Viewer extends EventEmitter {
 
           return this.renderer.transition(textureData, options);
         })
-        .catch(e => console.error(e))
         .then(done, done);
     }
 
