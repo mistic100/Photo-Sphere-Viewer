@@ -67,7 +67,7 @@ export default class StereoPlugin extends AbstractPlugin {
     this.gyroscope = GyroscopePlugin ? psv.getPlugin(GyroscopePlugin) : null;
 
     if (!this.gyroscope) {
-      throw new PSVError('Stereo plugin requires the gyroscope plugin');
+      throw new PSVError('Stereo plugin requires the Gyroscope plugin');
     }
 
     /**

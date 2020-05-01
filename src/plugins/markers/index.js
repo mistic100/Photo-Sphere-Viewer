@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { Marker } from './Marker';
 import { MarkersButton } from './MarkersButton';
 import { MarkersListButton } from './MarkersListButton';
+import icon from './pin-list.svg';
 import './style.scss';
 
 /**
@@ -90,7 +91,7 @@ export default class MarkersPlugin extends AbstractPlugin {
    */
   static MARKERS_LIST_TEMPLATE = (markers, title, dataKey) => `
 <div class="psv-markers-list-container">
-  <h1 class="psv-markers-list-title">${title}</h1>
+  <h1 class="psv-markers-list-title">${icon} ${title}</h1>
   <ul class="psv-markers-list">
     ${markers.map(marker => `
     <li data-${dataKey}="${marker.config.id}" class="psv-markers-list-item ${marker.config.className || ''}">

@@ -44,18 +44,24 @@
   }
 }
 
-.psv-markers-list-title {
-  font: $psv-markers-list-title-font;
-  margin: 1em 0;
-  text-align: center;
-  text-shadow: $psv-markers-list-title-shadow;
-}
-
 .psv-markers-list {
   list-style: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
+
+  &-title {
+    display: flex;
+    align-items: center;
+    font: $psv-panel-title-font;
+    margin: $psv-panel-title-margin 0;
+
+    svg {
+      width: $psv-panel-title-icon-size;
+      height: $psv-panel-title-icon-size;
+      margin: 0 $psv-panel-title-icon-size / 2;
+    }
+  }
 
   &-item {
     clear: both;

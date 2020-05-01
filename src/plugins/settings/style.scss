@@ -1,0 +1,73 @@
+@import '../../styles/vars';
+
+.psv-settings {
+  &-title {
+    display: flex;
+    align-items: center;
+    font: $psv-panel-title-font;
+    margin: $psv-panel-title-margin 0;
+
+    svg {
+      width: $psv-panel-title-icon-size;
+      height: $psv-panel-title-icon-size;
+      margin: 0 $psv-panel-title-icon-size / 2;
+    }
+  }
+
+  &-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  &-item {
+    clear: both;
+    min-height: 20px;
+    padding: .5em 1em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      background: rgba(255, 255, 255, .1);
+    }
+
+    &-label {
+      flex: 1;
+      font-weight: bold;
+    }
+
+    &-value {
+      flex: none;
+    }
+
+    &-icon {
+      flex: none;
+      height: 1em;
+      width: 1em;
+
+      svg {
+        width: 1em;
+        height: 1em;
+      }
+
+      &:first-child {
+        margin-right: 1em;
+      }
+
+      &:last-child {
+        margin-left: 1em;
+      }
+    }
+
+    &--header {
+      border-bottom: 1px solid currentColor;
+      margin-bottom: 1em;
+
+      svg {
+        transform: scaleX(-1);
+      }
+    }
+  }
+}

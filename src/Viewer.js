@@ -337,7 +337,7 @@ export class Viewer extends EventEmitter {
    * @returns {PSV.plugins.AbstractPlugin}
    */
   getPlugin(pluginId) {
-    return this.plugins[typeof pluginId === 'function' ? pluginId.id : pluginId];
+    return pluginId ? this.plugins[typeof pluginId === 'function' ? pluginId.id : pluginId] : null;
   }
 
   /**
@@ -433,7 +433,7 @@ export class Viewer extends EventEmitter {
       this.textureLoader.abortLoading();
     }
 
-    if (!this.prop.isReady) {
+    if (!this.prop.ready) {
       if (!('longitude' in options) && !this.prop.isCubemap) {
         options.longitude = this.config.defaultLong;
       }

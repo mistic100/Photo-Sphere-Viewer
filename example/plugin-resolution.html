@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhotoSphereViewer - resolution demo</title>
+
+  <link rel="stylesheet" href="../dist/photo-sphere-viewer.css">
+  <link rel="stylesheet" href="../dist/plugins/settings.css">
+
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    #photosphere {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<div id="photosphere"></div>
+
+<script src="../node_modules/three/build/three.js"></script>
+<script src="../node_modules/promise-polyfill/dist/polyfill.js"></script>
+<script src="../node_modules/uevent/browser.js"></script>
+<script src="../dist/photo-sphere-viewer.js"></script>
+<script src="../dist/plugins/settings.js"></script>
+<script src="../dist/plugins/resolution.js"></script>
+
+<script>
+  var PSV = new PhotoSphereViewer.Viewer({
+    container : 'photosphere',
+    panorama  : 'sphere_small.jpg',
+    caption   : 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+    loadingImg: 'assets/photosphere-logo.gif',
+    plugins   : [
+      PhotoSphereViewer.SettingsPlugin,
+      [PhotoSphereViewer.ResolutionPlugin, {
+        resolutions: [
+          {
+            id      : 'small',
+            label   : 'Small',
+            panorama: 'sphere_small.jpg',
+          },
+          {
+            id      : 'normal',
+            label   : 'Normal',
+            panorama: 'sphere.jpg',
+          },
+        ],
+      }],
+    ],
+  });
+</script>
+</body>
+</html>

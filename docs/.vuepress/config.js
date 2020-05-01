@@ -62,6 +62,8 @@ module.exports = {
             'plugin-autorotate-keypoints',
             'plugin-gyroscope',
             'plugin-markers',
+            'plugin-resolution',
+            'plugin-settings',
             'plugin-stereo',
             'plugin-visible-range',
           ],

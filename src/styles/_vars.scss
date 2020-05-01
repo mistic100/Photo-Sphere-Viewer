@@ -71,6 +71,10 @@ $psv-panel-close-button-color: #fff !default;
 
 $psv-panel-font: 16px sans-serif !default;
 
+$psv-panel-title-font: 24px sans-serif !default;
+$psv-panel-title-icon-size: 24px !default;
+$psv-panel-title-margin: 24px !default;
+
 
 //*** MARKERS ***
 $psv-markers-list-image-size: 20px !default;
@@ -80,12 +84,9 @@ $psv-markers-list-hover-translation: 10px !default;
 $psv-markers-list-odd-background: rgba(255, 255, 255, .1) !default;
 $psv-markers-list-even-background: transparent !default;
 
-$psv-markers-list-title-shadow: 2px 1px #000 !default;
-$psv-markers-list-title-font: 24px sans-serif !default;
-
 
 //*** NOTIFICATION ***
-$psv-notification-bottom: (from: $psv-navbar-height, to: $psv-navbar-height * 2) !default;
+$psv-notification-bottom: (from: 0, to: $psv-navbar-height * 2) !default;
 $psv-notification-animate-delay: 200ms !default;
 $psv-notification-background-color: $psv-tooltip-background-color !default;
 $psv-notification-radius: $psv-tooltip-radius !default;

@@ -91,6 +91,12 @@
         "exceptAfterSingleLine": true
       }
     ],
+    "no-restricted-syntax": [
+      "error",
+      "ForInStatement",
+      "LabeledStatement",
+      "WithStatement"
+    ],
     "import/no-unresolved": [
       "error",
       {

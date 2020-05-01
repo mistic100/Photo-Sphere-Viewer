@@ -144,6 +144,11 @@ export class Panel extends AbstractComponent {
     this.prop.contentId = config.id;
     this.prop.visible = true;
 
+    if (this.prop.clickHandler) {
+      this.content.removeEventListener('click', this.prop.clickHandler);
+      this.prop.clickHandler = null;
+    }
+
     this.content.innerHTML = config.content;
     this.content.scrollTop = 0;
     this.container.classList.add('psv-panel--open');

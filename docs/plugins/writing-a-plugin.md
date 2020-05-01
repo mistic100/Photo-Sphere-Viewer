@@ -181,6 +181,47 @@ import customIcon from './icons/custom.svg';
 static icon = customIcon;
 ```
 
+## Viewer settings
+
+A plugin can expose one or more settings to the viewer by using the [Settings plugin](./plugin-settings.md).
+
+This is done by requiring the settings plugin and calling the `addSetting` method. Consult the [Settings plugin](./plugin-settings.md) page for more information.
+
+```js
+import SettingsPlugin from 'photo-sphere-viewer/plugins/settings';
+
+export default class PhotoSphereViewerCustomPlugin extends AbstractPlugin {
+  
+  constructor(psv) {
+    super(psv);
+    
+    /**
+     * @type {PSV.plugins.SettingsPlugin}
+     */
+    this.settings = SettingsPlugin ? psv.getPlugin(SettingsPlugin) : null;
+
+    if (this.settings) {
+      this.settings.addSetting({
+        id    : 'custom-setting',
+        type  : 'toggle',
+        label : 'Custom setting',
+        active: () => this.isActive(),
+        toggle: () => this.toggle(),
+      });
+    }
+  }
+  
+  destroy() {
+    if (this.settings) {
+      this.settings.removeSetting('custom-setting');
+      delete this.settings;
+    }
+    
+    super.destroy();
+  }
+  
+}
+```
 
 
 ## Naming and publishing

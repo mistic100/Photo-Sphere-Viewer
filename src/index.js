@@ -93,9 +93,10 @@ export {
 
 /**
  * @callback PanoDataProvider
+ * @summary Function to compute panorama data once the image is loaded
  * @memberOf PSV
- * @param {Image}
- * @returns {PSV.PanoData}
+ * @param {Image} image - loaded image
+ * @returns {PSV.PanoData} computed panorama data
  */
 
 /**
