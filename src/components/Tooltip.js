@@ -153,13 +153,6 @@ export class Tooltip extends AbstractComponent {
     this.prop.data = config.data;
     this.prop.state = STATE.SHOWING;
 
-    /**
-     * @event show-tooltip
-     * @memberof PSV
-     * @summary Trigered when the tooltip is shown
-     * @param {*} Data associated to this tooltip
-     * @param {PSV.components.Tooltip} Instance of the tooltip
-     */
     this.psv.trigger(EVENTS.SHOW_TOOLTIP, this.prop.data, this);
   }
 
@@ -256,12 +249,6 @@ export class Tooltip extends AbstractComponent {
     this.container.classList.remove('psv-tooltip--visible');
     this.prop.state = STATE.HIDING;
 
-    /**
-     * @event hide-tooltip
-     * @memberof PSV
-     * @summary Trigered when the tooltip is hidden
-     * @param {*} Data associated to this tooltip
-     */
     this.psv.trigger(EVENTS.HIDE_TOOLTIP, this.prop.data);
   }
 

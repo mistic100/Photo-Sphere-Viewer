@@ -1,10 +1,10 @@
 /**
- * @namespace PSV.CONSTANTS
+ * @namespace PSV.constants
  */
 
 /**
  * @summary Number of pixels bellow which a mouse move will be considered as a click
- * @memberOf PSV.CONSTANTS
+ * @memberOf PSV.constants
  * @type {number}
  * @constant
  */
@@ -12,7 +12,7 @@ export const MOVE_THRESHOLD = 4;
 
 /**
  * @summary Delay in milliseconds between two clicks to consider a double click
- * @memberOf PSV.CONSTANTS
+ * @memberOf PSV.constants
  * @type {number}
  * @constant
  */
@@ -20,7 +20,7 @@ export const DBLCLICK_DELAY = 300;
 
 /**
  * @summary Delay in milliseconds to emulate a long touch
- * @memberOf PSV.CONSTANTS
+ * @memberOf PSV.constants
  * @type {number}
  * @constant
  */
@@ -28,7 +28,7 @@ export const LONGTOUCH_DELAY = 500;
 
 /**
  * @summary Time size of the mouse position history used to compute inertia
- * @memberOf PSV.CONSTANTS
+ * @memberOf PSV.constants
  * @type {number}
  * @constant
  */
@@ -36,7 +36,7 @@ export const INERTIA_WINDOW = 300;
 
 /**
  * @summary Radius of the THREE.SphereGeometry, Half-length of the THREE.BoxGeometry
- * @memberOf PSV.CONSTANTS
+ * @memberOf PSV.constants
  * @type {number}
  * @constant
  */
@@ -44,7 +44,7 @@ export const SPHERE_RADIUS = 100;
 
 /**
  * @summary Number of vertice of the THREE.SphereGeometry
- * @memberOf PSV.CONSTANTS
+ * @memberOf PSV.constants
  * @type {number}
  * @constant
  */
@@ -52,7 +52,7 @@ export const SPHERE_VERTICES = 64;
 
 /**
  * @summary Number of vertices of each side of the THREE.BoxGeometry
- * @memberOf PSV.CONSTANTS
+ * @memberOf PSV.constants
  * @type {number}
  * @constant
  */
@@ -60,7 +60,7 @@ export const CUBE_VERTICES = 8;
 
 /**
  * @summary Order of cube textures for arrays
- * @memberOf PSV.CONSTANTS
+ * @memberOf PSV.constants
  * @type {number[]}
  * @constant
  */
@@ -68,7 +68,7 @@ export const CUBE_MAP = [0, 2, 4, 5, 3, 1];
 
 /**
  * @summary Order of cube textures for maps
- * @memberOf PSV.CONSTANTS
+ * @memberOf PSV.constants
  * @type {string[]}
  * @constant
  */
@@ -76,7 +76,7 @@ export const CUBE_HASHMAP = ['left', 'right', 'top', 'bottom', 'back', 'front'];
 
 /**
  * @summary Property name added to buttons list
- * @memberOf PSV.CONSTANTS
+ * @memberOf PSV.constants
  * @type {string}
  * @constant
  */
@@ -84,7 +84,7 @@ export const BUTTON_DATA = 'psvButton';
 
 /**
  * @summary Property name added to viewer element
- * @memberOf PSV.CONSTANTS
+ * @memberOf PSV.constants
  * @type {string}
  * @constant
  */
@@ -92,7 +92,7 @@ export const VIEWER_DATA = 'photoSphereViewer';
 
 /**
  * @summary Available actions
- * @memberOf PSV.CONSTANTS
+ * @memberOf PSV.constants
  * @enum {string}
  * @constant
  */
@@ -107,50 +107,191 @@ export const ACTIONS = {
 };
 
 /**
- * @summary Available events
- * @memberOf PSV.CONSTANTS
+ * @summary Available events names
+ * @memberOf PSV.constants
  * @enum {string}
  * @constant
  */
 export const EVENTS = {
+  /**
+   * @event autorotate
+   * @memberof PSV
+   * @summary Triggered when the automatic rotation is enabled/disabled
+   * @param {boolean} enabled
+   */
   AUTOROTATE        : 'autorotate',
+  /**
+   * @event before-render
+   * @memberof PSV
+   * @summary Triggered before a render, used to modify the view
+   * @param {number} timestamp - time provided by requestAnimationFrame
+   */
   BEFORE_RENDER     : 'before-render',
+  /**
+   * @event before-rotate
+   * @memberOf PSV
+   * @summary Triggered before a rotate operation, can be cancelled
+   * @param {PSV.ExtendedPosition}
+   */
   BEFORE_ROTATE     : 'before-rotate',
+  /**
+   * @event click
+   * @memberof PSV
+   * @summary Triggered when the user clicks on the viewer (everywhere excluding the navbar and the side panel)
+   * @param {PSV.ClickData} data
+   */
   CLICK             : 'click',
+  /**
+   * @event close-panel
+   * @memberof PSV
+   * @summary Trigered when the panel is closed
+   * @param {string} [id]
+   */
   CLOSE_PANEL       : 'close-panel',
+  /**
+   * @event config-changed
+   * @memberOf PSV
+   * @summary Triggered after a call to setOption/setOptions
+   * @param {string[]} name of changed options
+   */
   CONFIG_CHANGED    : 'config-changed',
+  /**
+   * @event dblclick
+   * @memberof PSV
+   * @summary Triggered when the user double clicks on the viewer. The simple `click` event is always fired before `dblclick`
+   * @param {PSV.ClickData} data
+   */
   DOUBLE_CLICK      : 'dblclick',
+  /**
+   * @event fullscreen-updated
+   * @memberof PSV
+   * @summary Triggered when the fullscreen mode is enabled/disabled
+   * @param {boolean} enabled
+   */
   FULLSCREEN_UPDATED: 'fullscreen-updated',
+  /**
+   * @event hide-notification
+   * @memberof PSV
+   * @summary Trigered when the notification is hidden
+   */
   HIDE_NOTIFICATION : 'hide-notification',
+  /**
+   * @event hide-overlay
+   * @memberof PSV
+   * @summary Trigered when the overlay is hidden
+   * @param {string} [id]
+   */
   HIDE_OVERLAY      : 'hide-overlay',
+  /**
+   * @event hide-tooltip
+   * @memberof PSV
+   * @summary Trigered when the tooltip is hidden
+   * @param {*} Data associated to this tooltip
+   */
   HIDE_TOOLTIP      : 'hide-tooltip',
+  /**
+   * @event open-panel
+   * @memberof PSV
+   * @summary Triggered when the panel is opened
+   * @param {string} [id]
+   */
   OPEN_PANEL        : 'open-panel',
+  /**
+   * @event panorama-loaded
+   * @memberof PSV
+   * @summary Triggered when a panorama image has been loaded
+   */
   PANORAMA_LOADED   : 'panorama-loaded',
+  /**
+   * @event position-updated
+   * @memberof PSV
+   * @summary Triggered when the view longitude and/or latitude changes
+   * @param {PSV.Position} position
+   */
   POSITION_UPDATED  : 'position-updated',
+  /**
+   * @event ready
+   * @memberof PSV
+   * @summary Triggered when the panorama image has been loaded and the viewer is ready to perform the first render
+   */
   READY             : 'ready',
+  /**
+   * @event render
+   * @memberof PSV
+   * @summary Triggered on each viewer render, **this event is triggered very often**
+   */
   RENDER            : 'render',
+  /**
+   * @event show-notification
+   * @memberof PSV
+   * @summary Trigered when the notification is shown
+   */
   SHOW_NOTIFICATION : 'show-notification',
+  /**
+   * @event show-overlay
+   * @memberof PSV
+   * @summary Trigered when the overlay is shown
+   * @param {string} [id]
+   */
   SHOW_OVERLAY      : 'show-overlay',
+  /**
+   * @event show-tooltip
+   * @memberof PSV
+   * @summary Trigered when the tooltip is shown
+   * @param {*} Data associated to this tooltip
+   * @param {PSV.components.Tooltip} Instance of the tooltip
+   */
   SHOW_TOOLTIP      : 'show-tooltip',
+  /**
+   * @event size-updated
+   * @memberof PSV
+   * @summary Triggered when the viewer size changes
+   * @param {PSV.Size} size
+   */
   SIZE_UPDATED      : 'size-updated',
+  /**
+   * @event stop-all
+   * @memberof PSV
+   * @summary Triggered when all current animations are stopped
+   */
   STOP_ALL          : 'stop-all',
+  /**
+   * @event zoom-updated
+   * @memberof PSV
+   * @summary Triggered when the zoom level changes
+   * @param {number} zoomLevel
+   */
   ZOOM_UPDATED      : 'zoom-updated',
 };
 
 /**
- * @summary Available change events
- * @memberOf PSV.CONSTANTS
+ * @summary Available change events names
+ * @memberOf PSV.constants
  * @enum {string}
  * @constant
  */
 export const CHANGE_EVENTS = {
+  /**
+   * @event get-animate-position
+   * @memberof PSV
+   * @param {Position} position
+   * @returns {Position}
+   * @summary Called to alter the target position of an animation
+   */
   GET_ANIMATE_POSITION: 'get-animate-position',
+  /**
+   * @event get-rotate-position
+   * @memberof PSV
+   * @param {Position} position
+   * @returns {Position}
+   * @summary Called to alter the target position of a rotation
+   */
   GET_ROTATE_POSITION : 'get-rotate-position',
 };
 
 /**
  * @summary Internal identifiers for various stuff
- * @memberOf PSV.CONSTANTS
+ * @memberOf PSV.constants
  * @enum {string}
  * @constant
  */
@@ -164,7 +305,7 @@ export const IDS = {
 // @formatter:off
 /**
  * @summary Collection of easing functions
- * @memberOf PSV.CONSTANTS
+ * @memberOf PSV.constants
  * @see {@link https://gist.github.com/frederickk/6165768}
  * @type {Object<string, Function>}
  * @constant

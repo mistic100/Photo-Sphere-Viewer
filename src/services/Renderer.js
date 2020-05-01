@@ -130,12 +130,6 @@ export class Renderer extends AbstractService {
    * @package
    */
   __renderLoop(timestamp) {
-    /**
-     * @event before-render
-     * @memberof PSV
-     * @summary Triggered before a render, used to modify the view
-     * @param {number} timestamp - time provided by requestAnimationFrame
-     */
     this.psv.trigger(EVENTS.BEFORE_RENDER, timestamp);
 
     if (this.prop.needsUpdate) {
@@ -167,11 +161,6 @@ export class Renderer extends AbstractService {
 
     this.renderer.render(this.scene, this.camera);
 
-    /**
-     * @event render
-     * @memberof PSV
-     * @summary Triggered on each viewer render, **this event is triggered very often**
-     */
     this.psv.trigger(EVENTS.RENDER);
   }
 
@@ -208,11 +197,6 @@ export class Renderer extends AbstractService {
 
     this.psv.needsUpdate();
 
-    /**
-     * @event panorama-loaded
-     * @memberof PSV
-     * @summary Triggered when a panorama image has been loaded
-     */
     this.psv.trigger(EVENTS.PANORAMA_LOADED);
   }
 

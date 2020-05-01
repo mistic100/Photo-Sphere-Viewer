@@ -75,11 +75,6 @@ export class Notification extends AbstractComponent {
 
     this.container.classList.add('psv-notification--visible');
 
-    /**
-     * @event show-notification
-     * @memberof PSV
-     * @summary Trigered when the notification is shown
-     */
     this.psv.trigger(EVENTS.SHOW_NOTIFICATION);
 
     if (config.timeout) {
@@ -97,11 +92,6 @@ export class Notification extends AbstractComponent {
 
       this.prop.visible = false;
 
-      /**
-       * @event hide-notification
-       * @memberof PSV
-       * @summary Trigered when the notification is hidden
-       */
       this.psv.trigger(EVENTS.HIDE_NOTIFICATION);
     }
   }

@@ -396,11 +396,12 @@ export class EventsHandler extends AbstractService {
 
   /**
    * @summary Handles fullscreen events
+   * @param {boolean} [force] force state
    * @fires PSV.fullscreen-updated
-   * @private
+   * @package
    */
-  __fullscreenToggled() {
-    this.prop.fullscreen = isFullscreenEnabled(this.psv.container);
+  __fullscreenToggled(force) {
+    this.prop.fullscreen = force !== undefined ? force : isFullscreenEnabled(this.psv.container);
 
     if (this.config.keyboard) {
       if (this.prop.fullscreen) {
@@ -411,12 +412,6 @@ export class EventsHandler extends AbstractService {
       }
     }
 
-    /**
-     * @event fullscreen-updated
-     * @memberof PSV
-     * @summary Triggered when the fullscreen mode is enabled/disabled
-     * @param {boolean} enabled
-     */
     this.psv.trigger(EVENTS.FULLSCREEN_UPDATED, this.prop.fullscreen);
   }
 
@@ -571,12 +566,6 @@ export class EventsHandler extends AbstractService {
       }
 
       if (!this.state.dblclickTimeout) {
-        /**
-         * @event click
-         * @memberof PSV
-         * @summary Triggered when the user clicks on the viewer (everywhere excluding the navbar and the side panel)
-         * @param {PSV.ClickData} data
-         */
         this.psv.trigger(EVENTS.CLICK, data);
 
         this.state.dblclickData = clone(data);
@@ -588,12 +577,6 @@ export class EventsHandler extends AbstractService {
       else {
         if (Math.abs(this.state.dblclickData.clientX - data.clientX) < MOVE_THRESHOLD
           && Math.abs(this.state.dblclickData.clientY - data.clientY) < MOVE_THRESHOLD) {
-          /**
-           * @event dblclick
-           * @memberof PSV
-           * @summary Triggered when the user double clicks on the viewer. The simple `click` event is always fired before `dblclick`
-           * @param {PSV.ClickData} data
-           */
           this.psv.trigger(EVENTS.DOUBLE_CLICK, this.state.dblclickData);
         }
 

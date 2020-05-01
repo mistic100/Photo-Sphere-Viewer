@@ -124,12 +124,6 @@ export class Overlay extends AbstractComponent {
 
     super.show();
 
-    /**
-     * @event show-overlay
-     * @memberof PSV
-     * @summary Trigered when the overlay is shown
-     * @param {string} [id]
-     */
     this.psv.trigger(EVENTS.SHOW_OVERLAY, config.id);
   }
 
@@ -146,12 +140,6 @@ export class Overlay extends AbstractComponent {
 
       this.prop.contentId = undefined;
 
-      /**
-       * @event hide-overlay
-       * @memberof PSV
-       * @summary Trigered when the overlay is hidden
-       * @param {string} [id]
-       */
       this.psv.trigger(EVENTS.HIDE_OVERLAY, contentId);
     }
   }

@@ -155,12 +155,6 @@ export class Panel extends AbstractComponent {
       this.content.addEventListener('click', config.clickHandler);
     }
 
-    /**
-     * @event open-panel
-     * @memberof PSV
-     * @summary Triggered when the panel is opened
-     * @param {string} [id]
-     */
     this.psv.trigger(EVENTS.OPEN_PANEL, config.id);
   }
 
@@ -184,12 +178,6 @@ export class Panel extends AbstractComponent {
         this.prop.clickHandler = null;
       }
 
-      /**
-       * @event close-panel
-       * @memberof PSV
-       * @summary Trigered when the panel is closed
-       * @param {string} [id]
-       */
       this.psv.trigger(EVENTS.CLOSE_PANEL, contentId);
     }
   }

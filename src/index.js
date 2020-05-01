@@ -3,6 +3,7 @@ import { AbstractButton } from './buttons/AbstractButton';
 import { registerButton } from './components/Navbar';
 import { DEFAULTS } from './data/config';
 import * as CONSTANTS from './data/constants';
+import './data/constants'; // for jsdoc
 import { SYSTEM } from './data/system';
 import { AbstractPlugin } from './plugins/AbstractPlugin';
 import { PSVError } from './PSVError';
