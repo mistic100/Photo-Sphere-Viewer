@@ -64,7 +64,7 @@ export default class StereoPlugin extends AbstractPlugin {
      * @readonly
      * @private
      */
-    this.gyroscope = psv.getPlugin(GyroscopePlugin);
+    this.gyroscope = GyroscopePlugin ? psv.getPlugin(GyroscopePlugin) : null;
 
     if (!this.gyroscope) {
       throw new PSVError('Stereo plugin requires the gyroscope plugin');
@@ -124,7 +124,7 @@ export default class StereoPlugin extends AbstractPlugin {
    * @returns {boolean}
    */
   isEnabled() {
-    return !!this.prop.stereoEffect;
+    return !!this.prop.renderer;
   }
 
   /**
