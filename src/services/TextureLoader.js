@@ -30,6 +30,7 @@ export class TextureLoader extends AbstractService {
    * @override
    */
   destroy() {
+    this.abortLoading();
     super.destroy();
   }
 
