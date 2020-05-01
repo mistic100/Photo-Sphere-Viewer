@@ -4,7 +4,7 @@
 
 ## Presentation
 
-Many methods are available to control the viewer from your application. The full list of methods is available on the [API Documentation](https://photo-sphere-viewer.js.org/api/PSV.Viewer.html).
+Many methods are available to control the viewer from your application. The full list of methods is available on the <ApiLink page="PSV.Viewer.html"/>.
 
 ::: tip Modular architecture
 Photo Sphere Viewer is internally splitted in multiple components, this has an impact on where are located each method. For example, the methods to control the navbar are in the `navbar` object.
@@ -28,7 +28,7 @@ viewer.once('ready', () => {
 
 ## Main methods
 
-This section describes the most useful methods available, remember to check the [API Documentation](https://photo-sphere-viewer.js.org/api/PSV.Viewer.html) for a full list.
+This section describes the most useful methods available, remember to check the <ApiLink page="PSV.Viewer.html"/> for a full list.
 
 #### `destroy()`
 

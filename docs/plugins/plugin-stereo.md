@@ -1,6 +1,6 @@
 # StereoPlugin
 
-<ApiButton href="https://photo-sphere-viewer.js.org/api/PSV.plugins.StereoPlugin.html"/>
+<ApiButton page="PSV.plugins.StereoPlugin.html"/>
 
 > Adds stereo view on mobile devices. **Requires the Gyroscope plugin.**
 

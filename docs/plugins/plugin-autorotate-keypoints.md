@@ -1,6 +1,6 @@
 # AutorotateKeypointsPlugin
 
-<ApiButton href="https://photo-sphere-viewer.js.org/api/PSV.plugins.AutorotateKeypointsPlugin.html"/>
+<ApiButton page="PSV.plugins.AutorotateKeypointsPlugin.html"/>
 
 > Replaces the standard autorotate animation by a smooth transition between multiple points.
 

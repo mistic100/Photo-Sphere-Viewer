@@ -4,13 +4,13 @@
 
 ## Presentation
 
-Photo Sphere Viewer uses [uEvent API](https://github.com/mistic100/uEvent#uevent). The full list of events is available on the [API Documentation](https://photo-sphere-viewer.js.org/api/PSV.html#.event:autorotate).
+Photo Sphere Viewer uses [uEvent API](https://github.com/mistic100/uEvent#uevent). The full list of events is available on the <ApiLink page="PSV.html#.event:autorotate"/>.
 
 Event listeners take an `Event` object as first parameter, this object is generally not used. Other parameters are available after this event object.
 
 ## Main events
 
-This section describes the most useful events available, remember to check the [API Documentation](https://photo-sphere-viewer.js.org/api/PSV.html#.event:autorotate) for a full list.
+This section describes the most useful events available, remember to check the <ApiLink page="PSV.html#.event:autorotate"/> for a full list.
 
 #### `click(data)` | `dblclick(data)`
 

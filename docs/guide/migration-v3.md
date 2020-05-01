@@ -75,7 +75,7 @@ Be sure to rename your configuration properties, the old naming is not supported
 ### Moved methods
 
 In version 3, all methods where on the main `PhotoSphereViewer` object. Now in version 4, many methods have been moved to sub-objects for the renderer, hud, left-panel, etc.
-Bellow is the mapping of the most common methods, please check the [API documentation](https://photo-sphere-viewer.js.org/api/) for a complete list of methods.
+Bellow is the mapping of the most common methods, please check the <ApiLink page="PSV.Viewer.html"/> for a complete list of methods.
 
 #### General
 

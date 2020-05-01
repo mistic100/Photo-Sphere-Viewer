@@ -7,6 +7,11 @@
 
 <script>
   export default {
-    props: ['href'],
+    props: ['page'],
+    data() {
+      return {
+        href: `/api/${this.page}`,
+      };
+    },
   };
 </script>

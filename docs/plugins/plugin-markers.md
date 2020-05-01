@@ -1,6 +1,6 @@
 # MarkersPlugin
 
-<md-button class="md-raised md-primary" href="https://photo-sphere-viewer.js.org/api/PSV.plugins.MarkersPlugin.html">API Documentation</md-button>
+<ApiButton page="PSV.plugins.MarkersPlugin.html"/>
 
 > Displays various markers/hotspots on the viewer.
 

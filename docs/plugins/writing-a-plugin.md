@@ -12,7 +12,7 @@ The recommended way to create your own plugin is as an ES6 class extending `Abst
 - It **must** implement the `destroy` method which is used to cleanup the plugin when the viewer is unloaded. 
 - The constructor **can** take an `options` object as second parameter.
 
-In you plugin you have access to `this.psv` which is the instance of the viewer, check the [API Documentation](https://photo-sphere-viewer.js.org/api/PSV.Viewer.html) for more information.
+In you plugin you have access to `this.psv` which is the instance of the viewer, check the <ApiLink page="PSV.Viewer.html"/> for more information.
 
 Your plugin is also an [`EventEmitter`](https://github.com/mistic100/uEvent) with `on`, `off` and `trigger` methods.
 
@@ -105,7 +105,7 @@ Your plugin may need to add a new button in the navbar. This section will descri
 
 ### Creating a button
 
-Photo Sphere Viewer buttons **must** extend `AbstractButton`, check the [API Documentation](https://photo-sphere-viewer.js.org/api/PSV.components.AbstractComponent.html) for more information.
+Photo Sphere Viewer buttons **must** extend `AbstractButton`, check the <ApiLink page="PSV.buttons.AbstractButton.html"/> for more information.
 
 **Requirements:**
 - The button class **must** take a `PSV.components.Navbar` object as first parameter and pass it to the `super` constructor. 
