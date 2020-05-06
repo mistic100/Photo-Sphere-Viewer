@@ -91,7 +91,9 @@ export function getClosest(el, selector) {
   const matches = el.matches || el.msMatchesSelector;
   let test = el;
   // When el is document or window, the matches does not exist
-  if (!matches) { return null }
+  if (!matches) {
+    return null;
+  }
 
   do {
     if (matches.bind(test)(selector)) {
