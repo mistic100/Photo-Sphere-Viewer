@@ -164,7 +164,7 @@ export default class StereoPlugin extends AbstractPlugin {
        * @summary Triggered when the stereo view is enabled/disabled
        * @param {boolean} enabled
        */
-      this.trigger(StereoPlugin.EVENTS.STEREO_UPATED, true);
+      this.trigger(StereoPlugin.EVENTS.STEREO_UPDATED, true);
 
       this.psv.notification.show({
         content: this.psv.config.lang.stereoNotification,
@@ -198,7 +198,7 @@ export default class StereoPlugin extends AbstractPlugin {
       this.psv.exitFullscreen();
       this.gyroscope.stop();
 
-      this.trigger(StereoPlugin.EVENTS.STEREO_UPATED, false);
+      this.trigger(StereoPlugin.EVENTS.STEREO_UPDATED, false);
     }
   }
 
