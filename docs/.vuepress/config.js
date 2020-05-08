@@ -75,7 +75,6 @@ module.exports = {
     }],
     ['@vuepress/back-to-top'],
     ['vuepress-plugin-element-tabs'],
-    [require('./plugins/version')],
   ],
   alias      : {
     'photo-sphere-viewer'           : path.resolve(process.cwd(), 'dist/photo-sphere-viewer.js'),
