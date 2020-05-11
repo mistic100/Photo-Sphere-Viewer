@@ -67,7 +67,7 @@ function getWebGLCtx() {
   if (names.some((name) => {
     try {
       context = canvas.getContext(name);
-      return true;
+      return context !== null;
     }
     catch (e) {
       return false;
