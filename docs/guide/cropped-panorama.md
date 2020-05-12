@@ -6,7 +6,7 @@
 
 These incomplete panoramas are handled in two ways by Photo Sphere viewer:
   - Read XMP metadata directly from the file
-  - Provide the pano_data configuration object
+  - Provide the `panoData` configuration object
 
 Use the [Playground](#playground) at the bottom of this page to find the best values for your panorama.
 
@@ -27,7 +27,7 @@ The `Full panorama width` / `Full panorama height` ratio must always be 2:1. `Cr
 More information on [Google documentation](https://developers.google.com/streetview/spherical-metadata).
 
 
-## Provide croppping data
+## Provide cropping data
 
 ### With XMP
 
