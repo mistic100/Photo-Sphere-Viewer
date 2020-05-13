@@ -37,7 +37,7 @@ export class TextureLoader extends AbstractService {
   /**
    * @summary Loads the panorama texture(s)
    * @param {string|string[]|PSV.Cubemap} panorama
-   * @param {PSV.PanoData} [newPanoData]
+   * @param {PSV.PanoData | function<Image, PSV.PanoData>} [newPanoData]
    * @returns {Promise.<PSV.TextureData>}
    * @throws {PSV.PSVError} when the image cannot be loaded
    * @package
@@ -173,12 +173,13 @@ export class TextureLoader extends AbstractService {
   /**
    * @summary Loads the sphere texture
    * @param {string} panorama
-   * @param {PSV.PanoData} [newPanoData]
+   * @param {PSV.PanoData | function<Image, PSV.PanoData>} [newPanoData]
    * @returns {Promise.<PSV.TextureData>}
    * @throws {PSV.PSVError} when the image cannot be loaded
    * @private
    */
   __loadEquirectangularTexture(panorama, newPanoData) {
+    /* eslint no-shadow: ["error", {allow: ["newPanoData"]}] */
     if (this.prop.isCubemap === true) {
       throw new PSVError('The viewer was initialized with an cubemap, cannot switch to equirectangular panorama.');
     }
@@ -188,12 +189,17 @@ export class TextureLoader extends AbstractService {
     return (
       newPanoData || !this.config.useXmpData
         ? this.__loadImage(panorama, p => this.psv.loader.setProgress(p))
-          .then(img => ({ img }))
+          .then(img => ({ img, newPanoData }))
         : this.__loadXMP(panorama, p => this.psv.loader.setProgress(p))
-          .then(xmpPanoData => this.__loadImage(panorama).then(img => ({ img, xmpPanoData })))
+          .then(newPanoData => this.__loadImage(panorama).then(img => ({ img, newPanoData })))
     )
-      .then(({ img, xmpPanoData }) => {
-        const panoData = newPanoData || xmpPanoData || {
+      .then(({ img, newPanoData }) => {
+        if (typeof newPanoData === 'function') {
+          // eslint-disable-next-line no-param-reassign
+          newPanoData = newPanoData(img);
+        }
+
+        const panoData = newPanoData || {
           fullWidth    : img.width,
           fullHeight   : img.height,
           croppedWidth : img.width,

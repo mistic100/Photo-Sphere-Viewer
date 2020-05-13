@@ -226,7 +226,7 @@ Zoom speed when using the mouse wheel.
 Read real image size from XMP data, must be kept `true` if the panorama has been cropped after shot.
 
 #### `panoData`
-- type: `object`
+- type: `object | function<Image, object>`
 
 Manually define cropping config (if `useXmpData` is `false` or no XMP tag is found).
 
@@ -239,6 +239,19 @@ panoData: {
   croppedX: 1000,
   croppedY: 500
 }
+```
+
+It can also be a function to dynamically compute the cropping config depending on the loaded image.
+
+```js
+panoData: (image) => ({
+  fullWidth    : image.width,
+  fullHeight   : image.width / 2,
+  croppedWidth : image.width,
+  croppedHeight: image.height,
+  croppedX     : 0,
+  croppedY     : image.width / 2 - image.height,
+})
 ```
 
 #### `moveInertia`
