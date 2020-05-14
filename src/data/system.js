@@ -4,24 +4,23 @@
  * @memberOf PSV
  * @property {boolean} loaded - Indicates if the system has been loaded yet
  * @property {Function} load - Loads the system if not already loaded
- * @property {Function} checkTHREE - Checks if one or more THREE modules are available
  * @property {number} pixelRatio
  * @property {boolean} isWebGLSupported
- * @property {boolean} isCanvasSupported
  * @property {number} maxTextureWidth
+ * @property {number} maxCanvasWidth
  * @property {string} mouseWheelEvent
  * @property {string} fullscreenEvent
  * @property {Promise<boolean>} isTouchEnabled
  */
 export const SYSTEM = {
-  loaded                      : false,
-  pixelRatio                  : 1,
-  isWebGLSupported            : false,
-  isCanvasSupported           : false,
-  isTouchEnabled              : null,
-  maxTextureWidth             : 0,
-  mouseWheelEvent             : null,
-  fullscreenEvent             : null,
+  loaded          : false,
+  pixelRatio      : 1,
+  isWebGLSupported: false,
+  isTouchEnabled  : null,
+  maxTextureWidth : 0,
+  maxCanvasWidth  : 0,
+  mouseWheelEvent : null,
+  fullscreenEvent : null,
 };
 
 /**
@@ -29,26 +28,18 @@ export const SYSTEM = {
  */
 SYSTEM.load = () => {
   if (!SYSTEM.loaded) {
+    const ctx = getWebGLCtx();
+
     SYSTEM.loaded = true;
     SYSTEM.pixelRatio = window.devicePixelRatio || 1;
-    SYSTEM.isWebGLSupported = isWebGLSupported();
-    SYSTEM.isCanvasSupported = isCanvasSupported();
+    SYSTEM.isWebGLSupported = ctx != null;
     SYSTEM.isTouchEnabled = isTouchEnabled();
-    SYSTEM.maxTextureWidth = SYSTEM.isWebGLSupported ? getMaxTextureWidth() : 4096;
+    SYSTEM.maxTextureWidth = getMaxTextureWidth(ctx);
+    SYSTEM.maxCanvasWidth = getMaxCanvasWidth(SYSTEM.maxTextureWidth);
     SYSTEM.mouseWheelEvent = getMouseWheelEvent();
     SYSTEM.fullscreenEvent = getFullscreenEvent();
   }
 };
-
-/**
- * @summary Detects if canvas is supported
- * @returns {boolean}
- * @private
- */
-function isCanvasSupported() {
-  const canvas = document.createElement('canvas');
-  return !!(canvas.getContext && canvas.getContext('2d'));
-}
 
 /**
  * @summary Tries to return a canvas webgl context
@@ -81,15 +72,6 @@ function getWebGLCtx() {
 }
 
 /**
- * @summary Detects if WebGL is supported
- * @returns {boolean}
- * @private
- */
-function isWebGLSupported() {
-  return 'WebGLRenderingContext' in window && getWebGLCtx() !== null;
-}
-
-/**
  * @summary Detects if the user is using a touch screen
  * @returns {Promise<boolean>}
  * @private
@@ -119,14 +101,46 @@ function isTouchEnabled() {
  * @returns {number}
  * @private
  */
-function getMaxTextureWidth() {
-  const ctx = getWebGLCtx();
+function getMaxTextureWidth(ctx) {
   if (ctx !== null) {
     return ctx.getParameter(ctx.MAX_TEXTURE_SIZE);
   }
   else {
     return 0;
   }
+}
+
+/**
+ * @summary Gets max canvas width supported by the browser.
+ * We only test powers of 2 and height = width / 2 because that's what we need to generate WebGL textures
+ * @param maxWidth
+ * @return {number}
+ * @private
+ */
+function getMaxCanvasWidth(maxWidth) {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = maxWidth;
+  canvas.height = maxWidth / 2;
+
+  while (canvas.width > 1024) {
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, 1, 1);
+
+    try {
+      if (ctx.getImageData(0, 0, 1, 1).data[0] === 255) {
+        return canvas.width;
+      }
+    }
+    catch (e) {
+      // continue
+    }
+
+    canvas.width /= 2;
+    canvas.height /= 2;
+  }
+
+  return 0;
 }
 
 /**

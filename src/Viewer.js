@@ -48,14 +48,13 @@ export class Viewer extends EventEmitter {
 
     SYSTEM.load();
 
-    // must support canvas
-    if (!SYSTEM.isCanvasSupported) {
-      throw new PSVError('Canvas is not supported.');
-    }
-
     // must support WebGL
     if (!SYSTEM.isWebGLSupported) {
       throw new PSVError('WebGL is not supported.');
+    }
+
+    if (SYSTEM.maxCanvasWidth === 0 || SYSTEM.maxTextureWidth === 0) {
+      throw new PSVError('Unable to detect system capabilities');
     }
 
     /**
