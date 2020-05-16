@@ -105,12 +105,11 @@
 
 <script>
   const PSV = new PhotoSphereViewer.Viewer({
-    container     : 'photosphere',
-    panorama      : 'Bryce-Canyon-National-Park-Mark-Doliner.jpg',
-    caption       : 'Bryce Canyon National Park <b>&copy; Mark Doliner</b>',
-    loadingImg    : 'assets/photosphere-logo.gif',
-    defaultZoomLvl: 50,
-    navbar        : [
+    container : 'photosphere',
+    panorama  : 'sphere.jpg',
+    caption   : 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+    loadingImg: 'assets/photosphere-logo.gif',
+    navbar    : [
       'autorotate', 'zoom', 'download', 'markers', 'markersList',
       {
         content  : '💬',
@@ -122,7 +121,7 @@
       },
       'caption', 'gyroscope', 'stereo', 'fullscreen',
     ],
-    plugins       : [
+    plugins   : [
       PhotoSphereViewer.GyroscopePlugin,
       PhotoSphereViewer.StereoPlugin,
       [PhotoSphereViewer.MarkersPlugin, {
@@ -154,8 +153,8 @@
               position: 'bottom right',
             },
             content  : document.getElementById('pin-content').innerHTML,
-            latitude : 0,
-            longitude: 0.20,
+            latitude : 0.32,
+            longitude: 0.11,
             image    : 'assets/pin-blue.png',
             width    : 32,
             height   : 32,
@@ -167,43 +166,60 @@
             svgStyle  : {
               fill: 'rgba(0, 190, 255, 0.1)',
             },
-            polygonRad: (function () {
-              var points = [];
-
-              for (var i = 0; i < Math.PI * 2; i += Math.PI / 8) {
-                points.push(i);
-                points.push(Math.PI / 8);
-              }
-
-              return points;
-            }()),
+            polygonRad: [
+              [6.0848, 0.1806],
+              [0.1022, 0.3166],
+              [0.6333, 0.3836],
+              [1.2396, 0.5112],
+              [1.7922, 0.5544],
+              [2.7635, 0.7853],
+              [3.3688, 0.4723],
+              [3.6902, 0.6161],
+              [4.2981, 0.6942],
+              [4.6605, 0.6618],
+              [5.4694, 0.1880],
+              [5.7125, 0.1302],
+            ],
           });
 
           a.push({
-            id       : 'polygon',
-            content  : 'This mountain is so great it has dots on it!',
-            polygonPx: [3184, 794, 3268, 841, 3367, 1194, 3327, 1307, 3065, 1221, 3097, 847],
-            svgStyle : {
+            id        : 'polygon',
+            content   : 'This mountain is so great it has dots on it!',
+            polylinePx: [
+              [2941, 1413],
+              [3042, 1402],
+              [3222, 1419],
+              [3433, 1463],
+              [3480, 1505],
+              [3438, 1538],
+              [3241, 1543],
+              [3041, 1555],
+              [2854, 1559],
+              [2739, 1516],
+              [2775, 1469],
+              [2941, 1413],
+            ],
+            svgStyle  : {
               fill       : 'url(#points)', //'rgba(255,0,0,0.3)',
               stroke     : 'rgba(255, 0, 50, 0.8)',
               strokeWidth: '2px',
             },
-            tooltip  : {
+            tooltip   : {
               content : 'This is a mountain',
               position: 'right bottom',
             },
           });
 
           a.push({
-            id         : 'polyline',
-            polylineRad: [5.924, 0.064, 5.859, -0.061, 5.710, -0.132, 5.410, -0.287, 4.329, -0.490, 3.838, -0.370, 3.725, -0.241],
-            svgStyle   : {
-              stroke        : 'rgba(80, 100, 50, 0.8)',
+            id        : 'polyline',
+            polylinePx: [2478, 1635, 2184, 1747, 1674, 1953, 1166, 1852, 709, 1669, 301, 1519, 94, 1399, 34, 1356],
+            svgStyle  : {
+              stroke        : 'rgba(80, 150, 50, 0.8)',
               strokeLinecap : 'round',
               strokeLinejoin: 'round',
-              strokeWidth   : '10px',
+              strokeWidth   : '20px',
             },
-            tooltip    : 'This is a track',
+            tooltip   : 'This is a track',
           });
 
           a.push({

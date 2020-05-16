@@ -45,14 +45,14 @@
   var panos = [
     {
       url : {
-        left  : 'suntemple-cubemap/left.jpg',
-        front : 'suntemple-cubemap/front.jpg',
-        right : 'suntemple-cubemap/right.jpg',
-        back  : 'suntemple-cubemap/back.jpg',
-        top   : 'suntemple-cubemap/top.jpg',
-        bottom: 'suntemple-cubemap/bottom.jpg'
+        left  : 'cubemap/px.jpg',
+        front : 'cubemap/nz.jpg',
+        right : 'cubemap/nx.jpg',
+        back  : 'cubemap/pz.jpg',
+        top   : 'cubemap/py.jpg',
+        bottom: 'cubemap/ny.jpg'
       },
-      desc: 'Sun Temple (Unreal 4)'
+      desc: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
     },
     {
       url : [
@@ -63,8 +63,8 @@
         'test-cubemap/5.png',
         'test-cubemap/6.png'
       ],
-      desc: 'Test cubemap'
-    }
+      desc: 'Test cubemap',
+    },
   ];
 
   var PSV = new PhotoSphereViewer.Viewer({
@@ -85,7 +85,7 @@
             i = 1 - i;
             markers.clearMarkers();
 
-            PSV.setPanorama(panos[i].url, { zoom: 50 })
+            PSV.setPanorama(panos[i].url, { longitude: 0, latitude: 0, zoom: 50 })
               .then(function () {
                 PSV.navbar.setCaption(panos[i].desc);
               }, function () {});
@@ -130,12 +130,28 @@
           }
 
           a.push({
-            id        : 'statue',
-            tooltip   : 'Angel',
-            svgStyle  : {
+            id         : 'polygon',
+            svgStyle   : {
               fill: 'rgba(255, 0, 111, 0.26)',
             },
-            polygonRad: [5.4196, 0.6801, 5.4644, 0.7610, 5.5004, 0.9194, 5.6522, 0.9363, 5.6923, 0.9757, 5.8132, 0.9662, 5.8625, 0.9315, 5.8905, 0.9991, 6.0215, 1.0558, 0.0822, 0.9023, 6.2390, 0.8732, 6.0377, 0.8648, 5.8348, 0.8780, 5.7862, 0.8678, 5.8175, 0.8614, 5.8431, 0.8128, 5.8354, 0.7028, 5.8620, 0.6204, 5.8815, 0.4776, 5.9339, 0.3234, 5.7591, 0.3510, 5.5885, 0.3273, 5.6381, 0.4327, 5.6353, 0.5043, 5.5959, 0.6228, 5.5877, 0.7108, 5.5952, 0.7519, 5.5775, 0.7502, 5.5021, 0.7012],
+            polylineRad: [
+              [6.2208, 0.0906],
+              [0.0443, 0.1028],
+              [0.2322, 0.0849],
+              [0.4531, 0.0387],
+              [0.5022, -0.0056],
+              [0.4587, -0.0396],
+              [0.2520, -0.0453],
+              [0.0434, -0.0575],
+              [6.1302, -0.0623],
+              [6.0094, -0.0169],
+              [6.0471, 0.0320],
+              [6.2208, 0.0906],
+            ],
+            tooltip    : {
+              content : 'This is a mountain',
+              position: 'right bottom',
+            },
           });
 
           return a;

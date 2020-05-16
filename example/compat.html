@@ -32,16 +32,14 @@
 <script src="../dist/viewer-compat.js"></script>
 
 <script>
-  const PSV = new PhotoSphereViewer.ViewerCompat({
-    container      : 'photosphere',
-    panorama       : 'Bryce-Canyon-National-Park-Mark-Doliner.jpg',
-    caption        : 'Bryce Canyon National Park <b>&copy; Mark Doliner</b>',
-    loading_img    : 'assets/photosphere-logo.gif',
-    longitude_range: [-7 * Math.PI / 8, 7 * Math.PI / 8],
-    latitude_range : [-3 * Math.PI / 4, 3 * Math.PI / 4],
-    time_anim      : false,
-    anim_speed     : '-2rpm',
-    default_fov    : 50,
+  var PSV = new PhotoSphereViewer.ViewerCompat({
+    container  : 'photosphere',
+    panorama   : 'sphere.jpg',
+    caption    : 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+    loading_img: 'assets/photosphere-logo.gif',
+    time_anim  : false,
+    anim_speed : '-2rpm',
+    default_fov: 50,
   });
 </script>
 </body>

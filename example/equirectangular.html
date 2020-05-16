@@ -42,36 +42,24 @@
 <script>
   var panos = [
     {
-      url   : 'Bryce-Canyon-National-Park-Mark-Doliner.jpg',
-      desc  : 'Bryce Canyon National Park <b>&copy; Mark Doliner</b>',
-      target: {
-        longitude: 3.848,
-        latitude : -0.244,
-        zoom     : 50
-      }
-    }, {
-      url   : 'Bryce-Canyon-By-Jess-Beauchemin.jpg',
-      desc  : 'Bryce Canyon National Park <b>&copy; Jess Beauchemin</b>',
-      target: {
-        longitude: 3.715,
-        latitude : 0.574,
-        zoom     : 50
-      }
-    }
+      url : 'sphere.jpg',
+      desc: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+    },
+    {
+      url : 'test-sphere.jpg',
+      desc: 'Test sphere',
+    },
   ];
 
-  const PSV = new PhotoSphereViewer.Viewer({
-    container      : 'photosphere',
-    panorama       : panos[0].url,
-    caption        : panos[0].desc,
-    loadingImg     : 'assets/photosphere-logo.gif',
-    autorotateSpeed: '-2rpm',
-    defaultZoomLvl : 50,
-    fisheye        : false,
-    moveSpeed      : 1.1,
-//    touchmoveTwoFingers: true,
-//    captureCursor: true,
-    navbar         : [
+  var PSV = new PhotoSphereViewer.Viewer({
+    container          : 'photosphere',
+    panorama           : panos[0].url,
+    caption            : panos[0].desc,
+    loadingImg         : 'assets/photosphere-logo.gif',
+    // fisheye            : true,
+    // touchmoveTwoFingers: true,
+    // captureCursor      : true,
+    navbar             : [
       'autorotate', 'zoom', 'download',
       {
         title    : 'Change image',
@@ -83,7 +71,7 @@
           return function () {
             i = 1 - i;
 
-            PSV.setPanorama(panos[i].url, panos[i].target)
+            PSV.setPanorama(panos[i].url, { longitude: 0, latitude: 0, zoom: 50 })
               .then(function () {
                 PSV.navbar.setCaption(panos[i].desc);
               }, function () {});
@@ -99,13 +87,13 @@
             longitude: (Math.random() - 0.5) * 3 / 2 * Math.PI,
             latitude : (Math.random() - 0.5) * 3 / 4 * Math.PI,
             zoom     : Math.random() * 60 + 20,
-            speed: 1500,
+            speed    : 1500,
           });
         },
       },
       'caption', 'gyroscope', 'stereo', 'fullscreen',
     ],
-    plugins        : [
+    plugins            : [
       PhotoSphereViewer.GyroscopePlugin,
       PhotoSphereViewer.StereoPlugin,
     ]

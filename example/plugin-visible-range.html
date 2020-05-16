@@ -46,25 +46,24 @@
   };
 
   const viewer = new PhotoSphereViewer.Viewer({
-    container     : 'photosphere',
-    panorama      : 'Bryce-Canyon-National-Park-Mark-Doliner.jpg',
-    caption       : 'Bryce Canyon National Park <b>&copy; Mark Doliner</b>',
-    loadingImg    : 'assets/photosphere-logo.gif',
-    defaultZoomLvl: 50,
-    navbar: [
+    container : 'photosphere',
+    panorama  : 'sphere.jpg',
+    caption   : 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+    loadingImg: 'assets/photosphere-logo.gif',
+    navbar    : [
       'autorotate',
       {
-        content: 'Clear range',
+        content  : 'Clear range',
         className: 'custom-button',
-        onClick: function() {
+        onClick  : function () {
           visibleRange.setLongitudeRange(null);
           visibleRange.setLatitudeRange(null);
         },
       },
       {
-        content: 'Set range',
+        content  : 'Set range',
         className: 'custom-button',
-        onClick: function() {
+        onClick  : function () {
           visibleRange.setLongitudeRange(ranges.longitudeRange);
           visibleRange.setLatitudeRange(ranges.latitudeRange);
         },
@@ -72,7 +71,7 @@
       'caption',
       'fullscreen',
     ],
-    plugins       : [
+    plugins   : [
       [PhotoSphereViewer.VisibleRangePlugin, ranges],
     ],
   });

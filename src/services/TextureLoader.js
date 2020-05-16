@@ -37,7 +37,7 @@ export class TextureLoader extends AbstractService {
   /**
    * @summary Loads the panorama texture(s)
    * @param {string|string[]|PSV.Cubemap} panorama
-   * @param {PSV.PanoData | function<Image, PSV.PanoData>} [newPanoData]
+   * @param {PSV.PanoData | PSV.PanoDataProvider} [newPanoData]
    * @returns {Promise.<PSV.TextureData>}
    * @throws {PSV.PSVError} when the image cannot be loaded
    * @package
@@ -173,7 +173,7 @@ export class TextureLoader extends AbstractService {
   /**
    * @summary Loads the sphere texture
    * @param {string} panorama
-   * @param {PSV.PanoData | function<Image, PSV.PanoData>} [newPanoData]
+   * @param {PSV.PanoData | PSV.PanoDataProvider} [newPanoData]
    * @returns {Promise.<PSV.TextureData>}
    * @throws {PSV.PSVError} when the image cannot be loaded
    * @private
