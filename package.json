@@ -87,7 +87,7 @@
     "doc:clean": "rm -rf public/*",
     "doc:vuepress": "vuepress build docs",
     "doc:jsdoc": "jsdoc --configure .jsdoc.json --destination public/api src",
-    "doc:assets": "cpx \"example/assets/*\" public/assets && cpx example/sphere.jpg public/assets && cpx \"example/cubemap/*\" public/assets/cubemap",
+    "doc:assets": "cpx \"example/assets/*\" public/assets && cpx example/sphere.jpg public/assets && cpx example/sphere_small.jpg public/assets && cpx \"example/cubemap/*\" public/assets/cubemap",
     "test": "npm-run-all --parallel test:*",
     "test:mocha": "mocha --require @babel/register --recursive \"src/**/*.spec.js\"",
     "test:eslint": "eslint src --ignore-path .gitignore --ignore-pattern \"*.spec.js\"",

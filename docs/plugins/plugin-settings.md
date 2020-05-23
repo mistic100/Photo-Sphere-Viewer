@@ -24,7 +24,9 @@ const viewer = new PhotoSphereViewer.Viewer({
 
 ## Example
 
-TODO
+The following example manually adds two settings.
+
+<iframe style="width: 100%; height: 500px;" src="//jsfiddle.net/mistic100/54qx9yLt/embedded/result,js/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
 
 
 ## Adding a setting
