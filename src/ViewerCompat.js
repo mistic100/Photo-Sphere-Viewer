@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { DEFAULTS, utils, Viewer } from 'photo-sphere-viewer';
-import GyroscopePlugin from 'photo-sphere-viewer/plugins/gyroscope';
-import StereoPlugin from 'photo-sphere-viewer/plugins/stereo';
-import MarkersPlugin from 'photo-sphere-viewer/plugins/markers';
-import VisibleRangePlugin from 'photo-sphere-viewer/plugins/visible-range';
+import GyroscopePlugin from 'photo-sphere-viewer/dist/plugins/gyroscope';
+import StereoPlugin from 'photo-sphere-viewer/dist/plugins/stereo';
+import MarkersPlugin from 'photo-sphere-viewer/dist/plugins/markers';
+import VisibleRangePlugin from 'photo-sphere-viewer/dist/plugins/visible-range';
 
 /**
  * @private

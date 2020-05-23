@@ -1,5 +1,5 @@
 import { AbstractPlugin, CONSTANTS, DEFAULTS, PSVError } from 'photo-sphere-viewer';
-import SettingsPlugin from 'photo-sphere-viewer/plugins/settings';
+import SettingsPlugin from 'photo-sphere-viewer/dist/plugins/settings';
 import { deepEqual } from './utils';
 
 

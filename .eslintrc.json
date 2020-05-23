@@ -102,7 +102,7 @@
       {
         "ignore": [
           "^photo-sphere-viewer$",
-          "^photo-sphere-viewer\/plugins\/([a-z-]+)$"
+          "^photo-sphere-viewer\/dist\/plugins\/([a-z-]+)$"
         ]
       }
     ]

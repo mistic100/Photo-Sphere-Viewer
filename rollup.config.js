@@ -80,7 +80,7 @@ const secondaryConfig = {
       ...baseConfig.output.globals,
       'photo-sphere-viewer': 'PhotoSphereViewer',
       ...plugins.reduce((globals, p) => {
-        globals[`photo-sphere-viewer/plugins/${p}`] = `PhotoSphereViewer.${camelize(p)}Plugin`;
+        globals[`photo-sphere-viewer/dist/plugins/${p}`] = `PhotoSphereViewer.${camelize(p)}Plugin`;
         return globals;
       }, {}),
     },
@@ -88,7 +88,7 @@ const secondaryConfig = {
   external: [
     ...baseConfig.external,
     'photo-sphere-viewer',
-    ...plugins.map(p => `photo-sphere-viewer/plugins/${p}`),
+    ...plugins.map(p => `photo-sphere-viewer/dist/plugins/${p}`),
   ],
 
   plugins: () => [
@@ -96,7 +96,7 @@ const secondaryConfig = {
     alias({
       'photo-sphere-viewer': './src',
       ...plugins.reduce((alias, p) => {
-        alias[`photo-sphere-viewer/plugins/${p}`] = `./src/plugins/${p}`;
+        alias[`photo-sphere-viewer/dist/plugins/${p}`] = `./src/plugins/${p}`;
         return alias;
       }, {}),
     }),
