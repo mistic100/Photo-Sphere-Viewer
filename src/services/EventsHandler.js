@@ -326,11 +326,11 @@ export class EventsHandler extends AbstractService {
       }
       else if (evt.touches.length === 0) {
         this.__stopMove(evt.changedTouches[0]);
-
-        if (this.config.touchmoveTwoFingers) {
-          this.psv.overlay.hide(IDS.TWO_FINGERS);
-        }
       }
+    }
+
+    if (this.config.touchmoveTwoFingers) {
+      this.psv.overlay.hide(IDS.TWO_FINGERS);
     }
   }
 
