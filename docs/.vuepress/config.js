@@ -15,10 +15,10 @@ module.exports = {
     editLinks   : true,
     smoothScroll: true,
     sidebarDepth: 3,
-    // algolia: {
-    //   apiKey: '<API_KEY>',
-    //   indexName: '<INDEX_NAME>'
-    // },
+    algolia     : {
+      apiKey   : 'a27daf8784ab1c35fdbdf1dee321428c',
+      indexName: 'photo-sphere-viewer',
+    },
     nav         : [
       { text: 'Guide', link: '/guide/' },
       { text: 'Plugins', link: '/plugins/' },
