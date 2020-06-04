@@ -32,7 +32,7 @@ export const LONGTOUCH_DELAY = 500;
  * @type {number}
  * @constant
  */
-export const TWOFINGERSOVERLAY_DELAY = 200;
+export const TWOFINGERSOVERLAY_DELAY = 100;
 
 /**
  * @summary Time size of the mouse position history used to compute inertia

@@ -349,14 +349,16 @@ export class EventsHandler extends AbstractService {
     }
 
     if (evt.touches.length === 1) {
-      if (this.config.touchmoveTwoFingers && !this.prop.twofingersTimeout) {
-        this.prop.twofingersTimeout = setTimeout(() => {
-          this.psv.overlay.show({
-            id: IDS.TWO_FINGERS,
-            image: gestureIcon,
-            text: this.config.lang.twoFingers[0],
-          });
-        }, TWOFINGERSOVERLAY_DELAY);
+      if (this.config.touchmoveTwoFingers) {
+        if (!this.prop.twofingersTimeout) {
+          this.prop.twofingersTimeout = setTimeout(() => {
+            this.psv.overlay.show({
+              id: IDS.TWO_FINGERS,
+              image: gestureIcon,
+              text: this.config.lang.twoFingers[0],
+            });
+          }, TWOFINGERSOVERLAY_DELAY);
+        }
       }
       else {
         evt.preventDefault();
