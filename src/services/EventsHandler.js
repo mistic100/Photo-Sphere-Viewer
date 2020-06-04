@@ -54,6 +54,7 @@ export class EventsHandler extends AbstractService {
       dblclickData    : null,
       dblclickTimeout : null,
       longtouchTimeout: null,
+      twofingersTimeout: null,
     };
 
     /**
@@ -330,6 +331,9 @@ export class EventsHandler extends AbstractService {
     }
 
     if (this.config.touchmoveTwoFingers) {
+      if (this.twofingersTimeout) {
+        clearTimeout(this.twofingersTimeout);
+      }
       this.psv.overlay.hide(IDS.TWO_FINGERS);
     }
   }
@@ -346,11 +350,13 @@ export class EventsHandler extends AbstractService {
 
     if (evt.touches.length === 1) {
       if (this.config.touchmoveTwoFingers) {
-        this.psv.overlay.show({
-          id   : IDS.TWO_FINGERS,
-          image: gestureIcon,
-          text : this.config.lang.twoFingers[0],
-        });
+        this.twofingersTimeout = setTimeout(() => {
+          this.psv.overlay.show({
+            id   : IDS.TWO_FINGERS,
+            image: gestureIcon,
+            text : this.config.lang.twoFingers[0],
+          });
+        }, 200);
       }
       else {
         evt.preventDefault();
@@ -360,6 +366,9 @@ export class EventsHandler extends AbstractService {
     else if (evt.touches.length === 2) {
       evt.preventDefault();
       this.__moveZoom(evt);
+      if (this.twofingersTimeout) {
+        clearTimeout(this.twofingersTimeout);
+      }
     }
   }
 
