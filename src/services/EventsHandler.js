@@ -385,6 +385,10 @@ export class EventsHandler extends AbstractService {
     }
   }
 
+  /**
+   * @summary Cancel the two fingers overlay timer if any
+   * @private
+   */
   __cancelTwoFingersOverlay() {
     if (this.prop.twofingersTimeout) {
       clearTimeout(this.prop.twofingersTimeout);
