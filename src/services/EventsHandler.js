@@ -6,6 +6,7 @@ import {
   IDS,
   INERTIA_WINDOW,
   LONGTOUCH_DELAY,
+  TWOFINGERSOVERLAY_DELAY,
   MOVE_THRESHOLD
 } from '../data/constants';
 import { SYSTEM } from '../data/system';
@@ -54,6 +55,7 @@ export class EventsHandler extends AbstractService {
       dblclickData    : null,
       dblclickTimeout : null,
       longtouchTimeout: null,
+      twofingersTimeout: null,
     };
 
     /**
@@ -108,6 +110,7 @@ export class EventsHandler extends AbstractService {
 
     clearTimeout(this.state.dblclickTimeout);
     clearTimeout(this.state.longtouchTimeout);
+    clearTimeout(this.state.twofingersTimeout);
 
     delete this.state;
 
@@ -330,6 +333,7 @@ export class EventsHandler extends AbstractService {
     }
 
     if (this.config.touchmoveTwoFingers) {
+      this.__cancelTwoFingersOverlay();
       this.psv.overlay.hide(IDS.TWO_FINGERS);
     }
   }
@@ -346,11 +350,15 @@ export class EventsHandler extends AbstractService {
 
     if (evt.touches.length === 1) {
       if (this.config.touchmoveTwoFingers) {
-        this.psv.overlay.show({
-          id   : IDS.TWO_FINGERS,
-          image: gestureIcon,
-          text : this.config.lang.twoFingers[0],
-        });
+        if (!this.prop.twofingersTimeout) {
+          this.prop.twofingersTimeout = setTimeout(() => {
+            this.psv.overlay.show({
+              id: IDS.TWO_FINGERS,
+              image: gestureIcon,
+              text: this.config.lang.twoFingers[0],
+            });
+          }, TWOFINGERSOVERLAY_DELAY);
+        }
       }
       else {
         evt.preventDefault();
@@ -360,6 +368,9 @@ export class EventsHandler extends AbstractService {
     else if (evt.touches.length === 2) {
       evt.preventDefault();
       this.__moveZoom(evt);
+      if (this.config.touchmoveTwoFingers) {
+        this.__cancelTwoFingersOverlay();
+      }
     }
   }
 
@@ -371,6 +382,17 @@ export class EventsHandler extends AbstractService {
     if (this.prop.longtouchTimeout) {
       clearTimeout(this.prop.longtouchTimeout);
       this.prop.longtouchTimeout = null;
+    }
+  }
+
+  /**
+   * @summary Cancel the two fingers overlay timer if any
+   * @private
+   */
+  __cancelTwoFingersOverlay() {
+    if (this.prop.twofingersTimeout) {
+      clearTimeout(this.prop.twofingersTimeout);
+      this.prop.twofingersTimeout = null;
     }
   }
 

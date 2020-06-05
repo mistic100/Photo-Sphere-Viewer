@@ -27,6 +27,14 @@ export const DBLCLICK_DELAY = 300;
 export const LONGTOUCH_DELAY = 500;
 
 /**
+ * @summary Delay in milliseconds to for the two fingers overlay to appear
+ * @memberOf PSV.constants
+ * @type {number}
+ * @constant
+ */
+export const TWOFINGERSOVERLAY_DELAY = 100;
+
+/**
  * @summary Time size of the mouse position history used to compute inertia
  * @memberOf PSV.constants
  * @type {number}
