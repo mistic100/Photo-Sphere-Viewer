@@ -41,7 +41,7 @@ const viewer = new PhotoSphereViewer.Viewer({
 
 The following example provides two resolutions for the panorama, "small" is loaded by default.
 
-<iframe style="width: 100%; height: 500px;" src="//jsfiddle.net/mistic100/1cmn20zb/embedded/result,js/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
+<iframe style="width: 100%; height: 500px;" src="//jsfiddle.net/mistic100/1cmn20zb/embedded/result,js/dark" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
 
 
 ## Configuration

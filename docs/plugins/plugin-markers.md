@@ -52,7 +52,7 @@ markersPlugin.on('select-marker', (e, marker) => {
 
 The following example contains all types of markers. Click anywhere on the panorama to add a red marker, right-click to change it's color and double-click to remove it.
 
-<iframe style="width: 100%; height: 500px;" src="//jsfiddle.net/mistic100/kdpqLey2/embedded/result,js/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
+<iframe style="width: 100%; height: 500px;" src="//jsfiddle.net/mistic100/kdpqLey2/embedded/result,js/dark" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
 
 
 ## Markers options
