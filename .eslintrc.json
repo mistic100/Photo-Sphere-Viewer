@@ -13,6 +13,7 @@
     "key-spacing": "off",
     "no-bitwise": "off",
     "no-else-return": "off",
+    "no-multiple-empty-lines": "off",
     "no-plusplus": "off",
     "no-restricted-properties": "off",
     "no-underscore-dangle": "off",
