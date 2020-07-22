@@ -1,11 +1,11 @@
 import { AbstractPlugin, CONSTANTS, DEFAULTS, registerButton, utils } from 'photo-sphere-viewer';
 import * as THREE from 'three';
-import 'three/examples/js/controls/DeviceOrientationControls';
+import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls';
 import { GyroscopeButton } from './GyroscopeButton';
 
 /**
  * @typedef {Object} external:THREE.DeviceOrientationControls
- * @summary {@link https://github.com/mrdoob/three.js/blob/dev/examples/js/controls/DeviceOrientationControls.js}
+ * @summary {@link https://github.com/mrdoob/three.js/blob/dev/examples/jsm/controls/DeviceOrientationControls.js}
  */
 
 
@@ -179,12 +179,12 @@ export default class GyroscopePlugin extends AbstractPlugin {
   }
 
   /**
-   * @summary Attaches the {@link DeviceOrientationControls} to the camera
+   * @summary Attaches the {@link extenral:THREE.DeviceOrientationControls} to the camera
    * @private
    */
   __configure() {
     if (!this.controls) {
-      this.controls = new THREE.DeviceOrientationControls(this.psv.renderer.camera);
+      this.controls = new DeviceOrientationControls(this.psv.renderer.camera);
     }
     else {
       this.controls.connect();

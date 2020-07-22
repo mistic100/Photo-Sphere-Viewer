@@ -81,7 +81,7 @@
   },
   "scripts": {
     "compile": "npm-run-all compile:*",
-    "compile:prepare": "cpx \"node_modules/three/examples/js/**/*\" three-examples/",
+    "compile:prepare": "cpx \"node_modules/three/examples/jsm/**/*\" three-examples/",
     "compile:rollup": "rollup --config rollup.config.js",
     "doc": "npm-run-all doc:*",
     "doc:clean": "rm -rf public/*",

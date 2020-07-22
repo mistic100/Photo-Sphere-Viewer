@@ -1,14 +1,13 @@
 import { AbstractPlugin, CONSTANTS, DEFAULTS, PSVError, registerButton, utils } from 'photo-sphere-viewer';
 import GyroscopePlugin from 'photo-sphere-viewer/dist/plugins/gyroscope';
-import * as THREE from 'three';
-import 'three/examples/js/effects/StereoEffect';
+import { StereoEffect } from 'three/examples/jsm/effects/StereoEffect';
 import mobileRotateIcon from './mobile-rotate.svg';
 import { StereoButton } from './StereoButton';
 
 
 /**
  * @typedef {Object} external:THREE.StereoEffect
- * @summary {@link https://github.com/mrdoob/three.js/blob/dev/examples/js/effects/StereoEffect.js}
+ * @summary {@link https://github.com/mrdoob/three.js/blob/dev/examples/jsm/effects/StereoEffect.js}
  */
 
 /**
@@ -148,7 +147,7 @@ export default class StereoPlugin extends AbstractPlugin {
     return this.gyroscope.start().then(() => {
       // switch renderer
       this.prop.renderer = this.psv.renderer.renderer;
-      this.psv.renderer.renderer = new THREE.StereoEffect(this.psv.renderer.renderer);
+      this.psv.renderer.renderer = new StereoEffect(this.psv.renderer.renderer);
 
       this.psv.needsUpdate();
 

@@ -107,9 +107,11 @@ const secondaryConfig = {
       },
     }),
     replace({
-      'import \'three/examples/js': 'import \'../../../three-examples',
-      delimiters                 : ['', ''],
-    })
+      // configuration to embed the examples files in PSV source
+      delimiters                               : ['', ''],
+      [`from 'three/examples/jsm`]             : `from '../../../three-examples`,
+      [`from "../../../build/three.module.js"`]: `from "three"`,
+    }),
   ],
 };
 
