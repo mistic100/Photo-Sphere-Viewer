@@ -144,7 +144,7 @@ export class EventsHandler extends AbstractService {
         case 'touchstart': this.__onTouchStart(evt); break;
         case 'mouseleave': this.__onMouseLeave(evt); break;
         case 'mousemove':  this.__onMouseMove(evt); break;
-        case 'touchmove':   this.__onTouchMove(evt); break;
+        case 'touchmove':  this.__onTouchMove(evt); break;
         case SYSTEM.mouseWheelEvent: this.__onMouseWheel(evt); break;
         // @formatter:on
       }
@@ -321,15 +321,13 @@ export class EventsHandler extends AbstractService {
       return;
     }
 
-    if (this.prop.longtouchTimeout) {
-      this.__cancelLongTouch();
+    this.__cancelLongTouch();
 
-      if (evt.touches.length === 1) {
-        this.__stopMoveZoom();
-      }
-      else if (evt.touches.length === 0) {
-        this.__stopMove(evt.changedTouches[0]);
-      }
+    if (evt.touches.length === 1) {
+      this.__stopMoveZoom();
+    }
+    else if (evt.touches.length === 0) {
+      this.__stopMove(evt.changedTouches[0]);
     }
 
     if (this.config.touchmoveTwoFingers) {
@@ -655,7 +653,7 @@ export class EventsHandler extends AbstractService {
   }
 
   /**
-   * @summary Perfoms combines move and zoom
+   * @summary Perfoms combined move and zoom
    * @param {TouchEvent} evt
    * @private
    */
