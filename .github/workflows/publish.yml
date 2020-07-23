@@ -1,0 +1,23 @@
+name: publish
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: publish
+        uses: pascalgn/npm-publish-action@master
+        with:
+          tag_name: "%s"
+          tag_message: "%s"
+          commit_pattern: "^Release (.+)"
+          workspace: "."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
