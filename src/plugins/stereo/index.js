@@ -75,11 +75,13 @@ export default class StereoPlugin extends AbstractPlugin {
      * @property {Promise<boolean>} isSupported - indicates of the gyroscope API is available
      * @property {external:THREE.WebGLRenderer} renderer - original renderer
      * @property {external:NoSleep} noSleep
+     * @property {WakeLockSentinel} wakeLock
      */
     this.prop = {
       isSupported: this.gyroscope.prop.isSupported,
       renderer   : null,
       noSleep    : null,
+      wakeLock   : null,
     };
 
     /**
@@ -100,6 +102,10 @@ export default class StereoPlugin extends AbstractPlugin {
     this.psv.off(CONSTANTS.EVENTS.CLICK, this);
 
     this.stop();
+
+    if (this.prop.noSleep) {
+      delete this.prop.noSleep;
+    }
 
     super.destroy();
   }
@@ -214,29 +220,38 @@ export default class StereoPlugin extends AbstractPlugin {
   }
 
   /**
-   * @summary Enables NoSleep.js
-   * TODO WakeLock API when available https://web.dev/wakelock
+   * @summary Enables WakeLock or NoSleep.js
    * @private
    */
   __startNoSleep() {
-    if (!('NoSleep' in window)) {
+    if ('wakeLock' in navigator) {
+      navigator.wakeLock.request('screen')
+        .then((wakeLock) => {
+          this.prop.wakeLock = wakeLock;
+        })
+        .catch(() => utils.logWarn('Cannot acquire WakeLock'));
+    }
+    else if ('NoSleep' in window) {
+      if (!this.prop.noSleep) {
+        this.prop.noSleep = new window.NoSleep();
+      }
+      this.prop.noSleep.enable();
+    }
+    else {
       utils.logWarn('NoSleep is not available');
-      return;
     }
-
-    if (!this.prop.noSleep) {
-      this.prop.noSleep = new window.NoSleep();
-    }
-
-    this.prop.noSleep.enable();
   }
 
   /**
-   * @summary Disables NoSleep.js
+   * @summary Disables WakeLock or NoSleep.js
    * @private
    */
   __stopNoSleep() {
-    if (this.prop.noSleep) {
+    if (this.prop.wakeLock) {
+      this.prop.wakeLock.release();
+      this.prop.wakeLock = null;
+    }
+    else if (this.prop.noSleep) {
       this.prop.noSleep.disable();
     }
   }

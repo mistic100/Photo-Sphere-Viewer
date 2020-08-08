@@ -11,7 +11,7 @@ This plugin is available in the core `photo-sphere-viewer` package in `dist/plug
 
 Once enabled the plugin will add a new "Stereo view" button only shown when the gyroscope API is available.
 
-It is recommended to install [NoSleep.js](http://richtr.github.io/NoSleep.js) to prevent display sleep when using this feature.
+The plugin uses the WakeLock API to prevent the display from dimming or shuting down. As of August 2020 this API is only available on Chrome and Edge, for others browsers you can install [NoSleep.js](http://richtr.github.io/NoSleep.js) (no further configuration is needed, just make it available in your page).
 
 ```js
 const viewer = new PhotoSphereViewer.Viewer({
