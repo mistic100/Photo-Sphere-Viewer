@@ -22,6 +22,12 @@ const viewer = new PhotoSphereViewer.Viewer({
 
 ## Configuration
 
+#### `absolutePosition`
+- type: `boolean`
+- default: `false`
+
+By default the camera will keep its current horizontal position when the gyroscope is enabled. Turn this option `true` to enable absolute positionning and only use the device orientation.
+
 #### `lang`
 - type: `object`
 - default:

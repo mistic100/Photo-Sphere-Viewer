@@ -8,6 +8,11 @@ import { GyroscopeButton } from './GyroscopeButton';
  * @summary {@link https://github.com/mrdoob/three.js/blob/dev/examples/jsm/controls/DeviceOrientationControls.js}
  */
 
+/**
+ * @typedef {Object} PSV.plugins.GyroscopePlugin.Options
+ * @property {boolean} [absolutePosition=false] - when true the view will ignore the current direction when enabling gyroscope control
+ */
+
 
 // add gyroscope button
 DEFAULTS.navbar.splice(-1, 0, GyroscopeButton.id);
@@ -36,8 +41,9 @@ export default class GyroscopePlugin extends AbstractPlugin {
 
   /**
    * @param {PSV.Viewer} psv
+   * @param {PSV.plugins.GyroscopePlugin.Options} options
    */
-  constructor(psv) {
+  constructor(psv, options) {
     super(psv);
 
     /**
@@ -53,6 +59,15 @@ export default class GyroscopePlugin extends AbstractPlugin {
       alphaOffset       : 0,
       orientationCb     : null,
       config_moveInertia: true,
+    };
+
+    /**
+     * @member {PSV.plugins.GyroscopePlugin.Options}
+     * @private
+     */
+    this.config = {
+      absolutePosition: false,
+      ...options,
     };
 
     /**
@@ -179,7 +194,7 @@ export default class GyroscopePlugin extends AbstractPlugin {
   }
 
   /**
-   * @summary Attaches the {@link extenral:THREE.DeviceOrientationControls} to the camera
+   * @summary Attaches the {@link external:THREE.DeviceOrientationControls} to the camera
    * @private
    */
   __configure() {
@@ -190,21 +205,40 @@ export default class GyroscopePlugin extends AbstractPlugin {
       this.controls.connect();
     }
 
-    const direction = this.psv.renderer.camera.getWorldDirection(new THREE.Vector3());
-    const sphericalDirection = this.psv.dataHelper.vector3ToSphericalCoords(direction);
-    this.prop.alphaOffset = utils.getShortestArc(this.psv.prop.position.longitude, sphericalDirection.longitude);
+    // force reset
+    this.controls.deviceOrientation = null;
+    this.controls.screenOrientation = 0;
+    this.controls.alphaOffset = 0;
+    this.prop.alphaOffset = this.config.absolutePosition ? 0 : null;
 
     this.prop.orientationCb = () => {
-      this.controls.alphaOffset = this.prop.alphaOffset;
-      this.controls.update();
+      if (!this.controls.deviceOrientation) {
+        return;
+      }
 
-      this.psv.renderer.camera.getWorldDirection(this.psv.prop.direction);
-      this.psv.prop.direction.multiplyScalar(CONSTANTS.SPHERE_RADIUS);
+      // on first run compute the offset depending on the current viewer position and device orientation
+      if (this.prop.alphaOffset === null) {
+        this.controls.update();
 
-      const sphericalCoords = this.psv.dataHelper.vector3ToSphericalCoords(this.psv.prop.direction);
-      this.psv.prop.position.longitude = sphericalCoords.longitude;
-      this.psv.prop.position.latitude = sphericalCoords.latitude;
-      this.psv.needsUpdate();
+        const direction = new THREE.Vector3();
+        this.psv.renderer.camera.getWorldDirection(direction);
+
+        const sphericalCoords = this.psv.dataHelper.vector3ToSphericalCoords(direction);
+        this.prop.alphaOffset = sphericalCoords.longitude - this.psv.prop.position.longitude;
+      }
+      else {
+        this.controls.alphaOffset = this.prop.alphaOffset;
+        this.controls.update();
+
+        this.psv.renderer.camera.getWorldDirection(this.psv.prop.direction);
+        this.psv.prop.direction.multiplyScalar(CONSTANTS.SPHERE_RADIUS);
+
+        const sphericalCoords = this.psv.dataHelper.vector3ToSphericalCoords(this.psv.prop.direction);
+        this.psv.prop.position.longitude = sphericalCoords.longitude;
+        this.psv.prop.position.latitude = sphericalCoords.latitude;
+
+        this.psv.needsUpdate();
+      }
     };
 
     this.psv.on(CONSTANTS.EVENTS.BEFORE_RENDER, this.prop.orientationCb);
