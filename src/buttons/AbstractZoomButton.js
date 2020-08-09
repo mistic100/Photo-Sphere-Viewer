@@ -113,7 +113,8 @@ export class AbstractZoomButton extends AbstractButton {
       onTick    : (properties) => {
         this.psv.zoom(properties.zoom);
       },
-    });
+    })
+      .catch(() => {}); // ignore cancellation
   }
 
   /**
