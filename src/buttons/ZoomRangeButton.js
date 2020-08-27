@@ -199,7 +199,6 @@ export class ZoomRangeButton extends AbstractButton {
       return;
     }
 
-    evt.preventDefault();
     this.__changeZoom(evt.clientX);
   }
 
