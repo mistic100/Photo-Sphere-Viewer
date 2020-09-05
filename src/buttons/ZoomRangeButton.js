@@ -195,7 +195,7 @@ export class ZoomRangeButton extends AbstractButton {
    * @private
    */
   __changeZoomWithMouse(evt) {
-    if (!this.prop.enabled) {
+    if (!this.prop.enabled || !this.prop.mousedown) {
       return;
     }
 
@@ -209,7 +209,7 @@ export class ZoomRangeButton extends AbstractButton {
    * @private
    */
   __changeZoomByTouch(evt) {
-    if (!this.prop.enabled) {
+    if (!this.prop.enabled || !this.prop.mousedown) {
       return;
     }
     this.__changeZoom(evt.changedTouches[0].clientX);
@@ -221,11 +221,9 @@ export class ZoomRangeButton extends AbstractButton {
    * @private
    */
   __changeZoom(x) {
-    if (this.prop.mousedown) {
-      const userInput = x - this.zoomRange.getBoundingClientRect().left;
-      const zoomLevel = userInput / this.zoomRange.offsetWidth * 100;
-      this.psv.zoom(zoomLevel);
-    }
+    const userInput = x - this.zoomRange.getBoundingClientRect().left;
+    const zoomLevel = userInput / this.zoomRange.offsetWidth * 100;
+    this.psv.zoom(zoomLevel);
   }
 
 }
