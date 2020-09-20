@@ -68,6 +68,10 @@ Unique identifier of the marker.
 Position of the marker in **texture coordinates** (pixels) or **spherical coordinates** (radians).
 _(This option is ignored for polygons and polylines)_
 
+::: warning
+Texture coordinates are not applicable to cubemaps.
+:::
+
 #### `width` & `height`
 - type : `integer`
 
@@ -205,16 +209,6 @@ Definition of the path (0,0 will be placed at the defined x/y or longitude/latit
 path: 'M 0 0 L 60 60 L 60 0 L 0 60 L 0 0'
 ```
 
-#### `polygonPx`
-- type : `integer[2][]`
-
-Array of points defining the polygon in pixel coordinates on the panorama image.
-
-```js
-polygonPx: [[100, 200], [150, 300], [300, 200]]
-```
-
-
 #### `polygonRad`
 - type : `double[2][]`
 
@@ -224,15 +218,32 @@ Same as above but coordinates are in longitude and latitude.
 polygonRad: [[0.2, 0.4], [0.9, 1.1], [1.5, 0.7]]
 ```
 
-#### `polylinePx`
+#### `polygonPx`
 - type : `integer[2][]`
 
-Same as `polygonPx` but generates a polyline.
+Array of points defining the polygon in pixel coordinates on the panorama image.
+
+```js
+polygonPx: [[100, 200], [150, 300], [300, 200]]
+```
+
+::: warning
+Texture coordinates are not applicable to cubemaps.
+:::
 
 #### `polylineRad`
 - type : `double[2][]`
 
 Same as `polygonRad` but generates a polyline.
+
+#### `polylinePx`
+- type : `integer[2][]`
+
+Same as `polygonPx` but generates a polyline.
+
+::: warning
+Texture coordinates are not applicable to cubemaps.
+:::
 
 
 ## Configuration
