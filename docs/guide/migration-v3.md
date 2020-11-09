@@ -81,8 +81,8 @@ Bellow is the mapping of the most common methods, please check the <ApiLink page
 
 - `render()` → `needsUpdate()` (prefered) or `renderer.render()`
 - `preloadPanorama()` → `textureLoader.preloadPanorama()`
-- `clearPanoramaCache()` → `textureLoader.clearPanoramaCache()`
-- `getPanoramaCache()` → `textureLoader.getPanoramaCache()`
+- `clearPanoramaCache()` → removed, use `THREE.Cache.clear()`
+- `getPanoramaCache()` → remove, use `THREE.Cache.get()`
 
 #### Navbar
 
