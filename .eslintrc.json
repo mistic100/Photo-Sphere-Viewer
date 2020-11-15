@@ -23,6 +23,7 @@
     "prefer-destructuring": "off",
     "prefer-template": "off",
     "no-mixed-operators": "off",
+    "no-restricted-globals": "off",
     "arrow-parens": [
       "error",
       "as-needed",

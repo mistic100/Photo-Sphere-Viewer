@@ -269,7 +269,6 @@ export default class GyroscopePlugin extends AbstractPlugin {
     else if ('DeviceOrientationEvent' in window) {
       return new Promise((resolve) => {
         const listener = (e) => {
-          /* eslint-disable-next-line no-restricted-globals */
           resolve(e && e.alpha !== null && !isNaN(e.alpha));
 
           window.removeEventListener('deviceorientation', listener);
