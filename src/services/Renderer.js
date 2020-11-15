@@ -430,7 +430,7 @@ export class Renderer extends AbstractService {
         }
       }
 
-      if (item.dispose) {
+      if (item.dispose && !(item instanceof THREE.Scene)) {
         item.dispose();
       }
 
