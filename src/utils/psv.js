@@ -196,7 +196,7 @@ export function parseAngle(angle, zeroCenter = false, halfCircle = zeroCenter) {
       parsed = value;
     }
   }
-  else if (typeof angle === 'number' && !Number.isNaN(angle)) {
+  else if (typeof angle === 'number' && !isNaN(angle)) {
     parsed = angle;
   }
   else {
