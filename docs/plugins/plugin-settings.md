@@ -61,7 +61,7 @@ settings.addSetting({
     { id: 'option-a', label: 'Option A', active: currentOption === 'option-a' },
     { id: 'option-b', label: 'Option B', active: currentOption === 'option-b' },
   ]),
-  toggle : (option) => currentOption = option,
+  apply : (option) => currentOption = option,
 });
 ```
 
