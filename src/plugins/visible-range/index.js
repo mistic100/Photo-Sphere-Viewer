@@ -140,7 +140,7 @@ export default class VisibleRangePlugin extends AbstractPlugin {
       return null;
     }
     else {
-      const latitude = (y) => Math.PI * (y / p.fullHeight) - (Math.PI / 2);
+      const latitude = y => Math.PI * (y / p.fullHeight) - (Math.PI / 2);
       return [latitude(p.croppedY), latitude(p.croppedY + p.croppedHeight)];
     }
   }
@@ -154,7 +154,7 @@ export default class VisibleRangePlugin extends AbstractPlugin {
       return null;
     }
     else {
-      const longitude = (x) => 2 * Math.PI * (x / p.fullWidth);
+      const longitude = x => 2 * Math.PI * (x / p.fullWidth);
       return [longitude(p.croppedX), longitude(p.croppedX + p.croppedWidth)];
     }
   }
