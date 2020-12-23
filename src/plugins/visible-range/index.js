@@ -136,12 +136,11 @@ export default class VisibleRangePlugin extends AbstractPlugin {
    */
   getPanoLatitudeRange() {
     const p = this.psv.prop.panoData;
-    if (p.croppedHeight == p.fullHeight && p.croppedY == 0) {
+    if (p.croppedHeight === p.fullHeight && p.croppedY === 0) {
       return null;
-    } else {
-      function latitude(y) {
-        return Math.PI * (y / p.fullHeight) - (Math.PI / 2);
-      }
+    }
+    else {
+      const latitude = (y) => Math.PI * (y / p.fullHeight) - (Math.PI / 2);
       return [latitude(p.croppedY), latitude(p.croppedY + p.croppedHeight)];
     }
   }
@@ -151,12 +150,11 @@ export default class VisibleRangePlugin extends AbstractPlugin {
    */
   getPanoLongitudeRange() {
     const p = this.psv.prop.panoData;
-    if (p.croppedWidth == p.fullWidth && p.croppedX == 0) {
+    if (p.croppedWidth === p.fullWidth && p.croppedX === 0) {
       return null;
-    } else {
-      function longitude(x) {
-        return 2 * Math.PI * (x / p.fullWidth);
-      }
+    }
+    else {
+      const longitude = (x) => 2 * Math.PI * (x / p.fullWidth);
       return [longitude(p.croppedX), longitude(p.croppedX + p.croppedWidth)];
     }
   }
