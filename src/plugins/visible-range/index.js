@@ -133,6 +133,8 @@ export default class VisibleRangePlugin extends AbstractPlugin {
 
   /**
    * @summary Gets the latitude range defined by the viewer's panoData
+   * @returns {double[]|null}
+   * @private
    */
   getPanoLatitudeRange() {
     const p = this.psv.prop.panoData;
@@ -147,6 +149,8 @@ export default class VisibleRangePlugin extends AbstractPlugin {
 
   /**
    * @summary Gets the longitude range defined by the viewer's panoData
+   * @returns {double[]|null}
+   * @private
    */
   getPanoLongitudeRange() {
     const p = this.psv.prop.panoData;

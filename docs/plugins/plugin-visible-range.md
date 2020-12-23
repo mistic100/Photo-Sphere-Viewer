@@ -64,7 +64,3 @@ Use cropped panorama data as visible range.
 #### `setLatitudeRange(range)` | `setLongitudeRange(range)`
 
 Change or remove the ranges.
-
-#### `getPanoLatitudeRange()` | `getPanoLongitudeRange()`
-
-Get the viewer's panorama data as latitude and longitude ranges.
