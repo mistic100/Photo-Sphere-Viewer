@@ -118,7 +118,7 @@ export default class VisibleRangePlugin extends AbstractPlugin {
       // eslint-disable-next-line no-param-reassign
       range = null;
     }
-    // longitude range is between 0 and 2*PI
+    // longitude range is between 0 (center of panorama) and 2*PI
     if (range) {
       this.config.longitudeRange = range.map(angle => utils.parseAngle(angle));
     }
@@ -158,7 +158,7 @@ export default class VisibleRangePlugin extends AbstractPlugin {
       return null;
     }
     else {
-      const longitude = x => 2 * Math.PI * (x / p.fullWidth);
+      const longitude = x => 2 * Math.PI * (x / p.fullWidth) - Math.PI;
       return [longitude(p.croppedX), longitude(p.croppedX + p.croppedWidth)];
     }
   }
