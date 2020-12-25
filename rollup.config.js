@@ -110,7 +110,7 @@ const secondaryConfig = {
       // configuration to embed the examples files in PSV source
       delimiters                               : ['', ''],
       [`from 'three/examples/jsm`]             : `from '../../../three-examples`,
-      [`from "../../../build/three.module.js"`]: `from "three"`,
+      [`from '../../../build/three.module.js'`]: `from "three"`,
     }),
   ],
 };
