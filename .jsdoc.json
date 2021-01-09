@@ -1,6 +1,6 @@
 {
   "source": {
-    "excludePattern": "PhotoSphereViewerCompat\\.js|data/constants\\.js"
+    "excludePattern": "PhotoSphereViewerCompat\\.js"
   },
   "opts": {
     "recurse": true,
