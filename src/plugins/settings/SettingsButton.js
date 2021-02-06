@@ -1,5 +1,5 @@
-import { AbstractButton, CONSTANTS } from 'photo-sphere-viewer';
-import SettingsPlugin from './index';
+import { AbstractButton, CONSTANTS } from '../..';
+import { SettingsPlugin } from './index';
 import icon from './settings.svg';
 
 /**

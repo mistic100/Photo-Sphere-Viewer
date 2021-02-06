@@ -1,0 +1,10 @@
+{
+  "name": "photo-sphere-viewer-tests",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "pretest": "cpx \"../dist/**\" \"node_modules/photo-sphere-viewer/dist\" && cpx \"../package.json\" \"node_modules/photo-sphere-viewer\"",
+    "test": "tsc types/index.ts"
+  }
+}

@@ -1,6 +1,8 @@
+import { AbstractAdapter } from '../adapters/AbstractAdapter';
+import { EquirectangularAdapter } from '../adapters/equirectangular';
+import { AbstractPlugin } from '../plugins/AbstractPlugin';
 import { PSVError } from '../PSVError';
-import EquirectangularAdapter from '../adapters/equirectangular';
-import { bound, clone, deepmerge, each, logWarn, parseAngle, parseSpeed } from '../utils';
+import { bound, clone, deepmerge, each, logWarn, parseAngle, parseSpeed, pluginInterop } from '../utils';
 import { ACTIONS } from './constants';
 
 /**
@@ -112,10 +114,10 @@ export const CONFIG_PARSERS = {
       return [EquirectangularAdapter];
     }
     else if (Array.isArray(adapter)) {
-      return adapter;
+      return [pluginInterop(adapter[0], AbstractAdapter), adapter[1]];
     }
     else {
-      return [adapter];
+      return [pluginInterop(adapter, AbstractAdapter)];
     }
   },
   defaultLong    : (defaultLong) => {
@@ -187,10 +189,10 @@ export const CONFIG_PARSERS = {
     return plugins
       .map((plugin) => {
         if (Array.isArray(plugin)) {
-          return plugin;
+          return [pluginInterop(plugin[0], AbstractPlugin), plugin[1]];
         }
         else {
-          return [plugin];
+          return [pluginInterop(plugin, AbstractPlugin)];
         }
       })
       .filter(plugin => !!plugin[0]);

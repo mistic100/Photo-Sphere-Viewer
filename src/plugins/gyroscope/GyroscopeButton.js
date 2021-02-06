@@ -1,6 +1,6 @@
-import { AbstractButton } from 'photo-sphere-viewer';
+import { AbstractButton } from '../..';
 import compass from './compass.svg';
-import GyroscopePlugin from './index';
+import { GyroscopePlugin } from './index';
 
 /**
  * @summary Navigation bar gyroscope button class

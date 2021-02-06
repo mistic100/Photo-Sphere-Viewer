@@ -19,7 +19,7 @@ Your plugin is also an [`EventEmitter`](https://github.com/mistic100/uEvent) wit
 ```js
 import { AbstractPlugin } from 'photo-sphere-viewer';
 
-export default class PhotoSphereViewerCustomPlugin extends AbstractPlugin {
+export class PhotoSphereViewerCustomPlugin extends AbstractPlugin {
   
   static id = 'custom-plugin';
   
@@ -68,7 +68,8 @@ export default {
   ],
   plugins : [
     require('rollup-plugin-babel')({
-      exclude: 'node_modules/**',
+      exclude     : 'node_modules/**',
+      babelHelpers: 'bundled',
     }),
   ],
 };
@@ -192,7 +193,7 @@ A plugin can expose one or more settings to the viewer by using the [Settings pl
 This is done by requiring the settings plugin and calling the `addSetting` method. Consult the [Settings plugin](./plugin-settings.md) page for more information.
 
 ```js
-import SettingsPlugin from 'photo-sphere-viewer/plugins/settings';
+import { SettingsPlugin } from 'photo-sphere-viewer/dist/plugins/settings';
 
 export default class PhotoSphereViewerCustomPlugin extends AbstractPlugin {
   
@@ -225,6 +226,23 @@ export default class PhotoSphereViewerCustomPlugin extends AbstractPlugin {
   }
   
 }
+```
+
+For this two work you will need two modifications in your rollup configuration:
+
+```js
+// rollup.config.js
+
+export default {
+  output  : {
+    globals  : {
+      'photo-sphere-viewer/dist/plugins/settings': 'PhotoSphereViewer.SettingsPlugin',
+    },
+  },
+  external: [
+    'photo-sphere-viewer/dist/plugins/settings',
+  ],
+};
 ```
 
 

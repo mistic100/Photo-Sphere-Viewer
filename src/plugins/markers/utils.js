@@ -1,4 +1,4 @@
-import { CONSTANTS, utils } from 'photo-sphere-viewer';
+import { CONSTANTS, utils } from '../..';
 
 /**
  * Returns intermediary point between two points on the sphere

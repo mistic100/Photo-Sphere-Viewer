@@ -1,5 +1,5 @@
-import { AbstractPlugin, CONSTANTS, DEFAULTS, PSVError } from 'photo-sphere-viewer';
-import SettingsPlugin from 'photo-sphere-viewer/dist/plugins/settings';
+import { AbstractPlugin, CONSTANTS, DEFAULTS, PSVError } from '../..';
+import { SettingsPlugin } from '../settings';
 import { deepEqual } from './utils';
 
 
@@ -23,7 +23,7 @@ DEFAULTS.lang.resolution = 'Quality';
  * @extends PSV.plugins.AbstractPlugin
  * @memberof PSV.plugins
  */
-export default class ResolutionPlugin extends AbstractPlugin {
+export class ResolutionPlugin extends AbstractPlugin {
 
   static id = 'resolution';
 

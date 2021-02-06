@@ -1,5 +1,5 @@
-import { AbstractButton } from 'photo-sphere-viewer';
-import StereoPlugin from './index';
+import { AbstractButton } from '../..';
+import { StereoPlugin } from './index';
 import stereo from './stereo.svg';
 
 /**

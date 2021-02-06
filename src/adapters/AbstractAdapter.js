@@ -40,7 +40,7 @@ export class AbstractAdapter {
   }
 
   /**
-   * @summary Destroys the service
+   * @summary Destroys the adapter
    */
   destroy() {
     delete this.psv;

@@ -1,5 +1,5 @@
-import { AbstractButton, CONSTANTS } from 'photo-sphere-viewer';
-import MarkersPlugin from './index';
+import { AbstractButton, CONSTANTS } from '../..';
+import { MarkersPlugin } from './index';
 import pinList from './pin-list.svg';
 
 /**

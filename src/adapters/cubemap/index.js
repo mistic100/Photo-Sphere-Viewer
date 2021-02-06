@@ -1,5 +1,5 @@
-import { AbstractAdapter, CONSTANTS, PSVError, SYSTEM, utils } from 'photo-sphere-viewer';
 import * as THREE from 'three';
+import { AbstractAdapter, CONSTANTS, PSVError, SYSTEM, utils } from '../..';
 
 /**
  * @typedef {Object} PSV.adapters.CubemapAdapter.Cubemap
@@ -20,7 +20,7 @@ const CUBE_HASHMAP = ['left', 'right', 'top', 'bottom', 'back', 'front'];
  * @summary Adapter for cubemaps
  * @memberof PSV.adapters
  */
-export default class CubemapAdapter extends AbstractAdapter {
+export class CubemapAdapter extends AbstractAdapter {
 
   static id = 'cubemap';
   static supportsTransition = true;

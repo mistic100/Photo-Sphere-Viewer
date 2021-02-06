@@ -1,6 +1,6 @@
-import { AbstractPlugin, CONSTANTS, DEFAULTS, PSVError, registerButton, utils } from 'photo-sphere-viewer';
-import GyroscopePlugin from 'photo-sphere-viewer/dist/plugins/gyroscope';
 import { StereoEffect } from 'three/examples/jsm/effects/StereoEffect';
+import { AbstractPlugin, CONSTANTS, DEFAULTS, PSVError, registerButton, utils } from '../..';
+import { GyroscopePlugin } from '../gyroscope';
 import mobileRotateIcon from './mobile-rotate.svg';
 import { StereoButton } from './StereoButton';
 
@@ -26,7 +26,7 @@ DEFAULTS.lang.pleaseRotate = ['Please rotate your device', '(or tap to continue)
  * @extends PSV.plugins.AbstractPlugin
  * @memberof PSV.plugins
  */
-export default class StereoPlugin extends AbstractPlugin {
+export class StereoPlugin extends AbstractPlugin {
 
   static id = 'stereo';
 
@@ -44,6 +44,12 @@ export default class StereoPlugin extends AbstractPlugin {
    * @constant
    */
   static EVENTS = {
+    /**
+     * @event stereo-updated
+     * @memberof PSV.plugins.StereoPlugin
+     * @summary Triggered when the stereo view is enabled/disabled
+     * @param {boolean} enabled
+     */
     STEREO_UPDATED: 'stereo-updated',
   };
 
@@ -158,12 +164,6 @@ export default class StereoPlugin extends AbstractPlugin {
       this.psv.navbar.hide();
       this.psv.panel.hide();
 
-      /**
-       * @event stereo-updated
-       * @memberof PSV.plugins.StereoPlugin
-       * @summary Triggered when the stereo view is enabled/disabled
-       * @param {boolean} enabled
-       */
       this.trigger(StereoPlugin.EVENTS.STEREO_UPDATED, true);
 
       this.psv.notification.show({

@@ -1,5 +1,5 @@
 /**
- * @summary Transforms a string to dash-case{@link https://github.com/shahata/dasherize}
+ * @summary Transforms a string to dash-case {@link https://github.com/shahata/dasherize}
  * @memberOf PSV.utils
  * @param {string} str
  * @returns {string}

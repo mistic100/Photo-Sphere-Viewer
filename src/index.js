@@ -106,10 +106,11 @@ export {
  */
 
 /**
- * @typedef {PSV.AnimateOptions} PSV.PanoramaOptions
+ * @typedef {PSV.ExtendedPosition} PSV.PanoramaOptions
  * @summary Object defining panorama and animation options
  * @property {boolean|number} [transition=1500] - duration of the transition between all and new panorama
  * @property {boolean} [showLoader=true] - show the loader
+ * @property {number} [zoom] - new zoom level between 0 and 100
  * @property {PSV.SphereCorrection} [sphereCorrection] - new sphere correction to apply to the panorama
  * @property {PSV.PanoData | PSV.PanoDataProvider} [panoData] - new panorama data used for this panorama
  */

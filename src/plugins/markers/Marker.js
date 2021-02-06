@@ -1,5 +1,5 @@
-import { CONSTANTS, PSVError, utils } from 'photo-sphere-viewer';
-import MarkersPlugin from './index';
+import { CONSTANTS, PSVError, utils } from '../..';
+import { MarkersPlugin } from './index';
 import { getPolygonCenter, getPolylineCenter } from './utils';
 
 /**

@@ -1,6 +1,6 @@
-import { AbstractPlugin, CONSTANTS, DEFAULTS, registerButton, utils } from 'photo-sphere-viewer';
 import * as THREE from 'three';
 import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls';
+import { AbstractPlugin, CONSTANTS, DEFAULTS, registerButton, utils } from '../..';
 import { GyroscopeButton } from './GyroscopeButton';
 
 
@@ -23,7 +23,7 @@ const direction = new THREE.Vector3();
  * @extends PSV.plugins.AbstractPlugin
  * @memberof PSV.plugins
  */
-export default class GyroscopePlugin extends AbstractPlugin {
+export class GyroscopePlugin extends AbstractPlugin {
 
   static id = 'gyroscope';
 
@@ -34,6 +34,12 @@ export default class GyroscopePlugin extends AbstractPlugin {
    * @constant
    */
   static EVENTS = {
+    /**
+     * @event gyroscope-updated
+     * @memberof PSV.plugins.GyroscopePlugin
+     * @summary Triggered when the gyroscope mode is enabled/disabled
+     * @param {boolean} enabled
+     */
     GYROSCOPE_UPDATED: 'gyroscope-updated',
   };
 
@@ -172,12 +178,6 @@ export default class GyroscopePlugin extends AbstractPlugin {
         this.prop.alphaOffset = this.config.absolutePosition ? 0 : null;
         this.prop.enabled = true;
 
-        /**
-         * @event gyroscope-updated
-         * @memberof PSV.plugins.GyroscopePlugin
-         * @summary Triggered when the gyroscope mode is enabled/disabled
-         * @param {boolean} enabled
-         */
         this.trigger(GyroscopePlugin.EVENTS.GYROSCOPE_UPDATED, true);
       });
   }

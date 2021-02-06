@@ -24,7 +24,7 @@ Official plugins (listed on the left menu) are available in the the main `photo-
 Import `photo-sphere-viewer/dist/plugins/markers.css` with the prefered way depending on your tooling.
 
 ```js
-import MarkersPlugins from 'photo-sphere-viewer/dist/plugins/markers';
+import { MarkersPlugins } from 'photo-sphere-viewer/dist/plugins/markers';
 ```
 :::
 

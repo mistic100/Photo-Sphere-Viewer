@@ -38,7 +38,7 @@ new PhotoSphereViewer.Viewer({
 
 ::: tab ES import
 ```js
-import CubemapAdapter from 'photo-sphere-viewer/dist/adapters/cubemap';
+import { CubemapAdapter } from 'photo-sphere-viewer/dist/adapters/cubemap';
 
 new Viewer({
   adapter: [CubemapAdapter, {

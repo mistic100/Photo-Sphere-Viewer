@@ -3,6 +3,23 @@ import { PSVError } from '../PSVError';
 import { bound } from './math';
 
 /**
+ * @summary Returns the plugin constructor from the imported object
+ * For retrocompatibility with previous default exports
+ * @memberOf PSV.utils
+ * @package
+ */
+export function pluginInterop(plugin, target) {
+  if (plugin) {
+    for (const [, p] of [['_', plugin], ...Object.entries(plugin)]) {
+      if (p.prototype instanceof target) {
+        return p;
+      }
+    }
+  }
+  return null;
+}
+
+/**
  * @summary Displays a warning in the console
  * @memberOf PSV.utils
  * @param {string} message
@@ -66,7 +83,7 @@ const CSS_POSITIONS = {
  * @memberOf PSV.utils
  * @description The implementation is as close as possible to the "background-position" specification
  * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/background-position}
- * @param {string|object} value
+ * @param {string|PSV.Point} value
  * @returns {PSV.Point}
  */
 export function parsePosition(value) {

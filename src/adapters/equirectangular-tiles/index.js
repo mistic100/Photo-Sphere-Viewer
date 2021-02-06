@@ -1,5 +1,5 @@
-import { AbstractAdapter, CONSTANTS, PSVError, SYSTEM, utils } from 'photo-sphere-viewer';
 import * as THREE from 'three';
+import { AbstractAdapter, CONSTANTS, PSVError, SYSTEM, utils } from '../..';
 import { Queue } from './Queue';
 import { Task } from './Task';
 
@@ -54,7 +54,7 @@ function powerOfTwo(x) {
  * @summary Adapter for tiled panoramas
  * @memberof PSV.adapters
  */
-export default class EquirectangularTilesAdapter extends AbstractAdapter {
+export class EquirectangularTilesAdapter extends AbstractAdapter {
 
   static id = 'equirectangular-tiles';
   static supportsTransition = false;

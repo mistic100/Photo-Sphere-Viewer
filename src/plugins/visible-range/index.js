@@ -1,5 +1,5 @@
-import { AbstractPlugin, utils, CONSTANTS, Animation } from 'photo-sphere-viewer';
 import * as THREE from 'three';
+import { AbstractPlugin, Animation, CONSTANTS, utils } from '../..';
 
 /**
  * @typedef {Object} PSV.plugins.VisibleRangePlugin.Options
@@ -13,7 +13,7 @@ import * as THREE from 'three';
  * @extends PSV.plugins.AbstractPlugin
  * @memberof PSV.plugins
  */
-export default class VisibleRangePlugin extends AbstractPlugin {
+export class VisibleRangePlugin extends AbstractPlugin {
 
   static id = 'visible-range';
 

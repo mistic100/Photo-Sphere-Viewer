@@ -1,4 +1,4 @@
-import { AbstractPlugin, DEFAULTS, PSVError, registerButton, utils } from 'photo-sphere-viewer';
+import { AbstractPlugin, DEFAULTS, PSVError, registerButton, utils } from '../..';
 import check from './check.svg';
 import chevron from './chevron.svg';
 import icon from './settings.svg';
@@ -50,7 +50,7 @@ registerButton(SettingsButton);
  * @extends PSV.plugins.AbstractPlugin
  * @memberof PSV.plugins
  */
-export default class SettingsPlugin extends AbstractPlugin {
+export class SettingsPlugin extends AbstractPlugin {
 
   static id = 'settings';
 

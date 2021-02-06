@@ -11,7 +11,7 @@ const SPHERE_SEGMENTS = 64;
  * @summary Adapter for equirectangular panoramas
  * @memberof PSV.adapters
  */
-export default class EquirectangularAdapter extends AbstractAdapter {
+export class EquirectangularAdapter extends AbstractAdapter {
 
   static id = 'equirectangular';
   static supportsTransition = true;

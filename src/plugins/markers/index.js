@@ -1,5 +1,5 @@
-import { AbstractPlugin, CONSTANTS, DEFAULTS, PSVError, registerButton, utils } from 'photo-sphere-viewer';
 import * as THREE from 'three';
+import { AbstractPlugin, CONSTANTS, DEFAULTS, PSVError, registerButton, utils } from '../..';
 import { Marker } from './Marker';
 import { MarkersButton } from './MarkersButton';
 import { MarkersListButton } from './MarkersListButton';
@@ -33,7 +33,7 @@ registerButton(MarkersListButton);
  * @extends PSV.plugins.AbstractPlugin
  * @memberof PSV.plugins
  */
-export default class MarkersPlugin extends AbstractPlugin {
+export class MarkersPlugin extends AbstractPlugin {
 
   static id = 'markers';
 
@@ -43,14 +43,69 @@ export default class MarkersPlugin extends AbstractPlugin {
    * @constant
    */
   static EVENTS = {
+    /**
+     * @event goto-marker-done
+     * @memberof PSV.plugins.MarkersPlugin
+     * @summary Triggered when the animation to a marker is done
+     * @param {PSV.plugins.MarkersPlugin.Marker} marker
+     */
     GOTO_MARKER_DONE   : 'goto-marker-done',
+    /**
+     * @event leave-marker
+     * @memberof PSV.plugins.MarkersPlugin
+     * @summary Triggered when the user puts the cursor away from a marker
+     * @param {PSV.plugins.MarkersPlugin.Marker} marker
+     */
     LEAVE_MARKER       : 'leave-marker',
+    /**
+     * @event over-marker
+     * @memberof PSV.plugins.MarkersPlugin
+     * @summary Triggered when the user puts the cursor hover a marker
+     * @param {PSV.plugins.MarkersPlugin.Marker} marker
+     */
     OVER_MARKER        : 'over-marker',
+    /**
+     * @event filter:render-markers-list
+     * @memberof PSV.plugins.MarkersPlugin
+     * @summary Used to alter the list of markers displayed on the side-panel
+     * @param {PSV.plugins.MarkersPlugin.Marker[]} markers
+     * @returns {PSV.plugins.MarkersPlugin.Marker[]}
+     */
     RENDER_MARKERS_LIST: 'render-markers-list',
+    /**
+     * @event select-marker
+     * @memberof PSV.plugins.MarkersPlugin
+     * @summary Triggered when the user clicks on a marker. The marker can be retrieved from outside the event handler
+     * with {@link PSV.plugins.MarkersPlugin.getCurrentMarker}
+     * @param {PSV.plugins.MarkersPlugin.Marker} marker
+     * @param {PSV.plugins.MarkersPlugin.SelectMarkerData} data
+     */
     SELECT_MARKER      : 'select-marker',
+    /**
+     * @event select-marker-list
+     * @memberof PSV.plugins.MarkersPlugin
+     * @summary Triggered when a marker is selected from the side panel
+     * @param {PSV.plugins.MarkersPlugin.Marker} marker
+     */
     SELECT_MARKER_LIST : 'select-marker-list',
+    /**
+     * @event unselect-marker
+     * @memberof PSV.plugins.MarkersPlugin
+     * @summary Triggered when a marker was selected and the user clicks elsewhere
+     * @param {PSV.plugins.MarkersPlugin.Marker} marker
+     */
     UNSELECT_MARKER    : 'unselect-marker',
+    /**
+     * @event hide-markers
+     * @memberof PSV.plugins.MarkersPlugin
+     * @summary Triggered when the markers are hidden
+     */
     HIDE_MARKERS       : 'hide-markers',
+    /**
+     * @event show-markers
+     * @memberof PSV.plugins.MarkersPlugin
+     * @summary Triggered when the markers are shown
+     */
     SHOW_MARKERS       : 'show-markers',
   };
 
@@ -232,11 +287,6 @@ export default class MarkersPlugin extends AbstractPlugin {
 
     this.renderMarkers();
 
-    /**
-     * @event show-markers
-     * @memberof PSV.plugins.MarkersPlugin
-     * @summary Triggered when the markers are shown
-     */
     this.trigger(MarkersPlugin.EVENTS.SHOW_MARKERS);
   }
 
@@ -249,11 +299,6 @@ export default class MarkersPlugin extends AbstractPlugin {
 
     this.renderMarkers();
 
-    /**
-     * @event hide-markers
-     * @memberof PSV.plugins.MarkersPlugin
-     * @summary Triggered when the markers are hidden
-     */
     this.trigger(MarkersPlugin.EVENTS.HIDE_MARKERS);
   }
 
@@ -441,12 +486,6 @@ export default class MarkersPlugin extends AbstractPlugin {
       speed,
     })
       .then(() => {
-        /**
-         * @event goto-marker-done
-         * @memberof PSV.plugins.MarkersPlugin
-         * @summary Triggered when the animation to a marker is done
-         * @param {PSV.plugins.MarkersPlugin.Marker} marker
-         */
         this.trigger(MarkersPlugin.EVENTS.GOTO_MARKER_DONE, marker);
       });
   }
@@ -520,13 +559,6 @@ export default class MarkersPlugin extends AbstractPlugin {
       }
     });
 
-    /**
-     * @event filter:render-markers-list
-     * @memberof PSV.plugins.MarkersPlugin
-     * @summary Used to alter the list of markers displayed on the side-panel
-     * @param {PSV.plugins.MarkersPlugin.Marker[]} markers
-     * @returns {PSV.plugins.MarkersPlugin.Marker[]}
-     */
     markers = this.change(MarkersPlugin.EVENTS.RENDER_MARKERS_LIST, markers);
 
     this.psv.panel.show({
@@ -544,12 +576,6 @@ export default class MarkersPlugin extends AbstractPlugin {
         if (markerId) {
           const marker = this.getMarker(markerId);
 
-          /**
-           * @event select-marker-list
-           * @memberof PSV.plugins.MarkersPlugin
-           * @summary Triggered when a marker is selected from the side panel
-           * @param {PSV.plugins.MarkersPlugin.Marker} marker
-           */
           this.trigger(MarkersPlugin.EVENTS.SELECT_MARKER_LIST, marker);
 
           this.gotoMarker(marker, 1000);
@@ -816,12 +842,6 @@ export default class MarkersPlugin extends AbstractPlugin {
     if (marker && !marker.isPoly()) {
       this.prop.hoveringMarker = marker;
 
-      /**
-       * @event over-marker
-       * @memberof PSV.plugins.MarkersPlugin
-       * @summary Triggered when the user puts the cursor hover a marker
-       * @param {PSV.plugins.MarkersPlugin.Marker} marker
-       */
       this.trigger(MarkersPlugin.EVENTS.OVER_MARKER, marker);
 
       if (!this.prop.showAllTooltips) {
@@ -841,12 +861,6 @@ export default class MarkersPlugin extends AbstractPlugin {
 
     // do not hide if we enter the tooltip itself while hovering a polygon
     if (marker && !(marker.isPoly() && this.__targetOnTooltip(e.relatedTarget, marker.tooltip))) {
-      /**
-       * @event leave-marker
-       * @memberof PSV.plugins.MarkersPlugin
-       * @summary Triggered when the user puts the cursor away from a marker
-       * @param {PSV.plugins.MarkersPlugin.Marker} marker
-       */
       this.trigger(MarkersPlugin.EVENTS.LEAVE_MARKER, marker);
 
       this.prop.hoveringMarker = null;
@@ -927,14 +941,6 @@ export default class MarkersPlugin extends AbstractPlugin {
     if (marker) {
       this.prop.currentMarker = marker;
 
-      /**
-       * @event select-marker
-       * @memberof PSV.plugins.MarkersPlugin
-       * @summary Triggered when the user clicks on a marker. The marker can be retrieved from outside the event handler
-       * with {@link PSV.plugins.MarkersPlugin.getCurrentMarker}
-       * @param {PSV.plugins.MarkersPlugin.Marker} marker
-       * @param {PSV.plugins.MarkersPlugin.SelectMarkerData} data
-       */
       this.trigger(MarkersPlugin.EVENTS.SELECT_MARKER, marker, {
         dblclick  : dblclick,
         rightclick: data.rightclick,
@@ -954,12 +960,6 @@ export default class MarkersPlugin extends AbstractPlugin {
       }
     }
     else if (this.prop.currentMarker) {
-      /**
-       * @event unselect-marker
-       * @memberof PSV.plugins.MarkersPlugin
-       * @summary Triggered when a marker was selected and the user clicks elsewhere
-       * @param {PSV.plugins.MarkersPlugin.Marker} marker
-       */
       this.trigger(MarkersPlugin.EVENTS.UNSELECT_MARKER, this.prop.currentMarker);
 
       this.psv.panel.hide(MarkersPlugin.ID_PANEL_MARKER);

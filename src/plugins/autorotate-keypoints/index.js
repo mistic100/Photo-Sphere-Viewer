@@ -1,4 +1,4 @@
-import { AbstractPlugin, CONSTANTS, PSVError, utils } from 'photo-sphere-viewer';
+import { AbstractPlugin, CONSTANTS, PSVError, utils } from '../..';
 
 /**
  * @typedef {PSV.ExtendedPosition|string|Object} PSV.plugins.AutorotateKeypointsPlugin.Keypoints
@@ -31,7 +31,7 @@ const serializePt = position => [position.longitude, position.latitude];
  * @extends PSV.plugins.AbstractPlugin
  * @memberof PSV.plugins
  */
-export default class AutorotateKeypointsPlugin extends AbstractPlugin {
+export class AutorotateKeypointsPlugin extends AbstractPlugin {
 
   static id = 'autorotate-keypoints';
 

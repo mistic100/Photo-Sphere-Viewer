@@ -10,6 +10,7 @@ import { CONFIG_PARSERS, DEFAULTS, DEPRECATED_OPTIONS, getConfig, READONLY_OPTIO
 import { CHANGE_EVENTS, EVENTS, IDS, SPHERE_RADIUS, VIEWER_DATA } from './data/constants';
 import { SYSTEM } from './data/system';
 import errorIcon from './icons/error.svg';
+import { AbstractPlugin } from './plugins/AbstractPlugin';
 import { PSVError } from './PSVError';
 import { DataHelper } from './services/DataHelper';
 import { EventsHandler } from './services/EventsHandler';
@@ -24,6 +25,7 @@ import {
   isExtendedPosition,
   isFullscreenEnabled,
   logWarn,
+  pluginInterop,
   requestFullscreen,
   throttle,
   toggleClass
@@ -359,7 +361,13 @@ export class Viewer extends EventEmitter {
    * @returns {PSV.plugins.AbstractPlugin}
    */
   getPlugin(pluginId) {
-    return pluginId ? this.plugins[typeof pluginId === 'function' ? pluginId.id : pluginId] : null;
+    if (typeof pluginId === 'string') {
+      return this.plugins[pluginId];
+    }
+    else {
+      const pluginCtor = pluginInterop(pluginId, AbstractPlugin);
+      return pluginCtor ? this.plugins[pluginCtor.id] : undefined;
+    }
   }
 
   /**

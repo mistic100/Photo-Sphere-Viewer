@@ -20,9 +20,22 @@ features:
 footer: Licensed under MIT License, documentation under CC BY 3.0
 ---
 
+<div style="display: flex">
+<div style="width: 50%">
+
 ::: tip New tiles support
-Improve the loading time of big panorams with the the [Tiles adapter](guide/adapters/tiles.md).
+Improve the loading time of big panoramas with the the [Tiles adapter](guide/adapters/tiles.md).
 :::
+
+</div>
+<div style="width: 50%">
+
+::: tip Typescript support
+Photo Sphere Viewer is now shipped with its own typings.
+:::
+
+</div>
+</div>
 
 <iframe style="width: 100%; height: 600px;" src="//jsfiddle.net/mistic100/5r684etx/embedded/result,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
 
