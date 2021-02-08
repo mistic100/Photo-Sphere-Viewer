@@ -59,7 +59,7 @@
     "eslint-plugin-import": "^2.21.2",
     "jsdoc": "^3.6.3",
     "live-server": "^1.2.0",
-    "marked": "^1.0.0",
+    "marked": "^2.0.0",
     "mocha": "^8.0.1",
     "ngrok": "^3.2.7",
     "node-sass": "^4.13.0",
