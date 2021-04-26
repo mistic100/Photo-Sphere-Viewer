@@ -31,7 +31,7 @@
     "url": "git://github.com/mistic100/Photo-Sphere-Viewer.git"
   },
   "dependencies": {
-    "three": "^0.127.0",
+    "three": "^0.128.0",
     "uevent": "~2.0.0"
   },
   "devDependencies": {
@@ -44,7 +44,6 @@
     "@pixi/jsdoc-template": "^2.5.1",
     "@rollup/plugin-alias": "^3.0.1",
     "@rollup/plugin-babel": "^5.2.2",
-    "@rollup/plugin-inject": "^4.0.1",
     "@rollup/plugin-replace": "^2.3.1",
     "@vuepress/plugin-active-header-links": "^1.2.0",
     "@vuepress/plugin-back-to-top": "^1.2.0",

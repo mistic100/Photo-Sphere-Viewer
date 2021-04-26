@@ -1,6 +1,5 @@
 import alias from '@rollup/plugin-alias';
 import babel from '@rollup/plugin-babel';
-import inject from '@rollup/plugin-inject';
 import replace from '@rollup/plugin-replace';
 import fs from 'fs';
 import path from 'path';
@@ -106,17 +105,10 @@ const secondaryConfig = {
         return alias;
       }, {}),
     }),
-    inject({
-      include: 'three-examples/**',
-      modules: {
-        THREE: 'three',
-      },
-    }),
     replace({
       // configuration to embed the examples files in PSV source
-      delimiters                               : ['', ''],
-      [`from 'three/examples/jsm`]             : `from '../../../three-examples`,
-      [`from '../../../build/three.module.js'`]: `from "three"`,
+      delimiters                  : ['', ''],
+      [`from 'three/examples/jsm`]: `from '../../../three-examples`,
     }),
   ],
 };
