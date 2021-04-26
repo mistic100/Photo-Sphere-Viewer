@@ -73,7 +73,7 @@
     "rollup-plugin-postcss": "^4.0.0",
     "rollup-plugin-string": "^3.0.0",
     "stylelint": "^13.0.0",
-    "stylelint-config-standard": "^21.0.0",
+    "stylelint-config-standard": "^22.0.0",
     "stylelint-scss": "^3.13.0",
     "vue-material": "^1.0.0-beta-11",
     "vue-slider-component": "^3.2.11",
