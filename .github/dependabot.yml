@@ -10,16 +10,3 @@ updates:
   - mistic100
   labels:
   - dependabot
-  ignore:
-  - dependency-name: autoprefixer
-    versions:
-    - 10.2.4
-  - dependency-name: rollup-plugin-postcss
-    versions:
-    - 4.0.0
-  - dependency-name: three
-    versions:
-    - 0.125.1
-  - dependency-name: postcss-banner
-    versions:
-    - 4.0.0
