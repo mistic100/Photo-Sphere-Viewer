@@ -394,10 +394,6 @@ export default class EquirectangularTilesAdapter extends AbstractAdapter {
     const panorama = this.psv.config.panorama;
     const url = panorama.tileUrl(tile.col, tile.row);
     
-    if (typeof this.psv.config.addRequestHeaders === 'function') {
-      this.loader = this.psv.config.addRequestHeaders(this.loader);
-    }
-    
     return new Promise((resolve, reject) => this.loader.load(url, resolve, undefined, reject))
       .then((image) => {
         if (!task.isCancelled()) {
