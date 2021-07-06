@@ -73,8 +73,7 @@ export class TextureLoader extends AbstractService {
       onProgress && onProgress(progress);
 
       if (typeof this.config.addRequestHeaders === 'function') {
-        this.config.addRequestHeaders(this.loader);
-        //this.loader.setRequestHeader( { header: value } );
+        this.loader = this.config.addRequestHeaders(this.loader);
       }
 
       const request = this.loader.load(
