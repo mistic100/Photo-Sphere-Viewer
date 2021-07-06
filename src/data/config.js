@@ -11,6 +11,7 @@ import { ACTIONS } from './constants';
  */
 export const DEFAULTS = {
   panorama           : null,
+  addRequestHeaders  : null,
   container          : null,
   adapter            : null,
   caption            : null,
