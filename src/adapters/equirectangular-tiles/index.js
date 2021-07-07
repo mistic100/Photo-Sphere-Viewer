@@ -109,15 +109,6 @@ export default class EquirectangularTilesAdapter extends AbstractAdapter {
       errorMaterial: null,
     };
 
-    /**
-     * @member {external:THREE.ImageLoader}
-     * @private
-     */
-    this.loader = new THREE.ImageLoader();
-    if (this.psv.config.withCredentials) {
-      this.loader.setWithCredentials(true);
-    }
-
     this.psv.on(CONSTANTS.EVENTS.POSITION_UPDATED, this);
     this.psv.on(CONSTANTS.EVENTS.ZOOM_UPDATED, this);
   }
@@ -132,7 +123,6 @@ export default class EquirectangularTilesAdapter extends AbstractAdapter {
     this.prop.errorMaterial?.dispose();
 
     delete this.queue;
-    delete this.loader;
     delete this.prop.geom;
     delete this.prop.originalUvs;
     delete this.prop.errorMaterial;
@@ -393,8 +383,8 @@ export default class EquirectangularTilesAdapter extends AbstractAdapter {
   __loadTile(tile, task) {
     const panorama = this.psv.config.panorama;
     const url = panorama.tileUrl(tile.col, tile.row);
-    
-    return new Promise((resolve, reject) => this.loader.load(url, resolve, undefined, reject))
+
+    return this.psv.textureLoader.loadImage(url)
       .then((image) => {
         if (!task.isCancelled()) {
           const material = new THREE.MeshBasicMaterial({
