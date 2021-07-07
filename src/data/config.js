@@ -11,7 +11,6 @@ import { ACTIONS } from './constants';
  */
 export const DEFAULTS = {
   panorama           : null,
-  addRequestHeaders  : null,
   container          : null,
   adapter            : null,
   caption            : null,
@@ -39,6 +38,7 @@ export const DEFAULTS = {
   touchmoveTwoFingers: false,
   useXmpData         : true,
   panoData           : null,
+  requestHeaders     : null,
   canvasBackground   : '#000',
   withCredentials    : false,
   navbar             : [

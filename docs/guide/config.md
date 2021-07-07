@@ -253,6 +253,25 @@ panoData: (image) => ({
 
 **Note** : if any of _poseHeading_, _posePitch_ or _poseRoll_ parameters are found, the `sphereCorrection` option is ignored.
 
+#### `requestHeaders`
+- type: `object | function<object>`
+
+To set request headers.
+
+```js
+requestHeaders: {
+  header: value
+}
+```
+
+It can also be a function to dynamically set the request headers before every call. This can be useful when adding a Bearer, which is temporarily valid, to the Authorization header.
+
+```js
+requestHeaders: () => ({
+   header: value 
+})
+```
+
 #### `canvasBackground`
 - type: `string`
 - default: `#000`
