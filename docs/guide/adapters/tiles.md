@@ -41,12 +41,12 @@ Total width of the panorama, the height is always width / 2.
 #### `cols` (required)
 - type: `number`
 
-Number of columns, must  be power of two (4, 6, 16, 32, 64) and the maximum value is 64.
+Number of columns, must  be power of two (4, 8, 16, 32, 64) and the maximum value is 64.
 
 #### `rows` (required)
 - type: `number`
 
-Number of rows, must  be power of two (2, 4, 6, 16, 32) and the maximum value is 32.
+Number of rows, must  be power of two (2, 4, 8, 16, 32) and the maximum value is 32.
 
 #### `tileUrl` (required)
 - type: `function: (col, row) => string`
