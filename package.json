@@ -44,7 +44,7 @@
     "@pixi/jsdoc-template": "^2.5.1",
     "@rollup/plugin-alias": "^3.0.1",
     "@rollup/plugin-babel": "^5.2.2",
-    "@rollup/plugin-replace": "^2.3.1",
+    "@rollup/plugin-replace": "^3.0.0",
     "@vuepress/plugin-active-header-links": "^1.2.0",
     "@vuepress/plugin-back-to-top": "^1.2.0",
     "@vuepress/plugin-google-analytics": "^1.2.0",
