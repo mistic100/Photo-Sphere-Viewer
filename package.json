@@ -95,7 +95,7 @@
     "doc:assets": "cpx \"example/assets/*\" public/assets && cpx example/sphere.jpg public/assets && cpx example/sphere_small.jpg public/assets && cpx example/sphere_cropped.jpg public/assets && cpx \"example/cubemap/*\" public/assets/cubemap",
     "test": "npm-run-all --parallel test:*",
     "test:mocha": "mocha --require @babel/register --recursive \"src/**/*.spec.js\"",
-    "test:eslint": "eslint src --ignore-path .gitignore --ignore-pattern \"*.spec.js\"",
+    "test:eslint": "eslint src --ignore-path .gitignore",
     "test:sasslint": "stylelint \"src/**/*.scss\"",
     "test:types": "cd tests && npm run test",
     "start": "npm-run-all --parallel dev:**",

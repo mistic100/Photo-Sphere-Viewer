@@ -1,4 +1,8 @@
 {
+  "ignorePatterns": [
+    "*.spec.js",
+    "DeviceOrientationControls.js"
+  ],
   "extends": "airbnb-base",
   "parser": "babel-eslint",
   "env": {

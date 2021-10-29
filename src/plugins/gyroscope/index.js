@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls';
 import { AbstractPlugin, CONSTANTS, DEFAULTS, registerButton, utils } from '../..';
 import { EVENTS } from './constants';
+import { DeviceOrientationControls } from './DeviceOrientationControls';
 import { GyroscopeButton } from './GyroscopeButton';
 
 
@@ -71,7 +71,7 @@ export class GyroscopePlugin extends AbstractPlugin {
     };
 
     /**
-     * @member {external:THREE.DeviceOrientationControls}
+     * @member {DeviceOrientationControls}
      * @private
      */
     this.controls = null;

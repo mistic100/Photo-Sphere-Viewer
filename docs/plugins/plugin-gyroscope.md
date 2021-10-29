@@ -19,6 +19,9 @@ const viewer = new PhotoSphereViewer.Viewer({
 });
 ```
 
+::: warning
+There are known inconsistencies of orientation data accross devices. If the panorama does not display in the expected orientation, this plugin is not faulty.
+:::
 
 ## Configuration
 
