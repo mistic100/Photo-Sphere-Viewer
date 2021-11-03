@@ -21,7 +21,7 @@
 
 <script>
   const axios = require('axios');
-  const marked = require('marked');
+  const { marked } = require('marked');
   const { format, parseISO } = require('date-fns');
 
   export default {
@@ -55,7 +55,7 @@
       },
       formatRelease(release) {
         // Convert markdown to html
-        let desc = marked(release.body, { breaks: true });
+        let desc = marked.parse(release.body, { breaks: true });
 
         // Remove some escaping done by marked.js
         desc = desc.replace(/&quot;/g, '"').replace(/&#39;/g, "'");
