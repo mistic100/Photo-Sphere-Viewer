@@ -45,7 +45,7 @@ export type ViewerOptions = {
   sphereCorrection?: { pan?: number, tilt?: number, roll?: number },
   moveSpeed?: number;
   zoomSpeed?: number;
-  autorotateDelay?: null,
+  autorotateDelay?: number,
   autorotateSpeed?: string | number;
   autorotateLat?: number;
   moveInertia?: boolean;
