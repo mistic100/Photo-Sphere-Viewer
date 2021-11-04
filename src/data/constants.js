@@ -8,7 +8,7 @@
  * @type {number}
  * @constant
  */
-export const MOVE_THRESHOLD = 4;
+export const MOVE_THRESHOLD = 50;
 
 /**
  * @summary Delay in milliseconds between two clicks to consider a double click
