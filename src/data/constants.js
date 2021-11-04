@@ -8,7 +8,7 @@
  * @type {number}
  * @constant
  */
-export const MOVE_THRESHOLD = 50;
+export const MOVE_THRESHOLD = window.innerWidth <= 1366 && (window.navigator.maxTouchPoints > 0 || window.navigator.msMaxTouchPoints > 0) ? 20 : 4;
 
 /**
  * @summary Delay in milliseconds between two clicks to consider a double click
