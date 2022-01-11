@@ -3,7 +3,7 @@
 [[toc]]
 
 ::: tip Angles definitions
-Photo Sphere Viewer uses a lot of angles for its configuration, most of them can be defined in radians by using a simple number (`3.5`) or in degrees using the "deg" prefix (`'55deg'`).
+Photo Sphere Viewer uses a lot of angles for its configuration, most of them can be defined in radians by using a simple number (`3.5`) or in degrees using the "deg" suffix (`'55deg'`).
 :::
 
 ::: tip Positions defintions
