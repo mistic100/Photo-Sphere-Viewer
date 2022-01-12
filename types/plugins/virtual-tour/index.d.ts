@@ -55,7 +55,7 @@ export type VirtualTourPluginPluginOptions = {
 
 export const EVENTS: {
   NODE_CHANGED: 'node-changed',
-  RENDER_NODES_LIST: 'render-nodes-list,
+  RENDER_NODES_LIST: 'render-nodes-list',
 };
 
 /**
