@@ -52,7 +52,7 @@
     "@vuepress/plugin-back-to-top": "^1.8.2",
     "@vuepress/plugin-google-analytics": "^1.8.2",
     "autoprefixer": "^10.3.3",
-    "axios": "^0.26.0",
+    "axios": "^0.27.0",
     "cpx2": "^4.1.2",
     "date-fns": "^2.23.0",
     "eslint": "^8.2.0",
