@@ -9,6 +9,7 @@ import { GyroscopeButton } from './GyroscopeButton';
  * @typedef {Object} PSV.plugins.GyroscopePlugin.Options
  * @property {boolean} [touchmove=true] - allows to pan horizontally when the gyroscope is enabled (requires global `mousemove=true`)
  * @property {boolean} [absolutePosition=false] - when true the view will ignore the current direction when enabling gyroscope control
+ * @property {'smooth' | 'fast'} [moveMode='smooth'] - move smooth or fast
  */
 
 
@@ -63,6 +64,7 @@ export class GyroscopePlugin extends AbstractPlugin {
     this.config = {
       touchmove       : true,
       absolutePosition: false,
+      moveMode: 'smooth',
       ...options,
     };
 
@@ -244,7 +246,8 @@ export class GyroscopePlugin extends AbstractPlugin {
       };
 
       // having a slow speed on smalls movements allows to absorb the device/hand vibrations
-      this.psv.dynamics.position.goto(target, utils.getAngle(position, target) < 0.01 ? 1 : 3);
+      const step = this.config.moveMode === 'smooth' ? 3 : 10;
+      this.psv.dynamics.position.goto(target, utils.getAngle(position, target) < 0.01 ? 1 : step);
     }
   }
 

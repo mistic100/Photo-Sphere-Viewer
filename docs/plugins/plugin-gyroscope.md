@@ -38,6 +38,12 @@ Allows to pan horizontally the camera when the gyroscope is enabled (requires gl
 
 By default the camera will keep its current horizontal position when the gyroscope is enabled. Turn this option `true` to enable absolute positionning and only use the device orientation.
 
+#### `moveMode`
+- type: `smooth` | `fast`
+- default: `smooth`
+
+move smooth or fast
+
 #### `lang`
 - type: `object`
 - default:
