@@ -9,7 +9,7 @@ import { GyroscopeButton } from './GyroscopeButton';
  * @typedef {Object} PSV.plugins.GyroscopePlugin.Options
  * @property {boolean} [touchmove=true] - allows to pan horizontally when the gyroscope is enabled (requires global `mousemove=true`)
  * @property {boolean} [absolutePosition=false] - when true the view will ignore the current direction when enabling gyroscope control
- * @property {'smooth' | 'fast'} [moveMode='smooth'] - move smooth or fast
+ * @property {'smooth' | 'fast'} [moveMode='smooth'] - How the gyroscope data is used to rotate the panorama.
  */
 
 

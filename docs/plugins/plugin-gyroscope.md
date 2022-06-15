@@ -42,7 +42,7 @@ By default the camera will keep its current horizontal position when the gyrosco
 - type: `smooth` | `fast`
 - default: `smooth`
 
-move smooth or fast
+How the gyroscope data is used to rotate the panorama.
 
 #### `lang`
 - type: `object`
