@@ -4,6 +4,7 @@ import { Event } from 'uevent';
 export type GyroscopePluginOptions = {
   touchmove?: boolean;
   absolutePosition?: boolean;
+  moveMode?:'smooth' | 'fast'
 };
 
 export const EVENTS: {
