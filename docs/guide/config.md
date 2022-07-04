@@ -258,7 +258,7 @@ panoData: (image) => ({
 **Note:** if the XMP data and/or `panoData` contains heading/pitch/roll data, they will be applied before `sphereCorrection`.
 
 ::: warning
-Only the default `equirectangular` adapter supports `panoData`, for other adapters you can only use [`sphereCorrection`](#spherecorrection) if the tilt/roll/pan needs to be corrected.
+Only the default `equirectangular` adapter and low-resolution panorama of `equirectangular-tiles` supports `panoData`, for other adapters you can only use [`sphereCorrection`](#spherecorrection) if the tilt/roll/pan needs to be corrected.
 :::
 
 #### `requestHeaders`

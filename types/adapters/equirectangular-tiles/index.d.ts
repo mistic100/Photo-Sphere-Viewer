@@ -1,10 +1,11 @@
-import { AbstractAdapter, Viewer } from '../..';
+import { AbstractAdapter, Viewer, PanoData, PanoDataProvider } from '../..';
 
 /**
  * @summary Configuration of a tiled panorama
  */
 export type EquirectangularTilesPanorama = {
   baseUrl?: string;
+  basePanoData?: PanoData | PanoDataProvider;
   width: number;
   cols: number;
   rows: number;

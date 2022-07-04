@@ -18,6 +18,7 @@ import { buildErrorMaterial, createBaseTexture } from '../shared/tiles-utils';
  * @typedef {Object} PSV.adapters.EquirectangularTilesAdapter.Panorama
  * @summary Configuration of a tiled panorama
  * @property {string} [baseUrl] - low resolution panorama loaded before tiles
+ * @property {PSV.PanoData | PSV.PanoDataProvider} [basePanoData] - panoData configuration associated to low resolution panorama loaded before tiles
  * @property {int} width - complete panorama width (height is always width/2)
  * @property {int} cols - number of vertical tiles
  * @property {int} rows - number of horizontal tiles
@@ -266,7 +267,7 @@ export class EquirectangularTilesAdapter extends EquirectangularAdapter {
     };
 
     if (panorama.baseUrl) {
-      return super.loadTexture(panorama.baseUrl)
+      return super.loadTexture(panorama.baseUrl, panorama.basePanoData)
         .then(textureData => ({
           panorama: panorama,
           texture : textureData.texture,

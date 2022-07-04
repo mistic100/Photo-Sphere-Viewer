@@ -77,6 +77,11 @@ Function used to build the URL of a tile.
 
 URL of a low resolution complete panorama image to display while the tiles are loading.
 
+#### `basePanoData`
+- type: `object | function<Image, object>`
+
+Panorama configuration associated to low resolution first image, following the same format as [`panoData` configuration object](../config.md#panodata)
+
 
 ## Preparing the panorama
 
