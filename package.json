@@ -94,7 +94,7 @@
     "test:types": "cd tests && npm run test",
     "start": "npm-run-all --parallel dev:**",
     "start:doc": "vuepress dev docs",
-    "dev:serve": "node -e \"setTimeout(() => process.exit(0), 10000)\" && live-server --watch=dist,example --open=example",
+    "dev:serve": "node -e \"setTimeout(() => process.exit(0), 10000)\" && live-server  --port=80 --watch=dist,example --open=example",
     "dev:watch": "npm run compile -- --watch"
   }
 }
