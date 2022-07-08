@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhotoSphereViewer - equirectangular demo</title>
+
+  <link rel="stylesheet" href="../dist/photo-sphere-viewer.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="photosphere"></div>
+
+<script src="../node_modules/three/build/three.js"></script>
+<script src="../node_modules/uevent/browser.js"></script>
+<script src="../dist/photo-sphere-viewer.js"></script>
+
+<script type="text/template" id="description">
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Haec para/doca illi, nos admirabilia dicamus. Tibi hoc
+    incredibile, quod beatissimum. Sed et illum, quem nominavi, et ceteros sophistas, ut e Platone intellegi potest,
+    lusos videmus a Socrate. <a href="http://loripsum.net/" target="_blank">Qui ita affectus, beatum esse numquam
+      probabis;</a> Duo Reges: constructio interrete.
+    <mark>Contineo me ab exemplis.</mark>
+    Virtutis, magnitudinis animi, patientiae, fortitudinis fomentis dolor mitigari solet. Claudii libidini, qui tum erat
+    summo ne imperio, dederetur. Quare hoc videndum est, possitne nobis hoc ratio philosophorum dare. Nos autem non
+    solum beatae vitae istam esse oblectationem videmus, sed etiam levamentum miseriarum.
+  </p>
+
+  <p>Hic quoque suus est de summoque bono dissentiens dici vere Peripateticus non potest. Cum ageremus, inquit, vitae
+    beatum et eundem supremum diem, scribebamus haec. Atqui reperies, inquit, in hoc quidem pertinacem; Minime vero
+    istorum quidem, inquit. Hosne igitur laudas et hanc eorum, inquam, sententiam sequi nos censes oportere? </p>
+
+  <p>Eaedem res maneant alio modo. Sed haec quidem liberius ab eo dicuntur et saepius. <a href="http://loripsum.net/"
+                                                                                          target="_blank">Primum divisit
+    ineleganter;</a> <a href="http://loripsum.net/" target="_blank">Quae contraria sunt his, malane?</a> Hoc loco tenere
+    se Triarius non potuit. Illa tamen simplicia, vestra versuta. Progredientibus autem aetatibus sensim tardeve potius
+    quasi nosmet ipsos cognoscimus. </p>
+</script>
+
+<script>
+  const panos = [
+    {
+      url        : 'assets/hospital.jpeg',
+      caption    : 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+      description: document.querySelector('#description').innerHTML,
+    },
+    {
+      url        : 'test-sphere.jpg',
+      caption    : 'Test sphere',
+      description: null,
+    },
+  ];
+
+  const viewer = new PhotoSphereViewer.Viewer({
+    container          : 'photosphere',
+    panorama           : panos[0].url,
+    caption            : panos[0].caption,
+    description        : panos[0].description,
+    loadingImg         : 'assets/photosphere-logo.gif',
+    autorotateDelay    : 2000,
+    autorotateIdle     : true,
+    fisheye            : false,
+    touchmoveTwoFingers: false,
+    mousewheelCtrlKey  : false,
+    captureCursor      : false,
+    moveSpeed          : 1,
+    zoomSpeed          : 1,
+    navbar             : [
+      'autorotate', 'zoom', 'move', 'download',
+      {
+        title    : 'Change image',
+        className: 'custom-button',
+        content  : '🔄',
+        onClick  : (() => {
+          let i = 0;
+          return () => {
+            i = 1 - i;
+            viewer.setPanorama(panos[i].url, {
+              longitude  : 0,
+              latitude   : 0,
+              zoom       : 50,
+              caption    : panos[i].caption,
+              description: panos[i].description,
+            });
+          };
+        })(),
+      },
+      {
+        title    : 'Random position',
+        className: 'custom-button',
+        content  : '🔀',
+        onClick  : () => {
+          viewer.animate({
+            longitude: (Math.random() - 0.5) * 3 / 2 * Math.PI,
+            latitude : (Math.random() - 0.5) * 3 / 4 * Math.PI,
+            zoom     : Math.random() * 60 + 20,
+            speed    : 1500,
+          });
+        },
+      },
+      'caption', 'fullscreen',
+    ],
+  });
+
+</script>
+</body>
+</html>
