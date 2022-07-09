@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Center Tour</title>
+  <link rel="stylesheet" href="../dist/photo-sphere-viewer.css">
+  <link rel="stylesheet" href="../dist/plugins/markers.css">
+  <link rel="stylesheet" href="../dist/plugins/compass.css">
+  <link rel="stylesheet" href="../dist/plugins/virtual-tour.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="photosphere"></div>
+
+<script src="../node_modules/three/build/three.js"></script>
+<script src="../node_modules/uevent/browser.js"></script>
+<script src="../dist/photo-sphere-viewer.js"></script>
+<script src="../dist/plugins/markers.js"></script>
+<script src="../dist/plugins/compass.js"></script>
+<script src="../dist/plugins/virtual-tour.js"></script>
+
+<script>
+  const base = 'assets/tour/';
+
+  // links.latitude/longitude is used in manual mode
+  // links.position or node.position is used in GPS mode
+  const nodes = [
+    {
+      id       : '1',
+      panorama : base + 'data-center-0.jpg',
+      thumbnail: base + 'data-center-0.jpg',
+      name     : 'One',
+      links    : [
+        { nodeId: '2', latitude: 0, longitude: '100deg' },
+      ],
+      markers  : [
+        {
+          id       : 'marker-1',
+          image    : 'assets/pin-red.png',
+          tooltip  : 'Cape Florida Light, Key Biscayne',
+          width    : 32,
+          height   : 32,
+          anchor   : 'bottom center',
+          longitude: '105deg',
+          latitude : '35deg',
+        }
+      ],
+      position : [-80.156479, 25.666725, 3],
+      panoData : { poseHeading: 327 },
+    },
+    {
+      id       : '2',
+      panorama : base + 'data-center-1.jpg',
+      name     : 'Two',
+      links    : [
+        { nodeId: '3', latitude: 0, longitude: '120deg' },
+        { nodeId: '1', latitude: 0, longitude: '280deg' },
+      ],
+      position : [-80.156168, 25.666623, 3],
+      panoData : { poseHeading: 318 },
+    },
+    {
+      id       : '3',
+      panorama : base + 'data-center-2.jpg',
+      name     : 'Three',
+      links    : [
+        { nodeId: '1', latitude: 0, longitude: '220deg' },
+        { nodeId: '2', latitude: 0, longitude: '310deg' },
+        { nodeId: '4', latitude: 0, longitude: '270deg' },
+      ],
+      position : [-80.155932, 25.666498, 5],
+      panoData : { poseHeading: 328 },
+    },
+    {
+      id       : '4',
+      panorama : base + 'data-center-3.jpg',
+      name     : 'Four',
+      links    : [
+        { nodeId: '3', latitude: 0, longitude: '40deg' },
+        { nodeId: '2', latitude: 0, longitude: '300deg' },
+      ],
+      position : [-80.156089, 25.666357, 3],
+      panoData : { poseHeading: 78 },
+    },
+  ];
+
+  const nodesById = {};
+  nodes.forEach(node => nodesById[node.id] = node);
+
+  const viewer = new PhotoSphereViewer.Viewer({
+    container  : 'photosphere',
+    loadingImg : 'assets/photosphere-logo.gif',
+    caption    : 'Cape Florida Light, Key Biscayne <b>&copy; Pixexid</b>',
+    defaultLong: '100deg',
+    plugins    : [
+      PhotoSphereViewer.MarkersPlugin,
+      PhotoSphereViewer.CompassPlugin,
+      [PhotoSphereViewer.VirtualTourPlugin, {
+        positionMode : PhotoSphereViewer.VirtualTourPlugin.MODE_GPS,
+        renderMode   : PhotoSphereViewer.VirtualTourPlugin.MODE_3D,
+        startNodeId  : nodes[1].id,
+        preload      : true,
+        // transition   : false,
+        // rotateSpeed  : false,
+        arrowPosition: 'bottom',
+
+        // client mode
+        dataMode: PhotoSphereViewer.VirtualTourPlugin.MODE_CLIENT,
+        nodes   : nodes,
+
+        // server mode (mock)
+        // dataMode: PhotoSphereViewer.VirtualTourPlugin.MODE_SERVER,
+        getNode: (nodeId) => {
+          console.log('GET node ' + nodeId);
+          return Promise.resolve({
+            ...nodesById[nodeId],
+            links: nodesById[nodeId].links.map(link => ({
+              ...link,
+              name    : nodesById[link.nodeId].name,
+              position: nodesById[link.nodeId].position,
+            })),
+          });
+        },
+      }],
+    ],
+  });
+
+  const virtualTour = viewer.getPlugin(PhotoSphereViewer.VirtualTourPlugin);
+</script>
+</body>
+</html>
