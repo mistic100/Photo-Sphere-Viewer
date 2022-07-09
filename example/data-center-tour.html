@@ -55,8 +55,8 @@
       panorama : base + 'data-center-1.jpg',
       name     : 'Two',
       links    : [
-        { nodeId: '3', latitude: 0, longitude: '120deg' },
-        { nodeId: '1', latitude: 0, longitude: '280deg' },
+        { nodeId: '1', latitude: 0, longitude: '120deg' },
+        { nodeId: '3', latitude: 0, longitude: '280deg' },
       ],
       position : [-80.156168, 25.666623, 3],
       panoData : { poseHeading: 318 },
@@ -66,8 +66,7 @@
       panorama : base + 'data-center-2.jpg',
       name     : 'Three',
       links    : [
-        { nodeId: '1', latitude: 0, longitude: '220deg' },
-        { nodeId: '2', latitude: 0, longitude: '310deg' },
+        { nodeId: '2', latitude: 10, longitude: '270deg' },
         { nodeId: '4', latitude: 0, longitude: '270deg' },
       ],
       position : [-80.155932, 25.666498, 5],
@@ -100,7 +99,7 @@
       [PhotoSphereViewer.VirtualTourPlugin, {
         positionMode : PhotoSphereViewer.VirtualTourPlugin.MODE_GPS,
         renderMode   : PhotoSphereViewer.VirtualTourPlugin.MODE_3D,
-        startNodeId  : nodes[1].id,
+        startNodeId  : nodes[0].id,
         preload      : true,
         // transition   : false,
         // rotateSpeed  : false,
