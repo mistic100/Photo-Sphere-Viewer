@@ -39,7 +39,7 @@ export type ViewerOptions = {
   loadingImg?: string;
   loadingTxt?: string;
   size?: Size;
-  fisheye?: boolean;
+  fisheye?: boolean | number;
   minFov?: number;
   maxFov?: number;
   defaultZoomLvl?: number;
