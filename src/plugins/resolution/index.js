@@ -1,6 +1,5 @@
-import { AbstractPlugin, CONSTANTS, DEFAULTS, PSVError } from '../..';
+import { AbstractPlugin, CONSTANTS, DEFAULTS, PSVError, utils } from '../..';
 import { EVENTS } from './constants';
-import { deepEqual } from './utils';
 
 
 /**
@@ -174,7 +173,7 @@ export class ResolutionPlugin extends AbstractPlugin {
    * @private
    */
   __refreshResolution() {
-    const resolution = this.resolutions.find(r => deepEqual(this.psv.config.panorama, r.panorama));
+    const resolution = this.resolutions.find(r => utils.deepEqual(this.psv.config.panorama, r.panorama));
     if (this.prop.resolution !== resolution?.id) {
       this.prop.resolution = resolution?.id;
       this.settings?.updateBadge();

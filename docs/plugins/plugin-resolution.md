@@ -8,6 +8,10 @@ This plugin is available in the core `photo-sphere-viewer` package in `dist/plug
 
 [[toc]]
 
+::: warning
+ResolutionPlugin is not compatible with GalleryPlugin.
+:::
+
 
 ## Usage
 

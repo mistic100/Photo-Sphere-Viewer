@@ -1,0 +1,111 @@
+@import '../../styles/vars';
+
+$psv-gallery-height: 100px !default;
+$psv-gallery-padding: 15px !default;
+$psv-gallery-border: 1px solid $psv-caption-color !default;
+$psv-gallery-background: $psv-navbar-background !default;
+$psv-gallery-item-radius: 5px !default;
+$psv-gallery-item-active-border: 3px solid white !default;
+$psv-gallery-title-font: $psv-caption-font !default;
+$psv-gallery-title-color: $psv-caption-color !default;
+$psv-gallery-title-background: rgba(0, 0, 0, .6) !default;
+$psv-gallery-thumb-hover-scale: 1.2 !default;
+
+.psv-gallery {
+  position: absolute;
+  left: 0;
+  bottom: calc(#{-$psv-gallery-height} - #{$psv-gallery-padding * 2} - 20px); // some slack if there is a scrollbar
+  width: 100%;
+  background: $psv-gallery-background;
+  border-bottom: $psv-gallery-border;
+  overflow-x: auto;
+  overflow-y: hidden;
+  transition: bottom ease-in-out .1s;
+  z-index: $psv-navbar-zindex;
+
+  &--open {
+    bottom: 0;
+
+    @at-root .psv--has-navbar & {
+      bottom: $psv-navbar-height;
+    }
+  }
+
+  &-container {
+    display: flex;
+    padding: $psv-gallery-padding;
+  }
+
+  &-item {
+    flex: none;
+    position: relative;
+    margin-right: $psv-gallery-padding;
+    width: $psv-gallery-height * 2;
+    height: $psv-gallery-height;
+    border-radius: $psv-gallery-item-radius;
+    overflow: hidden;
+
+    &-title {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      box-sizing: border-box;
+      width: 100%;
+      height: 2.2em;
+      padding: .5em;
+      background: $psv-gallery-title-background;
+      font: $psv-gallery-title-font;
+      line-height: 1.2em;
+      color: $psv-gallery-title-color;
+      z-index: 2;
+      transition: height ease-in-out .2s;
+
+      span {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        user-select: none;
+      }
+    }
+
+    &-thumb {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-position: center center;
+      background-size: cover;
+      transform: scale3d(1, 1, 1);
+      transition: transform ease-in-out .2s;
+      z-index: 1;
+    }
+
+    &:hover &-title {
+      height: 100%;
+
+      span {
+        white-space: normal;
+      }
+    }
+
+    &:hover &-thumb {
+      transform: scale3d($psv-gallery-thumb-hover-scale, $psv-gallery-thumb-hover-scale, 1);
+    }
+
+    &--active::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      border: $psv-gallery-item-active-border;
+      z-index: 3;
+    }
+  }
+}

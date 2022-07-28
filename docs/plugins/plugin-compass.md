@@ -6,6 +6,8 @@
 
 This plugin is available in the core `photo-sphere-viewer` package in `dist/plugins/compass.js` and `dist/plugins/compass.css`.
 
+[[toc]]
+
 
 ## Usage
 

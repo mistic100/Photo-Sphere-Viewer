@@ -79,7 +79,7 @@ export class CompassPlugin extends AbstractPlugin {
      * @private
      */
     this.container = document.createElement('div');
-    utils.addClasses(this.container, `psv-compass psv-compass--${this.config.position.join('-')}`);
+    this.container.className = `psv-compass psv-compass--${this.config.position.join('-')}`;
     this.container.innerHTML = this.config.backgroundSvg;
 
     this.container.style.width = this.config.size;

@@ -88,6 +88,7 @@ export type PanoramaOptions = (ExtendedPosition | {}) & {
  * Result of the AbstractAdapter#loadTexture method
  */
 export type TextureData = {
+  panorama: any;
   texture: Texture | Texture[] | Record<string, Texture>;
   panoData?: PanoData;
 };

@@ -154,7 +154,7 @@ export class EventsHandler extends AbstractService {
     }
     /* eslint-enable */
 
-    if (!getClosest(evt.target, '.psv-navbar') && !getClosest(evt.target, '.psv-panel')) {
+    if (!getClosest(evt.target, '.psv--capture-event')) {
       /* eslint-disable */
       switch (evt.type) {
         // @formatter:off

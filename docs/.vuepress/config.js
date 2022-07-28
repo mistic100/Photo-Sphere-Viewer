@@ -85,6 +85,7 @@ module.exports = {
           children    : [
             'plugin-autorotate-keypoints',
             'plugin-compass',
+            ['plugin-gallery', 'GalleryPlugin (NEW)'],
             'plugin-gyroscope',
             'plugin-markers',
             'plugin-resolution',

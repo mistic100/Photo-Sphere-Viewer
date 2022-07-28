@@ -90,7 +90,7 @@ export class Navbar extends AbstractComponent {
    * @param {PSV.Viewer} psv
    */
   constructor(psv) {
-    super(psv, 'psv-navbar');
+    super(psv, 'psv-navbar psv--capture-event');
 
     /**
      * @summary List of buttons of the navbar

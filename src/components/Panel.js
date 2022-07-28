@@ -23,7 +23,7 @@ export class Panel extends AbstractComponent {
    * @param {PSV.Viewer} psv
    */
   constructor(psv) {
-    super(psv, 'psv-panel');
+    super(psv, 'psv-panel psv--capture-event');
 
     /**
      * @override
