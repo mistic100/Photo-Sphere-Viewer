@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="../dist/photo-sphere-viewer.css">
   <link rel="stylesheet" href="../dist/plugins/markers.css">
   <link rel="stylesheet" href="../dist/plugins/compass.css">
+  <link rel="stylesheet" href="../dist/plugins/gallery.css">
   <link rel="stylesheet" href="../dist/plugins/virtual-tour.css">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -20,6 +21,7 @@
 <script src="../dist/photo-sphere-viewer.js"></script>
 <script src="../dist/plugins/markers.js"></script>
 <script src="../dist/plugins/compass.js"></script>
+<script src="../dist/plugins/gallery.js"></script>
 <script src="../dist/plugins/virtual-tour.js"></script>
 
 <script>
@@ -125,6 +127,7 @@
     plugins    : [
       PhotoSphereViewer.MarkersPlugin,
       PhotoSphereViewer.CompassPlugin,
+      PhotoSphereViewer.GalleryPlugin,
       [PhotoSphereViewer.VirtualTourPlugin, {
         positionMode : PhotoSphereViewer.VirtualTourPlugin.MODE_GPS,
         renderMode   : PhotoSphereViewer.VirtualTourPlugin.MODE_3D,

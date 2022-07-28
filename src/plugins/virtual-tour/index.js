@@ -210,6 +210,12 @@ export class VirtualTourPlugin extends AbstractPlugin {
     this.compass = null;
 
     /**
+     * @type {PSV.plugins.GalleryPlugin}
+     * @private
+     */
+    this.gallery = null;
+
+    /**
      * @type {PSV.plugins.VirtualTourPlugin.AbstractDatasource}
      */
     this.datasource = null;
@@ -237,6 +243,7 @@ export class VirtualTourPlugin extends AbstractPlugin {
 
     this.markers = this.psv.getPlugin('markers');
     this.compass = this.psv.getPlugin('compass');
+    this.gallery = this.psv.getPlugin('gallery');
 
     if (!this.is3D() && !this.markers) {
       throw new PSVError('Tour plugin requires the Markers plugin in markers mode');
@@ -297,6 +304,7 @@ export class VirtualTourPlugin extends AbstractPlugin {
     delete this.datasource;
     delete this.markers;
     delete this.compass;
+    delete this.gallery;
     delete this.arrowsGroup;
 
     super.destroy();
@@ -386,6 +394,24 @@ export class VirtualTourPlugin extends AbstractPlugin {
     }
 
     this.setCurrentNode(startNodeId);
+
+    if (this.gallery) {
+      this.gallery.setItems(
+        nodes.map(node => ({
+          id       : node.id,
+          panorama : node.panorama,
+          name     : node.name,
+          thumbnail: node.thumbnail,
+          options  : {
+            caption         : node.caption,
+            panoData        : node.panoData,
+            sphereCorrection: node.sphereCorrection,
+            description     : node.description,
+          },
+        })),
+        id => this.setCurrentNode(id)
+      );
+    }
   }
 
   /**
@@ -715,6 +741,8 @@ export class VirtualTourPlugin extends AbstractPlugin {
    * @summary Opens side panel with the list of nodes
    */
   showNodesList() {
+    utils.logWarn(`Starting from next version, the VirtualTourPlugin will require the GalleryPlugin to display the list of nodes.`);
+
     const nodes = this.change(EVENTS.RENDER_NODES_LIST, Object.values(this.datasource.nodes));
 
     this.psv.panel.show({

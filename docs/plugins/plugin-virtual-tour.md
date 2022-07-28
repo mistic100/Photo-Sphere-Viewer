@@ -76,6 +76,10 @@ getNode = async (nodeId) => {
 </md-tab>
 </md-tabs>
 
+::: tip
+If the [Gallery plugin](./plugin-gallery.md) is loaded, it will be configured with the list of nodes (client mode only).
+:::
+
 
 ## Example
 
@@ -110,7 +114,7 @@ Only the [ESPG:4326 projection](https://epsg.io/4326) is supported.
 #### `name`
 - type: `string`
 
-Short name of this node, used in links tooltips and the nodes list.
+Short name of this node, used in links tooltips and the gallery.
 
 #### `caption`
 
@@ -123,7 +127,7 @@ Replace the global description. Refer to the main [config page](../guide/config.
 #### `thumbnail`
 - type: `string`
 
-Thumbnail for the nodes list in the side panel.
+Thumbnail for the nodes list in the gallery.
 
 #### `markers`
 - type: `array`
@@ -173,17 +177,6 @@ Overrides the global style of the marker used to display the link. See global co
 
 
 ## Configuration
-
-#### `lang`
-- type: `object`
-- default:
-```js
-lang: {
-  nodesList: 'Locations',
-}
-```
-
-_Note: this option is not part of the plugin but is merged with the main [`lang`](../guide/config.md#lang) object._
 
 #### `dataMode`
 - type: `'client' | 'server'`
@@ -335,3 +328,7 @@ This plugin adds buttons to the default navbar:
 - `nodesList` allows to open a list of all nodes on the left panel (client mode only)
 
 If you use a [custom navbar](../guide/navbar.md) you will need to manually add the buttons to the list.
+
+::: warning Deprecated
+This button will be removed and replaced by the [Gallery plugin](./plugin-gallery.md).
+:::

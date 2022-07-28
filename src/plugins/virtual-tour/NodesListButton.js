@@ -43,7 +43,7 @@ export class NodesListButton extends AbstractButton {
    * @override
    */
   isSupported() {
-    return !!this.plugin && !this.plugin.isServerSide();
+    return !!this.plugin && !this.plugin.isServerSide() && !this.plugin.gallery;
   }
 
   /**
