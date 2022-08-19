@@ -648,8 +648,8 @@ export class EventsHandler extends AbstractService {
         clientX: { start: evt.clientX, end: evt.clientX + direction.x },
         clientY: { start: evt.clientY, end: evt.clientY + direction.y },
       },
-      duration  : norm * INERTIA_WINDOW / 100,
-      easing    : 'outCirc',
+      duration  : norm + INERTIA_WINDOW,
+      easing    : 'outQuad',
       onTick    : (properties) => {
         this.__move(properties, false);
       },
