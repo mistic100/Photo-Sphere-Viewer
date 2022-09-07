@@ -200,7 +200,7 @@
         this.psv = new PhotoSphereViewer.Viewer({
           panorama  : this.imageData,
           container : 'viewer',
-          loadingImg: 'https://photo-sphere-viewer.js.org/assets/photosphere-logo.gif',
+          loadingImg: 'https://photo-sphere-viewer-data.netlify.app/assets/loader.gif',
           panoData  : this.panoData,
           navbar    : ['zoom', 'fullscreen'],
           size      : {

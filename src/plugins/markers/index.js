@@ -553,11 +553,7 @@ export class MarkersPlugin extends AbstractPlugin {
 
     this.psv.panel.show({
       id          : ID_PANEL_MARKERS_LIST,
-      content     : MARKERS_LIST_TEMPLATE(
-        markers,
-        this.psv.config.lang[MarkersButton.id],
-        utils.dasherize(MARKER_DATA)
-      ),
+      content     : MARKERS_LIST_TEMPLATE(markers, this.psv.config.lang[MarkersButton.id]),
       noMargin    : true,
       clickHandler: (e) => {
         const li = e.target ? utils.getClosest(e.target, 'li') : undefined;

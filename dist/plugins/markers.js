@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.1
+* Photo Sphere Viewer 4.7.2
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -194,19 +194,19 @@
    */
 
   var ID_PANEL_MARKERS_LIST = 'markersList';
+  var MARKER_DATA_KEY = photoSphereViewer.utils.dasherize(MARKER_DATA);
   /**
    * @summary Markers list template
    * @param {PSV.plugins.MarkersPlugin.Marker[]} markers
    * @param {string} title
-   * @param {string} dataKey
    * @returns {string}
    * @constant
    * @private
    */
 
-  var MARKERS_LIST_TEMPLATE = function MARKERS_LIST_TEMPLATE(markers, title, dataKey) {
+  var MARKERS_LIST_TEMPLATE = function MARKERS_LIST_TEMPLATE(markers, title) {
     return "\n<div class=\"psv-panel-menu psv-panel-menu--stripped\">\n  <h1 class=\"psv-panel-menu-title\">" + pinList + " " + title + "</h1>\n  <ul class=\"psv-panel-menu-list\">\n    " + markers.map(function (marker) {
-      return "\n    <li data-" + dataKey + "=\"" + marker.config.id + "\" class=\"psv-panel-menu-item\" tabindex=\"0\">\n      " + (marker.type === 'image' ? "<span class=\"psv-panel-menu-item-icon\"><img src=\"" + marker.config.image + "\"/></span>" : '') + "\n      <span class=\"psv-panel-menu-item-label\">" + marker.getListContent() + "</span>\n    </li>\n    ";
+      return "\n    <li data-" + MARKER_DATA_KEY + "=\"" + marker.config.id + "\" class=\"psv-panel-menu-item\" tabindex=\"0\">\n      " + (marker.type === 'image' ? "<span class=\"psv-panel-menu-item-icon\"><img src=\"" + marker.config.image + "\"/></span>" : '') + "\n      <span class=\"psv-panel-menu-item-label\">" + marker.getListContent() + "</span>\n    </li>\n    ";
     }).join('') + "\n  </ul>\n</div>\n";
   };
 
@@ -1914,7 +1914,7 @@
       markers = this.change(EVENTS.RENDER_MARKERS_LIST, markers);
       this.psv.panel.show({
         id: ID_PANEL_MARKERS_LIST,
-        content: MARKERS_LIST_TEMPLATE(markers, this.psv.config.lang[MarkersButton.id], photoSphereViewer.utils.dasherize(MARKER_DATA)),
+        content: MARKERS_LIST_TEMPLATE(markers, this.psv.config.lang[MarkersButton.id]),
         noMargin: true,
         clickHandler: function clickHandler(e) {
           var li = e.target ? photoSphereViewer.utils.getClosest(e.target, 'li') : undefined;

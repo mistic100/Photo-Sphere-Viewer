@@ -33,7 +33,6 @@
       autoplay: false,
       muted   : true,
     }],
-    panorama  : { source: base + 'Ayutthaya_FHD.mp4' },
     caption   : 'Ayutthaya <b>&copy; meetle</b>',
     plugins   : [
       [PhotoSphereViewer.VideoPlugin, {
@@ -53,7 +52,8 @@
       PhotoSphereViewer.MarkersPlugin,
       PhotoSphereViewer.SettingsPlugin,
       [PhotoSphereViewer.ResolutionPlugin, {
-        resolutions: [
+        defaultResolution: 'FHD',
+        resolutions      : [
           {
             id      : 'UHD',
             label   : 'Ultra high',

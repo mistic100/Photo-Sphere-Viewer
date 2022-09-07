@@ -22,14 +22,14 @@
 <script>
   const viewer = new PhotoSphereViewer.Viewer({
     container : 'photosphere',
-    panorama  : 'sphere_small.jpg',
     caption   : 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
     loadingImg: 'assets/photosphere-logo.gif',
     plugins   : [
       PhotoSphereViewer.SettingsPlugin,
       [PhotoSphereViewer.ResolutionPlugin, {
-        showBadge  : true,
-        resolutions: [
+        showBadge        : true,
+        defaultResolution: 'SD',
+        resolutions      : [
           {
             id      : 'SD',
             label   : 'Small',

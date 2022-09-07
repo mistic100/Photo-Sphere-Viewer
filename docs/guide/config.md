@@ -194,7 +194,7 @@ Requires two fingers to rotate the panorama. This allows standard touch-scroll n
 
 ## Advanced options
 
-#### `overlay`
+#### `overlay` <Badge text="4.7.1"/>
 - type: `*`
 
 Path to an additional transparent panorama which will be displayed on top of the main one. The overlay can also be changed with the `setOverlay()` method or within the options of the `setPanorama()` method.
@@ -203,7 +203,7 @@ Path to an additional transparent panorama which will be displayed on top of the
 Only the default [equirectangular](./adapters/equirectangular.md) and the [cubemap](./adapters/cubemap.md) adapters support this feature.
 :::
 
-#### `overlayOpacity`
+#### `overlayOpacity` <Badge text="4.7.1"/>
 - type: `number`
 - default: `1`
 

@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.1
+* Photo Sphere Viewer 4.7.2
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -1051,7 +1051,7 @@
 
   function getClosest(el, selector) {
     // When el is document or window, the matches does not exist
-    if (!el.matches) {
+    if (!(el != null && el.matches)) {
       return null;
     }
 
@@ -9297,14 +9297,17 @@
         opacity = 1;
       }
 
-      if (!this.adapter.constructor.supportsOverlay) {
-        return Promise.reject(new PSVError(this.adapter.constructor.id + " adapter does not supports overlay"));
-      }
-
       if (!path) {
-        this.renderer.setOverlay(null, 0);
+        if (this.adapter.constructor.supportsOverlay) {
+          this.renderer.setOverlay(null, 0);
+        }
+
         return Promise.resolve();
       } else {
+        if (!this.adapter.constructor.supportsOverlay) {
+          return Promise.reject(new PSVError(this.adapter.constructor.id + " adapter does not supports overlay"));
+        }
+
         return this.adapter.loadTexture(path, function (image) {
           var p = _this4.prop.panoData;
           var r = image.width / p.croppedWidth;

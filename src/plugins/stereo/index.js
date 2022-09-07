@@ -16,7 +16,7 @@ DEFAULTS.lang[StereoButton.id] = 'Stereo view';
 registerButton(StereoButton, 'caption:right');
 
 // other lang strings
-DEFAULTS.lang.stereoNotification = 'Click anywhere to exit stereo view.';
+DEFAULTS.lang.stereoNotification = 'Tap anywhere to exit stereo view.';
 DEFAULTS.lang.pleaseRotate = ['Please rotate your device', '(or tap to continue)'];
 
 

@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.1
+* Photo Sphere Viewer 4.7.2
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -68,6 +68,7 @@
   /**
    * @typedef {Object} PSV.plugins.ResolutionPlugin.Options
    * @property {PSV.plugins.ResolutionPlugin.Resolution[]} resolutions - list of available resolutions
+   * @property {string} [defaultResolution] - the default resolution if no panorama is configured on the viewer
    * @property {boolean} [showBadge=true] - show the resolution id as a badge on the settings button
    */
 
@@ -125,6 +126,11 @@
       _this.config = _extends({
         showBadge: true
       }, options);
+
+      if (_this.config.defaultResolution && _this.psv.config.panorama) {
+        photoSphereViewer.utils.logWarn('ResolutionPlugin, a defaultResolution was provided ' + 'but a panorama is already configured on the viewer, ' + 'the defaultResolution will be ignored.');
+      }
+
       return _this;
     }
     /**
@@ -156,7 +162,7 @@
           return _this2.__getSettingsOptions();
         },
         apply: function apply(resolution) {
-          return _this2.setResolution(resolution);
+          return _this2.__setResolutionIfExists(resolution);
         },
         badge: !this.config.showBadge ? null : function () {
           return _this2.prop.resolution;
@@ -165,8 +171,9 @@
       this.psv.on(photoSphereViewer.CONSTANTS.EVENTS.PANORAMA_LOADED, this);
 
       if (this.config.resolutions) {
-        this.setResolutions(this.config.resolutions);
+        this.setResolutions(this.config.resolutions, this.psv.config.panorama ? null : this.config.defaultResolution);
         delete this.config.resolutions;
+        delete this.config.defaultResolution;
       }
     }
     /**
@@ -195,10 +202,11 @@
     /**
      * @summary Changes the available resolutions
      * @param {PSV.plugins.ResolutionPlugin.Resolution[]} resolutions
+     * @param {string} [defaultResolution] - if not provided, the current panorama is kept
      */
     ;
 
-    _proto.setResolutions = function setResolutions(resolutions) {
+    _proto.setResolutions = function setResolutions(resolutions, defaultResolution) {
       var _this3 = this;
 
       this.resolutions = resolutions;
@@ -209,13 +217,28 @@
         }
 
         _this3.resolutionsById[resolution.id] = resolution;
-      });
+      }); // pick first resolution if no default provided and no current panorama
+
+      if (!this.psv.config.panorama && !defaultResolution) {
+        defaultResolution = resolutions[0].id;
+      } // ensure the default resolution exists
+
+
+      if (defaultResolution && !this.resolutionsById[defaultResolution]) {
+        photoSphereViewer.utils.logWarn("Resolution " + defaultResolution + " unknown");
+        defaultResolution = resolutions[0].id;
+      }
+
+      if (defaultResolution) {
+        this.setResolution(defaultResolution);
+      }
 
       this.__refreshResolution();
     }
     /**
      * @summary Changes the current resolution
      * @param {string} id
+     * @throws {PSVError} if the resolution does not exist
      */
     ;
 
@@ -224,10 +247,23 @@
         throw new photoSphereViewer.PSVError("Resolution " + id + " unknown");
       }
 
-      return this.psv.setPanorama(this.resolutionsById[id].panorama, {
-        transition: false,
-        showLoader: false
-      });
+      return this.__setResolutionIfExists(id);
+    }
+    /**
+     * @private
+     * @return {Promise}
+     */
+    ;
+
+    _proto.__setResolutionIfExists = function __setResolutionIfExists(id) {
+      if (this.resolutionsById[id]) {
+        return this.psv.setPanorama(this.resolutionsById[id].panorama, {
+          transition: false,
+          showLoader: false
+        });
+      } else {
+        return Promise.resolve();
+      }
     }
     /**
      * @summary Returns the current resolution
@@ -255,7 +291,7 @@
         var _this$settings;
 
         this.prop.resolution = resolution == null ? void 0 : resolution.id;
-        (_this$settings = this.settings) == null ? void 0 : _this$settings.updateBadge();
+        (_this$settings = this.settings) == null ? void 0 : _this$settings.updateButton();
         this.trigger(EVENTS.RESOLUTION_CHANGED, this.prop.resolution);
       }
     }

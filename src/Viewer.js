@@ -580,15 +580,18 @@ export class Viewer extends EventEmitter {
    * @returns {Promise}
    */
   setOverlay(path, opacity = 1) {
-    if (!this.adapter.constructor.supportsOverlay) {
-      return Promise.reject(new PSVError(`${this.adapter.constructor.id} adapter does not supports overlay`));
-    }
-
     if (!path) {
-      this.renderer.setOverlay(null, 0);
+      if (this.adapter.constructor.supportsOverlay) {
+        this.renderer.setOverlay(null, 0);
+      }
+
       return Promise.resolve();
     }
     else {
+      if (!this.adapter.constructor.supportsOverlay) {
+        return Promise.reject(new PSVError(`${this.adapter.constructor.id} adapter does not supports overlay`));
+      }
+
       return this.adapter.loadTexture(path, (image) => {
         const p = this.prop.panoData;
         const r = image.width / p.croppedWidth;

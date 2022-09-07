@@ -14,8 +14,9 @@ The plugin allows to define `nodes` which contains a `panorama` and one or more 
 
 There are two different ways to define the position of the links : the manual mode and the GPS mode.
 
-<md-tabs md-elevation="1">
-<md-tab md-label="Manual mode">
+:::: tabs
+
+::: tab Manual mode
 In manual mode each link must have `longitude`/`latitude` or `x`/`y` coordinates to be placed at the correct location on the panorama. This works exactly like the placement of markers.
 
 ```js
@@ -29,9 +30,9 @@ const node = {
   }],
 };
 ```
-</md-tab>
+:::
 
-<md-tab md-label="GPS mode">
+::: tab GPS mode
 In GPS mode each node has positionning coordinates and the links are placed automatically.
 
 ```js
@@ -45,14 +46,16 @@ const node = {
   }],
 };
 ```
-</md-tab>
-</md-tabs>
+:::
+
+::::
 
 
 The nodes can be provided all at once or asynchronously as the user navigates.
 
-<md-tabs md-elevation="1">
-<md-tab md-label="Client mode">
+:::: tabs
+
+::: tab Client mode
 In client mode you must provide all `nodes` all at once, you can also change all the nodes with the `setNodes` method.
 
 ```js
@@ -61,9 +64,9 @@ const nodes = [
   { id: 'node-2', panorama: '002.jpg', links: [{ nodeId: 'node-1', x: 3000, y: 780}] },
 ];
 ```
-</md-tab>
+:::
 
-<md-tab md-label="Server mode">
+::: tab Server mode
 In server mode you provide the `getNode callbacks function which returns a Promise to load the data of a node.
 
 ```js
@@ -72,9 +75,9 @@ getNode = async (nodeId) => {
   return await res.json();
 };
 ```
+:::
 
-</md-tab>
-</md-tabs>
+::::
 
 ::: tip
 If the [Gallery plugin](./plugin-gallery.md) is loaded, it will be configured with the list of nodes (client mode only).
@@ -83,7 +86,149 @@ If the [Gallery plugin](./plugin-gallery.md) is loaded, it will be configured wi
 
 ## Example
 
-<iframe style="width: 100%; height: 500px;" src="//jsfiddle.net/mistic100/y0svuLpt/embedded/result,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+::: code-demo
+
+```yaml
+title: PSV Virtual Tour Demo
+resources:
+  - path: plugins/virtual-tour.js
+    imports: VirtualTourPlugin
+  - path: plugins/virtual-tour.css
+  - path: plugins/gallery.js
+    imports: GalleryPlugin
+  - path: plugins/gallery.css
+  - path: plugins/markers.js
+    imports: MarkersPlugin
+  - path: plugins/markers.css
+```
+
+```js
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+const viewer = new PhotoSphereViewer.Viewer({
+  container: 'viewer',
+  caption: 'Cape Florida Light, Key Biscayne <b>&copy; Pixexid</b>',
+  loadingImg: baseUrl + 'loader.gif',
+  touchmoveTwoFingers: true,
+  mousewheelCtrlKey: true,
+  defaultLong: '130deg',
+  navbar: 'zoom move download gallery caption fullscreen',
+
+  plugins: [
+    PhotoSphereViewer.MarkersPlugin,
+    [PhotoSphereViewer.GalleryPlugin, {
+      thumbnailSize: { width: 100, height: 100 },
+    }],
+    [PhotoSphereViewer.VirtualTourPlugin, {
+      positionMode: PhotoSphereViewer.VirtualTourPlugin.MODE_GPS,
+      renderMode  : PhotoSphereViewer.VirtualTourPlugin.MODE_3D,
+    }],
+  ],
+});
+
+const virtualTour = viewer.getPlugin(PhotoSphereViewer.VirtualTourPlugin);
+
+virtualTour.setNodes([
+  {
+    id      : '1',
+    panorama: baseUrl + 'tour/key-biscayne-1.jpg',
+    thumbnail: baseUrl + 'tour/key-biscayne-1-thumb.jpg',
+    name    : 'One',
+    links   : [
+      { nodeId: '2' },
+    ],
+    markers: [
+      {
+        id: 'marker-1',
+        image: baseUrl + 'pictos/pin-red.png',
+        tooltip: 'Cape Florida Light, Key Biscayne',
+        width    : 32,
+        height   : 32,
+        anchor   : 'bottom center',
+        longitude: '105deg',
+        latitude: '35deg',
+      }
+    ],
+    position: [-80.156479, 25.666725, 3],
+    panoData: { poseHeading: 327 },
+  },
+  {
+    id      : '2',
+    panorama: baseUrl + 'tour/key-biscayne-2.jpg',
+    thumbnail: baseUrl + 'tour/key-biscayne-2-thumb.jpg',
+    name    : 'Two',
+    links   : [
+      { nodeId: '3' },
+      { nodeId: '1' },
+    ],
+    position: [-80.156168, 25.666623, 3],
+    panoData: { poseHeading: 318 },
+  },
+  {
+    id      : '3',
+    panorama: baseUrl + 'tour/key-biscayne-3.jpg',
+    thumbnail: baseUrl + 'tour/key-biscayne-3-thumb.jpg',
+    name    : 'Three',
+    links   : [
+      { nodeId: '4' },
+      { nodeId: '2' },
+      { nodeId: '5' },
+    ],
+    position: [-80.155932, 25.666498, 5],
+    panoData: { poseHeading: 328 },
+  },
+  {
+    id      : '4',
+    panorama: baseUrl + 'tour/key-biscayne-4.jpg',
+    thumbnail: baseUrl + 'tour/key-biscayne-4-thumb.jpg',
+    name    : 'Four',
+    links   : [
+      { nodeId: '3' },
+      { nodeId: '5' },
+    ],
+    position: [-80.156089, 25.666357, 3],
+    panoData: { poseHeading: 78 },
+  },
+  {
+    id      : '5',
+    panorama: baseUrl + 'tour/key-biscayne-5.jpg',
+    thumbnail: baseUrl + 'tour/key-biscayne-5-thumb.jpg',
+    name    : 'Five',
+    links   : [
+      { nodeId: '6' },
+      { nodeId: '3' },
+      { nodeId: '4' },
+    ],
+    position: [-80.156292, 25.666446, 2],
+    panoData: { poseHeading: 190 },
+  },
+  {
+    id      : '6',
+    panorama: baseUrl + 'tour/key-biscayne-6.jpg',
+    thumbnail: baseUrl + 'tour/key-biscayne-6-thumb.jpg',
+    name    : 'Six',
+    links   : [
+      { nodeId: '5' },
+      { nodeId: '7' },
+    ],
+    position: [-80.156465, 25.666496, 2],
+    panoData: { poseHeading: 328 },
+  },
+  {
+    id       : '7',
+    panorama : baseUrl + 'tour/key-biscayne-7.jpg',
+    thumbnail: baseUrl + 'tour/key-biscayne-7-thumb.jpg',
+    name     : 'Seven',
+    links    : [
+      { nodeId: '6' },
+    ],
+    position : [-80.157070, 25.666500, 3],
+    panoData : { poseHeading: 250 },
+  },
+], '2');
+```
+
+:::
 
 
 ## Nodes options

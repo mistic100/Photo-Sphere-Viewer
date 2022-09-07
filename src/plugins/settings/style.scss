@@ -1,10 +1,60 @@
+@use 'sass:list';
 @import '../../styles/vars';
 
+$psv-settings-margin: 10px !default;
+$psv-settings-item-height: $psv-panel-menu-item-height !default;
+$psv-settings-item-padding: $psv-panel-menu-item-padding !default;
+$psv-settings-background: $psv-panel-background !default;
+$psv-settings-shadow: 0 0 5px $psv-settings-background !default;
+$psv-settings-text-color: $psv-panel-text-color !default;
+$psv-settings-hover-background: $psv-panel-menu-hover-background !default;
 $psv-settings-badge-font: 10px / .9 monospace !default;
 $psv-settings-badge-background: #111 !default;
 $psv-settings-badge-text-color: white !default;
 
+.psv-settings {
+  position: absolute;
+  bottom: $psv-navbar-height + $psv-settings-margin;
+  right: $psv-settings-margin;
+  background: $psv-settings-background;
+  box-shadow: $psv-settings-shadow;
+  color: $psv-settings-text-color;
+  z-index: $psv-navbar-zindex;
+  opacity: 0;
+  transition: opacity .1s linear;
+
+  &--open {
+    opacity: 1;
+  }
+
+  &-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+
 .psv-settings-item {
+  height: $psv-settings-item-height;
+  padding: $psv-settings-item-padding;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+
+  &:hover {
+    background: $psv-settings-hover-background;
+  }
+
+  &:focus-visible {
+    outline: $psv-element-focus-outline;
+    outline-offset: -#{list.nth($psv-element-focus-outline, 1)};
+  }
+
+  *:not(:last-child) {
+    margin-right: 1em;
+  }
+
   &-label {
     flex: 1;
     font-weight: bold;
@@ -23,19 +73,10 @@ $psv-settings-badge-text-color: white !default;
       width: 1em;
       height: 1em;
     }
-
-    &:first-child {
-      margin-right: 1em;
-    }
-
-    &:last-child {
-      margin-left: 1em;
-    }
   }
 
   &--header {
     border-bottom: 1px solid currentcolor;
-    margin-bottom: 1em;
 
     svg {
       transform: scaleX(-1);
@@ -52,13 +93,4 @@ $psv-settings-badge-text-color: white !default;
   background: $psv-settings-badge-background;
   color: $psv-settings-badge-text-color;
   font: $psv-settings-badge-font;
-}
-
-.psv-settings-menu {
-  justify-content: flex-end;
-
-  .psv-panel-menu-list {
-    flex: none;
-    margin-bottom: $psv-panel-menu-item-height;
-  }
 }

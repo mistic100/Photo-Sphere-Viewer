@@ -1,9 +1,55 @@
 /*!
- * Photo Sphere Viewer 4.7.1
+ * Photo Sphere Viewer 4.7.2
  * @copyright 2014-2015 Jérémy Heleine
  * @copyright 2015-2022 Damien "Mistic" Sorel
  * @licence MIT (https://opensource.org/licenses/MIT)
  */
+.psv-settings {
+  position: absolute;
+  bottom: 50px;
+  right: 10px;
+  background: rgba(10, 10, 10, 0.7);
+  -webkit-box-shadow: 0 0 5px rgba(10, 10, 10, 0.7);
+          box-shadow: 0 0 5px rgba(10, 10, 10, 0.7);
+  color: rgb(220, 220, 220);
+  z-index: 90;
+  opacity: 0;
+  -webkit-transition: opacity 0.1s linear;
+  transition: opacity 0.1s linear;
+}
+.psv-settings--open {
+  opacity: 1;
+}
+.psv-settings-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.psv-settings-item {
+  height: 1.5em;
+  padding: 0.5em 1em;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  cursor: pointer;
+}
+.psv-settings-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.psv-settings-item:focus-visible {
+  outline: 2px solid #007cff;
+  outline-offset: -2px;
+}
+.psv-settings-item *:not(:last-child) {
+  margin-right: 1em;
+}
 .psv-settings-item-label {
   -webkit-box-flex: 1;
       -ms-flex: 1;
@@ -26,15 +72,8 @@
   width: 1em;
   height: 1em;
 }
-.psv-settings-item-icon:first-child {
-  margin-right: 1em;
-}
-.psv-settings-item-icon:last-child {
-  margin-left: 1em;
-}
 .psv-settings-item--header {
   border-bottom: 1px solid currentcolor;
-  margin-bottom: 1em;
 }
 .psv-settings-item--header svg {
   -webkit-transform: scaleX(-1);
@@ -50,17 +89,5 @@
   background: #111;
   color: white;
   font: 10px/0.9 monospace;
-}
-
-.psv-settings-menu {
-  -webkit-box-pack: end;
-      -ms-flex-pack: end;
-          justify-content: flex-end;
-}
-.psv-settings-menu .psv-panel-menu-list {
-  -webkit-box-flex: 0;
-      -ms-flex: none;
-          flex: none;
-  margin-bottom: 20px;
 }
 /*# sourceMappingURL=settings.css.map */

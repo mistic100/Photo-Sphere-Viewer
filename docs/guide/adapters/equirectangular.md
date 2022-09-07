@@ -7,7 +7,7 @@ There is no need to declare the equirectangular adapter as it is the default one
 :::
 
 ```js
-new PhotoSphereViewer.Viewer({
+const viewer = new PhotoSphereViewer.Viewer({
   adapter: [PhotoSphereViewer.EquirectangularAdapter, {
     resolution: 64, // default
   }],

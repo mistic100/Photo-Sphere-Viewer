@@ -1,3 +1,4 @@
+@use 'sass:list';
 @import 'vars';
 
 .psv-navbar {
@@ -72,8 +73,8 @@
 }
 
 .psv-button:not(.psv-button--disabled):focus-visible {
-  outline: 2px dotted currentcolor;
-  outline-offset: -2px;
+  outline: $psv-element-focus-outline;
+  outline-offset: -#{list.nth($psv-element-focus-outline, 1)};
 }
 
 .psv-container:not(.psv--is-touch) .psv-button--hover-scale:not(.psv-button--disabled):hover .psv-button-svg {

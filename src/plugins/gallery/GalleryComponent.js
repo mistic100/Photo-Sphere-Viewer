@@ -154,7 +154,7 @@ export class GalleryComponent extends AbstractComponent {
    * @param {PSV.plugins.GalleryPlugin.Item[]} items
    */
   setItems(items) {
-    this.container.innerHTML = ITEMS_TEMPLATE(items, GALLERY_ITEM_DATA_KEY, this.plugin.config.thumbnailSize);
+    this.container.innerHTML = ITEMS_TEMPLATE(items, this.plugin.config.thumbnailSize);
 
     if (this.observer) {
       this.observer.disconnect();

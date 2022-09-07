@@ -1,5 +1,4 @@
-import { AbstractButton, CONSTANTS } from '../..';
-import { ID_PANEL } from './constants';
+import { AbstractButton } from '../..';
 import icon from './settings.svg';
 
 /**
@@ -34,20 +33,12 @@ export class SettingsButton extends AbstractButton {
     this.badge.className = 'psv-settings-badge';
     this.badge.style.display = 'none';
     this.container.appendChild(this.badge);
-
-    if (this.plugin) {
-      this.psv.on(CONSTANTS.EVENTS.OPEN_PANEL, this);
-      this.psv.on(CONSTANTS.EVENTS.CLOSE_PANEL, this);
-    }
   }
 
   /**
    * @override
    */
   destroy() {
-    this.psv.off(CONSTANTS.EVENTS.OPEN_PANEL, this);
-    this.psv.off(CONSTANTS.EVENTS.CLOSE_PANEL, this);
-
     delete this.plugin;
 
     super.destroy();
@@ -58,22 +49,6 @@ export class SettingsButton extends AbstractButton {
    */
   isSupported() {
     return !!this.plugin;
-  }
-
-  /**
-   * @summary Handles events
-   * @param {Event} e
-   * @private
-   */
-  handleEvent(e) {
-    /* eslint-disable */
-    switch (e.type) {
-      // @formatter:off
-      case CONSTANTS.EVENTS.OPEN_PANEL:  this.toggleActive(e.args[0] === ID_PANEL); break;
-      case CONSTANTS.EVENTS.CLOSE_PANEL: this.toggleActive(false); break;
-      // @formatter:on
-    }
-    /* eslint-enable */
   }
 
   /**

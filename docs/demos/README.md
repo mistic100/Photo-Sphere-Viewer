@@ -1,55 +1,53 @@
----
-sidebar: auto
----
-
 # Demos
 
-::: tip Want your demo here ?
-Create a JSFiddle by forking [PSV Home Demo](https://jsfiddle.net/mistic100/5r684etx/) and submit a pull request to add it to the documentation.
-:::
-
 ::: tip Plugins
-Visit each [plugin page](../plugins/) to see an example.
+Visit each [plugin page](../plugins/) to see a dedicated example.
 :::
 
 ## Basic
 
 :::: gallery
 
-::: item link="https://jsfiddle.net/mistic100/5r684etx/show"
-![](../images/demos/default.jpg)
+::: item
+[![](../images/demos/default.jpg)](./basic/1-zero-config.md)
 ### Zero config
 Simple panorama with default options.
 :::
 
-::: item link="https://jsfiddle.net/mistic100/cLp08us4/show"
-![](../images/demos/description.jpg)
+::: item
+[![](../images/demos/description.jpg)](./basic/2-description.md)
 ### Description
 &laquo; i &raquo; button will display the `description` in the side panel.
 :::
 
-::: item link="https://jsfiddle.net/mistic100/j63dqub9/show"
-![](../images/demos/navbar.jpg)
+::: item
+[![](../images/demos/navbar.jpg)](./basic/3-custom-navbar.md)
 ### Custom navbar
 Customize the navbar with default and custom buttons.
 :::
 
-::: item link="https://jsfiddle.net/mistic100/95asmzve/show"
-![](../images/demos/fisheye.jpg)
+::: item
+[![](../images/demos/fisheye.jpg)](./basic/4-fisheye.md)
 ### Fisheye
 Display the panorama with a fisheye effect.
 :::
 
-::: item link="https://jsfiddle.net/mistic100/wpvtyz1j/show"
-![](../images/demos/autorotate.gif)
+::: item
+[![](../images/demos/autorotate.gif)](./basic/5-autorotate.md)
 ### Autorotate
-Automatically performs a rotation if the user is innactive.
+Automatically performs a rotation if the user is inactive.
 :::
 
-::: item link="https://jsfiddle.net/mistic100/wsL1x5k0/show"
-![](../images/demos/animation.gif)
+::: item
+[![](../images/demos/animation.gif)](./basic/6-animation.md)
 ### Intro animation
 Use the `Animation` helper to create a cool intro.
+:::
+
+::: item
+[![](../images/demos/overlay.jpg)](./basic/7-overlay.md)
+### Overlay
+Display a secondary image above the panorama.
 :::
 
 ::::
@@ -59,8 +57,8 @@ Use the `Animation` helper to create a cool intro.
 
 :::: gallery
 
-::: item link="https://jsfiddle.net/mistic100/Lm3wzesb/show"
-![](../images/demos/custom-marker.jpg)
+::: item
+[![](../images/demos/custom-marker.jpg)](./markers/custom-tooltip.md)
 ### Custom tooltip
 Advanced styling of a marker's tooltip.
 :::

@@ -57,7 +57,7 @@ type VirtualTourNodeChangedData = {
   fromLinkPosition?: Position,
 };
 
-type VirtualTourPluginPluginOptions = {
+type VirtualTourPluginOptions = {
   dataMode?: 'client' | 'server';
   positionMode?: 'manual' | 'gps';
   renderMode?: '3d' | 'markers';
@@ -76,6 +76,11 @@ type VirtualTourPluginPluginOptions = {
   markerLatOffset?: number;
   arrowPosition?: 'top' | 'bottom';
 };
+
+/**
+ * @deprecated Use VirtualTourPluginOptions
+ */
+type VirtualTourPluginPluginOptions = VirtualTourPluginOptions;
 
 declare const EVENTS: {
   NODE_CHANGED: 'node-changed',
@@ -102,7 +107,7 @@ declare class VirtualTourPlugin extends AbstractPlugin {
   static MODE_MANUAL: typeof MODE_MANUAL;
   static MODE_GPS: typeof MODE_GPS;
 
-  constructor(psv: Viewer, options: VirtualTourPluginPluginOptions);
+  constructor(psv: Viewer, options: VirtualTourPluginOptions);
 
   /**
    * @summary Sets the nodes (client mode only)
@@ -142,4 +147,4 @@ declare class VirtualTourPlugin extends AbstractPlugin {
 
 }
 
-export { EVENTS, MODE_3D, MODE_CLIENT, MODE_GPS, MODE_MANUAL, MODE_MARKERS, MODE_SERVER, VirtualTourArrowStyle, VirtualTourMarkerStyle, VirtualTourNode, VirtualTourNodeChangedData, VirtualTourNodeLink, VirtualTourPlugin, VirtualTourPluginPluginOptions };
+export { EVENTS, MODE_3D, MODE_CLIENT, MODE_GPS, MODE_MANUAL, MODE_MARKERS, MODE_SERVER, VirtualTourArrowStyle, VirtualTourMarkerStyle, VirtualTourNode, VirtualTourNodeChangedData, VirtualTourNodeLink, VirtualTourPlugin, VirtualTourPluginOptions, VirtualTourPluginPluginOptions };

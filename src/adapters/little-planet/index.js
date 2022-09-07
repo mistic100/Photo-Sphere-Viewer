@@ -16,7 +16,7 @@ const AXIS_Y = new Vector3(0, 1, 0);
 export class LittlePlanetAdapter extends EquirectangularAdapter {
 
   static id = 'little-planet';
-  static supportsDownload = true;
+  static supportsOverlay = false;
 
   /**
    * @param {PSV.Viewer} psv

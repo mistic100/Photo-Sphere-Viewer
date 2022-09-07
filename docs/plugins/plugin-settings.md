@@ -26,7 +26,60 @@ const viewer = new PhotoSphereViewer.Viewer({
 
 The following example manually adds two settings.
 
-<iframe style="width: 100%; height: 500px;" src="//jsfiddle.net/mistic100/54qx9yLt/embedded/result,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+::: code-demo
+
+```yaml
+title: PSV Settings Demo
+resources:
+  - path: plugins/settings.js
+    imports: SettingsPlugin
+  - path: plugins/settings.css
+```
+
+```js
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+const viewer = new PhotoSphereViewer.Viewer({
+  container: 'viewer',
+  panorama: baseUrl + 'sphere.jpg',
+  caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+  loadingImg: baseUrl + 'loader.gif',
+  touchmoveTwoFingers: true,
+  mousewheelCtrlKey: true,
+
+  plugins: [
+    PhotoSphereViewer.SettingsPlugin,
+  ],
+});
+
+const settings = viewer.getPlugin(PhotoSphereViewer.SettingsPlugin);
+
+let currentToggle = true;
+let currentOption = 'A';
+
+settings.addSetting({
+  id    : 'custom-toggle-setting',
+  label : 'Toggle setting',
+  type  : 'toggle',
+  active: () => currentToggle,
+  toggle: () => currentToggle = !currentToggle,
+});
+
+settings.addSetting({
+  id     : 'custom-options-setting',
+  label  : 'Options setting',
+  type   : 'options',
+  current: () => currentOption,
+  options: () => ([
+    { id: 'A', label: 'Option A' },
+    { id: 'B', label: 'Option B' },
+  ]),
+  apply : (option) => currentOption = option,
+  badge : () => currentOption,
+});
+```
+
+:::
 
 
 ## Adding a setting
@@ -83,6 +136,24 @@ settings.addSetting({
 
 
 ## Configuration
+
+#### `persist` <Badge text="4.7.2"/>
+- type: `boolean`
+- default: `false`
+
+Should the settings be persisted. The persistence storage can be configured.
+
+#### `storage` <Badge text="4.7.2"/>
+- type:
+```ts
+{
+  get(settingId: string): boolean | string | Promise<boolean | string>;
+  set(settingId: string, value: boolean | string);
+}
+```
+- default: LocalStorage with key `psvSettings`
+
+Custom storage solution, for example LocalForage, NgRx, HTTP service, etc.
 
 #### `lang`
 - type: `object`

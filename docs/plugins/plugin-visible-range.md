@@ -33,9 +33,70 @@ Alternatively, if `usePanoData` is set to `true`, the visible range is limited t
 
 ## Example
 
-In this example only the front portion of the sphere is visible.
+::: code-demo
 
-<iframe style="width: 100%; height: 500px;" src="//jsfiddle.net/mistic100/m2fw1oLd/embedded/result,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+```yaml
+title: PSV Visible Range Demo
+resources:
+  - path: plugins/visible-range.js
+    imports: VisibleRangePlugin
+```
+
+```js
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+let visibleRangePlugin;
+
+const viewer = new PhotoSphereViewer.Viewer({
+  container: 'viewer',
+  panorama: baseUrl + 'sphere-cropped.jpg',
+  caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+  loadingImg: baseUrl + 'loader.gif',
+  touchmoveTwoFingers: true,
+  mousewheelCtrlKey: true,
+  defaultZoomLvl: 30,
+
+  navbar: [
+    'autorotate',
+    // custom buttons to clear and set the range
+      {
+        content  : 'Clear range',
+        className: 'custom-button',
+        onClick  : () => {
+          visibleRangePlugin.setLongitudeRange(null);
+          visibleRangePlugin.setLatitudeRange(null);
+        },
+      },
+      {
+        content  : 'Set custom range',
+        className: 'custom-button',
+        onClick  : () => {
+          visibleRangePlugin.setLongitudeRange([-Math.PI / 2, Math.PI / 2]);
+          visibleRangePlugin.setLatitudeRange([-Math.PI / 3, Math.PI / 3]);
+        },
+      },
+      {
+        content  : 'Set range from panoData',
+        className: 'custom-button',
+        onClick  : () => {
+          visibleRangePlugin.setRangesFromPanoData();
+        },
+      },
+    'caption',
+    'fullscreen',
+  ],
+
+  plugins: [
+    [PhotoSphereViewer.VisibleRangePlugin, {
+      usePanoData: true,
+    }],
+  ],
+});
+
+visibleRangePlugin = viewer.getPlugin(PhotoSphereViewer.VisibleRangePlugin);
+```
+
+:::
 
 
 ## Configuration

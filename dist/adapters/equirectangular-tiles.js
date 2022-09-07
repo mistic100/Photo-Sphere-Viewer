@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.1
+* Photo Sphere Viewer 4.7.2
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -938,6 +938,7 @@
   }(photoSphereViewer.EquirectangularAdapter);
   EquirectangularTilesAdapter.id = 'equirectangular-tiles';
   EquirectangularTilesAdapter.supportsDownload = false;
+  EquirectangularTilesAdapter.supportsOverlay = false;
 
   exports.EquirectangularTilesAdapter = EquirectangularTilesAdapter;
 

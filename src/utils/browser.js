@@ -66,7 +66,7 @@ export function hasParent(el, parent) {
  */
 export function getClosest(el, selector) {
   // When el is document or window, the matches does not exist
-  if (!el.matches) {
+  if (!el?.matches) {
     return null;
   }
 

@@ -23,7 +23,7 @@ export class PauseOverlay extends AbstractComponent {
      * @readonly
      */
     this.button = document.createElement('button');
-    this.button.className = 'psv-video-bigbutton';
+    this.button.className = 'psv-video-bigbutton psv--capture-event';
     this.button.innerHTML = playIcon;
     this.container.appendChild(this.button);
 

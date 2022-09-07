@@ -1,12 +1,12 @@
 <template>
-  <a class="demo-gallery-item" :href="link">
+  <div class="demo-gallery-item">
     <slot></slot>
-  </a>
+  </div>
 </template>
 
 <script>
   export default {
-    props: ['link'],
+    name: 'GalleryItem',
   };
 </script>
 

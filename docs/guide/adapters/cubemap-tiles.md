@@ -5,7 +5,7 @@
 This adapter is available in the core `photo-sphere-viewer` package in `dist/adapters/cubemap-tiles.js`. It requires `dist/adapters/cubemap.js` to be loaded too.
 
 ```js
-new PhotoSphereViewer.Viewer({
+const viewer = new PhotoSphereViewer.Viewer({
   adapter: PhotoSphereViewer.CubemapTilesAdapter,
   panorama: {
     faceSize: 6000,
@@ -28,7 +28,46 @@ new PhotoSphereViewer.Viewer({
 
 ## Example
 
-<iframe style="width: 100%; height: 600px;" src="//jsfiddle.net/mistic100/7vxju1en/embedded/result,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+::: code-demo
+
+```yaml
+title: PSV Cubemap Tiles Demo
+resources:
+  - path: adapters/cubemap.js
+  - path: adapters/cubemap-tiles.js
+    imports: CubemapTilesAdapter
+```
+
+```js
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+const viewer = new PhotoSphereViewer.Viewer({
+  container: 'viewer',
+  adapter: PhotoSphereViewer.CubemapTilesAdapter,
+  panorama: {
+    faceSize: 1500,
+    nbTiles : 4,
+    baseUrl      : {
+      left  : baseUrl + 'cubemap/px.jpg',
+      front : baseUrl + 'cubemap/nz.jpg',
+      right : baseUrl + 'cubemap/nx.jpg',
+      back  : baseUrl + 'cubemap/pz.jpg',
+      top   : baseUrl + 'cubemap/py.jpg',
+      bottom: baseUrl + 'cubemap/ny.jpg'
+    },
+    tileUrl : (face, col, row) => {
+      const num = row * 4 + col;
+      return `${baseUrl}cubemap-tiles/${face}_${('00' + num).slice(-2)}.jpg`;
+    },
+  },
+  caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+  loadingImg: baseUrl + 'loader.gif',
+  touchmoveTwoFingers: true,
+  mousewheelCtrlKey: true,
+});
+```
+
+:::
 
 
 ## Configuration

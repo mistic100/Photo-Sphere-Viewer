@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.1
+* Photo Sphere Viewer 4.7.2
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -117,7 +117,7 @@
        */
 
       _this.button = document.createElement('button');
-      _this.button.className = 'psv-video-bigbutton';
+      _this.button.className = 'psv-video-bigbutton psv--capture-event';
       _this.button.innerHTML = playIcon;
 
       _this.container.appendChild(_this.button);

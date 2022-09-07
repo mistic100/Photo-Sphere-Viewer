@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.1
+* Photo Sphere Viewer 4.7.2
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -110,11 +110,34 @@
      */
     HIDE_GALLERY: 'hide-gallery'
   };
+  /**
+   * @summary Property name added to gallery items
+   * @type {string}
+   * @constant
+   * @private
+   */
+
   var GALLERY_ITEM_DATA = 'psvGalleryItem';
+  /**
+   * @summary Property name added to gallery items (dash-case)
+   * @type {string}
+   * @constant
+   * @private
+   */
+
   var GALLERY_ITEM_DATA_KEY = photoSphereViewer.utils.dasherize(GALLERY_ITEM_DATA);
-  var ITEMS_TEMPLATE = function ITEMS_TEMPLATE(items, dataKey, size) {
+  /**
+   * @summary Gallery template
+   * @param {PSV.plugins.GalleryPlugin.Item[]} items
+   * @param {PSV.Size} size
+   * @returns {string}
+   * @constant
+   * @private
+   */
+
+  var ITEMS_TEMPLATE = function ITEMS_TEMPLATE(items, size) {
     return "\n<div class=\"psv-gallery-container\">\n  " + items.map(function (item) {
-      return "\n  <div class=\"psv-gallery-item\" data-" + dataKey + "=\"" + item.id + "\" " + (size ? "style=\"width:" + size.width + "px;height:" + size.height + "px\"" : '') + ">\n    " + (item.name ? "<div class=\"psv-gallery-item-title\"><span>" + item.name + "</span></div>" : '') + "\n    <svg class=\"psv-gallery-item-thumb\" viewBox=\"0 0 200 200\" preserveAspectRatio=\"xMidYMid slice\"><use href=\"#psvGalleryBlankIcon\"></use></svg>\n    " + (item.thumbnail ? "<div class=\"psv-gallery-item-thumb\" data-src=\"" + item.thumbnail + "\"></div>" : '') + "\n  </div>\n  ";
+      return "\n  <div class=\"psv-gallery-item\" data-" + GALLERY_ITEM_DATA_KEY + "=\"" + item.id + "\" " + (size ? "style=\"width:" + size.width + "px;height:" + size.height + "px\"" : '') + ">\n    " + (item.name ? "<div class=\"psv-gallery-item-title\"><span>" + item.name + "</span></div>" : '') + "\n    <svg class=\"psv-gallery-item-thumb\" viewBox=\"0 0 200 200\" preserveAspectRatio=\"xMidYMid slice\"><use href=\"#psvGalleryBlankIcon\"></use></svg>\n    " + (item.thumbnail ? "<div class=\"psv-gallery-item-thumb\" data-src=\"" + item.thumbnail + "\"></div>" : '') + "\n  </div>\n  ";
     }).join('') + "\n</div>\n";
   };
 
@@ -382,7 +405,7 @@
     ;
 
     _proto.setItems = function setItems(items) {
-      this.container.innerHTML = ITEMS_TEMPLATE(items, GALLERY_ITEM_DATA_KEY, this.plugin.config.thumbnailSize);
+      this.container.innerHTML = ITEMS_TEMPLATE(items, this.plugin.config.thumbnailSize);
 
       if (this.observer) {
         this.observer.disconnect();

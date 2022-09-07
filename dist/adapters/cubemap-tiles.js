@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.1
+* Photo Sphere Viewer 4.7.2
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -803,6 +803,7 @@
   }(cubemap.CubemapAdapter);
   CubemapTilesAdapter.id = 'cubemap-tiles';
   CubemapTilesAdapter.supportsDownload = false;
+  CubemapTilesAdapter.supportsOverlay = false;
 
   exports.CubemapTilesAdapter = CubemapTilesAdapter;
 

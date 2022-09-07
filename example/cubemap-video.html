@@ -32,9 +32,6 @@
       muted      : true,
       equiangular: true,
     }],
-    panorama  : {
-      source: base + 'DramOfDali_FHD.webm',
-    },
     caption: 'Dreams of Dalí <b>&copy; The Dalí Museum</b>',
     plugins   : [
       [PhotoSphereViewer.VideoPlugin, {
@@ -43,21 +40,22 @@
       }],
       PhotoSphereViewer.SettingsPlugin,
       [PhotoSphereViewer.ResolutionPlugin, {
+        defaultResolution: 'FHD',
         resolutions: [
           {
             id      : 'UHD',
             label   : 'Ultra high',
-            panorama: { source: base + 'DramOfDali_UHD.webm' },
+            panorama: { source: base + 'DreamOfDali_UHD.webm' },
           },
           {
             id      : 'FHD',
             label   : 'High',
-            panorama: { source: base + 'DramOfDali_FHD.webm' },
+            panorama: { source: base + 'DreamOfDali_FHD.webm' },
           },
           {
             id      : 'HD',
             label   : 'Standard',
-            panorama: { source: base + 'DramOfDali_HD.webm' },
+            panorama: { source: base + 'DreamOfDali_HD.webm' },
           },
         ]
       }]

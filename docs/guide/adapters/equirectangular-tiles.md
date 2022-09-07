@@ -5,7 +5,7 @@
 This adapter is available in the core `photo-sphere-viewer` package in `dist/adapters/equirectangular-tiles.js`.
 
 ```js
-new PhotoSphereViewer.Viewer({
+const viewer = new PhotoSphereViewer.Viewer({
   adapter: PhotoSphereViewer.EquirectangularTilesAdapter,
   panorama: {
     width: 12000,
@@ -22,7 +22,39 @@ new PhotoSphereViewer.Viewer({
 
 ## Example
 
-<iframe style="width: 100%; height: 600px;" src="//jsfiddle.net/mistic100/419yhpek/embedded/result,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+::: code-demo
+
+```yaml
+title: PSV Equirectangular Tiles Demo
+resources:
+  - path: adapters/equirectangular-tiles.js
+    imports: EquirectangularTilesAdapter
+```
+
+```js
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+const viewer = new PhotoSphereViewer.Viewer({
+  container: 'viewer',
+  adapter: PhotoSphereViewer.EquirectangularTilesAdapter,
+  panorama: {
+    width  : 6656,
+    cols   : 16,
+    rows   : 8,
+    baseUrl: `${baseUrl}sphere-small.jpg`,
+    tileUrl: (col, row) => {
+      const num = row * 16 + col + 1;
+      return `${baseUrl}sphere-tiles/image_part_${('000' + num).slice(-3)}.jpg`;
+    },
+  },
+  caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+  loadingImg: baseUrl + 'loader.gif',
+  touchmoveTwoFingers: true,
+  mousewheelCtrlKey: true,
+});
+```
+
+:::
 
 
 ## Configuration

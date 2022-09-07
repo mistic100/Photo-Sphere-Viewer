@@ -21,13 +21,34 @@ export const EVENTS = {
   HIDE_GALLERY: 'hide-gallery',
 };
 
+/**
+ * @summary Property name added to gallery items
+ * @type {string}
+ * @constant
+ * @private
+ */
 export const GALLERY_ITEM_DATA = 'psvGalleryItem';
+
+/**
+ * @summary Property name added to gallery items (dash-case)
+ * @type {string}
+ * @constant
+ * @private
+ */
 export const GALLERY_ITEM_DATA_KEY = utils.dasherize(GALLERY_ITEM_DATA);
 
-export const ITEMS_TEMPLATE = (items, dataKey, size) => `
+/**
+ * @summary Gallery template
+ * @param {PSV.plugins.GalleryPlugin.Item[]} items
+ * @param {PSV.Size} size
+ * @returns {string}
+ * @constant
+ * @private
+ */
+export const ITEMS_TEMPLATE = (items, size) => `
 <div class="psv-gallery-container">
   ${items.map(item => `
-  <div class="psv-gallery-item" data-${dataKey}="${item.id}" ${size ? `style="width:${size.width}px;height:${size.height}px"` : ''}>
+  <div class="psv-gallery-item" data-${GALLERY_ITEM_DATA_KEY}="${item.id}" ${size ? `style="width:${size.width}px;height:${size.height}px"` : ''}>
     ${item.name ? `<div class="psv-gallery-item-title"><span>${item.name}</span></div>` : ''}
     <svg class="psv-gallery-item-thumb" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice"><use href="#psvGalleryBlankIcon"></use></svg>
     ${item.thumbnail ? `<div class="psv-gallery-item-thumb" data-src="${item.thumbnail}"></div>` : ''}

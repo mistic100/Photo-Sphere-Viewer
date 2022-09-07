@@ -57,7 +57,7 @@ export type VirtualTourNodeChangedData = {
   fromLinkPosition?: Position,
 };
 
-export type VirtualTourPluginPluginOptions = {
+export type VirtualTourPluginOptions = {
   dataMode?: 'client' | 'server';
   positionMode?: 'manual' | 'gps';
   renderMode?: '3d' | 'markers';
@@ -76,6 +76,11 @@ export type VirtualTourPluginPluginOptions = {
   markerLatOffset?: number;
   arrowPosition?: 'top' | 'bottom';
 };
+
+/**
+ * @deprecated Use VirtualTourPluginOptions
+ */
+export type VirtualTourPluginPluginOptions = VirtualTourPluginOptions;
 
 export const EVENTS: {
   NODE_CHANGED: 'node-changed',
@@ -102,7 +107,7 @@ export class VirtualTourPlugin extends AbstractPlugin {
   static MODE_MANUAL: typeof MODE_MANUAL;
   static MODE_GPS: typeof MODE_GPS;
 
-  constructor(psv: Viewer, options: VirtualTourPluginPluginOptions);
+  constructor(psv: Viewer, options: VirtualTourPluginOptions);
 
   /**
    * @summary Sets the nodes (client mode only)

@@ -7,7 +7,7 @@ This adapter is available in the core `photo-sphere-viewer` package in `dist/ada
 Photo Sphere Viewer supports cubemaps as six distinct image files. The files can be provided as an object or an array.
 
 ```js
-new PhotoSphereViewer.Viewer({
+const viewer = new PhotoSphereViewer.Viewer({
   adapter: PhotoSphereViewer.CubemapAdapter,
   panorama: {
     left:   'path/to/left.jpg',
@@ -23,7 +23,38 @@ new PhotoSphereViewer.Viewer({
 
 ## Example
 
-<iframe style="width: 100%; height: 600px;" src="//jsfiddle.net/mistic100/1jL5yc2r/embedded/result,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+::: code-demo
+
+```yaml
+title: PSV Cubemap Demo
+resources:
+  - path: adapters/cubemap.js
+    imports: CubemapAdapter
+```
+
+```js
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+const viewer = new PhotoSphereViewer.Viewer({
+  container: 'viewer',
+  adapter: PhotoSphereViewer.CubemapAdapter,
+  panorama:  {
+    left  : baseUrl + 'cubemap/px.jpg',
+    front : baseUrl + 'cubemap/nz.jpg',
+    right : baseUrl + 'cubemap/nx.jpg',
+    back  : baseUrl + 'cubemap/pz.jpg',
+    top   : baseUrl + 'cubemap/py.jpg',
+    bottom: baseUrl + 'cubemap/ny.jpg'
+  },
+  caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+  loadingImg: baseUrl + 'loader.gif',
+  defaultLat: 0.2,
+  touchmoveTwoFingers: true,
+  mousewheelCtrlKey: true,
+});
+```
+
+:::
 
 
 ## Configuration

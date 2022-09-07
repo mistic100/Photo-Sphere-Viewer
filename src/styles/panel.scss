@@ -202,14 +202,14 @@
     }
 
     &:focus-visible {
-      outline: 1px dotted currentcolor;
-      outline-offset: -1px;
+      outline: $psv-element-focus-outline;
+      outline-offset: -#{list.nth($psv-element-focus-outline, 1)};
     }
   }
 
   &--stripped &-item {
     &:hover {
-      background: rgba(255, 255, 255, .2);
+      background: $psv-panel-menu-hover-background;
     }
 
     &:nth-child(odd),
@@ -225,5 +225,5 @@
 }
 
 .psv-container:not(.psv--is-touch) .psv-panel-menu-item:hover {
-  background: rgba(255, 255, 255, .2);
+  background: $psv-panel-menu-hover-background;
 }

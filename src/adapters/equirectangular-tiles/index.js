@@ -94,6 +94,7 @@ export class EquirectangularTilesAdapter extends EquirectangularAdapter {
 
   static id = 'equirectangular-tiles';
   static supportsDownload = false;
+  static supportsOverlay = false;
 
   /**
    * @param {PSV.Viewer} psv

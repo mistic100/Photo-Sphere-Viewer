@@ -25,7 +25,17 @@
     caption   : 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
     loadingImg: 'assets/photosphere-logo.gif',
     plugins   : [
-      PhotoSphereViewer.SettingsPlugin,
+      [PhotoSphereViewer.SettingsPlugin, {
+        persist: true, // default
+        // storage: { // default is localStorage
+        //   get(id) {
+        //     return JSON.parse(sessionStorage.getItem(`psv-${id}`));
+        //   },
+        //   set(id, value) {
+        //     sessionStorage.setItem(`psv-${id}`, JSON.stringify(value));
+        //   },
+        // },
+      }],
     ],
   });
 

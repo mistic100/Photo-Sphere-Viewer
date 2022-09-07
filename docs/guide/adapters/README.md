@@ -16,8 +16,9 @@ Official adapters are available in the the main `photo-sphere-viewer` package in
 
 **Example for the Cubemap adapter:**
 
-<md-tabs md-elevation="1">
-<md-tab md-label="Direct import">
+:::: tabs
+
+::: tab Direct import
 ```html
 <!-- base imports of PSV and dependencies -->
 
@@ -32,9 +33,9 @@ new PhotoSphereViewer.Viewer({
   panorama: // specific to the adapter,
 });
 ```
-</md-tab>
+:::
 
-<md-tab md-label="ES import">
+::: tab ES import
 ```js
 import { CubemapAdapter } from 'photo-sphere-viewer/dist/adapters/cubemap';
 
@@ -45,5 +46,6 @@ new Viewer({
   panorama: // specific to the adapter,
 });
 ```
-</md-tab>
-</md-tabs>
+:::
+
+::::

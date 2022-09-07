@@ -1,4 +1,4 @@
-# Little planet
+# Little planet <Badge text="4.7.1"/>
 
 > Displays an [equirectangular](equirectangular.md) panorama with a little planet effect.
 
@@ -9,7 +9,7 @@ This adapter is not complatible with some options and plugins, it is provided as
 :::
 
 ```js
-new PhotoSphereViewer.Viewer({
+const viewer = new PhotoSphereViewer.Viewer({
   adapter: PhotoSphereViewer.LittlePlanetAdapter,
   panorama: 'path/panorama.jpg',
 });
@@ -18,4 +18,27 @@ new PhotoSphereViewer.Viewer({
 
 ## Example
 
-<iframe style="width: 100%; height: 600px;" src="//jsfiddle.net/mistic100/Ljbaf30h/embedded/result,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+::: code-demo
+
+```yaml
+title: PSV Little Planet Demo
+resources:
+  - path: adapters/little-planet.js
+    imports: LittlePlanetAdapter
+```
+
+```js
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+const viewer = new PhotoSphereViewer.Viewer({
+  container: 'viewer',
+  adapter: PhotoSphereViewer.LittlePlanetAdapter,
+  panorama: baseUrl + 'sphere.jpg',
+  caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+  loadingImg: baseUrl + 'loader.gif',
+  touchmoveTwoFingers: true,
+  mousewheelCtrlKey: true,
+});
+```
+
+:::

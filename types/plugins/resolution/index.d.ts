@@ -9,6 +9,7 @@ export type Resolution = {
 
 export type ResolutionPluginOptions = {
   resolutions: Resolution[];
+  defaultResolution?: string;
   showBadge?: boolean;
 };
 
@@ -28,10 +29,11 @@ export class ResolutionPlugin extends AbstractPlugin {
   /**
    * @summary Changes the available resolutions
    */
-  setResolutions(resolutions: Resolution[]);
+  setResolutions(resolutions: Resolution[], defaultResolution?: string);
 
   /**
    * @summary Changes the current resolution
+   * @throws {PSVError} if the resolution does not exist
    */
   setResolution(id: string);
 

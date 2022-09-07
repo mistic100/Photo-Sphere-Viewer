@@ -7,26 +7,27 @@ module.exports = (options, ctx) => ({
   extendMarkdown : (md) => {
     md.use(container, 'gallery', {
       render: (tokens, idx) => {
-        const token = tokens[idx];
-        if (token.nesting === 1) {
-          return `<Gallery>\n`
+        const { nesting } = tokens[idx];
+
+        if (nesting === 1) {
+          return `<Gallery>\n`;
         }
         else {
-          return `</Gallery>\n`
+          return `</Gallery>\n`;
         }
       },
     });
 
     md.use(container, 'item', {
       render: (tokens, idx) => {
-        const token = tokens[idx];
-        const attributes = token.info.trim().slice('item '.length);
+        const { nesting, info } = tokens[idx];
+        const attributes = info.trim().slice('item '.length);
 
-        if (token.nesting === 1) {
-          return `<GalleryItem ${attributes}>\n`
+        if (nesting === 1) {
+          return `<GalleryItem ${attributes}>\n`;
         }
         else {
-          return `</GalleryItem>\n`
+          return `</GalleryItem>\n`;
         }
       },
     });

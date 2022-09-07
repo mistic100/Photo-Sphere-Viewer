@@ -1,4 +1,4 @@
-# VideoPlugin <Badge text="NEW"/>
+# VideoPlugin
 
 <ApiButton page="PSV.plugins.VideoPlugin.html"/>
 
@@ -71,7 +71,81 @@ const viewer = new PhotoSphereViewer.Viewer({
 
 ## Example
 
-<iframe style="width: 100%; height: 600px;" src="//jsfiddle.net/mistic100/47fctodr/embedded/result,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+::: code-demo
+
+```yaml
+title: PSV Video Demo
+resources:
+  - path: adapters/equirectangular-video.js
+    imports: EquirectangularVideoAdapter
+  - path: plugins/video.js
+    imports: VideoPlugin
+  - path: plugins/video.css
+  - path: plugins/settings.js
+    imports: SettingsPlugin
+  - path: plugins/settings.css
+  - path: plugins/resolution.js
+    imports: ResolutionPlugin
+```
+
+```js
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+const viewer = new PhotoSphereViewer.Viewer({
+  container: 'viewer',
+  adapter: [PhotoSphereViewer.EquirectangularVideoAdapter, {
+    muted: true,
+  }],
+  panorama: { source: baseUrl + 'equirectangular-video/Ayutthaya_HD.mp4' },
+  caption: 'Ayutthaya <b>&copy; meetle</b>',
+  loadingImg: baseUrl + 'loader.gif',
+  touchmoveTwoFingers: true,
+  mousewheelCtrlKey: true,
+  navbar: 'video autorotate caption settings fullscreen',
+
+  plugins: [
+    [PhotoSphereViewer.VideoPlugin, {
+      keypoints  : [
+        { time: 0, position: { longitude: 0, latitude: 0 } },
+        { time: 5, position: { longitude: -Math.PI / 4, latitude: Math.PI / 8 } },
+        { time: 10, position: { longitude: -Math.PI / 2, latitude: 0 } },
+        { time: 15, position: { longitude: -3 * Math.PI / 4, latitude: -Math.PI / 8 } },
+        { time: 20, position: { longitude: -Math.PI, latitude: 0 } },
+        { time: 25, position: { longitude: -5 * Math.PI / 4, latitude: Math.PI / 8 } },
+        { time: 30, position: { longitude: -3 * Math.PI / 2, latitude: 0 } },
+        { time: 35, position: { longitude: -7 * Math.PI / 4, latitude: -Math.PI / 8 } },
+      ]
+    }],
+    PhotoSphereViewer.SettingsPlugin,
+    [PhotoSphereViewer.ResolutionPlugin, {
+      resolutions: [
+        {
+          id      : 'UHD',
+          label   : 'Ultra high',
+          panorama: { source: baseUrl + 'equirectangular-video/Ayutthaya_UHD.mp4' },
+        },
+        {
+          id      : 'FHD',
+          label   : 'High',
+          panorama: { source: baseUrl + 'equirectangular-video/Ayutthaya_FHD.mp4' },
+        },
+        {
+          id      : 'HD',
+          label   : 'Standard',
+          panorama: { source: baseUrl + 'equirectangular-video/Ayutthaya_HD.mp4' },
+        },
+        {
+          id      : 'SD',
+          label   : 'Low',
+          panorama: { source: baseUrl + 'equirectangular-video/Ayutthaya_SD.mp4' },
+        },
+      ]
+    }]
+  ],
+});
+```
+
+:::
 
 
 ## Configuration

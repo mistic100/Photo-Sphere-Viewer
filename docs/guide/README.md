@@ -38,8 +38,9 @@ You can also [download the latest release](https://github.com/mistic100/Photo-Sp
 
 Include all JS & CSS files in your page manually or with your favorite bundler and init the viewer.
 
-<md-tabs md-elevation="1">
-<md-tab md-label="Direct import">
+:::: tabs
+
+::: tab Direct import
 ```html
 <head>
   <!-- for optimal display on high DPI devices -->
@@ -62,9 +63,9 @@ Include all JS & CSS files in your page manually or with your favorite bundler a
   });
 </script>
 ```
-</md-tab>
+:::
 
-<md-tab md-label="ES import">
+::: tab ES import
 Import `photo-sphere-viewer/dist/photo-sphere-viewer.css` with the prefered way depending on your tooling.
 
 ```html
@@ -85,10 +86,32 @@ const viewer = new Viewer({
   panorama: 'path/to/panorama.jpg',
 });
 ```
-</md-tab>
-</md-tabs>
+:::
 
-<iframe style="width: 100%; height: 500px;" src="//jsfiddle.net/mistic100/5r684etx/embedded/result/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+::::
+
+<br>
+
+::: code-demo
+
+```yaml
+title: PSV Basic Demo
+```
+
+```js
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+const viewer = new PhotoSphereViewer.Viewer({
+  container: 'viewer',
+  panorama: baseUrl + 'sphere.jpg',
+  caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+  loadingImg: baseUrl + 'loader.gif',
+  touchmoveTwoFingers: true,
+  mousewheelCtrlKey: true,
+});
+```
+
+:::
 
 
 The `panorama` must be an [equirectangular projection](https://en.wikipedia.org/wiki/Equirectangular_projection) of your photo. Other modes are supported through [adapters](./adapters/).

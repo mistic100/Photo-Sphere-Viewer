@@ -39,9 +39,20 @@ type SettingOption = {
 
 type Setting = OptionsSetting | ToggleSetting;
 
+type SettingsPluginOptions = {
+  persist?: boolean;
+  storage?: {
+    get(settingId: string): boolean | string | Promise<boolean | string>;
+    set(settingId: string, value: boolean | string);
+  };
+};
+
 declare const EVENTS: {
   SETTING_CHANGED: 'setting-changed',
 };
+
+declare const TYPE_OPTIONS = 'options';
+declare const TYPE_TOGGLE = 'toggle';
 
 /**
  * @summary Adds a button to access various settings.
@@ -49,6 +60,8 @@ declare const EVENTS: {
 declare class SettingsPlugin extends AbstractPlugin {
 
   static EVENTS: typeof EVENTS;
+  static TYPE_OPTIONS: typeof TYPE_OPTIONS;
+  static TYPE_TOGGLE: typeof TYPE_TOGGLE;
 
   constructor(psv: Viewer);
 
@@ -85,4 +98,4 @@ declare class SettingsPlugin extends AbstractPlugin {
 
 }
 
-export { BaseSetting, EVENTS, OptionsSetting, Setting, SettingOption, SettingsPlugin, ToggleSetting };
+export { BaseSetting, EVENTS, OptionsSetting, Setting, SettingOption, SettingsPlugin, SettingsPluginOptions, TYPE_OPTIONS, TYPE_TOGGLE, ToggleSetting };

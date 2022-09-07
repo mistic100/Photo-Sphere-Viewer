@@ -21,10 +21,6 @@ import { AbstractAdapter, CONSTANTS, PSVError } from '../..';
  */
 export class AbstractVideoAdapter extends AbstractAdapter {
 
-  static supportsTransition = false;
-  static supportsPreload = false;
-  static supportsDownload = false;
-
   constructor(psv, options) {
     super(psv);
 

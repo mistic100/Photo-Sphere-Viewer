@@ -562,6 +562,8 @@
         saved      : false,
         id         : null,
         type       : null,
+        longitude  : null,
+        latitude   : null,
         image      : null,
         imageLayer : null,
         html       : null,
@@ -597,9 +599,9 @@
     created() {
       this.EDIT_SVG = EDIT_SVG;
       this.CLIPBOARD_AVAILABLE = !!window.navigator.clipboard;
-      this.PIN_RED_URL = 'https://photo-sphere-viewer.js.org/assets/pin-red.png';
-      this.PIN_BLUE_URL = 'https://photo-sphere-viewer.js.org/assets/pin-blue.png';
-      this.TARGET_URL = 'https://photo-sphere-viewer.js.org/assets/target.png';
+      this.PIN_RED_URL = 'https://photo-sphere-viewer-data.netlify.app/assets/pictos/pin-red.png';
+      this.PIN_BLUE_URL = 'https://photo-sphere-viewer-data.netlify.app/assets/pictos/pin-blue.png';
+      this.TARGET_URL = 'https://photo-sphere-viewer-data.netlify.app/assets/pictos/target.png';
       this.FONT_SIZES = range(10, 31).map(i => `${i}px`);
       this.FONT_SIZES_2 = range(10, 31, 5).map(i => `${i}px`);
     },
@@ -621,7 +623,7 @@
       markersJs.onload = () => {
         this.psv = new PhotoSphereViewer.Viewer({
           container : 'viewer',
-          loadingImg: 'https://photo-sphere-viewer.js.org/assets/photosphere-logo.gif',
+          loadingImg: 'https://photo-sphere-viewer-data.netlify.app/assets/loader.gif',
           plugins   : [
             [PhotoSphereViewer.MarkersPlugin, {}],
           ],
@@ -850,6 +852,7 @@
 
         const longitude = Math.round(data.longitude * 1000) / 1000;
         const latitude = Math.round(data.latitude * 1000) / 1000;
+        Object.assign(this.markerForm, { longitude, latitude });
 
         switch (this.markerForm.type) {
           case 'image':

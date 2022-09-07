@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.1
+* Photo Sphere Viewer 4.7.2
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -191,7 +191,7 @@
   photoSphereViewer.DEFAULTS.lang[StereoButton.id] = 'Stereo view';
   photoSphereViewer.registerButton(StereoButton, 'caption:right'); // other lang strings
 
-  photoSphereViewer.DEFAULTS.lang.stereoNotification = 'Click anywhere to exit stereo view.';
+  photoSphereViewer.DEFAULTS.lang.stereoNotification = 'Tap anywhere to exit stereo view.';
   photoSphereViewer.DEFAULTS.lang.pleaseRotate = ['Please rotate your device', '(or tap to continue)'];
   /**
    * @summary Adds stereo view on mobile devices

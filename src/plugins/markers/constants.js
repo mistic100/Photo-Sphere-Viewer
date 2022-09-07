@@ -1,3 +1,4 @@
+import { utils } from '../..';
 import icon from './pin-list.svg';
 
 /**
@@ -132,21 +133,22 @@ export const ID_PANEL_MARKER = 'marker';
  */
 export const ID_PANEL_MARKERS_LIST = 'markersList';
 
+const MARKER_DATA_KEY = utils.dasherize(MARKER_DATA);
+
 /**
  * @summary Markers list template
  * @param {PSV.plugins.MarkersPlugin.Marker[]} markers
  * @param {string} title
- * @param {string} dataKey
  * @returns {string}
  * @constant
  * @private
  */
-export const MARKERS_LIST_TEMPLATE = (markers, title, dataKey) => `
+export const MARKERS_LIST_TEMPLATE = (markers, title) => `
 <div class="psv-panel-menu psv-panel-menu--stripped">
   <h1 class="psv-panel-menu-title">${icon} ${title}</h1>
   <ul class="psv-panel-menu-list">
     ${markers.map(marker => `
-    <li data-${dataKey}="${marker.config.id}" class="psv-panel-menu-item" tabindex="0">
+    <li data-${MARKER_DATA_KEY}="${marker.config.id}" class="psv-panel-menu-item" tabindex="0">
       ${marker.type === 'image' ? `<span class="psv-panel-menu-item-icon"><img src="${marker.config.image}"/></span>` : ''}
       <span class="psv-panel-menu-item-label">${marker.getListContent()}</span>
     </li>

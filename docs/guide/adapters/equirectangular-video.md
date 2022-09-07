@@ -1,11 +1,8 @@
-# Equirectangular video <Badge text="NEW"/>
+# Equirectangular video
 
 ```js
-new PhotoSphereViewer.Viewer({
-  adapter: [PhotoSphereViewer.EquirectangularVideoAdapter, {
-    autoplay: false, // default
-    muted: false, // default
-  }],
+const viewer = new PhotoSphereViewer.Viewer({
+  adapter: PhotoSphereViewer.EquirectangularVideoAdapter,
   panorama: {
     source: 'path/video.mp4', // also supports webm
   },
@@ -22,7 +19,70 @@ This adapter requires to use the [VideoPlugin](../../plugins/plugin-video.md).
 
 ## Example
 
-<iframe style="width: 100%; height: 600px;" src="//jsfiddle.net/mistic100/47fctodr/embedded/result,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+::: code-demo
+
+```yaml
+title: PSV Equirectangular Video Demo
+resources:
+  - path: adapters/equirectangular-video.js
+    imports: EquirectangularVideoAdapter
+  - path: plugins/video.js
+    imports: VideoPlugin
+  - path: plugins/video.css
+  - path: plugins/settings.js
+    imports: SettingsPlugin
+  - path: plugins/settings.css
+  - path: plugins/resolution.js
+    imports: ResolutionPlugin
+```
+
+```js
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+const viewer = new PhotoSphereViewer.Viewer({
+  container: 'viewer',
+  adapter: [PhotoSphereViewer.EquirectangularVideoAdapter, {
+    muted: true,
+  }],
+  panorama: { source: baseUrl + 'equirectangular-video/Ayutthaya_HD.mp4' },
+  caption: 'Ayutthaya <b>&copy; meetle</b>',
+  loadingImg: baseUrl + 'loader.gif',
+  touchmoveTwoFingers: true,
+  mousewheelCtrlKey: true,
+  navbar: 'video autorotate caption settings fullscreen',
+
+  plugins: [
+    PhotoSphereViewer.VideoPlugin,
+    PhotoSphereViewer.SettingsPlugin,
+    [PhotoSphereViewer.ResolutionPlugin, {
+      resolutions: [
+        {
+          id      : 'UHD',
+          label   : 'Ultra high',
+          panorama: { source: baseUrl + 'equirectangular-video/Ayutthaya_UHD.mp4' },
+        },
+        {
+          id      : 'FHD',
+          label   : 'High',
+          panorama: { source: baseUrl + 'equirectangular-video/Ayutthaya_FHD.mp4' },
+        },
+        {
+          id      : 'HD',
+          label   : 'Standard',
+          panorama: { source: baseUrl + 'equirectangular-video/Ayutthaya_HD.mp4' },
+        },
+        {
+          id      : 'SD',
+          label   : 'Low',
+          panorama: { source: baseUrl + 'equirectangular-video/Ayutthaya_SD.mp4' },
+        },
+      ]
+    }]
+  ],
+});
+```
+
+:::
 
 
 ## Configuration

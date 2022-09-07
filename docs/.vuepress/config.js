@@ -1,4 +1,24 @@
 const path = require('path');
+const fs = require('fs');
+
+function posixJoin(...args) {
+  return path.join(...args).split(path.sep).join(path.posix.sep); // Windows compat...
+}
+
+function listFiles(dir) {
+  const dirents = fs.readdirSync(dir, { withFileTypes: true });
+  const files = dirents.map((dirent) => {
+    const res = posixJoin(dir, dirent.name);
+    return dirent.isDirectory() ? listFiles(res) : res;
+  });
+  return files.flat();
+}
+
+function getFiles(dir) {
+  const abolsuteDir = posixJoin(process.cwd(), dir);
+  return listFiles(abolsuteDir).map(f => f.substr(abolsuteDir.length + 1))
+}
+
 
 module.exports = {
   dest       : './public',
@@ -8,14 +28,8 @@ module.exports = {
     ['link', { rel: 'icon', href: '/favicon.png' }],
     ['script', { src: 'https://cdn.jsdelivr.net/npm/uevent@2/browser.js', defer: 'defer' }],
     ['script', { src: 'https://cdn.jsdelivr.net/npm/three/build/three.min.js', defer: 'defer' }],
-    ['script', {
-      src  : 'https://cdn.jsdelivr.net/npm/photo-sphere-viewer@4/dist/photo-sphere-viewer.js',
-      defer: 'defer'
-    }],
-    ['link', {
-      rel : 'stylesheet',
-      href: 'https://cdn.jsdelivr.net/npm/photo-sphere-viewer@4/dist/photo-sphere-viewer.css'
-    }],
+    ['script', { src  : 'https://cdn.jsdelivr.net/npm/photo-sphere-viewer@4/dist/photo-sphere-viewer.js', defer: 'defer' }],
+    ['link', { rel : 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/photo-sphere-viewer@4/dist/photo-sphere-viewer.css' }],
   ],
   themeConfig: {
     logo        : '/favicon.png',
@@ -58,11 +72,11 @@ module.exports = {
               children   : [
                 'adapters/equirectangular',
                 'adapters/equirectangular-tiles',
-                ['adapters/equirectangular-video', 'Equirectangular videos (NEW)'],
+                'adapters/equirectangular-video',
                 'adapters/cubemap',
                 'adapters/cubemap-tiles',
-                ['adapters/cubemap-video', 'Cubemap videos (NEW)'],
-                ['adapters/little-planet', 'Little planet (NEW)'],
+                'adapters/cubemap-video',
+                'adapters/little-planet',
               ],
             },
             {
@@ -82,7 +96,6 @@ module.exports = {
       '/plugins/': [
         {
           title       : 'Plugins',
-          sidebarDepth: 3,
           collapsable : false,
           children    : [
             '',
@@ -91,21 +104,33 @@ module.exports = {
         },
         {
           title       : 'Official plugins',
-          sidebarDepth: 3,
           collapsable : false,
-          children    : [
-            'plugin-autorotate-keypoints',
-            'plugin-compass',
-            ['plugin-gallery', 'GalleryPlugin (NEW)'],
-            'plugin-gyroscope',
-            'plugin-markers',
-            'plugin-resolution',
-            'plugin-settings',
-            'plugin-stereo',
-            ['plugin-video', 'VideoPlugin (NEW)'],
-            'plugin-virtual-tour',
-            'plugin-visible-range',
-          ],
+          children    : getFiles('docs/plugins')
+            .filter(f => f.indexOf('plugin-') === 0),
+        },
+      ],
+      '/demos/': [
+        {
+          title       : 'Demos',
+          path        : '/demos/',
+          sidebarDepth: 0,
+          collapsable : false,
+          children    : (() => {
+            const demoFiles = getFiles('docs/demos')
+              .map(f => f.split('/'))
+              .filter(f => f.length === 2)
+              .reduce((groups, [dir, file]) => {
+                (groups[dir] = groups[dir] ?? []).push(file);
+                return groups;
+              }, {});
+
+            return Object.entries(demoFiles)
+              .map(([group, files]) => ({
+                title      : group[0].toUpperCase() + group.substr(1),
+                collapsable: false,
+                children   : files.map(f => `${group}/${f}`),
+              }));
+          })(),
         },
       ],
     },
@@ -116,5 +141,7 @@ module.exports = {
     }],
     ['@vuepress/back-to-top'],
     require('./plugins/gallery'),
+    require('./plugins/code-demo'),
+    require('./plugins/tabs'),
   ],
 };

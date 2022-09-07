@@ -45,8 +45,50 @@ const viewer = new PhotoSphereViewer.Viewer({
 
 The following example provides two resolutions for the panorama, "small" is loaded by default.
 
-<iframe style="width: 100%; height: 500px;" src="//jsfiddle.net/mistic100/1cmn20zb/embedded/result,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+::: code-demo
 
+```yaml
+title: PSV Resolution Demo
+resources:
+  - path: plugins/settings.js
+    imports: SettingsPlugin
+  - path: plugins/settings.css
+  - path: plugins/resolution.js
+    imports: ResolutionPlugin
+```
+
+```js
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+const viewer = new PhotoSphereViewer.Viewer({
+  container: 'viewer',
+  panorama: baseUrl + 'sphere-small.jpg',
+  caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+  loadingImg: baseUrl + 'loader.gif',
+  touchmoveTwoFingers: true,
+  mousewheelCtrlKey: true,
+
+  plugins: [
+    PhotoSphereViewer.SettingsPlugin,
+    [PhotoSphereViewer.ResolutionPlugin, {
+      resolutions: [
+        {
+          id      : 'SD',
+          label   : 'Small',
+          panorama: baseUrl + 'sphere-small.jpg',
+        },
+        {
+          id      : 'HD',
+          label   : 'Normal',
+          panorama: baseUrl + 'sphere.jpg',
+        },
+      ],
+    }],
+  ],
+});
+```
+
+:::
 
 ## Configuration
 
@@ -55,6 +97,15 @@ The following example provides two resolutions for the panorama, "small" is load
 
 List of available resolutions. Each resolution consist of an object with the properties `id`, `label` and `panorama`.
 Cubemaps are supported.
+
+#### `defaultResolution` <Badge text="4.7.2"/>
+- type: `string`
+
+The id of the default resolution to load. If not provided the first resolution will be used.
+
+::: warning
+If a `panorama` is initually configured on the viewer, this setting is ignored.
+:::
 
 #### `showBadge`
 - type: `boolean`

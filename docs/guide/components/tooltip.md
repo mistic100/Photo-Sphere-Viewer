@@ -11,7 +11,58 @@ To add a tooltip you must call `viewer.tooltip.create()`, this will a return a t
 
 This example adds a persistent tooltip following the cursor.
 
-<iframe style="width: 100%; height: 500px;" src="//jsfiddle.net/mistic100/bzmt32qL/embedded/result,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+::: code-demo
+
+```yaml
+title: PSV Tooltip Demo
+```
+
+```js
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+const viewer = new PhotoSphereViewer.Viewer({
+  container: 'viewer',
+  panorama: baseUrl + 'sphere.jpg',
+  caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+  loadingImg: baseUrl + 'loader.gif',
+  touchmoveTwoFingers: true,
+  mousewheelCtrlKey: true,
+  navbar: 'zoom caption fullscreen',
+});
+
+let tooltip;
+
+function onMouseMove(e) {
+  if (!tooltip) {
+    tooltip = viewer.tooltip.create({
+      content: '&copy; Damien Sorel',
+      left: e.clientX,
+      top: e.clientY,
+      position: 'top right',
+    });
+  } else {
+    tooltip.move({
+      left: e.clientX,
+      top: e.clientY,
+      position: 'top right',
+    });
+  }
+}
+
+function onMouseLeave() {
+  if (tooltip) {
+    tooltip.hide();
+    tooltip = null;
+  }
+}
+
+viewer.once('ready', function() {
+  viewer.parent.addEventListener('mousemove', onMouseMove);
+  viewer.parent.addEventListener('mouseleave', onMouseLeave);
+});
+```
+
+:::
 
 
 ## Methods

@@ -11,7 +11,7 @@ This plugin is available in the core `photo-sphere-viewer` package in `dist/plug
 
 ## Usage
 
-The plugin can be configured with `hotspots` which are small dots on the compass. It can also use markers as hotspots (see bellow).
+The plugin can be configured with `hotspots` which are small dots on the compass. It can also use markers.
 
 ```js
 const viewer = new PhotoSphereViewer.Viewer({
@@ -29,7 +29,79 @@ const viewer = new PhotoSphereViewer.Viewer({
 
 ## Example
 
-<iframe style="width: 100%; height: 500px;" src="//jsfiddle.net/mistic100/efpdoak2/embedded/result,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+::: code-demo
+
+```yaml
+title: PSV Compass Demo
+resources:
+  - path: plugins/compass.js
+    imports: CompassPlugin
+  - path: plugins/compass.css
+  - path: plugins/markers.js
+    imports: MarkersPlugin
+  - path: plugins/markers.css
+```
+
+```js
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+const viewer = new PhotoSphereViewer.Viewer({
+  container: 'viewer',
+  panorama: baseUrl + 'sphere.jpg',
+  caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+  loadingImg: baseUrl + 'loader.gif',
+  touchmoveTwoFingers: true,
+  mousewheelCtrlKey: true,
+
+  plugins: [
+    [PhotoSphereViewer.CompassPlugin, {
+      hotspots: [
+        { longitude: '0deg' },
+        { longitude: '90deg' },
+        { longitude: '180deg' },
+        { longitude: '270deg' },
+      ],
+    }],
+    [PhotoSphereViewer.MarkersPlugin, {
+      markers: [
+        {
+          id: 'pin',
+          longitude: 0.11,
+          latitude: 0.32,
+          image: baseUrl + 'pictos/pin-blue.png',
+          width: 32,
+          height: 32,
+          anchor: 'bottom center',
+          data : { compass: '#304ACC' },
+        },
+        {
+          id: 'polygon',
+          polygonPx: [2941, 1413, 3042, 1402, 3222, 1419, 3433, 1463, 3480, 1505, 3438, 1538, 3241, 1543, 3041, 1555, 2854, 1559, 2739, 1516, 2775, 1469, 2941, 1413 ],
+          svgStyle : {
+            fill       : 'rgba(255,0,0,0.2)',
+            stroke     : 'rgba(255, 0, 50, 0.8)',
+            strokeWidth: '2px',
+          },
+          data: { compass: 'rgba(255, 0, 50, 0.8)' },
+        },
+        {
+          id: 'polyline',
+          polylinePx: [2478, 1635, 2184, 1747, 1674, 1953, 1166, 1852, 709, 1669, 301, 1519, 94, 1399, 34, 1356],
+          svgStyle: {
+            stroke        : 'rgba(80, 150, 50, 0.8)',
+            strokeLinecap : 'round',
+            strokeLinejoin: 'round',
+            strokeWidth   : '20px',
+          },
+          data: { compass: 'rgba(80, 150, 50, 0.8)' },
+        },
+      ],
+    }],
+  ],
+});
+```
+
+:::
 
 ::: tip
 The north is always at longitude=0, if you need to change where is the north you can use `panoData.poseHeading` or `sphereCorrection.pan` option.

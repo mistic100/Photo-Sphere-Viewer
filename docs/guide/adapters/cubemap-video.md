@@ -1,11 +1,8 @@
-# Cubemap video <Badge text="NEW"/>
+# Cubemap video
 
 ```js
-new PhotoSphereViewer.Viewer({
-  adapter: [PhotoSphereViewer.CubemapVideoAdapter, {
-    autoplay: false, // default
-    muted: false, // default
-  }],
+const viewer = new PhotoSphereViewer.Viewer({
+  adapter: PhotoSphereViewer.CubemapVideoAdapter,
   panorama: {
     source: 'path/video.mp4', // also supports webm
   },
@@ -22,7 +19,65 @@ This adapter requires to use the [VideoPlugin](../../plugins/plugin-video.md).
 
 ## Example
 
-<iframe style="width: 100%; height: 600px;" src="//jsfiddle.net/mistic100/h0x58zdc/embedded/result,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+::: code-demo
+
+```yaml
+title: PSV Cubemap Video Demo
+resources:
+  - path: adapters/cubemap-video.js
+    imports: CubemapVideoAdapter
+  - path: plugins/video.js
+    imports: VideoPlugin
+  - path: plugins/video.css
+  - path: plugins/settings.js
+    imports: SettingsPlugin
+  - path: plugins/settings.css
+  - path: plugins/resolution.js
+    imports: ResolutionPlugin
+```
+
+```js
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+const viewer = new PhotoSphereViewer.Viewer({
+  container: 'viewer',
+  adapter: [PhotoSphereViewer.CubemapVideoAdapter, {
+    muted: true,
+  }],
+  panorama: { source: baseUrl + 'cubemap-video/DreamOfDali_HD.webm' },
+  caption: 'Dreams of Dalí <b>&copy; The Dalí Museum</b>',
+  loadingImg: baseUrl + 'loader.gif',
+  touchmoveTwoFingers: true,
+  mousewheelCtrlKey: true,
+  navbar: 'video autorotate caption settings fullscreen',
+
+  plugins: [
+    PhotoSphereViewer.VideoPlugin,
+    PhotoSphereViewer.SettingsPlugin,
+    [PhotoSphereViewer.ResolutionPlugin, {
+      resolutions: [
+        {
+          id      : 'UHD',
+          label   : 'Ultra high',
+          panorama: { source: baseUrl + 'cubemap-video/DreamOfDali_UHD.webm' },
+        },
+        {
+          id      : 'FHD',
+          label   : 'High',
+          panorama: { source: baseUrl + 'cubemap-video/DreamOfDali_FHD.webm' },
+        },
+        {
+          id      : 'HD',
+          label   : 'Standard',
+          panorama: { source: baseUrl + 'cubemap-video/DreamOfDali_HD.webm' },
+        },
+      ]
+    }]
+  ],
+});
+```
+
+:::
 
 
 ## Configuration

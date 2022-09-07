@@ -21,7 +21,8 @@ $psv-loader-width: 100px;
 
 | variable | default | description |
 |---|---|---|
-| $psv-main-background | radial-gradient(...) | Background of the viewer, visible when no panorama is set. |
+| $psv-main-background | radial-gradient(...) | Background of the viewer, visible when no panorama is set |
+| $psv-element-focus-outline |  2px solid #007cff | Outline applied to focusable elements (navbar, panel, etc.) |
 
 ## Loader
 
@@ -97,10 +98,11 @@ $psv-loader-width: 100px;
 | $psv-panel-title-font | 24px sans-serif | Font of the menu title |
 | $psv-panel-title-icon-size | 24px | Size of the menu title icon |
 | $psv-panel-title-margin | 24px | Margin of the menu title |
-| $psv-panel-menu-item-height | 20px | Height of an item in the menu |
+| $psv-panel-menu-item-height | 1.5em | Minimum eight of an item in the menu |
 | $psv-panel-menu-item-padding | .5em 1em | Padding of an item in the menu |
 | $psv-panel-menu-odd-background | rgba(255, 255, 255, .1) | Background color of odd items in the menu |
 | $psv-panel-menu-even-background | transparent | Background color of even items in the menu |
+| $psv-panel-menu-hover-background | rgba(255, 255, 255, .2) | Background color of items on mouse hover |
 
 ## Notification
 

@@ -1,6 +1,7 @@
 // *** MAIN ***
 $psv-main-background-stops: #fff 0%, #fdfdfd 16%, #fbfbfb 33%, #f8f8f8 49%, #efefef 66%, #dfdfdf 82%, #bfbfbf 100% !default;
 $psv-main-background: radial-gradient($psv-main-background-stops) !default;
+$psv-element-focus-outline: 2px solid #007cff !default;
 
 
 // *** LOADER ***
@@ -69,11 +70,12 @@ $psv-panel-title-font: 24px sans-serif !default;
 $psv-panel-title-icon-size: 24px !default;
 $psv-panel-title-margin: 24px !default;
 
-$psv-panel-menu-item-height: 20px !default;
+$psv-panel-menu-item-height: 1.5em !default;
 $psv-panel-menu-item-padding: .5em 1em !default;
 $psv-panel-menu-item-active-outline: 1px !default;
 $psv-panel-menu-odd-background: rgba(255, 255, 255, .1) !default;
 $psv-panel-menu-even-background: transparent !default;
+$psv-panel-menu-hover-background: rgba(255, 255, 255, .2) !default;
 
 
 // *** NOTIFICATION ***

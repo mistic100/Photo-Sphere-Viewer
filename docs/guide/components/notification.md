@@ -9,7 +9,40 @@
 
 This example consistently displays new notifications.
 
-<iframe style="width: 100%; height: 500px;" src="//jsfiddle.net/mistic100/m8nxryc4/embedded/result,js/dark" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+::: code-demo
+
+```yaml
+title: PSV Notification Demo
+```
+
+```js
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+const viewer = new PhotoSphereViewer.Viewer({
+  container: 'viewer',
+  panorama: baseUrl + 'sphere.jpg',
+  caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+  loadingImg: baseUrl + 'loader.gif',
+  touchmoveTwoFingers: true,
+  mousewheelCtrlKey: true,
+  navbar: [
+    'zoom',
+    'caption',
+    'fullscreen',
+  ],
+});
+
+let i = 1;
+setInterval(function() {
+  viewer.notification.show({
+    content: `Annoying notification #${i++}`,
+    timeout: 1000,
+  });
+}, 2000);
+
+```
+
+:::
 
 
 ## Methods
