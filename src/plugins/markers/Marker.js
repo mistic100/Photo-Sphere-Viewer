@@ -312,14 +312,13 @@ export class Marker {
       };
 
       if (this.isPoly()) {
-        const viewerPos = utils.getPosition(this.psv.container);
-
         config.box = { // separate the tooltip from the cursor
           width : this.psv.tooltip.size.arrow * 2,
           height: this.psv.tooltip.size.arrow * 2,
         };
 
         if (mousePosition) {
+          const viewerPos = utils.getPosition(this.psv.container);
           config.top = mousePosition.clientY - viewerPos.top - this.psv.tooltip.size.arrow / 2;
           config.left = mousePosition.clientX - viewerPos.left - this.psv.tooltip.size.arrow;
         }

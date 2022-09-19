@@ -28,7 +28,7 @@ Be sure to rename your configuration properties, the old naming is not supported
 - `anim_lat` → `autorotateLat`
 - `time_anim` → `autorotateDelay`
 - `default_fov`→ `defaultZoomLvl`
-- `mousemove_hover` → `captureCursor`
+- `mousemove_hover` → removed
 
 ### Deleted options
 
@@ -51,7 +51,7 @@ Bellow is the mapping of the most common methods, please check the <ApiLink page
 - `render()` → `needsUpdate()` (prefered) or `renderer.render()`
 - `preloadPanorama()` → `textureLoader.preloadPanorama()`
 - `clearPanoramaCache()` → removed, use `THREE.Cache.clear()`
-- `getPanoramaCache()` → remove, use `THREE.Cache.get()`
+- `getPanoramaCache()` → removed, use `THREE.Cache.get()`
 
 #### Navbar
 

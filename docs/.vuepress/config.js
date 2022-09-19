@@ -68,7 +68,7 @@ module.exports = {
             {
               title      : 'Adapters',
               path       : '/guide/adapters/',
-              collapsable: false,
+              collapsable: true,
               children   : [
                 'adapters/equirectangular',
                 'adapters/equirectangular-tiles',
@@ -82,7 +82,7 @@ module.exports = {
             {
               title      : 'Reusable components',
               path       : '/guide/components/',
-              collapsable: false,
+              collapsable: true,
               children   : [
                 'components/panel',
                 'components/notification',
@@ -90,6 +90,7 @@ module.exports = {
                 'components/tooltip',
               ],
             },
+            'frameworks',
           ],
         },
       ],

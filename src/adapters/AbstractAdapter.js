@@ -148,16 +148,17 @@ export class AbstractAdapter {
   /**
    * @internal
    */
-  static createOverlayMaterial() {
+  static createOverlayMaterial({ additionalUniforms, overrideVertexShader } = {}) {
     return new ShaderMaterial({
       uniforms: {
+        ...additionalUniforms,
         [AbstractAdapter.OVERLAY_UNIFORMS.panorama]      : { value: new Texture() },
         [AbstractAdapter.OVERLAY_UNIFORMS.overlay]       : { value: new Texture() },
         [AbstractAdapter.OVERLAY_UNIFORMS.globalOpacity] : { value: 1.0 },
         [AbstractAdapter.OVERLAY_UNIFORMS.overlayOpacity]: { value: 1.0 },
       },
 
-      vertexShader: `
+      vertexShader: overrideVertexShader || `
 varying vec2 vUv;
 
 void main() {
@@ -176,8 +177,8 @@ varying vec2 vUv;
 void main() {
   vec4 tColor1 = texture2D( ${AbstractAdapter.OVERLAY_UNIFORMS.panorama}, vUv );
   vec4 tColor2 = texture2D( ${AbstractAdapter.OVERLAY_UNIFORMS.overlay}, vUv );
-  gl_FragColor = vec4( 
-    mix( tColor1.rgb, tColor2.rgb, tColor2.a * ${AbstractAdapter.OVERLAY_UNIFORMS.overlayOpacity} ), 
+  gl_FragColor = vec4(
+    mix( tColor1.rgb, tColor2.rgb, tColor2.a * ${AbstractAdapter.OVERLAY_UNIFORMS.overlayOpacity} ),
     ${AbstractAdapter.OVERLAY_UNIFORMS.globalOpacity}
   );
 }`,

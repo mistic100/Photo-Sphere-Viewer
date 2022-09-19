@@ -11,14 +11,21 @@ title: PSV Intro Animation Demo
 ```js
 const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
 
+const animatedValues = {
+  latitude : { start: -Math.PI / 2, end: 0.2 },
+  longitude: { start: Math.PI, end: 0 },
+  zoom     : { start: 0, end: 50 },
+  fisheye  : { start: 2, end: 0 },
+};
+
 const viewer = new PhotoSphereViewer.Viewer({
   container: 'viewer',
   panorama: baseUrl + 'sphere.jpg',
   caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
-  defaultLat: -Math.PI / 2,
-  defaultLong: Math.PI,
-  defaultZoomLvl: 0,
-  fisheye: 4,
+  defaultLat: animatedValues.latitude.start,
+  defaultLong: animatedValues.longitude.start,
+  defaultZoomLvl: animatedValues.zoom.start,
+  fisheye: animatedValues.fisheye.start,
   navbar: [
     'zoom',
     {
@@ -32,24 +39,15 @@ const viewer = new PhotoSphereViewer.Viewer({
 });
 
 viewer.on('ready', intro);
-   
+
 function intro() {
-  // default far plane is too close to render fisheye=4
-  // you can also skip this line and start with fisheye=2
-  viewer.renderer.camera.far *= 2;
-  
   new PhotoSphereViewer.utils.Animation({
-    properties: {
-      lat: { start: -Math.PI / 2, end: 0.2 },
-      long: { start: Math.PI, end: 0 },
-      zoom: { start: 0, end: 50 },
-      fisheye: { start: 4, end: 0 },
-    },
-    duration: 2000,
+    properties: animatedValues,
+    duration: 2500,
     easing: 'inOutQuad',
     onTick: (properties) => {
       viewer.setOption('fisheye', properties.fisheye);
-      viewer.rotate({ longitude: properties.long, latitude: properties.lat });
+      viewer.rotate({ longitude: properties.longitude, latitude: properties.latitude });
       viewer.zoom(properties.zoom);
     }
   });

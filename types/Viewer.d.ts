@@ -54,9 +54,13 @@ export type ViewerOptions = {
   autorotateIdle?: boolean;
   autorotateSpeed?: string | number;
   autorotateLat?: number;
+  autorotateZoomLvl?: number;
   moveInertia?: boolean;
   mousewheel?: boolean;
   mousemove?: boolean;
+  /**
+   * @deprecated
+   */
   captureCursor?: boolean;
   mousewheelCtrlKey?: boolean;
   touchmoveTwoFingers?: boolean;

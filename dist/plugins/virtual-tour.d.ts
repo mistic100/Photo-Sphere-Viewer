@@ -95,7 +95,7 @@ declare const MODE_MARKERS = 'markers';
 declare const MODE_3D = '3d';
 
 /**
- * @summary Replaces the standard autorotate animation by a smooth transition between multiple points
+ * @summary Create virtual tours by linking multiple panoramas
  */
 declare class VirtualTourPlugin extends AbstractPlugin {
 

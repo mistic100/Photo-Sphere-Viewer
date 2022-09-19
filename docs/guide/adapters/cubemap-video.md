@@ -44,7 +44,6 @@ const viewer = new PhotoSphereViewer.Viewer({
   adapter: [PhotoSphereViewer.CubemapVideoAdapter, {
     muted: true,
   }],
-  panorama: { source: baseUrl + 'cubemap-video/DreamOfDali_HD.webm' },
   caption: 'Dreams of Dalí <b>&copy; The Dalí Museum</b>',
   loadingImg: baseUrl + 'loader.gif',
   touchmoveTwoFingers: true,
@@ -55,6 +54,7 @@ const viewer = new PhotoSphereViewer.Viewer({
     PhotoSphereViewer.VideoPlugin,
     PhotoSphereViewer.SettingsPlugin,
     [PhotoSphereViewer.ResolutionPlugin, {
+      defaultResolution: 'HD',
       resolutions: [
         {
           id      : 'UHD',

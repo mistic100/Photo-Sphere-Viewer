@@ -129,22 +129,28 @@ Speed of the automatic rotation. Can be a negative value to reverse the rotation
 
 Latitude at which the automatic rotation is performed.
 
+#### `autorotateZoomLvl` <Badge text="4.7.3"/>
+- type: `number`
+- default: `null`
+
+Zoom level at which the automatic rotation is performed. If `null` the current zoom is kept.
+
 #### `lang`
 - type: `object`
 - default:
 ```js
 lang: {
-    autorotate: 'Automatic rotation',
-    zoom      : 'Zoom',
-    zoomOut   : 'Zoom out',
-    zoomIn    : 'Zoom in',
-    move      : 'Move',
-    download  : 'Download',
-    fullscreen: 'Fullscreen',
-    menu      : 'Menu',
-    twoFingers: 'Use two fingers to navigate',
-    ctrlZoom  : 'Use ctrl + scroll to zoom the image',
-    loadError : 'The panorama can\'t be loaded',
+  autorotate: 'Automatic rotation',
+  zoom      : 'Zoom',
+  zoomOut   : 'Zoom out',
+  zoomIn    : 'Zoom in',
+  move      : 'Move',
+  download  : 'Download',
+  fullscreen: 'Fullscreen',
+  menu      : 'Menu',
+  twoFingers: 'Use two fingers to navigate',
+  ctrlZoom  : 'Use ctrl + scroll to zoom the image',
+  loadError : 'The panorama can\'t be loaded',
 }
 ```
 
@@ -178,12 +184,6 @@ Enables panorama rotation with mouse click+move or with a finger swipe on touch 
 - default: `false`
 
 Requires to use the ctrl key to zoom the panorama. This allows to scroll on the page without interfering with the viewer. If enabled, an overlay asking the user to use ctrl + scroll is displayed when ctrl key is not pressed.
-
-#### `captureCursor`
-- type: `boolean`
-- default: `false`
-
-Rotate the panorama just by moving the cursor above the view instead of click+move.
 
 #### `touchmoveTwoFingers`
 - type: `boolean`

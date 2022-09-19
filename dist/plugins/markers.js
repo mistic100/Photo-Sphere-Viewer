@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.2
+* Photo Sphere Viewer 4.7.3
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -11,7 +11,7 @@
 })(this, (function (exports, three, photoSphereViewer) { 'use strict';
 
   function _extends() {
-    _extends = Object.assign ? Object.assign.bind() : function (target) {
+    _extends = Object.assign || function (target) {
       for (var i = 1; i < arguments.length; i++) {
         var source = arguments[i];
 
@@ -24,6 +24,7 @@
 
       return target;
     };
+
     return _extends.apply(this, arguments);
   }
 
@@ -35,10 +36,11 @@
   }
 
   function _setPrototypeOf(o, p) {
-    _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
       o.__proto__ = p;
       return o;
     };
+
     return _setPrototypeOf(o, p);
   }
 
@@ -613,7 +615,6 @@
         });
 
         if (this.isPoly()) {
-          var viewerPos = photoSphereViewer.utils.getPosition(this.psv.container);
           config.box = {
             // separate the tooltip from the cursor
             width: this.psv.tooltip.size.arrow * 2,
@@ -621,6 +622,7 @@
           };
 
           if (mousePosition) {
+            var viewerPos = photoSphereViewer.utils.getPosition(this.psv.container);
             config.top = mousePosition.clientY - viewerPos.top - this.psv.tooltip.size.arrow / 2;
             config.left = mousePosition.clientX - viewerPos.left - this.psv.tooltip.size.arrow;
           } else {
@@ -1985,7 +1987,7 @@
             if (marker.isSvg()) {
               // simulate transform-origin relative to SVG element
               var x = position.x + marker.props.width * marker.props.anchor.x * (1 - scale);
-              var y = position.y + marker.props.width * marker.props.anchor.y * (1 - scale);
+              var y = position.y + marker.props.height * marker.props.anchor.y * (1 - scale);
               marker.$el.setAttributeNS(null, 'transform', "translate(" + x + ", " + y + ") scale(" + scale + ", " + scale + ")");
             } else {
               marker.$el.style.transform = "translate3D(" + position.x + "px, " + position.y + "px, 0px) scale(" + scale + ", " + scale + ")";

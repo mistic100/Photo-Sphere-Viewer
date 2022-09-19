@@ -39,7 +39,7 @@ export class Renderer extends AbstractService {
      * @readonly
      * @protected
      */
-    this.camera = new PerspectiveCamera(50, 16 / 9, 1, 2 * SPHERE_RADIUS);
+    this.camera = new PerspectiveCamera(50, 16 / 9, 0.1, 2 * SPHERE_RADIUS);
 
     /**
      * @member {external:THREE.Mesh}

@@ -38,10 +38,10 @@ export const DEFAULTS = {
   autorotateIdle     : false,
   autorotateSpeed    : '2rpm',
   autorotateLat      : null,
+  autorotateZoomLvl  : null,
   moveInertia        : true,
   mousewheel         : true,
   mousemove          : true,
-  captureCursor      : false,
   mousewheelCtrlKey  : false,
   touchmoveTwoFingers: false,
   useXmpData         : true,
@@ -104,6 +104,7 @@ export const DEPRECATED_OPTIONS = {
   zoomButtonIncrement    : 'zoomButtonIncrement is deprecated, use zoomSpeed',
   mousewheelSpeed        : 'mousewheelSpeed is deprecated, use zoomSpeed',
   sphereCorrectionReorder: 'sphereCorrectionReorder is deprecated',
+  captureCursor          : 'captureCursor is deprecated',
 };
 
 /**
@@ -111,13 +112,13 @@ export const DEPRECATED_OPTIONS = {
  * @private
  */
 export const CONFIG_PARSERS = {
-  container      : (container) => {
+  container        : (container) => {
     if (!container) {
       throw new PSVError('No value given for container.');
     }
     return container;
   },
-  adapter        : (adapter) => {
+  adapter          : (adapter) => {
     if (!adapter) {
       adapter = [EquirectangularAdapter];
     }
@@ -132,18 +133,21 @@ export const CONFIG_PARSERS = {
     }
     return adapter;
   },
-  overlayOpacity : (overlayOpacity) => {
+  overlayOpacity   : (overlayOpacity) => {
     return MathUtils.clamp(overlayOpacity, 0, 1);
   },
-  defaultLong    : (defaultLong) => {
+  defaultLong      : (defaultLong) => {
     // defaultLat is between 0 and PI
     return parseAngle(defaultLong);
   },
-  defaultLat     : (defaultLat) => {
+  defaultLat       : (defaultLat) => {
     // defaultLat is between -PI/2 and PI/2
     return parseAngle(defaultLat, true);
   },
-  minFov         : (minFov, config) => {
+  defaultZoomLvl   : (defaultZoomLvl) => {
+    return MathUtils.clamp(defaultZoomLvl, 0, 100);
+  },
+  minFov           : (minFov, config) => {
     // minFov and maxFov must be ordered
     if (config.maxFov < minFov) {
       logWarn('maxFov cannot be lower than minFov');
@@ -152,7 +156,7 @@ export const CONFIG_PARSERS = {
     // minFov between 1 and 179
     return MathUtils.clamp(minFov, 1, 179);
   },
-  maxFov         : (maxFov, config) => {
+  maxFov           : (maxFov, config) => {
     // minFov and maxFov must be ordered
     if (maxFov < config.minFov) {
       maxFov = config.minFov;
@@ -160,7 +164,7 @@ export const CONFIG_PARSERS = {
     // maxFov between 1 and 179
     return MathUtils.clamp(maxFov, 1, 179);
   },
-  lang           : (lang) => {
+  lang             : (lang) => {
     if (Array.isArray(lang.twoFingers)) {
       logWarn('lang.twoFingers must not be an array');
       lang.twoFingers = lang.twoFingers[0];
@@ -170,14 +174,14 @@ export const CONFIG_PARSERS = {
       ...lang,
     };
   },
-  keyboard       : (keyboard) => {
+  keyboard         : (keyboard) => {
     // keyboard=true becomes the default map
     if (keyboard === true) {
       return clone(DEFAULTS.keyboard);
     }
     return keyboard;
   },
-  autorotateLat  : (autorotateLat, config) => {
+  autorotateLat    : (autorotateLat, config) => {
     // default autorotateLat is defaultLat
     if (autorotateLat === null) {
       return parseAngle(config.defaultLat, true);
@@ -187,17 +191,25 @@ export const CONFIG_PARSERS = {
       return parseAngle(autorotateLat, true);
     }
   },
-  autorotateSpeed: (autorotateSpeed) => {
+  autorotateZoomLvl: (autorotateZoomLvl) => {
+    if (isNil(autorotateZoomLvl)) {
+      return null;
+    }
+    else {
+      return MathUtils.clamp(autorotateZoomLvl, 0, 100);
+    }
+  },
+  autorotateSpeed  : (autorotateSpeed) => {
     return parseSpeed(autorotateSpeed);
   },
-  autorotateIdle : (autorotateIdle, config) => {
+  autorotateIdle   : (autorotateIdle, config) => {
     if (autorotateIdle && isNil(config.autorotateDelay)) {
       logWarn('autorotateIdle requires a non null autorotateDelay');
       return false;
     }
     return autorotateIdle;
   },
-  fisheye        : (fisheye) => {
+  fisheye          : (fisheye) => {
     // translate boolean fisheye to amount
     if (fisheye === true) {
       return 1;
@@ -207,7 +219,7 @@ export const CONFIG_PARSERS = {
     }
     return fisheye;
   },
-  plugins        : (plugins) => {
+  plugins          : (plugins) => {
     return plugins
       .map((plugin) => {
         if (Array.isArray(plugin)) {

@@ -3,7 +3,7 @@
 > [Equirectangular projection](https://en.wikipedia.org/wiki/Equirectangular_projection) is one of the simplest way to create the texture of a sphere. It is the default projection used by most 360° cameras.
 
 ::: tip
-There is no need to declare the equirectangular adapter as it is the default one, unless you want to change it's configuration.
+There is no need to declare the equirectangular adapter as it is the default one, unless you want to change its configuration.
 :::
 
 ```js

@@ -1,11 +1,10 @@
-import { MathUtils, Matrix4, Mesh, PlaneBufferGeometry, Quaternion, ShaderMaterial, Texture, Vector3 } from 'three';
+import { Euler, MathUtils, Matrix4, Mesh, PlaneBufferGeometry, ShaderMaterial, Texture } from 'three';
 import { CONSTANTS, DEFAULTS, EquirectangularAdapter } from '../..';
 
 
-DEFAULTS.moveSpeed = 2;
+DEFAULTS.defaultLat = -Math.PI / 2;
 
-const AXIS_X = new Vector3(1, 0, 0);
-const AXIS_Y = new Vector3(0, 1, 0);
+const euler = new Euler();
 
 
 /**
@@ -25,13 +24,6 @@ export class LittlePlanetAdapter extends EquirectangularAdapter {
     super(psv);
 
     this.psv.prop.littlePlanet = true;
-
-    this.prop = {
-      quatA   : new Quaternion(),
-      quatB   : new Quaternion(),
-      quatC   : new Quaternion(),
-      position: { longitude: 0, latitude: 0 },
-    };
 
     this.psv.on(CONSTANTS.EVENTS.SIZE_UPDATED, this);
     this.psv.on(CONSTANTS.EVENTS.ZOOM_UPDATED, this);
@@ -62,7 +54,7 @@ export class LittlePlanetAdapter extends EquirectangularAdapter {
         this.__setResolution(e.args[0]);
         break;
       case CONSTANTS.EVENTS.ZOOM_UPDATED:
-        this.__setZoom(e.args[0]);
+        this.__setZoom();
         break;
       case CONSTANTS.EVENTS.POSITION_UPDATED:
         this.__setPosition(e.args[0]);
@@ -80,11 +72,11 @@ export class LittlePlanetAdapter extends EquirectangularAdapter {
   }
 
   /**
-   * @param {integer} zoom
    * @private
    */
-  __setZoom(zoom) {
-    this.uniforms.zoom.value = MathUtils.mapLinear(zoom, 0, 100, 50, 2);
+  __setZoom() {
+    // mapping values are empirical
+    this.uniforms.zoom.value = Math.max(0.1, MathUtils.mapLinear(this.psv.prop.vFov, 90, 30, 50, 2));
   }
 
   /**
@@ -92,11 +84,14 @@ export class LittlePlanetAdapter extends EquirectangularAdapter {
    * @private
    */
   __setPosition(position) {
-    this.prop.quatA.setFromAxisAngle(AXIS_Y, this.prop.position.longitude - position.longitude);
-    this.prop.quatB.setFromAxisAngle(AXIS_X, -this.prop.position.latitude + position.latitude);
-    this.prop.quatC.multiply(this.prop.quatA).multiply(this.prop.quatB);
-    this.uniforms.transform.value.makeRotationFromQuaternion(this.prop.quatC);
-    this.prop.position = position;
+    euler.set(
+      Math.PI / 2 + position.latitude,
+      0,
+      -Math.PI / 2 - position.longitude,
+      'ZYX'
+    );
+
+    this.uniforms.transform.value.makeRotationFromEuler(euler);
   }
 
   /**
@@ -109,7 +104,7 @@ export class LittlePlanetAdapter extends EquirectangularAdapter {
     // this one was copied from https://github.com/pchen66/panolens.js
     const material = new ShaderMaterial({
       uniforms: {
-        tDiffuse  : { value: new Texture() },
+        panorama  : { value: new Texture() },
         resolution: { value: 2.0 },
         transform : { value: new Matrix4() },
         zoom      : { value: 10.0 },
@@ -118,13 +113,14 @@ export class LittlePlanetAdapter extends EquirectangularAdapter {
 
       vertexShader: `
 varying vec2 vUv;
+
 void main() {
   vUv = uv;
   gl_Position = vec4( position, 1.0 );
 }`,
 
       fragmentShader: `
-uniform sampler2D tDiffuse;
+uniform sampler2D panorama;
 uniform float resolution;
 uniform mat4 transform;
 uniform float zoom;
@@ -135,7 +131,7 @@ varying vec2 vUv;
 const float PI = 3.1415926535897932384626433832795;
 
 void main() {
-  vec2 position = -1.0 +  2.0 * vUv;
+  vec2 position = -1.0 + 2.0 * vUv;
   position *= vec2( zoom * resolution, zoom * 0.5 );
 
   float x2y2 = position.x * position.x + position.y * position.y;
@@ -143,23 +139,16 @@ void main() {
   sphere_pnt = vec3( transform * vec4( sphere_pnt, 1.0 ) );
 
   vec2 sampleUV = vec2(
-    (atan(sphere_pnt.y, sphere_pnt.x) / PI + 1.0) * 0.5,
+    1.0 - (atan(sphere_pnt.y, sphere_pnt.x) / PI + 1.0) * 0.5,
     (asin(sphere_pnt.z) / PI + 0.5)
   );
 
-  gl_FragColor = texture2D( tDiffuse, sampleUV );
+  gl_FragColor = texture2D( panorama, sampleUV );
   gl_FragColor.a *= opacity;
 }`,
     });
 
     this.uniforms = material.uniforms;
-
-    this.__setPosition({
-      longitude: this.psv.config.defaultLong,
-      latitude : this.psv.config.defaultLat,
-    });
-
-    this.__setZoom(this.psv.config.defaultZoomLvl);
 
     return new Mesh(geometry, material);
   }
@@ -168,8 +157,8 @@ void main() {
    * @override
    */
   setTexture(mesh, textureData) {
-    mesh.material.uniforms.tDiffuse.value.dispose();
-    mesh.material.uniforms.tDiffuse.value = textureData.texture;
+    mesh.material.uniforms.panorama.value.dispose();
+    mesh.material.uniforms.panorama.value = textureData.texture;
   }
 
 }

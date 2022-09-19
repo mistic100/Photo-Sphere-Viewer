@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.2
+* Photo Sphere Viewer 4.7.3
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -18,10 +18,11 @@
   }
 
   function _setPrototypeOf(o, p) {
-    _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
       o.__proto__ = p;
       return o;
     };
+
     return _setPrototypeOf(o, p);
   }
 
@@ -33,9 +34,8 @@
     return self;
   }
 
-  photoSphereViewer.DEFAULTS.moveSpeed = 2;
-  var AXIS_X = new three.Vector3(1, 0, 0);
-  var AXIS_Y = new three.Vector3(0, 1, 0);
+  photoSphereViewer.DEFAULTS.defaultLat = -Math.PI / 2;
+  var euler = new three.Euler();
   /**
    * @summary Adapter for equirectangular panoramas displayed with little planet effect
    * @memberof PSV.adapters
@@ -53,15 +53,6 @@
 
       _this = _EquirectangularAdapt.call(this, psv) || this;
       _this.psv.prop.littlePlanet = true;
-      _this.prop = {
-        quatA: new three.Quaternion(),
-        quatB: new three.Quaternion(),
-        quatC: new three.Quaternion(),
-        position: {
-          longitude: 0,
-          latitude: 0
-        }
-      };
 
       _this.psv.on(photoSphereViewer.CONSTANTS.EVENTS.SIZE_UPDATED, _assertThisInitialized(_this));
 
@@ -103,7 +94,7 @@
           break;
 
         case photoSphereViewer.CONSTANTS.EVENTS.ZOOM_UPDATED:
-          this.__setZoom(e.args[0]);
+          this.__setZoom();
 
           break;
 
@@ -125,13 +116,13 @@
       this.uniforms.resolution.value = size.width / size.height;
     }
     /**
-     * @param {integer} zoom
      * @private
      */
     ;
 
-    _proto.__setZoom = function __setZoom(zoom) {
-      this.uniforms.zoom.value = three.MathUtils.mapLinear(zoom, 0, 100, 50, 2);
+    _proto.__setZoom = function __setZoom() {
+      // mapping values are empirical
+      this.uniforms.zoom.value = Math.max(0.1, three.MathUtils.mapLinear(this.psv.prop.vFov, 90, 30, 50, 2));
     }
     /**
      * @param {PSV.Position} position
@@ -140,11 +131,8 @@
     ;
 
     _proto.__setPosition = function __setPosition(position) {
-      this.prop.quatA.setFromAxisAngle(AXIS_Y, this.prop.position.longitude - position.longitude);
-      this.prop.quatB.setFromAxisAngle(AXIS_X, -this.prop.position.latitude + position.latitude);
-      this.prop.quatC.multiply(this.prop.quatA).multiply(this.prop.quatB);
-      this.uniforms.transform.value.makeRotationFromQuaternion(this.prop.quatC);
-      this.prop.position = position;
+      euler.set(Math.PI / 2 + position.latitude, 0, -Math.PI / 2 - position.longitude, 'ZYX');
+      this.uniforms.transform.value.makeRotationFromEuler(euler);
     }
     /**
      * @override
@@ -156,7 +144,7 @@
 
       var material = new three.ShaderMaterial({
         uniforms: {
-          tDiffuse: {
+          panorama: {
             value: new three.Texture()
           },
           resolution: {
@@ -172,18 +160,10 @@
             value: 1.0
           }
         },
-        vertexShader: "\nvarying vec2 vUv;\nvoid main() {\n  vUv = uv;\n  gl_Position = vec4( position, 1.0 );\n}",
-        fragmentShader: "\nuniform sampler2D tDiffuse;\nuniform float resolution;\nuniform mat4 transform;\nuniform float zoom;\nuniform float opacity;\n\nvarying vec2 vUv;\n\nconst float PI = 3.1415926535897932384626433832795;\n\nvoid main() {\n  vec2 position = -1.0 +  2.0 * vUv;\n  position *= vec2( zoom * resolution, zoom * 0.5 );\n\n  float x2y2 = position.x * position.x + position.y * position.y;\n  vec3 sphere_pnt = vec3( 2. * position, x2y2 - 1. ) / ( x2y2 + 1. );\n  sphere_pnt = vec3( transform * vec4( sphere_pnt, 1.0 ) );\n\n  vec2 sampleUV = vec2(\n    (atan(sphere_pnt.y, sphere_pnt.x) / PI + 1.0) * 0.5,\n    (asin(sphere_pnt.z) / PI + 0.5)\n  );\n\n  gl_FragColor = texture2D( tDiffuse, sampleUV );\n  gl_FragColor.a *= opacity;\n}"
+        vertexShader: "\nvarying vec2 vUv;\n\nvoid main() {\n  vUv = uv;\n  gl_Position = vec4( position, 1.0 );\n}",
+        fragmentShader: "\nuniform sampler2D panorama;\nuniform float resolution;\nuniform mat4 transform;\nuniform float zoom;\nuniform float opacity;\n\nvarying vec2 vUv;\n\nconst float PI = 3.1415926535897932384626433832795;\n\nvoid main() {\n  vec2 position = -1.0 + 2.0 * vUv;\n  position *= vec2( zoom * resolution, zoom * 0.5 );\n\n  float x2y2 = position.x * position.x + position.y * position.y;\n  vec3 sphere_pnt = vec3( 2. * position, x2y2 - 1. ) / ( x2y2 + 1. );\n  sphere_pnt = vec3( transform * vec4( sphere_pnt, 1.0 ) );\n\n  vec2 sampleUV = vec2(\n    1.0 - (atan(sphere_pnt.y, sphere_pnt.x) / PI + 1.0) * 0.5,\n    (asin(sphere_pnt.z) / PI + 0.5)\n  );\n\n  gl_FragColor = texture2D( panorama, sampleUV );\n  gl_FragColor.a *= opacity;\n}"
       });
       this.uniforms = material.uniforms;
-
-      this.__setPosition({
-        longitude: this.psv.config.defaultLong,
-        latitude: this.psv.config.defaultLat
-      });
-
-      this.__setZoom(this.psv.config.defaultZoomLvl);
-
       return new three.Mesh(geometry, material);
     }
     /**
@@ -192,8 +172,8 @@
     ;
 
     _proto.setTexture = function setTexture(mesh, textureData) {
-      mesh.material.uniforms.tDiffuse.value.dispose();
-      mesh.material.uniforms.tDiffuse.value = textureData.texture;
+      mesh.material.uniforms.panorama.value.dispose();
+      mesh.material.uniforms.panorama.value = textureData.texture;
     };
 
     return LittlePlanetAdapter;

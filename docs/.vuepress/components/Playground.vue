@@ -155,11 +155,6 @@
                 Two fingers move
               </md-checkbox>
             </div>
-            <div class="md-layout-item md-size-33 checkbox-field">
-              <md-checkbox class="md-primary" v-model="options.captureCursor" :disabled="!imageData">
-                Capture cursor
-              </md-checkbox>
-            </div>
           </div>
         </md-tab>
 

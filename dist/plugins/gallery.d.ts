@@ -3,6 +3,7 @@ import { Size, PanoramaOptions, AbstractPlugin, Viewer } from 'photo-sphere-view
 type GalleryPluginOptions = {
   items?: GalleryPluginItem[];
   visibleOnLoad?: boolean;
+  hideOnClick?: boolean;
   thumbnailSize?: Size;
 };
 

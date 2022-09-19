@@ -72,6 +72,10 @@ export class Animation {
    * @private
    */
   __run(timestamp) {
+    if (this.__cancelled) {
+      return;
+    }
+
     // first iteration
     if (this.__start === null) {
       this.__start = timestamp;

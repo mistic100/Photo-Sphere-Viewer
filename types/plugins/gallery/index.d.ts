@@ -3,6 +3,7 @@ import { AbstractPlugin, PanoramaOptions, Size, Viewer } from '../..';
 export type GalleryPluginOptions = {
   items?: GalleryPluginItem[];
   visibleOnLoad?: boolean;
+  hideOnClick?: boolean;
   thumbnailSize?: Size;
 };
 

@@ -19,10 +19,10 @@ Once enabled the plugin will add a new setting the user can use to change the re
 
 ```js
 const viewer = new PhotoSphereViewer.Viewer({
-  panorama: 'sphere_small.jpg', // must match with one of the resolutions
   plugins: [
     PhotoSphereViewer.SettingsPlugin,
     [PhotoSphereViewer.ResolutionPlugin, {
+      defaultResolution: 'SD',
       resolutions: [
         {
           id      : 'SD',
@@ -62,7 +62,6 @@ const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
 
 const viewer = new PhotoSphereViewer.Viewer({
   container: 'viewer',
-  panorama: baseUrl + 'sphere-small.jpg',
   caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
   loadingImg: baseUrl + 'loader.gif',
   touchmoveTwoFingers: true,
@@ -71,6 +70,7 @@ const viewer = new PhotoSphereViewer.Viewer({
   plugins: [
     PhotoSphereViewer.SettingsPlugin,
     [PhotoSphereViewer.ResolutionPlugin, {
+      defaultResolution: 'SD',
       resolutions: [
         {
           id      : 'SD',
@@ -104,7 +104,7 @@ Cubemaps are supported.
 The id of the default resolution to load. If not provided the first resolution will be used.
 
 ::: warning
-If a `panorama` is initually configured on the viewer, this setting is ignored.
+If a `panorama` is initially configured on the viewer, this setting is ignored.
 :::
 
 #### `showBadge`

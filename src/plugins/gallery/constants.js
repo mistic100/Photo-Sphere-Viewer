@@ -48,10 +48,12 @@ export const GALLERY_ITEM_DATA_KEY = utils.dasherize(GALLERY_ITEM_DATA);
 export const ITEMS_TEMPLATE = (items, size) => `
 <div class="psv-gallery-container">
   ${items.map(item => `
-  <div class="psv-gallery-item" data-${GALLERY_ITEM_DATA_KEY}="${item.id}" ${size ? `style="width:${size.width}px;height:${size.height}px"` : ''}>
-    ${item.name ? `<div class="psv-gallery-item-title"><span>${item.name}</span></div>` : ''}
-    <svg class="psv-gallery-item-thumb" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice"><use href="#psvGalleryBlankIcon"></use></svg>
-    ${item.thumbnail ? `<div class="psv-gallery-item-thumb" data-src="${item.thumbnail}"></div>` : ''}
+  <div class="psv-gallery-item" data-${GALLERY_ITEM_DATA_KEY}="${item.id}" style="width:${size.width}px">
+    <div class="psv-gallery-item-wrapper" style="padding-bottom:calc(100% * ${size.height} / ${size.width})">
+      ${item.name ? `<div class="psv-gallery-item-title"><span>${item.name}</span></div>` : ''}
+      <svg class="psv-gallery-item-thumb" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice"><use href="#psvGalleryBlankIcon"></use></svg>
+      ${item.thumbnail ? `<div class="psv-gallery-item-thumb" data-src="${item.thumbnail}"></div>` : ''}
+    </div>
   </div>
   `).join('')}
 </div>

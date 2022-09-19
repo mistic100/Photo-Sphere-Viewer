@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.2
+* Photo Sphere Viewer 4.7.3
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -11,7 +11,7 @@
 })(this, (function (exports, photoSphereViewer) { 'use strict';
 
   function _extends() {
-    _extends = Object.assign ? Object.assign.bind() : function (target) {
+    _extends = Object.assign || function (target) {
       for (var i = 1; i < arguments.length; i++) {
         var source = arguments[i];
 
@@ -24,6 +24,7 @@
 
       return target;
     };
+
     return _extends.apply(this, arguments);
   }
 
@@ -35,10 +36,11 @@
   }
 
   function _setPrototypeOf(o, p) {
-    _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
       o.__proto__ = p;
       return o;
     };
+
     return _setPrototypeOf(o, p);
   }
 
@@ -137,7 +139,7 @@
 
   var ITEMS_TEMPLATE = function ITEMS_TEMPLATE(items, size) {
     return "\n<div class=\"psv-gallery-container\">\n  " + items.map(function (item) {
-      return "\n  <div class=\"psv-gallery-item\" data-" + GALLERY_ITEM_DATA_KEY + "=\"" + item.id + "\" " + (size ? "style=\"width:" + size.width + "px;height:" + size.height + "px\"" : '') + ">\n    " + (item.name ? "<div class=\"psv-gallery-item-title\"><span>" + item.name + "</span></div>" : '') + "\n    <svg class=\"psv-gallery-item-thumb\" viewBox=\"0 0 200 200\" preserveAspectRatio=\"xMidYMid slice\"><use href=\"#psvGalleryBlankIcon\"></use></svg>\n    " + (item.thumbnail ? "<div class=\"psv-gallery-item-thumb\" data-src=\"" + item.thumbnail + "\"></div>" : '') + "\n  </div>\n  ";
+      return "\n  <div class=\"psv-gallery-item\" data-" + GALLERY_ITEM_DATA_KEY + "=\"" + item.id + "\" style=\"width:" + size.width + "px\">\n    <div class=\"psv-gallery-item-wrapper\" style=\"padding-bottom:calc(100% * " + size.height + " / " + size.width + ")\">\n      " + (item.name ? "<div class=\"psv-gallery-item-title\"><span>" + item.name + "</span></div>" : '') + "\n      <svg class=\"psv-gallery-item-thumb\" viewBox=\"0 0 200 200\" preserveAspectRatio=\"xMidYMid slice\"><use href=\"#psvGalleryBlankIcon\"></use></svg>\n      " + (item.thumbnail ? "<div class=\"psv-gallery-item-thumb\" data-src=\"" + item.thumbnail + "\"></div>" : '') + "\n    </div>\n  </div>\n  ";
     }).join('') + "\n</div>\n";
   };
 
@@ -447,6 +449,7 @@
    * @typedef {Object} PSV.plugins.GalleryPlugin.Options
    * @property {PSV.plugins.GalleryPlugin.Item[]} [items]
    * @property {boolean} [visibleOnLoad=false] - Displays the gallery when loading the first panorama
+   * @property {boolean} [hideOnClick=true] - Hides the gallery when the user clicks on an item
    * @property {PSV.Size} [thumbnailSize] - Size of thumbnails, default (200x100) is set with CSS
    */
   // add gallery button
@@ -478,6 +481,7 @@
       _this.config = _extends({
         items: null,
         visibleOnLoad: false,
+        hideOnClick: true,
         thumbnailSize: {
           width: 200,
           height: 100
@@ -644,6 +648,10 @@
 
       this.prop.currentId = id;
       this.gallery.setActive(id);
+
+      if (this.config.hideOnClick) {
+        this.hide();
+      }
     };
 
     return GalleryPlugin;

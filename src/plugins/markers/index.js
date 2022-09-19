@@ -621,7 +621,7 @@ export class MarkersPlugin extends AbstractPlugin {
           if (marker.isSvg()) {
             // simulate transform-origin relative to SVG element
             const x = position.x + marker.props.width * marker.props.anchor.x * (1 - scale);
-            const y = position.y + marker.props.width * marker.props.anchor.y * (1 - scale);
+            const y = position.y + marker.props.height * marker.props.anchor.y * (1 - scale);
             marker.$el.setAttributeNS(null, 'transform', `translate(${x}, ${y}) scale(${scale}, ${scale})`);
           }
           else {

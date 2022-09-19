@@ -44,7 +44,6 @@ const viewer = new PhotoSphereViewer.Viewer({
   adapter: [PhotoSphereViewer.EquirectangularVideoAdapter, {
     muted: true,
   }],
-  panorama: { source: baseUrl + 'equirectangular-video/Ayutthaya_HD.mp4' },
   caption: 'Ayutthaya <b>&copy; meetle</b>',
   loadingImg: baseUrl + 'loader.gif',
   touchmoveTwoFingers: true,
@@ -55,6 +54,7 @@ const viewer = new PhotoSphereViewer.Viewer({
     PhotoSphereViewer.VideoPlugin,
     PhotoSphereViewer.SettingsPlugin,
     [PhotoSphereViewer.ResolutionPlugin, {
+      defaultResolution: 'HD',
       resolutions: [
         {
           id      : 'UHD',

@@ -748,6 +748,10 @@ export class Viewer extends EventEmitter {
       latitude: this.config.autorotateLat,
     }, Math.abs(this.config.autorotateSpeed / this.config.moveSpeed));
 
+    if (this.config.autorotateZoomLvl !== null) {
+      this.dynamics.zoom.goto(this.config.autorotateZoomLvl);
+    }
+
     this.prop.autorotateEnabled = true;
 
     if (!refresh) {
@@ -762,6 +766,7 @@ export class Viewer extends EventEmitter {
   stopAutorotate() {
     if (this.isAutorotateEnabled()) {
       this.dynamics.position.stop();
+      this.dynamics.zoom.stop();
 
       this.prop.autorotateEnabled = false;
 
@@ -899,11 +904,8 @@ export class Viewer extends EventEmitter {
    */
   stopAnimation() {
     if (this.prop.animationPromise) {
-      return new Promise((resolve) => {
-        this.prop.animationPromise.then(resolve);
-        this.prop.animationPromise.cancel();
-        this.prop.animationPromise = null;
-      });
+      this.prop.animationPromise.cancel();
+      return this.prop.animationPromise;
     }
     else {
       return Promise.resolve();
@@ -1014,7 +1016,7 @@ export class Viewer extends EventEmitter {
   /**
    * @summary Subscribes to events on objects in the scene
    * @param {string} userDataKey - only objects with the following `userData` will be emitted
-   * @param {EventListener} listener - must implement `handleEvent
+   * @param {EventListener} listener - must implement `handleEvent`
    * @return {function} call to stop the subscription
    * @package
    */

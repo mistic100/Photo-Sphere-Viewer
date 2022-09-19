@@ -45,6 +45,11 @@ $psv-gallery-thumb-hover-scale: 1.2 !default;
     overflow: hidden;
     cursor: pointer;
 
+    &-wrapper {
+      width: 100%;
+      height: 0;
+    }
+
     &-title {
       position: absolute;
       top: 0;
@@ -106,6 +111,22 @@ $psv-gallery-thumb-hover-scale: 1.2 !default;
       box-sizing: border-box;
       border: $psv-gallery-item-active-border;
       z-index: 3;
+    }
+  }
+
+  @media screen and (max-width: 500px) {
+    top: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    &-container {
+      flex-wrap: wrap;
+      margin-right: -$psv-gallery-padding;
+    }
+
+    &-item {
+      width: calc(50% - #{$psv-gallery-padding}) !important;
+      margin-bottom: $psv-gallery-padding;
     }
   }
 }

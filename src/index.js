@@ -144,7 +144,8 @@ export {
  * @property {number} [textureX] - position on the texture, if applicable
  * @property {number} [textureY] - position on the texture, if applicable
  * @property {PSV.plugins.MarkersPlugin.Marker} [marker] - clicked marker
- * @property {THREE.Object3D[]} objects
+ * @property {THREE.Object3D[]} [objects]
+ * @property {EventTarget} [target]
  */
 
 /**

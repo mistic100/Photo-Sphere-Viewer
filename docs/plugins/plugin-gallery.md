@@ -116,6 +116,12 @@ The list of items, see bellow.
 
 Displays the gallery when loading the first panorama. The user will be able to toggle the gallery with the navbar button.
 
+#### `hideOnClick` <Badge text="4.7.3"/>
+- type: `boolean`
+- default: `true
+
+Hides the gallery when the user clicks on an item.
+
 #### `thumbnailSize` <Badge text="4.7.1"/>
 - type: `{ width: number, height: number }`
 - default: `{ width: 200, height: 100 }`

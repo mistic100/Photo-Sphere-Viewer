@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.2
+* Photo Sphere Viewer 4.7.3
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -9,6 +9,67 @@
   typeof define === 'function' && define.amd ? define(['exports', 'three', 'uevent'], factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.PhotoSphereViewer = {}, global.THREE, global.uEvent));
 })(this, (function (exports, three, uevent) { 'use strict';
+
+  function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    Object.defineProperty(Constructor, "prototype", {
+      writable: false
+    });
+    return Constructor;
+  }
+
+  function _extends() {
+    _extends = Object.assign || function (target) {
+      for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i];
+
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+
+      return target;
+    };
+
+    return _extends.apply(this, arguments);
+  }
+
+  function _inheritsLoose(subClass, superClass) {
+    subClass.prototype = Object.create(superClass.prototype);
+    subClass.prototype.constructor = subClass;
+
+    _setPrototypeOf(subClass, superClass);
+  }
+
+  function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+      o.__proto__ = p;
+      return o;
+    };
+
+    return _setPrototypeOf(o, p);
+  }
+
+  function _assertThisInitialized(self) {
+    if (self === void 0) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return self;
+  }
 
   /**
    * @summary Custom error used in the lib
@@ -188,21 +249,25 @@
     /**
      * @internal
      */
-    AbstractAdapter.createOverlayMaterial = function createOverlayMaterial() {
-      var _uniforms;
+    AbstractAdapter.createOverlayMaterial = function createOverlayMaterial(_temp) {
+      var _extends2;
+
+      var _ref = _temp === void 0 ? {} : _temp,
+          additionalUniforms = _ref.additionalUniforms,
+          overrideVertexShader = _ref.overrideVertexShader;
 
       return new three.ShaderMaterial({
-        uniforms: (_uniforms = {}, _uniforms[AbstractAdapter.OVERLAY_UNIFORMS.panorama] = {
+        uniforms: _extends({}, additionalUniforms, (_extends2 = {}, _extends2[AbstractAdapter.OVERLAY_UNIFORMS.panorama] = {
           value: new three.Texture()
-        }, _uniforms[AbstractAdapter.OVERLAY_UNIFORMS.overlay] = {
+        }, _extends2[AbstractAdapter.OVERLAY_UNIFORMS.overlay] = {
           value: new three.Texture()
-        }, _uniforms[AbstractAdapter.OVERLAY_UNIFORMS.globalOpacity] = {
+        }, _extends2[AbstractAdapter.OVERLAY_UNIFORMS.globalOpacity] = {
           value: 1.0
-        }, _uniforms[AbstractAdapter.OVERLAY_UNIFORMS.overlayOpacity] = {
+        }, _extends2[AbstractAdapter.OVERLAY_UNIFORMS.overlayOpacity] = {
           value: 1.0
-        }, _uniforms),
-        vertexShader: "\nvarying vec2 vUv;\n\nvoid main() {\n  vUv = uv;\n  gl_Position = projectionMatrix *  modelViewMatrix * vec4( position, 1.0 );\n}",
-        fragmentShader: "\nuniform sampler2D " + AbstractAdapter.OVERLAY_UNIFORMS.panorama + ";\nuniform sampler2D " + AbstractAdapter.OVERLAY_UNIFORMS.overlay + ";\nuniform float " + AbstractAdapter.OVERLAY_UNIFORMS.globalOpacity + ";\nuniform float " + AbstractAdapter.OVERLAY_UNIFORMS.overlayOpacity + ";\n\nvarying vec2 vUv;\n\nvoid main() {\n  vec4 tColor1 = texture2D( " + AbstractAdapter.OVERLAY_UNIFORMS.panorama + ", vUv );\n  vec4 tColor2 = texture2D( " + AbstractAdapter.OVERLAY_UNIFORMS.overlay + ", vUv );\n  gl_FragColor = vec4( \n    mix( tColor1.rgb, tColor2.rgb, tColor2.a * " + AbstractAdapter.OVERLAY_UNIFORMS.overlayOpacity + " ), \n    " + AbstractAdapter.OVERLAY_UNIFORMS.globalOpacity + "\n  );\n}"
+        }, _extends2)),
+        vertexShader: overrideVertexShader || "\nvarying vec2 vUv;\n\nvoid main() {\n  vUv = uv;\n  gl_Position = projectionMatrix *  modelViewMatrix * vec4( position, 1.0 );\n}",
+        fragmentShader: "\nuniform sampler2D " + AbstractAdapter.OVERLAY_UNIFORMS.panorama + ";\nuniform sampler2D " + AbstractAdapter.OVERLAY_UNIFORMS.overlay + ";\nuniform float " + AbstractAdapter.OVERLAY_UNIFORMS.globalOpacity + ";\nuniform float " + AbstractAdapter.OVERLAY_UNIFORMS.overlayOpacity + ";\n\nvarying vec2 vUv;\n\nvoid main() {\n  vec4 tColor1 = texture2D( " + AbstractAdapter.OVERLAY_UNIFORMS.panorama + ", vUv );\n  vec4 tColor2 = texture2D( " + AbstractAdapter.OVERLAY_UNIFORMS.overlay + ", vUv );\n  gl_FragColor = vec4(\n    mix( tColor1.rgb, tColor2.rgb, tColor2.a * " + AbstractAdapter.OVERLAY_UNIFORMS.overlayOpacity + " ),\n    " + AbstractAdapter.OVERLAY_UNIFORMS.globalOpacity + "\n  );\n}"
       });
     };
 
@@ -217,65 +282,6 @@
     globalOpacity: 'globalOpacity',
     overlayOpacity: 'overlayOpacity'
   };
-
-  function _defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  function _createClass(Constructor, protoProps, staticProps) {
-    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) _defineProperties(Constructor, staticProps);
-    Object.defineProperty(Constructor, "prototype", {
-      writable: false
-    });
-    return Constructor;
-  }
-
-  function _extends() {
-    _extends = Object.assign ? Object.assign.bind() : function (target) {
-      for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i];
-
-        for (var key in source) {
-          if (Object.prototype.hasOwnProperty.call(source, key)) {
-            target[key] = source[key];
-          }
-        }
-      }
-
-      return target;
-    };
-    return _extends.apply(this, arguments);
-  }
-
-  function _inheritsLoose(subClass, superClass) {
-    subClass.prototype = Object.create(superClass.prototype);
-    subClass.prototype.constructor = subClass;
-
-    _setPrototypeOf(subClass, superClass);
-  }
-
-  function _setPrototypeOf(o, p) {
-    _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
-      o.__proto__ = p;
-      return o;
-    };
-    return _setPrototypeOf(o, p);
-  }
-
-  function _assertThisInitialized(self) {
-    if (self === void 0) {
-      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }
-
-    return self;
-  }
 
   /**
    * @namespace PSV.constants
@@ -1985,7 +1991,11 @@
     _proto.__run = function __run(timestamp) {
       var _this2 = this;
 
-      // first iteration
+      if (this.__cancelled) {
+        return;
+      } // first iteration
+
+
       if (this.__start === null) {
         this.__start = timestamp;
       } // compute progress
@@ -4958,10 +4968,10 @@
     autorotateIdle: false,
     autorotateSpeed: '2rpm',
     autorotateLat: null,
+    autorotateZoomLvl: null,
     moveInertia: true,
     mousewheel: true,
     mousemove: true,
-    captureCursor: false,
     mousewheelCtrlKey: false,
     touchmoveTwoFingers: false,
     useXmpData: true,
@@ -5005,7 +5015,8 @@
   var DEPRECATED_OPTIONS = {
     zoomButtonIncrement: 'zoomButtonIncrement is deprecated, use zoomSpeed',
     mousewheelSpeed: 'mousewheelSpeed is deprecated, use zoomSpeed',
-    sphereCorrectionReorder: 'sphereCorrectionReorder is deprecated'
+    sphereCorrectionReorder: 'sphereCorrectionReorder is deprecated',
+    captureCursor: 'captureCursor is deprecated'
   };
   /**
    * @summary Parsers/validators for each option
@@ -5045,6 +5056,9 @@
     defaultLat: function defaultLat(_defaultLat) {
       // defaultLat is between -PI/2 and PI/2
       return parseAngle(_defaultLat, true);
+    },
+    defaultZoomLvl: function defaultZoomLvl(_defaultZoomLvl) {
+      return three.MathUtils.clamp(_defaultZoomLvl, 0, 100);
     },
     minFov: function minFov(_minFov, config) {
       // minFov and maxFov must be ordered
@@ -5088,6 +5102,13 @@
       } // autorotateLat is between -PI/2 and PI/2
       else {
         return parseAngle(_autorotateLat, true);
+      }
+    },
+    autorotateZoomLvl: function autorotateZoomLvl(_autorotateZoomLvl) {
+      if (isNil(_autorotateZoomLvl)) {
+        return null;
+      } else {
+        return three.MathUtils.clamp(_autorotateZoomLvl, 0, 100);
       }
     },
     autorotateSpeed: function autorotateSpeed(_autorotateSpeed) {
@@ -6686,6 +6707,9 @@
 
   var mousewheelIcon = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"10 17 79 79\"><path fill=\"currentColor\" d=\"M38.1 29.27c-.24 0-.44.2-.44.45v10.7a.45.45 0 00.9 0v-10.7c0-.25-.2-.45-.45-.45zm10.2 26.66a11.54 11.54 0 01-8.48-6.14.45.45 0 10-.8.41 12.45 12.45 0 009.22 6.62.45.45 0 00.07-.9zm24.55-13.08a23.04 23.04 0 00-22.56-23v7.07l-.01.05a2.83 2.83 0 012.39 2.78v14.03l.09-.02h8.84v-9.22a.45.45 0 11.9 0v9.22h10.35v-.9zm0 27.33V44.66H62.5c-.02 2.01-.52 4-1.47 5.76a.45.45 0 01-.61.18.45.45 0 01-.19-.61 11.54 11.54 0 001.36-5.33h-8.83l-.1-.01a2.83 2.83 0 01-2.83 2.84h-.04-.04a2.83 2.83 0 01-2.83-2.83v-14.9a2.82 2.82 0 012.47-2.8v-7.11a23.04 23.04 0 00-22.57 23v.91h14.72V29.88a8.2 8.2 0 015.02-7.57c.22-.1.5.01.59.24.1.23-.01.5-.24.6a7.3 7.3 0 00-4.47 6.73v13.88h3.9a.45.45 0 110 .9h-3.9v.15a7.32 7.32 0 0011.23 6.17.45.45 0 01.49.76 8.22 8.22 0 01-12.62-6.93v-.15H26.82v25.52a23.04 23.04 0 0023.01 23.01 23.04 23.04 0 0023.02-23.01zm1.8-27.33v27.33A24.85 24.85 0 0149.84 95a24.85 24.85 0 01-24.82-24.82V42.85a24.85 24.85 0 0124.82-24.82 24.85 24.85 0 0124.83 24.82zM57.98 29.88v9.36a.45.45 0 11-.9 0v-9.36a7.28 7.28 0 00-3.4-6.17.45.45 0 01.49-.76 8.18 8.18 0 013.8 6.93z\"/><!-- Created by Icon Island from the Noun Project --></svg>\n";
 
+  var IDLE = 0;
+  var MOVING = 1;
+  var INERTIA = 2;
   /**
    * @summary Events handler
    * @extends PSV.services.AbstractService
@@ -6706,8 +6730,8 @@
        * @summary Internal properties
        * @member {Object}
        * @property {number} moveThreshold - computed threshold based on device pixel ratio
-       * @property {boolean} moving - is the user moving
-       * @property {boolean} zooming - is the user zooming
+       * @property {number} step
+       * @property {boolean} mousedown - before moving past the threshold
        * @property {number} startMouseX - start x position of the click/touch
        * @property {number} startMouseY - start y position of the click/touch
        * @property {number} mouseX - current x position of the cursor
@@ -6726,8 +6750,8 @@
       _this.state = {
         moveThreshold: MOVE_THRESHOLD * SYSTEM.pixelRatio,
         keyboardEnabled: false,
-        moving: false,
-        zooming: false,
+        step: IDLE,
+        mousedown: false,
         startMouseX: 0,
         startMouseY: 0,
         mouseX: 0,
@@ -6763,17 +6787,27 @@
 
     _proto.init = function init() {
       window.addEventListener('resize', this);
-      window.addEventListener('keydown', this);
+      window.addEventListener('keydown', this, {
+        passive: false
+      });
       window.addEventListener('keyup', this);
-      this.psv.container.addEventListener('mouseenter', this);
       this.psv.container.addEventListener('mousedown', this);
-      this.psv.container.addEventListener('mouseleave', this);
-      this.psv.container.addEventListener('mousemove', this);
+      window.addEventListener('mousemove', this, {
+        passive: false
+      });
       window.addEventListener('mouseup', this);
-      this.psv.container.addEventListener('touchstart', this);
-      this.psv.container.addEventListener('touchmove', this);
-      window.addEventListener('touchend', this);
-      this.psv.container.addEventListener(SYSTEM.mouseWheelEvent, this);
+      this.psv.container.addEventListener('touchstart', this, {
+        passive: false
+      });
+      window.addEventListener('touchmove', this, {
+        passive: false
+      });
+      window.addEventListener('touchend', this, {
+        passive: false
+      });
+      this.psv.container.addEventListener(SYSTEM.mouseWheelEvent, this, {
+        passive: false
+      });
 
       if (SYSTEM.fullscreenEvent) {
         document.addEventListener(SYSTEM.fullscreenEvent, this);
@@ -6788,13 +6822,11 @@
       window.removeEventListener('resize', this);
       window.removeEventListener('keydown', this);
       window.removeEventListener('keyup', this);
-      this.psv.container.removeEventListener('mouseenter', this);
       this.psv.container.removeEventListener('mousedown', this);
-      this.psv.container.removeEventListener('mouseleave', this);
-      this.psv.container.removeEventListener('mousemove', this);
+      window.removeEventListener('mousemove', this);
       window.removeEventListener('mouseup', this);
       this.psv.container.removeEventListener('touchstart', this);
-      this.psv.container.removeEventListener('touchmove', this);
+      window.removeEventListener('touchmove', this);
       window.removeEventListener('touchend', this);
       this.psv.container.removeEventListener(SYSTEM.mouseWheelEvent, this);
 
@@ -6836,8 +6868,18 @@
 
           break;
 
+        case 'mousemove':
+          this.__onMouseMove(evt);
+
+          break;
+
         case 'mouseup':
           this.__onMouseUp(evt);
+
+          break;
+
+        case 'touchmove':
+          this.__onTouchMove(evt);
 
           break;
 
@@ -6864,28 +6906,8 @@
 
             break;
 
-          case 'mouseenter':
-            this.__onMouseEnter(evt);
-
-            break;
-
-          case 'mouseleave':
-            this.__onMouseLeave(evt);
-
-            break;
-
-          case 'mousemove':
-            this.__onMouseMove(evt);
-
-            break;
-
           case 'touchstart':
             this.__onTouchStart(evt);
-
-            break;
-
-          case 'touchmove':
-            this.__onTouchMove(evt);
 
             break;
 
@@ -6948,6 +6970,7 @@
 
       if (action === ACTIONS.TOGGLE_AUTOROTATE) {
         this.psv.toggleAutorotate();
+        e.preventDefault();
       } else if (action && !this.state.keyHandler.time) {
         if (action !== ACTIONS.ZOOM_IN && action !== ACTIONS.ZOOM_OUT) {
           this.psv.__stopAll();
@@ -6994,6 +7017,7 @@
 
 
         this.state.keyHandler.down();
+        e.preventDefault();
       }
     }
     /**
@@ -7027,25 +7051,9 @@
     ;
 
     _proto.__onMouseDown = function __onMouseDown(evt) {
-      if (!this.config.mousemove || this.config.captureCursor) {
-        return;
-      }
-
-      this.__startMove(evt);
-    }
-    /**
-     * @summary Handles mouse enter events
-     * @param {MouseEvent} evt
-     * @private
-     */
-    ;
-
-    _proto.__onMouseEnter = function __onMouseEnter(evt) {
-      if (!this.config.mousemove || !this.config.captureCursor) {
-        return;
-      }
-
-      this.__startMove(evt);
+      this.state.mousedown = true;
+      this.state.startMouseX = evt.clientX;
+      this.state.startMouseY = evt.clientY;
     }
     /**
      * @summary Handles mouse up events
@@ -7055,25 +7063,9 @@
     ;
 
     _proto.__onMouseUp = function __onMouseUp(evt) {
-      if (!this.config.mousemove || this.config.captureCursor) {
-        return;
+      if (this.state.mousedown || this.state.step === MOVING) {
+        this.__stopMove(evt.clientX, evt.clientY, evt.target, evt.button === 2);
       }
-
-      this.__stopMove(evt);
-    }
-    /**
-     * @summary Handles mouse leave events
-     * @param {MouseEvent} evt
-     * @private
-     */
-    ;
-
-    _proto.__onMouseLeave = function __onMouseLeave(evt) {
-      if (!this.config.mousemove || !this.config.captureCursor) {
-        return;
-      }
-
-      this.__stopMove(evt);
     }
     /**
      * @summary Handles mouse move events
@@ -7083,17 +7075,13 @@
     ;
 
     _proto.__onMouseMove = function __onMouseMove(evt) {
-      if (this.config.mousemove) {
-        if (evt.buttons !== 0) {
-          evt.preventDefault();
+      if (this.config.mousemove && (this.state.mousedown || this.state.step === MOVING)) {
+        evt.preventDefault();
 
-          this.__move(evt);
-        } else if (this.config.captureCursor) {
-          this.__moveAbsolute(evt);
-        }
+        this.__move(evt.clientX, evt.clientY);
       }
 
-      if (!isEmpty(this.prop.objectsObservers)) {
+      if (!isEmpty(this.prop.objectsObservers) && hasParent(evt.target, this.psv.container)) {
         var viewerPos = getPosition(this.psv.container);
         var viewerPoint = {
           x: evt.clientX - viewerPos.left,
@@ -7146,32 +7134,32 @@
     _proto.__onTouchStart = function __onTouchStart(evt) {
       var _this3 = this;
 
-      if (!this.config.mousemove) {
-        return;
-      }
-
       if (evt.touches.length === 1) {
-        if (!this.config.touchmoveTwoFingers) {
-          this.__startMove(evt.touches[0]);
-
-          evt.preventDefault(); // prevent mouse events emulation
-        }
+        this.state.mousedown = true;
+        this.state.startMouseX = evt.touches[0].clientX;
+        this.state.startMouseY = evt.touches[0].clientY;
 
         if (!this.prop.longtouchTimeout) {
           this.prop.longtouchTimeout = setTimeout(function () {
-            _this3.__click(evt.touches[0], true);
+            var touch = evt.touches[0];
+
+            _this3.__stopMove(touch.clientX, touch.clientY, touch.target, true);
 
             _this3.prop.longtouchTimeout = null;
           }, LONGTOUCH_DELAY);
         }
       } else if (evt.touches.length === 2) {
+        this.state.mousedown = false;
+
         this.__cancelLongTouch();
 
-        this.__cancelTwoFingersOverlay();
+        if (this.config.mousemove) {
+          this.__cancelTwoFingersOverlay();
 
-        this.__startMoveZoom(evt);
+          this.__startMoveZoom(evt);
 
-        evt.preventDefault();
+          evt.preventDefault();
+        }
       }
     }
     /**
@@ -7182,18 +7170,20 @@
     ;
 
     _proto.__onTouchEnd = function __onTouchEnd(evt) {
-      if (!this.config.mousemove) {
-        return;
-      }
-
       this.__cancelLongTouch();
 
-      this.__cancelTwoFingersOverlay();
+      if (this.state.mousedown || this.state.step === MOVING) {
+        evt.preventDefault();
 
-      if (evt.touches.length === 1) {
-        this.__stopMoveZoom();
-      } else if (evt.touches.length === 0) {
-        this.__stopMove(evt.changedTouches[0]);
+        this.__cancelTwoFingersOverlay();
+
+        if (evt.touches.length === 1) {
+          this.__stopMove(this.state.mouseX, this.state.mouseY);
+        } else if (evt.touches.length === 0) {
+          var touch = evt.changedTouches[0];
+
+          this.__stopMove(touch.clientX, touch.clientY, touch.target);
+        }
       }
     }
     /**
@@ -7206,15 +7196,15 @@
     _proto.__onTouchMove = function __onTouchMove(evt) {
       var _this4 = this;
 
+      this.__cancelLongTouch();
+
       if (!this.config.mousemove) {
         return;
       }
 
-      this.__cancelLongTouch();
-
       if (evt.touches.length === 1) {
         if (this.config.touchmoveTwoFingers) {
-          if (!this.prop.twofingersTimeout) {
+          if (this.state.mousedown && !this.prop.twofingersTimeout) {
             this.prop.twofingersTimeout = setTimeout(function () {
               _this4.psv.overlay.show({
                 id: IDS.TWO_FINGERS,
@@ -7223,12 +7213,13 @@
               });
             }, TWOFINGERSOVERLAY_DELAY);
           }
-        } else {
+        } else if (this.state.mousedown || this.state.step === MOVING) {
           evt.preventDefault();
+          var touch = evt.touches[0];
 
-          this.__move(evt.touches[0]);
+          this.__move(touch.clientX, touch.clientY);
         }
-      } else if (evt.touches.length === 2) {
+      } else {
         evt.preventDefault();
 
         this.__moveZoom(evt);
@@ -7255,12 +7246,14 @@
     ;
 
     _proto.__cancelTwoFingersOverlay = function __cancelTwoFingersOverlay() {
-      if (this.prop.twofingersTimeout) {
-        clearTimeout(this.prop.twofingersTimeout);
-        this.prop.twofingersTimeout = null;
-      }
+      if (this.config.touchmoveTwoFingers) {
+        if (this.prop.twofingersTimeout) {
+          clearTimeout(this.prop.twofingersTimeout);
+          this.prop.twofingersTimeout = null;
+        }
 
-      this.psv.overlay.hide(IDS.TWO_FINGERS);
+        this.psv.overlay.hide(IDS.TWO_FINGERS);
+      }
     }
     /**
      * @summary Handles mouse wheel events
@@ -7319,26 +7312,19 @@
       this.psv.trigger(EVENTS.FULLSCREEN_UPDATED, this.prop.fullscreen);
     }
     /**
-     * @summary Initializes the movement
-     * @param {MouseEvent|Touch} evt
+     * @summary Resets all state variables
      * @private
      */
     ;
 
-    _proto.__startMove = function __startMove(evt) {
-      var _this6 = this;
-
-      this.psv.__stopAll().then(function () {
-        _this6.state.mouseX = evt.clientX;
-        _this6.state.mouseY = evt.clientY;
-        _this6.state.startMouseX = _this6.state.mouseX;
-        _this6.state.startMouseY = _this6.state.mouseY;
-        _this6.state.moving = true;
-        _this6.state.zooming = false;
-        _this6.state.mouseHistory.length = 0;
-
-        _this6.__logMouseMove(evt);
-      });
+    _proto.__resetMove = function __resetMove() {
+      this.state.step = IDLE;
+      this.state.mousedown = false;
+      this.state.mouseX = 0;
+      this.state.mouseY = 0;
+      this.state.startMouseX = 0;
+      this.state.startMouseY = 0;
+      this.state.mouseHistory.length = 0;
     }
     /**
      * @summary Initializes the combines move and zoom
@@ -7348,82 +7334,75 @@
     ;
 
     _proto.__startMoveZoom = function __startMoveZoom(evt) {
-      var _this7 = this;
+      this.psv.__stopAll();
 
-      this.psv.__stopAll().then(function () {
-        var p1 = {
-          x: evt.touches[0].clientX,
-          y: evt.touches[0].clientY
-        };
-        var p2 = {
-          x: evt.touches[1].clientX,
-          y: evt.touches[1].clientY
-        };
-        _this7.state.pinchDist = distance(p1, p2);
-        _this7.state.mouseX = (p1.x + p2.x) / 2;
-        _this7.state.mouseY = (p1.y + p2.y) / 2;
-        _this7.state.startMouseX = _this7.state.mouseX;
-        _this7.state.startMouseY = _this7.state.mouseY;
-        _this7.state.moving = true;
-        _this7.state.zooming = true;
-      });
+      this.__resetMove();
+
+      var p1 = {
+        x: evt.touches[0].clientX,
+        y: evt.touches[0].clientY
+      };
+      var p2 = {
+        x: evt.touches[1].clientX,
+        y: evt.touches[1].clientY
+      };
+      this.state.step = MOVING;
+      this.state.pinchDist = distance(p1, p2);
+      this.state.mouseX = (p1.x + p2.x) / 2;
+      this.state.mouseY = (p1.y + p2.y) / 2;
+
+      this.__logMouseMove(this.state.mouseX, this.state.mouseY);
     }
     /**
      * @summary Stops the movement
      * @description If the move threshold was not reached a click event is triggered, otherwise an animation is launched to simulate inertia
-     * @param {MouseEvent|Touch} evt
+     * @param {int} clientX
+     * @param {int} clientY
+     * @param {EventTarget} [target]
+     * @param {boolean} [rightclick=false]
      * @private
      */
     ;
 
-    _proto.__stopMove = function __stopMove(evt) {
-      this.psv.resetIdleTimer();
-
-      if (!getClosest(evt.target, '.psv-container')) {
-        this.state.moving = false;
-        this.state.mouseHistory.length = 0;
-        return;
+    _proto.__stopMove = function __stopMove(clientX, clientY, target, rightclick) {
+      if (target === void 0) {
+        target = null;
       }
 
-      if (this.state.moving) {
-        // move threshold to trigger a click
-        if (Math.abs(evt.clientX - this.state.startMouseX) < this.state.moveThreshold && Math.abs(evt.clientY - this.state.startMouseY) < this.state.moveThreshold) {
-          this.__click(evt);
+      if (rightclick === void 0) {
+        rightclick = false;
+      }
 
-          this.state.moving = false;
-        } // inertia animation
-        else if (this.config.moveInertia) {
-          this.__logMouseMove(evt);
+      if (this.state.step === MOVING) {
+        if (this.config.moveInertia) {
+          this.__logMouseMove(clientX, clientY);
 
-          this.__stopMoveInertia(evt);
+          this.__stopMoveInertia(clientX, clientY);
         } else {
-          this.state.moving = false;
+          this.__resetMove();
+
+          this.psv.resetIdleTimer();
         }
+      } else if (this.state.mousedown) {
+        this.psv.stopAnimation();
 
-        this.state.mouseHistory.length = 0;
+        this.__click(clientX, clientY, target, rightclick);
+
+        this.__resetMove();
+
+        this.psv.resetIdleTimer();
       }
-    }
-    /**
-     * @summary Stops the combined move and zoom
-     * @private
-     */
-    ;
-
-    _proto.__stopMoveZoom = function __stopMoveZoom() {
-      this.psv.resetIdleTimer();
-      this.state.mouseHistory.length = 0;
-      this.state.moving = false;
-      this.state.zooming = false;
     }
     /**
      * @summary Performs an animation to simulate inertia when the movement stops
-     * @param {MouseEvent|Touch} evt
+     * @param {int} clientX
+     * @param {int} clientY
      * @private
      */
     ;
 
-    _proto.__stopMoveInertia = function __stopMoveInertia(evt) {
-      var _this8 = this;
+    _proto.__stopMoveInertia = function __stopMoveInertia(clientX, clientY) {
+      var _this6 = this;
 
       // get direction at end of movement
       var curve = new three.SplineCurve(this.state.mouseHistory.map(function (_ref) {
@@ -7437,17 +7416,30 @@
         var total = _ref2.total,
             prev = _ref2.prev;
         return {
-          total: total + Math.sqrt(Math.pow(curr[1] - prev[1], 2) + Math.pow(curr[2] - prev[2], 2)) / (curr[0] - [prev[0]]),
+          total: total + distance({
+            x: prev[1],
+            y: prev[2]
+          }, {
+            x: curr[1],
+            y: curr[2]
+          }) / (curr[0] - prev[0]),
           prev: curr
         };
       }, {
         total: 0,
         prev: this.state.mouseHistory[0]
       }).total / this.state.mouseHistory.length;
-      var current = {
-        clientX: evt.clientX,
-        clientY: evt.clientY
-      };
+
+      if (!speed) {
+        this.__resetMove();
+
+        this.psv.resetIdleTimer();
+        return;
+      }
+
+      this.state.step = INERTIA;
+      var currentClientX = clientX;
+      var currentClientY = clientY;
       this.prop.animationPromise = new Animation({
         properties: {
           speed: {
@@ -7459,31 +7451,39 @@
         easing: 'outQuad',
         onTick: function onTick(properties) {
           // 3 is a magic number
-          current.clientX += properties.speed * direction.x * 3 * SYSTEM.pixelRatio;
-          current.clientY += properties.speed * direction.y * 3 * SYSTEM.pixelRatio;
+          currentClientX += properties.speed * direction.x * 3 * SYSTEM.pixelRatio;
+          currentClientY += properties.speed * direction.y * 3 * SYSTEM.pixelRatio;
 
-          _this8.__move(current, false);
+          _this6.__applyMove(currentClientX, currentClientY);
         }
       });
-      this.prop.animationPromise.then(function () {
-        _this8.state.moving = false;
+      this.prop.animationPromise.then(function (done) {
+        _this6.prop.animationPromise = null;
+
+        if (done) {
+          _this6.__resetMove();
+
+          _this6.psv.resetIdleTimer();
+        }
       });
     }
     /**
      * @summary Triggers an event with all coordinates when a simple click is performed
-     * @param {MouseEvent|Touch} evt
-     * @param {boolean} [longtouch=false]
+     * @param {int} clientX
+     * @param {int} clientY
+     * @param {EventTarget} target
+     * @param {boolean} [rightclick=false]
      * @fires PSV.click
      * @fires PSV.dblclick
      * @private
      */
     ;
 
-    _proto.__click = function __click(evt, longtouch) {
-      var _this9 = this;
+    _proto.__click = function __click(clientX, clientY, target, rightclick) {
+      var _this7 = this;
 
-      if (longtouch === void 0) {
-        longtouch = false;
+      if (rightclick === void 0) {
+        rightclick = false;
       }
 
       var boundingRect = this.psv.container.getBoundingClientRect();
@@ -7492,19 +7492,19 @@
        */
 
       var data = {
-        rightclick: longtouch || evt.button === 2,
-        target: evt.target,
-        clientX: evt.clientX,
-        clientY: evt.clientY,
-        viewerX: evt.clientX - boundingRect.left,
-        viewerY: evt.clientY - boundingRect.top
+        rightclick: rightclick,
+        target: target,
+        clientX: clientX,
+        clientY: clientY,
+        viewerX: clientX - boundingRect.left,
+        viewerY: clientY - boundingRect.top
       };
       var intersections = this.psv.dataHelper.getIntersections({
         x: data.viewerX,
         y: data.viewerY
       });
       var sphereIntersection = intersections.find(function (i) {
-        return i.object.userData.psvSphere;
+        return i.object.userData[MESH_USER_DATA];
       });
 
       if (sphereIntersection) {
@@ -7514,7 +7514,7 @@
         data.objects = intersections.map(function (i) {
           return i.object;
         }).filter(function (o) {
-          return !o.userData.psvSphere;
+          return !o.userData[MESH_USER_DATA];
         });
 
         try {
@@ -7530,8 +7530,8 @@
           this.psv.trigger(EVENTS.CLICK, data);
           this.state.dblclickData = clone(data);
           this.state.dblclickTimeout = setTimeout(function () {
-            _this9.state.dblclickTimeout = null;
-            _this9.state.dblclickData = null;
+            _this7.state.dblclickTimeout = null;
+            _this7.state.dblclickData = null;
           }, DBLCLICK_DELAY);
         } else {
           if (Math.abs(this.state.dblclickData.clientX - data.clientX) < this.state.moveThreshold && Math.abs(this.state.dblclickData.clientY - data.clientY) < this.state.moveThreshold) {
@@ -7545,49 +7545,50 @@
       }
     }
     /**
-     * @summary Performs movement
-     * @param {MouseEvent|Touch} evt
-     * @param {boolean} [log=true]
+     * @summary Starts moving when crossing moveThreshold and performs movement
+     * @param {int} clientX
+     * @param {int} clientY
      * @private
      */
     ;
 
-    _proto.__move = function __move(evt, log) {
-      if (this.state.moving) {
-        var x = evt.clientX;
-        var y = evt.clientY;
-        var rotation = {
-          longitude: (x - this.state.mouseX) / this.prop.size.width * this.config.moveSpeed * three.MathUtils.degToRad(this.prop.hFov),
-          latitude: (y - this.state.mouseY) / this.prop.size.height * this.config.moveSpeed * three.MathUtils.degToRad(this.prop.vFov)
-        };
-        var currentPosition = this.psv.getPosition();
-        this.psv.rotate({
-          longitude: currentPosition.longitude - rotation.longitude,
-          latitude: currentPosition.latitude + rotation.latitude
-        });
-        this.state.mouseX = x;
-        this.state.mouseY = y;
+    _proto.__move = function __move(clientX, clientY) {
+      if (this.state.mousedown && (Math.abs(clientX - this.state.startMouseX) >= this.state.moveThreshold || Math.abs(clientY - this.state.startMouseY) >= this.state.moveThreshold)) {
+        this.psv.__stopAll();
 
-        if (log !== false) {
-          this.__logMouseMove(evt);
-        }
+        this.__resetMove();
+
+        this.state.step = MOVING;
+        this.state.mouseX = clientX;
+        this.state.mouseY = clientY;
+
+        this.__logMouseMove(clientX, clientY);
+      } else if (this.state.step === MOVING) {
+        this.__applyMove(clientX, clientY);
+
+        this.__logMouseMove(clientX, clientY);
       }
     }
     /**
-     * @summary Performs movement absolute to cursor position in viewer
-     * @param {MouseEvent} evt
+     * @summary Raw method for movement, called from mouse event and move inertia
+     * @param {int} clientX
+     * @param {int} clientY
      * @private
      */
     ;
 
-    _proto.__moveAbsolute = function __moveAbsolute(evt) {
-      if (this.state.moving) {
-        var containerRect = this.psv.container.getBoundingClientRect();
-        this.psv.dynamics.position.goto({
-          longitude: ((evt.clientX - containerRect.left) / containerRect.width - 0.5) * Math.PI * 2,
-          latitude: -((evt.clientY - containerRect.top) / containerRect.height - 0.5) * Math.PI
-        }, 10);
-      }
+    _proto.__applyMove = function __applyMove(clientX, clientY) {
+      var rotation = {
+        longitude: (clientX - this.state.mouseX) / this.prop.size.width * this.config.moveSpeed * three.MathUtils.degToRad(this.prop.littlePlanet ? 90 : this.prop.hFov),
+        latitude: (clientY - this.state.mouseY) / this.prop.size.height * this.config.moveSpeed * three.MathUtils.degToRad(this.prop.littlePlanet ? 90 : this.prop.vFov)
+      };
+      var currentPosition = this.psv.getPosition();
+      this.psv.rotate({
+        longitude: currentPosition.longitude - rotation.longitude,
+        latitude: currentPosition.latitude + rotation.latitude
+      });
+      this.state.mouseX = clientX;
+      this.state.mouseY = clientY;
     }
     /**
      * @summary Perfoms combined move and zoom
@@ -7597,7 +7598,7 @@
     ;
 
     _proto.__moveZoom = function __moveZoom(evt) {
-      if (this.state.zooming && this.state.moving) {
+      if (this.state.step === MOVING) {
         var p1 = {
           x: evt.touches[0].clientX,
           y: evt.touches[0].clientY
@@ -7607,13 +7608,10 @@
           y: evt.touches[1].clientY
         };
         var p = distance(p1, p2);
-        var delta = 80 * (p - this.state.pinchDist) / this.prop.size.width * this.config.zoomSpeed;
+        var delta = (p - this.state.pinchDist) / SYSTEM.pixelRatio * this.config.zoomSpeed;
         this.psv.zoom(this.psv.getZoomLevel() + delta);
 
-        this.__move({
-          clientX: (p1.x + p2.x) / 2,
-          clientY: (p1.y + p2.y) / 2
-        });
+        this.__move((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
 
         this.state.pinchDist = p;
       }
@@ -7622,22 +7620,23 @@
      * @summary Stores each mouse position during a mouse move
      * @description Positions older than "INERTIA_WINDOW" are removed<br>
      *     Positions before a pause of "INERTIA_WINDOW" / 10 are removed
-     * @param {MouseEvent|Touch} evt
+     * @param {int} clientX
+     * @param {int} clientY
      * @private
      */
     ;
 
-    _proto.__logMouseMove = function __logMouseMove(evt) {
+    _proto.__logMouseMove = function __logMouseMove(clientX, clientY) {
       var now = Date.now();
       var last = this.state.mouseHistory.length ? this.state.mouseHistory[this.state.mouseHistory.length - 1] : [0, -1, -1]; // avoid duplicates
 
-      if (last[1] === evt.clientX && last[2] === evt.clientY) {
+      if (last[1] === clientX && last[2] === clientY) {
         last[0] = now;
       } else if (now === last[0]) {
-        last[1] = evt.clientX;
-        last[2] = evt.clientY;
+        last[1] = clientX;
+        last[2] = clientY;
       } else {
-        this.state.mouseHistory.push([now, evt.clientX, evt.clientY]);
+        this.state.mouseHistory.push([now, clientX, clientY]);
       }
 
       var previous = null;
@@ -7704,7 +7703,7 @@
        * @protected
        */
 
-      _this.camera = new three.PerspectiveCamera(50, 16 / 9, 1, 2 * SPHERE_RADIUS);
+      _this.camera = new three.PerspectiveCamera(50, 16 / 9, 0.1, 2 * SPHERE_RADIUS);
       /**
        * @member {external:THREE.Mesh}
        * @readonly
@@ -9475,6 +9474,11 @@
       this.dynamics.position.goto({
         latitude: this.config.autorotateLat
       }, Math.abs(this.config.autorotateSpeed / this.config.moveSpeed));
+
+      if (this.config.autorotateZoomLvl !== null) {
+        this.dynamics.zoom.goto(this.config.autorotateZoomLvl);
+      }
+
       this.prop.autorotateEnabled = true;
 
       if (!refresh) {
@@ -9490,6 +9494,7 @@
     _proto.stopAutorotate = function stopAutorotate() {
       if (this.isAutorotateEnabled()) {
         this.dynamics.position.stop();
+        this.dynamics.zoom.stop();
         this.prop.autorotateEnabled = false;
         this.trigger(EVENTS.AUTOROTATE, false);
       }
@@ -9636,16 +9641,9 @@
     ;
 
     _proto.stopAnimation = function stopAnimation() {
-      var _this7 = this;
-
       if (this.prop.animationPromise) {
-        return new Promise(function (resolve) {
-          _this7.prop.animationPromise.then(resolve);
-
-          _this7.prop.animationPromise.cancel();
-
-          _this7.prop.animationPromise = null;
-        });
+        this.prop.animationPromise.cancel();
+        return this.prop.animationPromise;
       } else {
         return Promise.resolve();
       }
@@ -9693,7 +9691,7 @@
     ;
 
     _proto.resize = function resize(size) {
-      var _this8 = this;
+      var _this7 = this;
 
       ['width', 'height'].forEach(function (dim) {
         if (size && size[dim]) {
@@ -9701,7 +9699,7 @@
             size[dim] += 'px';
           }
 
-          _this8.parent.style[dim] = size[dim];
+          _this7.parent.style[dim] = size[dim];
         }
       });
       this.autoSize();
@@ -9772,20 +9770,20 @@
     /**
      * @summary Subscribes to events on objects in the scene
      * @param {string} userDataKey - only objects with the following `userData` will be emitted
-     * @param {EventListener} listener - must implement `handleEvent
+     * @param {EventListener} listener - must implement `handleEvent`
      * @return {function} call to stop the subscription
      * @package
      */
     ;
 
     _proto.observeObjects = function observeObjects(userDataKey, listener) {
-      var _this9 = this;
+      var _this8 = this;
 
       this.prop.objectsObservers[userDataKey] = {
         listener: listener
       };
       return function () {
-        delete _this9.prop.objectsObservers[userDataKey];
+        delete _this8.prop.objectsObservers[userDataKey];
       };
     }
     /**

@@ -1,4 +1,4 @@
-import { BoxGeometry, Mesh, Texture, Vector2 } from 'three';
+import { BoxGeometry, Mesh, Texture } from 'three';
 import { AbstractAdapter, CONSTANTS, PSVError, SYSTEM, utils } from '../..';
 
 
@@ -158,7 +158,29 @@ export class CubemapAdapter extends AbstractAdapter {
 
     const materials = [];
     for (let i = 0; i < 6; i++) {
-      materials.push(AbstractAdapter.createOverlayMaterial());
+      materials.push(AbstractAdapter.createOverlayMaterial({
+        additionalUniforms: {
+          rotation: { value: 0.0 },
+        },
+        overrideVertexShader: `
+uniform float rotation;
+
+varying vec2 vUv;
+
+const float mid = 0.5;
+
+void main() {
+  if (rotation == 0.0) {
+    vUv = uv;
+  } else {
+    vUv = vec2(
+      cos(rotation) * (uv.x - mid) + sin(rotation) * (uv.y - mid) + mid,
+      cos(rotation) * (uv.y - mid) - sin(rotation) * (uv.x - mid) + mid
+    );
+  }
+  gl_Position = projectionMatrix *  modelViewMatrix * vec4( position, 1.0 );
+}`,
+      }));
     }
 
     return new Mesh(geometry, materials);
@@ -172,8 +194,7 @@ export class CubemapAdapter extends AbstractAdapter {
 
     for (let i = 0; i < 6; i++) {
       if (this.config.flipTopBottom && (i === 2 || i === 3)) {
-        texture[i].center = new Vector2(0.5, 0.5);
-        texture[i].rotation = Math.PI;
+        this.__setUniform(mesh, i, 'rotation', Math.PI);
       }
 
       this.__setUniform(mesh, i, AbstractAdapter.OVERLAY_UNIFORMS.panorama, texture[i]);

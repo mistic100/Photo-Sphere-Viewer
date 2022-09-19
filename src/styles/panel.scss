@@ -141,6 +141,19 @@
       display: block;
     }
   }
+
+  @media screen and (max-width: #{$psv-panel-width}) {
+    width: 100%;
+    max-width: none;
+
+    &-resizer {
+      display: none;
+    }
+
+    &-close-button {
+      left: 0;
+    }
+  }
 }
 
 .psv-panel-menu {

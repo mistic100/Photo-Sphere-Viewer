@@ -8,6 +8,7 @@ import {
   INERTIA_WINDOW,
   KEY_CODES,
   LONGTOUCH_DELAY,
+  MESH_USER_DATA,
   MOVE_THRESHOLD,
   OBJECT_EVENTS,
   TWOFINGERSOVERLAY_DELAY
@@ -21,6 +22,7 @@ import {
   each,
   getClosest,
   getPosition,
+  hasParent,
   isEmpty,
   isFullscreenEnabled,
   normalizeWheel,
@@ -29,6 +31,10 @@ import {
 import { Animation } from '../utils/Animation';
 import { PressHandler } from '../utils/PressHandler';
 import { AbstractService } from './AbstractService';
+
+const IDLE = 0;
+const MOVING = 1;
+const INERTIA = 2;
 
 /**
  * @summary Events handler
@@ -47,8 +53,8 @@ export class EventsHandler extends AbstractService {
      * @summary Internal properties
      * @member {Object}
      * @property {number} moveThreshold - computed threshold based on device pixel ratio
-     * @property {boolean} moving - is the user moving
-     * @property {boolean} zooming - is the user zooming
+     * @property {number} step
+     * @property {boolean} mousedown - before moving past the threshold
      * @property {number} startMouseX - start x position of the click/touch
      * @property {number} startMouseY - start y position of the click/touch
      * @property {number} mouseX - current x position of the cursor
@@ -66,8 +72,8 @@ export class EventsHandler extends AbstractService {
     this.state = {
       moveThreshold    : MOVE_THRESHOLD * SYSTEM.pixelRatio,
       keyboardEnabled  : false,
-      moving           : false,
-      zooming          : false,
+      step             : IDLE,
+      mousedown        : false,
       startMouseX      : 0,
       startMouseY      : 0,
       mouseX           : 0,
@@ -97,17 +103,15 @@ export class EventsHandler extends AbstractService {
    */
   init() {
     window.addEventListener('resize', this);
-    window.addEventListener('keydown', this);
+    window.addEventListener('keydown', this, { passive: false });
     window.addEventListener('keyup', this);
-    this.psv.container.addEventListener('mouseenter', this);
     this.psv.container.addEventListener('mousedown', this);
-    this.psv.container.addEventListener('mouseleave', this);
-    this.psv.container.addEventListener('mousemove', this);
+    window.addEventListener('mousemove', this, { passive: false });
     window.addEventListener('mouseup', this);
-    this.psv.container.addEventListener('touchstart', this);
-    this.psv.container.addEventListener('touchmove', this);
-    window.addEventListener('touchend', this);
-    this.psv.container.addEventListener(SYSTEM.mouseWheelEvent, this);
+    this.psv.container.addEventListener('touchstart', this, { passive: false });
+    window.addEventListener('touchmove', this, { passive: false });
+    window.addEventListener('touchend', this, { passive: false });
+    this.psv.container.addEventListener(SYSTEM.mouseWheelEvent, this, { passive: false });
 
     if (SYSTEM.fullscreenEvent) {
       document.addEventListener(SYSTEM.fullscreenEvent, this);
@@ -121,13 +125,11 @@ export class EventsHandler extends AbstractService {
     window.removeEventListener('resize', this);
     window.removeEventListener('keydown', this);
     window.removeEventListener('keyup', this);
-    this.psv.container.removeEventListener('mouseenter', this);
     this.psv.container.removeEventListener('mousedown', this);
-    this.psv.container.removeEventListener('mouseleave', this);
-    this.psv.container.removeEventListener('mousemove', this);
+    window.removeEventListener('mousemove', this);
     window.removeEventListener('mouseup', this);
     this.psv.container.removeEventListener('touchstart', this);
-    this.psv.container.removeEventListener('touchmove', this);
+    window.removeEventListener('touchmove', this);
     window.removeEventListener('touchend', this);
     this.psv.container.removeEventListener(SYSTEM.mouseWheelEvent, this);
 
@@ -154,11 +156,13 @@ export class EventsHandler extends AbstractService {
     /* eslint-disable */
     switch (evt.type) {
       // @formatter:off
-      case 'resize':   this.__onResize(); break;
-      case 'keydown':  this.__onKeyDown(evt); break;
-      case 'keyup':    this.__onKeyUp(); break;
-      case 'mouseup':  this.__onMouseUp(evt); break;
-      case 'touchend': this.__onTouchEnd(evt); break;
+      case 'resize':    this.__onResize(); break;
+      case 'keydown':   this.__onKeyDown(evt); break;
+      case 'keyup':     this.__onKeyUp(); break;
+      case 'mousemove': this.__onMouseMove(evt); break;
+      case 'mouseup':   this.__onMouseUp(evt); break;
+      case 'touchmove': this.__onTouchMove(evt); break;
+      case 'touchend':  this.__onTouchEnd(evt); break;
       case SYSTEM.fullscreenEvent: this.__fullscreenToggled(); break;
       // @formatter:on
     }
@@ -169,11 +173,7 @@ export class EventsHandler extends AbstractService {
       switch (evt.type) {
         // @formatter:off
         case 'mousedown':  this.__onMouseDown(evt); break;
-        case 'mouseenter': this.__onMouseEnter(evt); break;
-        case 'mouseleave': this.__onMouseLeave(evt); break;
-        case 'mousemove':  this.__onMouseMove(evt); break;
         case 'touchstart': this.__onTouchStart(evt); break;
-        case 'touchmove':  this.__onTouchMove(evt); break;
         case SYSTEM.mouseWheelEvent: this.__onMouseWheel(evt); break;
         // @formatter:on
       }
@@ -224,6 +224,7 @@ export class EventsHandler extends AbstractService {
     const action = this.config.keyboard[e.key];
     if (action === ACTIONS.TOGGLE_AUTOROTATE) {
       this.psv.toggleAutorotate();
+      e.preventDefault();
     }
     else if (action && !this.state.keyHandler.time) {
       if (action !== ACTIONS.ZOOM_IN && action !== ACTIONS.ZOOM_OUT) {
@@ -244,6 +245,7 @@ export class EventsHandler extends AbstractService {
       /* eslint-enable */
 
       this.state.keyHandler.down();
+      e.preventDefault();
     }
   }
 
@@ -271,24 +273,9 @@ export class EventsHandler extends AbstractService {
    * @private
    */
   __onMouseDown(evt) {
-    if (!this.config.mousemove || this.config.captureCursor) {
-      return;
-    }
-
-    this.__startMove(evt);
-  }
-
-  /**
-   * @summary Handles mouse enter events
-   * @param {MouseEvent} evt
-   * @private
-   */
-  __onMouseEnter(evt) {
-    if (!this.config.mousemove || !this.config.captureCursor) {
-      return;
-    }
-
-    this.__startMove(evt);
+    this.state.mousedown = true;
+    this.state.startMouseX = evt.clientX;
+    this.state.startMouseY = evt.clientY;
   }
 
   /**
@@ -297,24 +284,9 @@ export class EventsHandler extends AbstractService {
    * @private
    */
   __onMouseUp(evt) {
-    if (!this.config.mousemove || this.config.captureCursor) {
-      return;
+    if (this.state.mousedown || this.state.step === MOVING) {
+      this.__stopMove(evt.clientX, evt.clientY, evt.target, evt.button === 2);
     }
-
-    this.__stopMove(evt);
-  }
-
-  /**
-   * @summary Handles mouse leave events
-   * @param {MouseEvent} evt
-   * @private
-   */
-  __onMouseLeave(evt) {
-    if (!this.config.mousemove || !this.config.captureCursor) {
-      return;
-    }
-
-    this.__stopMove(evt);
   }
 
   /**
@@ -323,17 +295,12 @@ export class EventsHandler extends AbstractService {
    * @private
    */
   __onMouseMove(evt) {
-    if (this.config.mousemove) {
-      if (evt.buttons !== 0) {
-        evt.preventDefault();
-        this.__move(evt);
-      }
-      else if (this.config.captureCursor) {
-        this.__moveAbsolute(evt);
-      }
+    if (this.config.mousemove && (this.state.mousedown || this.state.step === MOVING)) {
+      evt.preventDefault();
+      this.__move(evt.clientX, evt.clientY);
     }
 
-    if (!isEmpty(this.prop.objectsObservers)) {
+    if (!isEmpty(this.prop.objectsObservers) && hasParent(evt.target, this.psv.container)) {
       const viewerPos = getPosition(this.psv.container);
 
       const viewerPoint = {
@@ -385,28 +352,28 @@ export class EventsHandler extends AbstractService {
    * @private
    */
   __onTouchStart(evt) {
-    if (!this.config.mousemove) {
-      return;
-    }
-
     if (evt.touches.length === 1) {
-      if (!this.config.touchmoveTwoFingers) {
-        this.__startMove(evt.touches[0]);
-        evt.preventDefault(); // prevent mouse events emulation
-      }
+      this.state.mousedown = true;
+      this.state.startMouseX = evt.touches[0].clientX;
+      this.state.startMouseY = evt.touches[0].clientY;
 
       if (!this.prop.longtouchTimeout) {
         this.prop.longtouchTimeout = setTimeout(() => {
-          this.__click(evt.touches[0], true);
+          const touch = evt.touches[0];
+          this.__stopMove(touch.clientX, touch.clientY, touch.target, true);
           this.prop.longtouchTimeout = null;
         }, LONGTOUCH_DELAY);
       }
     }
     else if (evt.touches.length === 2) {
+      this.state.mousedown = false;
       this.__cancelLongTouch();
-      this.__cancelTwoFingersOverlay();
-      this.__startMoveZoom(evt);
-      evt.preventDefault();
+
+      if (this.config.mousemove) {
+        this.__cancelTwoFingersOverlay();
+        this.__startMoveZoom(evt);
+        evt.preventDefault();
+      }
     }
   }
 
@@ -416,18 +383,19 @@ export class EventsHandler extends AbstractService {
    * @private
    */
   __onTouchEnd(evt) {
-    if (!this.config.mousemove) {
-      return;
-    }
-
     this.__cancelLongTouch();
-    this.__cancelTwoFingersOverlay();
 
-    if (evt.touches.length === 1) {
-      this.__stopMoveZoom();
-    }
-    else if (evt.touches.length === 0) {
-      this.__stopMove(evt.changedTouches[0]);
+    if (this.state.mousedown || this.state.step === MOVING) {
+      evt.preventDefault();
+      this.__cancelTwoFingersOverlay();
+
+      if (evt.touches.length === 1) {
+        this.__stopMove(this.state.mouseX, this.state.mouseY);
+      }
+      else if (evt.touches.length === 0) {
+        const touch = evt.changedTouches[0];
+        this.__stopMove(touch.clientX, touch.clientY, touch.target);
+      }
     }
   }
 
@@ -437,15 +405,15 @@ export class EventsHandler extends AbstractService {
    * @private
    */
   __onTouchMove(evt) {
+    this.__cancelLongTouch();
+
     if (!this.config.mousemove) {
       return;
     }
 
-    this.__cancelLongTouch();
-
     if (evt.touches.length === 1) {
       if (this.config.touchmoveTwoFingers) {
-        if (!this.prop.twofingersTimeout) {
+        if (this.state.mousedown && !this.prop.twofingersTimeout) {
           this.prop.twofingersTimeout = setTimeout(() => {
             this.psv.overlay.show({
               id   : IDS.TWO_FINGERS,
@@ -455,12 +423,13 @@ export class EventsHandler extends AbstractService {
           }, TWOFINGERSOVERLAY_DELAY);
         }
       }
-      else {
+      else if (this.state.mousedown || this.state.step === MOVING) {
         evt.preventDefault();
-        this.__move(evt.touches[0]);
+        const touch = evt.touches[0];
+        this.__move(touch.clientX, touch.clientY);
       }
     }
-    else if (evt.touches.length === 2) {
+    else {
       evt.preventDefault();
       this.__moveZoom(evt);
       this.__cancelTwoFingersOverlay();
@@ -483,11 +452,13 @@ export class EventsHandler extends AbstractService {
    * @private
    */
   __cancelTwoFingersOverlay() {
-    if (this.prop.twofingersTimeout) {
-      clearTimeout(this.prop.twofingersTimeout);
-      this.prop.twofingersTimeout = null;
+    if (this.config.touchmoveTwoFingers) {
+      if (this.prop.twofingersTimeout) {
+        clearTimeout(this.prop.twofingersTimeout);
+        this.prop.twofingersTimeout = null;
+      }
+      this.psv.overlay.hide(IDS.TWO_FINGERS);
     }
-    this.psv.overlay.hide(IDS.TWO_FINGERS);
   }
 
   /**
@@ -544,23 +515,17 @@ export class EventsHandler extends AbstractService {
   }
 
   /**
-   * @summary Initializes the movement
-   * @param {MouseEvent|Touch} evt
+   * @summary Resets all state variables
    * @private
    */
-  __startMove(evt) {
-    this.psv.__stopAll()
-      .then(() => {
-        this.state.mouseX = evt.clientX;
-        this.state.mouseY = evt.clientY;
-        this.state.startMouseX = this.state.mouseX;
-        this.state.startMouseY = this.state.mouseY;
-        this.state.moving = true;
-        this.state.zooming = false;
-
-        this.state.mouseHistory.length = 0;
-        this.__logMouseMove(evt);
-      });
+  __resetMove() {
+    this.state.step = IDLE;
+    this.state.mousedown = false;
+    this.state.mouseX = 0;
+    this.state.mouseY = 0;
+    this.state.startMouseX = 0;
+    this.state.startMouseY = 0;
+    this.state.mouseHistory.length = 0;
   }
 
   /**
@@ -569,73 +534,54 @@ export class EventsHandler extends AbstractService {
    * @private
    */
   __startMoveZoom(evt) {
-    this.psv.__stopAll()
-      .then(() => {
-        const p1 = { x: evt.touches[0].clientX, y: evt.touches[0].clientY };
-        const p2 = { x: evt.touches[1].clientX, y: evt.touches[1].clientY };
+    this.psv.__stopAll();
+    this.__resetMove();
 
-        this.state.pinchDist = distance(p1, p2);
-        this.state.mouseX = (p1.x + p2.x) / 2;
-        this.state.mouseY = (p1.y + p2.y) / 2;
-        this.state.startMouseX = this.state.mouseX;
-        this.state.startMouseY = this.state.mouseY;
-        this.state.moving = true;
-        this.state.zooming = true;
-      });
+    const p1 = { x: evt.touches[0].clientX, y: evt.touches[0].clientY };
+    const p2 = { x: evt.touches[1].clientX, y: evt.touches[1].clientY };
+
+    this.state.step = MOVING;
+    this.state.pinchDist = distance(p1, p2);
+    this.state.mouseX = (p1.x + p2.x) / 2;
+    this.state.mouseY = (p1.y + p2.y) / 2;
+    this.__logMouseMove(this.state.mouseX, this.state.mouseY);
   }
 
   /**
    * @summary Stops the movement
    * @description If the move threshold was not reached a click event is triggered, otherwise an animation is launched to simulate inertia
-   * @param {MouseEvent|Touch} evt
+   * @param {int} clientX
+   * @param {int} clientY
+   * @param {EventTarget} [target]
+   * @param {boolean} [rightclick=false]
    * @private
    */
-  __stopMove(evt) {
-    this.psv.resetIdleTimer();
-
-    if (!getClosest(evt.target, '.psv-container')) {
-      this.state.moving = false;
-      this.state.mouseHistory.length = 0;
-      return;
-    }
-
-    if (this.state.moving) {
-      // move threshold to trigger a click
-      if (Math.abs(evt.clientX - this.state.startMouseX) < this.state.moveThreshold
-        && Math.abs(evt.clientY - this.state.startMouseY) < this.state.moveThreshold) {
-        this.__click(evt);
-        this.state.moving = false;
-      }
-      // inertia animation
-      else if (this.config.moveInertia) {
-        this.__logMouseMove(evt);
-        this.__stopMoveInertia(evt);
+  __stopMove(clientX, clientY, target = null, rightclick = false) {
+    if (this.state.step === MOVING) {
+      if (this.config.moveInertia) {
+        this.__logMouseMove(clientX, clientY);
+        this.__stopMoveInertia(clientX, clientY);
       }
       else {
-        this.state.moving = false;
+        this.__resetMove();
+        this.psv.resetIdleTimer();
       }
-
-      this.state.mouseHistory.length = 0;
     }
-  }
-
-  /**
-   * @summary Stops the combined move and zoom
-   * @private
-   */
-  __stopMoveZoom() {
-    this.psv.resetIdleTimer();
-    this.state.mouseHistory.length = 0;
-    this.state.moving = false;
-    this.state.zooming = false;
+    else if (this.state.mousedown) {
+      this.psv.stopAnimation();
+      this.__click(clientX, clientY, target, rightclick);
+      this.__resetMove();
+      this.psv.resetIdleTimer();
+    }
   }
 
   /**
    * @summary Performs an animation to simulate inertia when the movement stops
-   * @param {MouseEvent|Touch} evt
+   * @param {int} clientX
+   * @param {int} clientY
    * @private
    */
-  __stopMoveInertia(evt) {
+  __stopMoveInertia(clientX, clientY) {
     // get direction at end of movement
     const curve = new SplineCurve(this.state.mouseHistory.map(([, x, y]) => new Vector2(x, y)));
     const direction = curve.getTangent(1);
@@ -643,7 +589,7 @@ export class EventsHandler extends AbstractService {
     // average speed
     const speed = this.state.mouseHistory.slice(1).reduce(({ total, prev }, curr) => {
       return {
-        total: total + Math.sqrt(Math.pow(curr[1] - prev[1], 2) + Math.pow(curr[2] - prev[2], 2)) / (curr[0] - [prev[0]]),
+        total: total + distance({ x: prev[1], y: prev[2] }, { x: curr[1], y: curr[2] }) / (curr[0] - prev[0]),
         prev : curr,
       };
     }, {
@@ -651,10 +597,16 @@ export class EventsHandler extends AbstractService {
       prev : this.state.mouseHistory[0],
     }).total / this.state.mouseHistory.length;
 
-    const current = {
-      clientX: evt.clientX,
-      clientY: evt.clientY,
-    };
+    if (!speed) {
+      this.__resetMove();
+      this.psv.resetIdleTimer();
+      return;
+    }
+
+    this.state.step = INERTIA;
+
+    let currentClientX = clientX;
+    let currentClientY = clientY;
 
     this.prop.animationPromise = new Animation({
       properties: {
@@ -664,39 +616,45 @@ export class EventsHandler extends AbstractService {
       easing    : 'outQuad',
       onTick    : (properties) => {
         // 3 is a magic number
-        current.clientX += properties.speed * direction.x * 3 * SYSTEM.pixelRatio;
-        current.clientY += properties.speed * direction.y * 3 * SYSTEM.pixelRatio;
-        this.__move(current, false);
+        currentClientX += properties.speed * direction.x * 3 * SYSTEM.pixelRatio;
+        currentClientY += properties.speed * direction.y * 3 * SYSTEM.pixelRatio;
+        this.__applyMove(currentClientX, currentClientY);
       },
     });
 
     this.prop.animationPromise
-      .then(() => {
-        this.state.moving = false;
+      .then((done) => {
+        this.prop.animationPromise = null;
+        if (done) {
+          this.__resetMove();
+          this.psv.resetIdleTimer();
+        }
       });
   }
 
   /**
    * @summary Triggers an event with all coordinates when a simple click is performed
-   * @param {MouseEvent|Touch} evt
-   * @param {boolean} [longtouch=false]
+   * @param {int} clientX
+   * @param {int} clientY
+   * @param {EventTarget} target
+   * @param {boolean} [rightclick=false]
    * @fires PSV.click
    * @fires PSV.dblclick
    * @private
    */
-  __click(evt, longtouch = false) {
+  __click(clientX, clientY, target, rightclick = false) {
     const boundingRect = this.psv.container.getBoundingClientRect();
 
     /**
      * @type {PSV.ClickData}
      */
     const data = {
-      rightclick: longtouch || evt.button === 2,
-      target    : evt.target,
-      clientX   : evt.clientX,
-      clientY   : evt.clientY,
-      viewerX   : evt.clientX - boundingRect.left,
-      viewerY   : evt.clientY - boundingRect.top,
+      rightclick: rightclick,
+      target    : target,
+      clientX   : clientX,
+      clientY   : clientY,
+      viewerX   : clientX - boundingRect.left,
+      viewerY   : clientY - boundingRect.top,
     };
 
     const intersections = this.psv.dataHelper.getIntersections({
@@ -704,14 +662,14 @@ export class EventsHandler extends AbstractService {
       y: data.viewerY,
     });
 
-    const sphereIntersection = intersections.find(i => i.object.userData.psvSphere);
+    const sphereIntersection = intersections.find(i => i.object.userData[MESH_USER_DATA]);
 
     if (sphereIntersection) {
       const sphericalCoords = this.psv.dataHelper.vector3ToSphericalCoords(sphereIntersection.point);
       data.longitude = sphericalCoords.longitude;
       data.latitude = sphericalCoords.latitude;
 
-      data.objects = intersections.map(i => i.object).filter(o => !o.userData.psvSphere);
+      data.objects = intersections.map(i => i.object).filter(o => !o.userData[MESH_USER_DATA]);
 
       try {
         const textureCoords = this.psv.dataHelper.sphericalCoordsToTextureCoords(data);
@@ -746,49 +704,50 @@ export class EventsHandler extends AbstractService {
   }
 
   /**
-   * @summary Performs movement
-   * @param {MouseEvent|Touch} evt
-   * @param {boolean} [log=true]
+   * @summary Starts moving when crossing moveThreshold and performs movement
+   * @param {int} clientX
+   * @param {int} clientY
    * @private
    */
-  __move(evt, log) {
-    if (this.state.moving) {
-      const x = evt.clientX;
-      const y = evt.clientY;
-
-      const rotation = {
-        longitude: (x - this.state.mouseX) / this.prop.size.width * this.config.moveSpeed * MathUtils.degToRad(this.prop.hFov),
-        latitude : (y - this.state.mouseY) / this.prop.size.height * this.config.moveSpeed * MathUtils.degToRad(this.prop.vFov),
-      };
-
-      const currentPosition = this.psv.getPosition();
-      this.psv.rotate({
-        longitude: currentPosition.longitude - rotation.longitude,
-        latitude : currentPosition.latitude + rotation.latitude,
-      });
-
-      this.state.mouseX = x;
-      this.state.mouseY = y;
-
-      if (log !== false) {
-        this.__logMouseMove(evt);
-      }
+  __move(clientX, clientY) {
+    if (this.state.mousedown
+      && (Math.abs(clientX - this.state.startMouseX) >= this.state.moveThreshold
+        || Math.abs(clientY - this.state.startMouseY) >= this.state.moveThreshold)) {
+      this.psv.__stopAll();
+      this.__resetMove();
+      this.state.step = MOVING;
+      this.state.mouseX = clientX;
+      this.state.mouseY = clientY;
+      this.__logMouseMove(clientX, clientY);
+    }
+    else if (this.state.step === MOVING) {
+      this.__applyMove(clientX, clientY);
+      this.__logMouseMove(clientX, clientY);
     }
   }
 
   /**
-   * @summary Performs movement absolute to cursor position in viewer
-   * @param {MouseEvent} evt
+   * @summary Raw method for movement, called from mouse event and move inertia
+   * @param {int} clientX
+   * @param {int} clientY
    * @private
    */
-  __moveAbsolute(evt) {
-    if (this.state.moving) {
-      const containerRect = this.psv.container.getBoundingClientRect();
-      this.psv.dynamics.position.goto({
-        longitude: ((evt.clientX - containerRect.left) / containerRect.width - 0.5) * Math.PI * 2,
-        latitude : -((evt.clientY - containerRect.top) / containerRect.height - 0.5) * Math.PI,
-      }, 10);
-    }
+  __applyMove(clientX, clientY) {
+    const rotation = {
+      longitude: (clientX - this.state.mouseX) / this.prop.size.width * this.config.moveSpeed
+        * MathUtils.degToRad(this.prop.littlePlanet ? 90 : this.prop.hFov),
+      latitude : (clientY - this.state.mouseY) / this.prop.size.height * this.config.moveSpeed
+        * MathUtils.degToRad(this.prop.littlePlanet ? 90 : this.prop.vFov),
+    };
+
+    const currentPosition = this.psv.getPosition();
+    this.psv.rotate({
+      longitude: currentPosition.longitude - rotation.longitude,
+      latitude : currentPosition.latitude + rotation.latitude,
+    });
+
+    this.state.mouseX = clientX;
+    this.state.mouseY = clientY;
   }
 
   /**
@@ -797,19 +756,16 @@ export class EventsHandler extends AbstractService {
    * @private
    */
   __moveZoom(evt) {
-    if (this.state.zooming && this.state.moving) {
+    if (this.state.step === MOVING) {
       const p1 = { x: evt.touches[0].clientX, y: evt.touches[0].clientY };
       const p2 = { x: evt.touches[1].clientX, y: evt.touches[1].clientY };
 
       const p = distance(p1, p2);
-      const delta = 80 * (p - this.state.pinchDist) / this.prop.size.width * this.config.zoomSpeed;
+      const delta = (p - this.state.pinchDist) / SYSTEM.pixelRatio * this.config.zoomSpeed;
 
       this.psv.zoom(this.psv.getZoomLevel() + delta);
 
-      this.__move({
-        clientX: (p1.x + p2.x) / 2,
-        clientY: (p1.y + p2.y) / 2,
-      });
+      this.__move((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
 
       this.state.pinchDist = p;
     }
@@ -819,24 +775,25 @@ export class EventsHandler extends AbstractService {
    * @summary Stores each mouse position during a mouse move
    * @description Positions older than "INERTIA_WINDOW" are removed<br>
    *     Positions before a pause of "INERTIA_WINDOW" / 10 are removed
-   * @param {MouseEvent|Touch} evt
+   * @param {int} clientX
+   * @param {int} clientY
    * @private
    */
-  __logMouseMove(evt) {
+  __logMouseMove(clientX, clientY) {
     const now = Date.now();
 
     const last = this.state.mouseHistory.length ? this.state.mouseHistory[this.state.mouseHistory.length - 1] : [0, -1, -1];
 
     // avoid duplicates
-    if (last[1] === evt.clientX && last[2] === evt.clientY) {
+    if (last[1] === clientX && last[2] === clientY) {
       last[0] = now;
     }
     else if (now === last[0]) {
-      last[1] = evt.clientX;
-      last[2] = evt.clientY;
+      last[1] = clientX;
+      last[2] = clientY;
     }
     else {
-      this.state.mouseHistory.push([now, evt.clientX, evt.clientY]);
+      this.state.mouseHistory.push([now, clientX, clientY]);
     }
 
     let previous = null;

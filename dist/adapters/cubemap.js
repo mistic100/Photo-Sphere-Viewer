@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.2
+* Photo Sphere Viewer 4.7.3
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -11,7 +11,7 @@
 })(this, (function (exports, three, photoSphereViewer) { 'use strict';
 
   function _extends() {
-    _extends = Object.assign ? Object.assign.bind() : function (target) {
+    _extends = Object.assign || function (target) {
       for (var i = 1; i < arguments.length; i++) {
         var source = arguments[i];
 
@@ -24,6 +24,7 @@
 
       return target;
     };
+
     return _extends.apply(this, arguments);
   }
 
@@ -35,10 +36,11 @@
   }
 
   function _setPrototypeOf(o, p) {
-    _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
       o.__proto__ = p;
       return o;
     };
+
     return _setPrototypeOf(o, p);
   }
 
@@ -212,7 +214,14 @@
       var materials = [];
 
       for (var i = 0; i < 6; i++) {
-        materials.push(photoSphereViewer.AbstractAdapter.createOverlayMaterial());
+        materials.push(photoSphereViewer.AbstractAdapter.createOverlayMaterial({
+          additionalUniforms: {
+            rotation: {
+              value: 0.0
+            }
+          },
+          overrideVertexShader: "\nuniform float rotation;\n\nvarying vec2 vUv;\n\nconst float mid = 0.5;\n\nvoid main() {\n  if (rotation == 0.0) {\n    vUv = uv;\n  } else {\n    vUv = vec2(\n      cos(rotation) * (uv.x - mid) + sin(rotation) * (uv.y - mid) + mid,\n      cos(rotation) * (uv.y - mid) - sin(rotation) * (uv.x - mid) + mid\n    );\n  }\n  gl_Position = projectionMatrix *  modelViewMatrix * vec4( position, 1.0 );\n}"
+        }));
       }
 
       return new three.Mesh(geometry, materials);
@@ -227,8 +236,7 @@
 
       for (var i = 0; i < 6; i++) {
         if (this.config.flipTopBottom && (i === 2 || i === 3)) {
-          texture[i].center = new three.Vector2(0.5, 0.5);
-          texture[i].rotation = Math.PI;
+          this.__setUniform(mesh, i, 'rotation', Math.PI);
         }
 
         this.__setUniform(mesh, i, photoSphereViewer.AbstractAdapter.OVERLAY_UNIFORMS.panorama, texture[i]);

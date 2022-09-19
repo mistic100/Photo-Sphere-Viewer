@@ -40,13 +40,11 @@ You can offer multiple resolutions of your video with the [ResolutionPlugin](./p
 ```js
 const viewer = new PhotoSphereViewer.Viewer({
   adapter: PhotoSphereViewer.EquirectangularVideoAdapter,
-  panorama: {
-    source: 'path/video-fhd.mp4',
-  },
   plugins: [
     PhotoSphereViewer.VideoPlugin,
     PhotoSphereViewer.SettingsPlugin,
     [PhotoSphereViewer.ResolutionPlugin, {
+      defaultResolution: 'FHD',
       resolutions: [
         {
           id      : 'UHD',
@@ -96,7 +94,6 @@ const viewer = new PhotoSphereViewer.Viewer({
   adapter: [PhotoSphereViewer.EquirectangularVideoAdapter, {
     muted: true,
   }],
-  panorama: { source: baseUrl + 'equirectangular-video/Ayutthaya_HD.mp4' },
   caption: 'Ayutthaya <b>&copy; meetle</b>',
   loadingImg: baseUrl + 'loader.gif',
   touchmoveTwoFingers: true,
@@ -118,6 +115,7 @@ const viewer = new PhotoSphereViewer.Viewer({
     }],
     PhotoSphereViewer.SettingsPlugin,
     [PhotoSphereViewer.ResolutionPlugin, {
+      defaultResolution: 'HD',
       resolutions: [
         {
           id      : 'UHD',
