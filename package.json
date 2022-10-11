@@ -45,7 +45,7 @@
     "@babel/register": "^7.15.3",
     "@compodoc/live-server": "^1.2.3",
     "@pixi/jsdoc-template": "^2.5.1",
-    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-babel": "^6.0.0",
     "@rollup/plugin-json": "^5.0.0",
     "@rollup/plugin-replace": "^4.0.0",
     "@vuepress/plugin-active-header-links": "^1.8.2",
