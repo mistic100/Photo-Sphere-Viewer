@@ -33,7 +33,7 @@
     "url": "git://github.com/mistic100/Photo-Sphere-Viewer.git"
   },
   "dependencies": {
-    "three": "^0.145.0",
+    "three": "^0.146.0",
     "uevent": "^2.1.1"
   },
   "devDependencies": {
