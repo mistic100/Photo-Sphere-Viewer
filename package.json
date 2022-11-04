@@ -58,7 +58,7 @@
     "eslint": "^8.2.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.2",
-    "jsdoc": "^3.6.7",
+    "jsdoc": "^4.0.0",
     "marked": "^4.0.0",
     "mocha": "^10.0.0",
     "nosleep.js": "^0.12.0",
