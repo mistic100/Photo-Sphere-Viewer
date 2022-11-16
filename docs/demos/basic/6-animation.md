@@ -41,6 +41,8 @@ const viewer = new PhotoSphereViewer.Viewer({
 viewer.on('ready', intro);
 
 function intro() {
+  viewer.stopAutorotate();
+
   new PhotoSphereViewer.utils.Animation({
     properties: animatedValues,
     duration: 2500,
@@ -50,7 +52,15 @@ function intro() {
       viewer.rotate({ longitude: properties.longitude, latitude: properties.latitude });
       viewer.zoom(properties.zoom);
     }
-  });
+  })
+    .then(() => {
+      viewer.setOptions({
+        autorotateLat: animatedValues.latitude.end,
+        autorotateDelay: 1000,
+        autorotateIdle: true,
+      });
+      viewer.startAutorotate();
+    });
 }
 ```
 

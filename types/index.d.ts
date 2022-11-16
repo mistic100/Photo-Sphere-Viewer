@@ -19,9 +19,5 @@ export * from './PSVError';
 export * from './services/DataHelper';
 export * from './services/TextureLoader';
 export * from './services/TooltipRenderer';
-/**
- * @deprecated use `utils.Animation`
- */
-export * from './utils/Animation';
 export * from './Viewer';
 export { CONSTANTS, utils };

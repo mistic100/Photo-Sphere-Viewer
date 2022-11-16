@@ -465,15 +465,3 @@ virtualTourPlugin.on('node-changed', (e, nodeId, data) => {
   }
 });
 ```
-
-
-## Buttons
-
-This plugin adds buttons to the default navbar:
-- `nodesList` allows to open a list of all nodes on the left panel (client mode only)
-
-If you use a [custom navbar](../guide/navbar.md) you will need to manually add the buttons to the list.
-
-::: warning Deprecated
-This button will be removed and replaced by the [Gallery plugin](./plugin-gallery.md).
-:::

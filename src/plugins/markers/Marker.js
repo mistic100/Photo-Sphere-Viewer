@@ -312,15 +312,14 @@ export class Marker {
       };
 
       if (this.isPoly()) {
-        config.box = { // separate the tooltip from the cursor
-          width : this.psv.tooltip.size.arrow * 2,
-          height: this.psv.tooltip.size.arrow * 2,
-        };
-
         if (mousePosition) {
           const viewerPos = utils.getPosition(this.psv.container);
-          config.top = mousePosition.clientY - viewerPos.top - this.psv.tooltip.size.arrow / 2;
-          config.left = mousePosition.clientX - viewerPos.left - this.psv.tooltip.size.arrow;
+          config.top = mousePosition.clientY - viewerPos.top;
+          config.left = mousePosition.clientX - viewerPos.left;
+          config.box = { // separate the tooltip from the cursor
+            width : 20,
+            height: 20,
+          };
         }
         else {
           config.top = this.props.position2D.y;
@@ -328,8 +327,8 @@ export class Marker {
         }
       }
       else {
-        config.top = this.props.position2D.y;
-        config.left = this.props.position2D.x;
+        config.top = this.props.position2D.y + this.props.height / 2;
+        config.left = this.props.position2D.x + this.props.width / 2;
         config.box = {
           width : this.props.width,
           height: this.props.height,
@@ -422,14 +421,8 @@ export class Marker {
     this.props.anchor = utils.parsePosition(this.config.anchor);
 
     // clean scale
-    if (this.config.scale) {
-      if (typeof this.config.scale === 'number') {
-        utils.logWarn('Single value marker scale is deprecated, please use an array of two values.');
-        this.config.scale = { zoom: [0, this.config.scale] };
-      }
-      if (Array.isArray(this.config.scale)) {
-        this.config.scale = { zoom: this.config.scale };
-      }
+    if (this.config.scale && Array.isArray(this.config.scale)) {
+      this.config.scale = { zoom: this.config.scale };
     }
 
     if (this.isNormal()) {

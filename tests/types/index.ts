@@ -1,4 +1,4 @@
-import { Animation, CONSTANTS, Viewer } from 'photo-sphere-viewer';
+import { CONSTANTS, utils, Viewer } from 'photo-sphere-viewer';
 import {
   EquirectangularTilesAdapter,
   EquirectangularTilesPanorama
@@ -82,7 +82,7 @@ customPlugin.doSomething();
 const customPluginAgain = viewer.getPlugin<CustomPlugin>('custom');
 customPluginAgain.doSomething();
 
-const anim = new Animation({
+const anim = new utils.Animation({
   duration: 1000,
   properties: {
     foo: {start: 0, end: 1},

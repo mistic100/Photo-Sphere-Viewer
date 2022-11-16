@@ -1,4 +1,4 @@
-import { ExtendedPosition, AbstractPlugin, Viewer, Animation } from 'photo-sphere-viewer';
+import { ExtendedPosition, AbstractPlugin, Viewer, utils } from 'photo-sphere-viewer';
 import { Event } from 'uevent';
 
 type MarkerType =
@@ -36,15 +36,17 @@ type MarkerProperties = Partial<ExtendedPosition> & {
   width?: number;
   height?: number;
   orientation?: 'front' | 'horizontal' | 'vertical-left' | 'vertical-right';
-  scale?: number | [number, number] | { zoom?: [number, number], longitude?: [number, number] };
+  scale?: [number, number] | { zoom?: [number, number], longitude?: [number, number] };
   opacity?: number;
   className?: string;
   style?: Record<string, string>;
   svgStyle?: Record<string, string>;
   anchor?: string;
+  zoomLvl?: number;
   visible?: boolean;
   tooltip?: string | { content: string, position?: string, className?: string, trigger?: 'hover' | 'click' };
   content?: string;
+  listContent?: string;
   hideList?: boolean;
   data?: any;
 };
@@ -212,7 +214,7 @@ declare class MarkersPlugin extends AbstractPlugin {
   /**
    * @summary Rotate the view to face the marker
    */
-  gotoMarker(markerId: string, speed: string | number): Animation<any>;
+  gotoMarker(markerId: string, speed: string | number): utils.Animation<any>;
 
   /**
    * @summary Hides a marker

@@ -152,36 +152,83 @@ export function parsePosition(value) {
  * @readonly
  * @private
  */
-const LEFT_MAP = { 0: 'left', 0.5: 'center', 1: 'right' };
+const X_VALUES = ['left', 'center', 'right'];
 /**
  * @readonly
  * @private
  */
-const TOP_MAP = { 0: 'top', 0.5: 'center', 1: 'bottom' };
+const Y_VALUES = ['top', 'center', 'bottom'];
+/**
+ * @readonly
+ * @private
+ */
+const POS_VALUES = [...X_VALUES, ...Y_VALUES];
+/**
+ * @readonly
+ * @private
+ */
+const CENTER = 'center';
 
 /**
  * @summary Parse a CSS-like position into an array of position keywords among top, bottom, left, right and center
  * @memberOf PSV.utils
  * @param {string | string[]} value
- * @param {boolean} [allowCenter=true]
+ * @param {object} [options]
+ * @param {boolean} [options.allowCenter=true] allow "center center"
+ * @param {boolean} [options.cssOrder=true] force CSS order (y axis then x axis)
  * @return {string[]}
  */
-export function cleanPosition(value, allowCenter = true) {
-  if (typeof value === 'string') {
-    const tempPos = parsePosition(value);
-
-    if (!(tempPos.x in LEFT_MAP) || !(tempPos.y in TOP_MAP)) {
-      throw new PSVError(`Unable to parse position "${value}"`);
-    }
-
-    value = [TOP_MAP[tempPos.y], LEFT_MAP[tempPos.x]];
+export function cleanPosition(value, { allowCenter, cssOrder } = { allowCenter: true, cssOrder: true }) {
+  if (!value) {
+    return null;
   }
 
-  if (!allowCenter && value[0] === 'center' && value[1] === 'center') {
-    throw new PSVError('Unable to parse position "center center"');
+  if (typeof value === 'string') {
+    value = value.split(' ');
+  }
+
+  if (value.length === 1) {
+    if (value[0] === CENTER) {
+      value = [CENTER, CENTER];
+    }
+    else if (X_VALUES.indexOf(value[0]) !== -1) {
+      value = [CENTER, value[0]];
+    }
+    else if (Y_VALUES.indexOf(value[0]) !== -1) {
+      value = [value[0], CENTER];
+    }
+  }
+
+  if (value.length !== 2 || POS_VALUES.indexOf(value[0]) === -1 || POS_VALUES.indexOf(value[1]) === -1) {
+    logWarn(`Unparsable position ${value}`);
+    return null;
+  }
+
+  if (!allowCenter && value[0] === CENTER && value[1] === CENTER) {
+    logWarn(`Invalid position center center`);
+    return null;
+  }
+
+  if (cssOrder && !positionIsOrdered(value)) {
+    value = [value[1], value[0]];
+  }
+  if (value[1] === CENTER && X_VALUES.indexOf(value[0]) !== -1) {
+    value = [CENTER, value[0]];
+  }
+  if (value[0] === CENTER && Y_VALUES.indexOf(value[1]) !== -1) {
+    value = [value[1], CENTER];
   }
 
   return value;
+}
+
+/**
+ * @summary Checks if an array of two positions is ordered (y axis then x axis)
+ * @param {string[]} value
+ * @return {boolean}
+ */
+export function positionIsOrdered(value) {
+  return Y_VALUES.indexOf(value[0]) !== -1 && X_VALUES.indexOf(value[1]) !== -1;
 }
 
 /**

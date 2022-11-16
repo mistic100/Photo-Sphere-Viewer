@@ -32,6 +32,9 @@ export function checkLink(node, link, isGps) {
   if (!isGps && !utils.isExtendedPosition(link)) {
     throw new PSVError(`No position provided for link ${link.nodeId} of node ${node.id}`);
   }
+  if (isGps && !link.position) {
+    throw new PSVError(`No GPS position provided for link ${link.nodeId} of node ${node.id}`);
+  }
 }
 
 /**

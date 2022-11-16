@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.3
+* Photo Sphere Viewer 4.8.0
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -11,7 +11,7 @@
 })(this, (function (exports, three, photoSphereViewer) { 'use strict';
 
   function _extends() {
-    _extends = Object.assign || function (target) {
+    _extends = Object.assign ? Object.assign.bind() : function (target) {
       for (var i = 1; i < arguments.length; i++) {
         var source = arguments[i];
 
@@ -24,7 +24,6 @@
 
       return target;
     };
-
     return _extends.apply(this, arguments);
   }
 
@@ -36,11 +35,10 @@
   }
 
   function _setPrototypeOf(o, p) {
-    _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
       o.__proto__ = p;
       return o;
     };
-
     return _setPrototypeOf(o, p);
   }
 
@@ -615,23 +613,22 @@
         });
 
         if (this.isPoly()) {
-          config.box = {
-            // separate the tooltip from the cursor
-            width: this.psv.tooltip.size.arrow * 2,
-            height: this.psv.tooltip.size.arrow * 2
-          };
-
           if (mousePosition) {
             var viewerPos = photoSphereViewer.utils.getPosition(this.psv.container);
-            config.top = mousePosition.clientY - viewerPos.top - this.psv.tooltip.size.arrow / 2;
-            config.left = mousePosition.clientX - viewerPos.left - this.psv.tooltip.size.arrow;
+            config.top = mousePosition.clientY - viewerPos.top;
+            config.left = mousePosition.clientX - viewerPos.left;
+            config.box = {
+              // separate the tooltip from the cursor
+              width: 20,
+              height: 20
+            };
           } else {
             config.top = this.props.position2D.y;
             config.left = this.props.position2D.x;
           }
         } else {
-          config.top = this.props.position2D.y;
-          config.left = this.props.position2D.x;
+          config.top = this.props.position2D.y + this.props.height / 2;
+          config.left = this.props.position2D.x + this.props.width / 2;
           config.box = {
             width: this.props.width,
             height: this.props.height
@@ -733,19 +730,10 @@
 
       this.props.anchor = photoSphereViewer.utils.parsePosition(this.config.anchor); // clean scale
 
-      if (this.config.scale) {
-        if (typeof this.config.scale === 'number') {
-          photoSphereViewer.utils.logWarn('Single value marker scale is deprecated, please use an array of two values.');
-          this.config.scale = {
-            zoom: [0, this.config.scale]
-          };
-        }
-
-        if (Array.isArray(this.config.scale)) {
-          this.config.scale = {
-            zoom: this.config.scale
-          };
-        }
+      if (this.config.scale && Array.isArray(this.config.scale)) {
+        this.config.scale = {
+          zoom: this.config.scale
+        };
       }
 
       if (this.isNormal()) {
@@ -1337,15 +1325,10 @@
       _this.config = _extends({
         clickEventOnMarker: false
       }, options);
-
-      if ((options == null ? void 0 : options.listButton) === false || (options == null ? void 0 : options.hideButton) === false) {
-        photoSphereViewer.utils.logWarn('MarkersPlugin: listButton and hideButton options are deprecated. ' + 'Please define the global navbar options according to your needs.');
-      }
       /**
        * @member {HTMLElement}
        * @readonly
        */
-
 
       _this.container = document.createElement('div');
       _this.container.className = 'psv-markers';
@@ -1791,7 +1774,7 @@
      * @param {string} markerId
      * @param {string|number} [speed] - rotates smoothy, see {@link PSV.Viewer#animate}
      * @fires PSV.plugins.MarkersPlugin.goto-marker-done
-     * @return {PSV.Animation}  A promise that will be resolved when the animation finishes
+     * @return {PSV.utils.Animation}  A promise that will be resolved when the animation finishes
      */
     ;
 
@@ -1800,6 +1783,7 @@
 
       var marker = this.getMarker(markerId);
       return this.psv.animate(_extends({}, marker.props.position, {
+        zoom: marker.config.zoomLvl,
         speed: speed
       })).then(function () {
         _this6.trigger(EVENTS.GOTO_MARKER_DONE, marker);
@@ -2336,31 +2320,29 @@
     ;
 
     _proto.__refreshUi = function __refreshUi() {
+      var _this$psv$navbar$getB, _this$psv$navbar$getB2;
+
       var nbMarkers = Object.values(this.markers).filter(function (m) {
         return !m.config.hideList;
       }).length;
-      var markersButton = this.psv.navbar.getButton(MarkersButton.id, false);
-      var markersListButton = this.psv.navbar.getButton(MarkersListButton.id, false);
 
       if (nbMarkers === 0) {
-        markersButton == null ? void 0 : markersButton.hide();
-        markersListButton == null ? void 0 : markersListButton.hide();
-
         if (this.psv.panel.isVisible(ID_PANEL_MARKERS_LIST)) {
           this.psv.panel.hide();
         } else if (this.psv.panel.isVisible(ID_PANEL_MARKER)) {
           this.psv.panel.hide();
         }
       } else {
-        markersButton == null ? void 0 : markersButton.show();
-        markersListButton == null ? void 0 : markersListButton.show();
-
+        // eslint-disable-next-line no-lonely-if
         if (this.psv.panel.isVisible(ID_PANEL_MARKERS_LIST)) {
           this.showMarkersList();
         } else if (this.psv.panel.isVisible(ID_PANEL_MARKER)) {
           this.prop.currentMarker ? this.showMarkerPanel(this.prop.currentMarker) : this.psv.panel.hide();
         }
       }
+
+      (_this$psv$navbar$getB = this.psv.navbar.getButton(MarkersButton.id, false)) == null ? void 0 : _this$psv$navbar$getB.toggle(nbMarkers > 0);
+      (_this$psv$navbar$getB2 = this.psv.navbar.getButton(MarkersListButton.id, false)) == null ? void 0 : _this$psv$navbar$getB2.toggle(nbMarkers > 0);
     }
     /**
      * @summary Adds or remove the objects observer if there are 3D markers

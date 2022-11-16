@@ -47,7 +47,7 @@ const viewer = new PhotoSphereViewer.Viewer({
 });
 ```
 
-After initializayion the plugin instance can be obtained with the `getPlugin` method, allowing to call methods on the plugin and subscribe to events.
+After initialization the plugin instance can be obtained with the `getPlugin` method, allowing to call methods on the plugin and subscribe to events.
 
 ```js
 const markersPlugin = viewer.getPlugin(PhotoSphereViewer.MarkersPlugin);

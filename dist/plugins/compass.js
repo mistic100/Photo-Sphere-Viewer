@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.3
+* Photo Sphere Viewer 4.8.0
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -11,7 +11,7 @@
 })(this, (function (exports, three, photoSphereViewer) { 'use strict';
 
   function _extends() {
-    _extends = Object.assign || function (target) {
+    _extends = Object.assign ? Object.assign.bind() : function (target) {
       for (var i = 1; i < arguments.length; i++) {
         var source = arguments[i];
 
@@ -24,7 +24,6 @@
 
       return target;
     };
-
     return _extends.apply(this, arguments);
   }
 
@@ -36,11 +35,10 @@
   }
 
   function _setPrototypeOf(o, p) {
-    _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
       o.__proto__ = p;
       return o;
     };
-
     return _setPrototypeOf(o, p);
   }
 
@@ -96,14 +94,17 @@
 
       _this.config = _extends({
         size: '120px',
-        position: 'top left',
         backgroundSvg: compass,
         coneColor: 'rgba(255, 255, 255, 0.5)',
         navigation: true,
         navigationColor: 'rgba(255, 0, 0, 0.2)',
         hotspotColor: 'rgba(0, 0, 0, 0.5)'
-      }, options);
-      _this.config.position = photoSphereViewer.utils.cleanPosition(_this.config.position, 'top left');
+      }, options, {
+        position: photoSphereViewer.utils.cleanPosition(options.position, {
+          allowCenter: true,
+          cssOrder: true
+        }) || ['top', 'left']
+      });
       /**
        * @private
        */

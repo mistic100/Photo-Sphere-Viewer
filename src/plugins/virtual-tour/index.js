@@ -8,7 +8,7 @@ import {
   MeshLambertMaterial,
   PointLight
 } from 'three';
-import { AbstractPlugin, CONSTANTS, DEFAULTS, PSVError, registerButton, utils } from '../..';
+import { AbstractPlugin, CONSTANTS, PSVError, utils } from '../..';
 import { ClientSideDatasource } from './ClientSideDatasource';
 import {
   ARROW_GEOM,
@@ -16,17 +16,14 @@ import {
   DEFAULT_ARROW,
   DEFAULT_MARKER,
   EVENTS,
-  ID_PANEL_NODES_LIST,
   LINK_DATA,
   MODE_3D,
   MODE_CLIENT,
   MODE_GPS,
   MODE_MANUAL,
   MODE_MARKERS,
-  MODE_SERVER,
-  NODES_LIST_TEMPLATE
+  MODE_SERVER
 } from './constants';
-import { NodesListButton } from './NodesListButton';
 import { ServerSideDatasource } from './ServerSideDatasource';
 import './style.scss';
 import { bearing, distance, setMeshColor } from './utils';
@@ -38,15 +35,6 @@ import { bearing, distance, setMeshColor } from './utils';
  * @memberOf PSV.plugins.VirtualTourPlugin
  * @param {string} nodeId
  * @returns {PSV.plugins.VirtualTourPlugin.Node|Promise<PSV.plugins.VirtualTourPlugin.Node>}
- */
-
-/**
- * @callback GetLinks
- * @summary Function to load the links of a node
- * @deprecated `getNode` must directly return the links of each node
- * @memberOf PSV.plugins.VirtualTourPlugin
- * @param {string} nodeId
- * @returns {PSV.plugins.VirtualTourPlugin.NodeLink[]|Promise<PSV.plugins.VirtualTourPlugin.NodeLink[]>}
  */
 
 /**
@@ -70,7 +58,7 @@ import { bearing, distance, setMeshColor } from './utils';
  * @property {string} [name] - short name of the node
  * @property {string} [caption] - caption visible in the navbar
  * @property {string} [description] - description visible in the side panel
- * @property {string} [thumbnail] - thumbnail for the nodes list in the side panel
+ * @property {string} [thumbnail] - thumbnail for the gallery
  * @property {PSV.plugins.MarkersPlugin.Properties[]} [markers] - additional markers to use on this node
  */
 
@@ -100,7 +88,6 @@ import { bearing, distance, setMeshColor } from './utils';
  * @property {'markers'|'3d'} [renderMode='3d'] - configure rendering mode of links
  * @property {PSV.plugins.VirtualTourPlugin.Node[]} [nodes] - initial nodes
  * @property {PSV.plugins.VirtualTourPlugin.GetNode} [getNode]
- * @property {PSV.plugins.VirtualTourPlugin.GetLinks} [getLinks] - Deprecated: `getNode` must directly return the links of each node
  * @property {string} [startNodeId] - id of the initial node, if not defined the first node will be used
  * @property {boolean|PSV.plugins.VirtualTourPlugin.Preload} [preload=false] - preload linked panoramas
  * @property {boolean|string|number} [rotateSpeed='20rpm'] - speed of rotation when clicking on a link, if 'false' the viewer won't rotate at all
@@ -119,10 +106,6 @@ import { bearing, distance, setMeshColor } from './utils';
  * @type {PSV.plugins.VirtualTourPlugin.NodeLink} [fromLink] - The link that was clicked in the previous node
  * @type {PSV.Position} [fromLinkPosition] - The position of the link on the previous node
  */
-
-// add markers buttons
-DEFAULTS.lang[NodesListButton.id] = 'Locations';
-registerButton(NodesListButton, 'caption:left');
 
 
 export { EVENTS, MODE_3D, MODE_CLIENT, MODE_GPS, MODE_MANUAL, MODE_MARKERS, MODE_SERVER } from './constants';
@@ -188,23 +171,15 @@ export class VirtualTourPlugin extends AbstractPlugin {
       arrowPosition  : 'bottom',
       linksOnCompass : options?.renderMode === MODE_MARKERS,
       ...options,
-      markerStyle    : {
+      markerStyle: {
         ...DEFAULT_MARKER,
         ...options?.markerStyle,
       },
-      arrowStyle     : {
+      arrowStyle : {
         ...DEFAULT_ARROW,
         ...options?.arrowStyle,
       },
     };
-
-    if (options?.listButton === false) {
-      utils.logWarn('VirtualTourPlugin: listButton option is deprecated. '
-        + 'Please define the global navbar options according to your needs.');
-    }
-    if (options?.listButton === true && this.config.dataMode === MODE_SERVER) {
-      utils.logWarn('VirtualTourPlugin: the list button is not supported in server mode.');
-    }
 
     /**
      * @type {PSV.plugins.MarkersPlugin}
@@ -489,21 +464,18 @@ export class VirtualTourPlugin extends AbstractPlugin {
         this.markers?.clearMarkers();
         this.compass?.clearHotspots();
 
-        return Promise.all([
-          this.psv.setPanorama(node.panorama, {
-            transition      : this.config.transition,
-            caption         : node.caption,
-            description     : node.description,
-            panoData        : node.panoData,
-            sphereCorrection: node.sphereCorrection,
-          })
-            .then((completed) => {
-              if (!completed) {
-                throw utils.getAbortError();
-              }
-            }),
-          this.datasource.loadLinkedNodes(nodeId),
-        ]);
+        return this.psv.setPanorama(node.panorama, {
+          transition      : this.config.transition,
+          caption         : node.caption,
+          description     : node.description,
+          panoData        : node.panoData,
+          sphereCorrection: node.sphereCorrection,
+        })
+          .then((completed) => {
+            if (!completed) {
+              throw utils.getAbortError();
+            }
+          });
       })
       .then(() => {
         if (this.prop.loadingNode !== nodeId) {
@@ -743,53 +715,6 @@ export class VirtualTourPlugin extends AbstractPlugin {
             delete this.preload[link.nodeId];
           });
       });
-  }
-
-  /**
-   * @summary Toggles the visibility of the list of nodes
-   */
-  toggleNodesList() {
-    if (this.psv.panel.prop.contentId === ID_PANEL_NODES_LIST) {
-      this.hideNodesList();
-    }
-    else {
-      this.showNodesList();
-    }
-  }
-
-  /**
-   * @summary Opens side panel with the list of nodes
-   */
-  showNodesList() {
-    utils.logWarn(`Starting from next version, the VirtualTourPlugin will require the GalleryPlugin to display the list of nodes.`);
-
-    const nodes = this.change(EVENTS.RENDER_NODES_LIST, Object.values(this.datasource.nodes));
-
-    this.psv.panel.show({
-      id          : ID_PANEL_NODES_LIST,
-      content     : NODES_LIST_TEMPLATE(
-        nodes,
-        this.psv.config.lang[NodesListButton.id],
-        this.prop.currentNode?.id
-      ),
-      noMargin    : true,
-      clickHandler: (e) => {
-        const li = e.target ? utils.getClosest(e.target, 'li') : undefined;
-        const nodeId = li ? li.dataset.nodeId : undefined;
-
-        if (nodeId) {
-          this.setCurrentNode(nodeId);
-          this.hideNodesList();
-        }
-      },
-    });
-  }
-
-  /**
-   * @summary Closes side panel if it contains the list of nodes
-   */
-  hideNodesList() {
-    this.psv.panel.hide(ID_PANEL_NODES_LIST);
   }
 
 }

@@ -29,6 +29,10 @@ export class GalleryButton extends AbstractButton {
       this.plugin.on(EVENTS.SHOW_GALLERY, this);
       this.plugin.on(EVENTS.HIDE_GALLERY, this);
     }
+
+    if (!this.plugin?.items.length) {
+      this.hide();
+    }
   }
 
   /**

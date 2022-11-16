@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.3
+* Photo Sphere Viewer 4.8.0
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -11,7 +11,7 @@
 })(this, (function (exports, photoSphereViewer) { 'use strict';
 
   function _extends() {
-    _extends = Object.assign || function (target) {
+    _extends = Object.assign ? Object.assign.bind() : function (target) {
       for (var i = 1; i < arguments.length; i++) {
         var source = arguments[i];
 
@@ -24,7 +24,6 @@
 
       return target;
     };
-
     return _extends.apply(this, arguments);
   }
 
@@ -36,11 +35,10 @@
   }
 
   function _setPrototypeOf(o, p) {
-    _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
       o.__proto__ = p;
       return o;
     };
-
     return _setPrototypeOf(o, p);
   }
 
@@ -158,6 +156,8 @@
      * @param {PSV.components.Navbar} navbar
      */
     function GalleryButton(navbar) {
+      var _this$plugin;
+
       var _this;
 
       _this = _AbstractButton.call(this, navbar, 'psv-button--hover-scale psv-gallery-button', true) || this;
@@ -173,6 +173,10 @@
         _this.plugin.on(EVENTS.SHOW_GALLERY, _assertThisInitialized(_this));
 
         _this.plugin.on(EVENTS.HIDE_GALLERY, _assertThisInitialized(_this));
+      }
+
+      if (!((_this$plugin = _this.plugin) != null && _this$plugin.items.length)) {
+        _this.hide();
       }
 
       return _this;
@@ -590,7 +594,11 @@
     ;
 
     _proto.toggle = function toggle() {
-      return this.gallery.toggle();
+      if (this.gallery.isVisible()) {
+        this.hide();
+      } else {
+        this.show();
+      }
     }
     /**
      * @summary Sets the list of items
@@ -600,7 +608,7 @@
     ;
 
     _proto.setItems = function setItems(items, handler) {
-      var _items;
+      var _items, _this$psv$navbar$getB;
 
       if (!((_items = items) != null && _items.length)) {
         items = [];
@@ -622,7 +630,8 @@
           id: "" + item.id
         });
       });
-      this.gallery.setItems(items);
+      this.gallery.setItems(this.items);
+      (_this$psv$navbar$getB = this.psv.navbar.getButton(GalleryButton.id, false)) == null ? void 0 : _this$psv$navbar$getB.toggle(this.items.length > 0);
     }
     /**
      * @param {string} id

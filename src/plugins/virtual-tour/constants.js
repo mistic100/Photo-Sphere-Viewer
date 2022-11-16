@@ -2,7 +2,6 @@ import { ObjectLoader } from 'three';
 import arrowGeometryJson from './arrow.json';
 import arrowIconSvg from './arrow.svg';
 import arrowOutlineGeometryJson from './arrow_outline.json';
-import nodesList from './nodes-list.svg';
 
 /**
  * @summary In client mode all the nodes are provided in the config or with the `setNodes` method
@@ -66,14 +65,6 @@ export const EVENTS = {
    * @param {string} nodeId
    */
   NODE_CHANGED     : 'node-changed',
-  /**
-   * @event filter:render-nodes-list
-   * @memberof PSV.plugins.VirtualTourPlugin
-   * @summary Used to alter the list of nodes displayed on the side-panel
-   * @param {PSV.plugins.VirtualTourPlugin.Node[]} nodes
-   * @returns {PSV.plugins.VirtualTourPlugin.Node[]}
-   */
-  RENDER_NODES_LIST: 'render-nodes-list',
 };
 
 /**
@@ -133,35 +124,3 @@ export const { ARROW_GEOM, ARROW_OUTLINE_GEOM } = (() => {
   arrowOutline.rotateX(rot);
   return { ARROW_GEOM: arrow, ARROW_OUTLINE_GEOM: arrowOutline };
 })();
-
-/**
- * @summary Panel identifier for nodes list
- * @type {string}
- * @constant
- * @private
- */
-export const ID_PANEL_NODES_LIST = 'virtualTourNodesList';
-
-/**
- * @summary Nodes list template
- * @param {PSV.plugins.VirtualTourPlugin.Node[]} nodes
- * @param {string} title
- * @param {string} currentNodeId
- * @returns {string}
- * @constant
- * @private
- */
-export const NODES_LIST_TEMPLATE = (nodes, title, currentNodeId) => `
-<div class="psv-panel-menu psv-panel-menu--stripped psv-virtual-tour__menu">
-  <h1 class="psv-panel-menu-title">${nodesList} ${title}</h1>
-  <ul class="psv-panel-menu-list">
-    ${nodes.map(node => `
-    <li data-node-id="${node.id}" tabindex="0"
-        class="psv-panel-menu-item ${currentNodeId === node.id ? 'psv-panel-menu-item--active' : ''}">
-      ${node.thumbnail ? `<span class="psv-panel-menu-item-icon"><img src="${node.thumbnail}"/></span>` : ''}
-      <span class="psv-panel-menu-item-label">${node.caption || node.name}</span>
-    </li>
-    `).join('')}
-  </ul>
-</div>
-`;

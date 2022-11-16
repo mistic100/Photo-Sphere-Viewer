@@ -132,12 +132,17 @@ export class CubemapTilesAdapter extends CubemapAdapter {
      * @member {external:THREE.ImageLoader}
      * @private
      */
-    this.loader = new ImageLoader();
-    if (this.psv.config.withCredentials) {
-      this.loader.setWithCredentials(true);
+    this.loader = null;
+
+    if (this.psv.config.requestHeaders) {
+      utils.logWarn('CubemapTilesAdapter fallbacks to file loader because "requestHeaders" where provided. '
+        + 'Consider removing "requestHeaders" if you experience performances issues.');
     }
-    if (this.psv.config.requestHeaders && typeof this.psv.config.requestHeaders === 'object') {
-      this.loader.setRequestHeader(this.psv.config.requestHeaders);
+    else {
+      this.loader = new ImageLoader();
+      if (this.psv.config.withCredentials) {
+        this.loader.setWithCredentials(true);
+      }
     }
 
     this.psv.on(CONSTANTS.EVENTS.POSITION_UPDATED, this);
@@ -447,13 +452,7 @@ export class CubemapTilesAdapter extends CubemapAdapter {
     }
     const url = panorama.tileUrl(CUBE_HASHMAP[tile.face], col, row);
 
-    if (this.psv.config.requestHeaders && typeof this.psv.config.requestHeaders === 'function') {
-      this.loader.setRequestHeader(this.psv.config.requestHeaders(url));
-    }
-
-    return new Promise((resolve, reject) => {
-      this.loader.load(url, resolve, undefined, reject);
-    })
+    return this.__loadImage(url)
       .then((image) => {
         if (!task.isCancelled()) {
           const material = new MeshBasicMaterial({ map: utils.createTexture(image) });
@@ -470,6 +469,20 @@ export class CubemapTilesAdapter extends CubemapAdapter {
           this.psv.needsUpdate();
         }
       });
+  }
+
+  /**
+   * @private
+   */
+  __loadImage(url) {
+    if (this.loader) {
+      return new Promise((resolve, reject) => {
+        this.loader.load(url, resolve, undefined, reject);
+      });
+    }
+    else {
+      return this.psv.textureLoader.loadImage(url);
+    }
   }
 
   /**

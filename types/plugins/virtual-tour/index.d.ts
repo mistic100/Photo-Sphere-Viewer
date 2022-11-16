@@ -36,10 +36,6 @@ export type VirtualTourArrowStyle = {
   color?: string;
   hoverColor?: string;
   outlineColor?: number;
-  /**
-   * @deprecated
-   */
-  opacity?: number;
   scale?: [number, number];
 };
 
@@ -63,10 +59,6 @@ export type VirtualTourPluginOptions = {
   renderMode?: '3d' | 'markers';
   nodes?: VirtualTourNode[];
   getNode?: (nodeId: string) => VirtualTourNode | Promise<VirtualTourNode>;
-  /**
-   * @deprecated
-   */
-  getLinks?: (nodeId: string) => VirtualTourNodeLink[] | Promise<VirtualTourNodeLink[]>;
   startNodeId?: string;
   preload?: boolean | ((node: VirtualTourNode, link: VirtualTourNodeLink) => boolean);
   rotateSpeed?: boolean | string | number;
@@ -84,7 +76,6 @@ export type VirtualTourPluginPluginOptions = VirtualTourPluginOptions;
 
 export const EVENTS: {
   NODE_CHANGED: 'node-changed',
-  RENDER_NODES_LIST: 'render-nodes-list',
 };
 
 export const MODE_CLIENT = 'client';
@@ -119,21 +110,6 @@ export class VirtualTourPlugin extends AbstractPlugin {
    * @returns resolves false if the loading was aborted by another call
    */
   setCurrentNode(nodeId: string): Promise<boolean>;
-
-  /**
-   * @summary Toggles the visibility of the list of nodes
-   */
-  toggleNodesList();
-
-  /**
-   * @summary Opens side panel with the list of nodes
-   */
-  showNodesList();
-
-  /**
-   * @summary Closes side panel if it contains the list of nodes
-   */
-  hideNodesList();
 
   /**
    * @summary Triggered when the current node changes

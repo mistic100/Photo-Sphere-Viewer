@@ -108,6 +108,7 @@
     caption   : 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
     loadingImg: 'assets/photosphere-logo.gif',
     navbar    : [
+      'zoom', 'move',
       'markers', 'markersList',
       {
         content  : '💬',
@@ -125,25 +126,6 @@
       [PhotoSphereViewer.MarkersPlugin, {
         markers: (() => {
           const a = [];
-
-          // add markers all hover the sphere
-          for (let i = 0; i < Math.PI * 2; i += Math.PI / 4) {
-            for (let j = -Math.PI / 2 + Math.PI / 4; j < Math.PI / 2; j += Math.PI / 4) {
-              a.push({
-                id       : '#' + a.length,
-                tooltip  : '#' + a.length,
-                latitude : j,
-                longitude: i,
-                image    : 'assets/pin-red.png',
-                width    : 32,
-                height   : 32,
-                anchor   : 'bottom center',
-                data     : {
-                  deletable: true,
-                },
-              });
-            }
-          }
 
           // marker with content and tooltip
           a.push({
@@ -177,10 +159,12 @@
             },
             latitude : 0.11,
             longitude: -0.35,
+            zoomLvl  : 100,
             image    : 'assets/pin-blue.png',
             width    : 32,
             height   : 32,
             anchor   : 'bottom center',
+            listContent: 'Lorem ipsum',
           });
 
           // big polygon to test the handling of points behind the camera
@@ -225,7 +209,7 @@
             },
             tooltip  : {
               content : 'Simple polygon',
-              position: 'right bottom',
+              position: 'bottom right',
             },
           });
 
@@ -248,7 +232,7 @@
             },
             tooltip  : {
               content : 'Polygon with image background',
-              position: 'right bottom',
+              position: 'bottom right',
             },
           });
 
@@ -265,41 +249,7 @@
             tooltip   : 'Polyline',
           });
 
-          // HTML & image markers
-          a.push({
-            id       : 'html-img-demo',
-            html     : 'HTML & Image demo',
-            scale    : [0.5, 1.5],
-            className: 'demo-label',
-            longitude: 0.5,
-            latitude : -0.48,
-            hideList : true,
-          });
-
-          a.push({
-            id         : 'gif',
-            image      : 'assets/photosphere-logo.gif',
-            width      : 100,
-            height     : 100,
-            longitude  : 0.60,
-            latitude   : -0.35,
-            listContent: 'An animated gif',
-          });
-
-          a.push({
-            id       : 'text',
-            html     : '<code>HTML</code> content <img src="assets/pin-blue.png" style="height: 24px; vertical-align: top;"/>',
-            anchor   : 'bottom right',
-            style    : {
-              color     : 'white',
-              fontSize  : '20px',
-              fontFamily: 'Helvetica, sans-serif',
-              textAlign : 'center',
-            },
-            longitude: 0.45,
-            latitude : -0.4,
-          });
-
+          // embedded images
           a.push({
             id        : 'imageLayer',
             imageLayer: 'assets/tent.png',
@@ -322,6 +272,41 @@
             tooltip    : 'Image embedded in the scene with "horizontal" orientation',
           });
 
+          // HTML & image markers
+          a.push({
+            id       : 'html-img-demo',
+            html     : 'HTML & Image demo',
+            scale    : [0.5, 1.5],
+            className: 'demo-label',
+            longitude: 0.5,
+            latitude : -0.42,
+            hideList : true,
+          });
+
+          a.push({
+            id         : 'gif',
+            image      : 'assets/photosphere-logo.gif',
+            width      : 100,
+            height     : 100,
+            longitude  : 0.56,
+            latitude   : -0.32,
+            listContent: 'An animated gif',
+          });
+
+          a.push({
+            id       : 'text',
+            html     : '<code>HTML</code> content <img src="assets/pin-blue.png" style="height: 24px; vertical-align: top;"/>',
+            anchor   : 'bottom right',
+            style    : {
+              color     : 'white',
+              fontSize  : '20px',
+              fontFamily: 'Helvetica, sans-serif',
+              textAlign : 'center',
+            },
+            longitude: 0.45,
+            latitude : -0.38,
+          });
+
           // SVG markers
           a.push({
             id       : 'svg-demo',
@@ -329,7 +314,7 @@
             scale    : [0.5, 1.5],
             className: 'demo-label',
             longitude: -0.5,
-            latitude : -0.48,
+            latitude : -0.42,
             hideList : true,
           });
 
@@ -343,8 +328,8 @@
               strokeWidth: '2px',
             },
             longitude: -0.5,
-            latitude : -0.28,
-            anchor   : 'center right',
+            latitude : -0.32,
+            anchor   : 'bottom right',
           });
 
           a.push({
@@ -357,8 +342,8 @@
               strokeWidth: '2px',
             },
             longitude: -0.5,
-            latitude : -0.28,
-            anchor   : 'center left',
+            latitude : -0.32,
+            anchor   : 'bottom left',
           });
 
           a.push({
@@ -371,8 +356,8 @@
               strokeWidth: '2px',
             },
             longitude: -0.5,
-            latitude : -0.38,
-            anchor   : 'center right',
+            latitude : -0.32,
+            anchor   : 'top right',
           });
 
           a.push({
@@ -385,8 +370,8 @@
               strokeWidth: '2px',
             },
             longitude: -0.5,
-            latitude : -0.38,
-            anchor   : 'center left',
+            latitude : -0.32,
+            anchor   : 'top left',
           });
 
           // Scalling markers
@@ -396,7 +381,7 @@
             scale    : [0.5, 1.5],
             className: 'demo-label',
             longitude: 0,
-            latitude : -0.48,
+            latitude : -0.47,
             hideList : true,
           });
 
@@ -439,6 +424,25 @@
             longitude: 0.1,
             latitude : -0.4,
           });
+
+          // add markers all hover the sphere
+          for (let i = 0; i < Math.PI * 2; i += Math.PI / 4) {
+            for (let j = -Math.PI / 2 + Math.PI / 4; j < Math.PI / 2; j += Math.PI / 4) {
+              a.push({
+                id       : '#' + a.length,
+                tooltip  : '#' + a.length,
+                latitude : j,
+                longitude: i,
+                image    : 'assets/pin-red.png',
+                width    : 32,
+                height   : 32,
+                anchor   : 'bottom center',
+                data     : {
+                  deletable: true,
+                },
+              });
+            }
+          }
 
           return a;
         })(),

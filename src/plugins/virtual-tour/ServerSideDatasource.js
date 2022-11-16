@@ -16,7 +16,6 @@ export class ServerSideDatasource extends AbstractDatasource {
     }
 
     this.nodeResolver = plugin.config.getNode;
-    this.linksResolver = plugin.config.getLinks;
   }
 
   loadNode(nodeId) {
@@ -27,48 +26,23 @@ export class ServerSideDatasource extends AbstractDatasource {
       return Promise.resolve(this.nodeResolver(nodeId))
         .then((node) => {
           checkNode(node, this.plugin.isGps());
-          this.nodes[nodeId] = node;
-          return node;
-        });
-    }
-  }
+          if (!node.links) {
+            utils.logWarn(`Node ${node.id} has no links`);
+            node.links = [];
+          }
 
-  loadLinkedNodes(nodeId) {
-    if (!this.nodes[nodeId]) {
-      return Promise.reject(new PSVError(`Node ${nodeId} not found`));
-    }
-    else if (this.nodes[nodeId].links) {
-      return Promise.resolve();
-    }
-    else {
-      if (!this.linksResolver) {
-        this.nodes[nodeId].links = [];
-        return Promise.resolve();
-      }
-
-      utils.logWarn(`getLinks() option is deprecated, instead make getNode() also return the node' links.`);
-
-      return Promise.resolve(this.linksResolver(nodeId))
-        .then(links => links || [])
-        .then((links) => {
-          const node = this.nodes[nodeId];
-
-          links.forEach((link) => {
-            checkLink(node, link, this.plugin.isGps());
-
+          node.links.forEach((link) => {
             // copy essential data
             if (this.nodes[link.nodeId]) {
               link.position = link.position || this.nodes[link.nodeId].position;
               link.name = link.name || this.nodes[link.nodeId].name;
             }
 
-            if (this.plugin.isGps() && !link.position) {
-              throw new PSVError(`No GPS position provided for link ${link.nodeId} of node ${node.id}`);
-            }
+            checkLink(node, link, this.plugin.isGps());
           });
 
-          // store links
-          node.links = links;
+          this.nodes[nodeId] = node;
+          return node;
         });
     }
   }

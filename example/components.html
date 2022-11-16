@@ -79,7 +79,20 @@
       {
         content  : 'Tooltip',
         onClick  : () => {
-          const position = ['top center', 'top left', 'top right', 'bottom center', 'bottom left', 'bottom right', 'center left', 'center right'][Math.floor(Math.random() * 8)];
+          const position = [
+            'top',
+            'top left',
+            'top right',
+            'bottom',
+            'bottom left',
+            'bottom right',
+            'left',
+            'right',
+            'left top',
+            'left bottom',
+            'right top',
+            'right bottom',
+          ][Math.floor(Math.random() * 12)];
           viewer.tooltip.create({
             top     : Math.random() * (document.body.offsetHeight - 200) + 100,
             left    : Math.random() * (document.body.offsetWidth - 200) + 100,

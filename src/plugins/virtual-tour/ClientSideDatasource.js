@@ -17,15 +17,6 @@ export class ClientSideDatasource extends AbstractDatasource {
     }
   }
 
-  loadLinkedNodes(nodeId) {
-    if (!this.nodes[nodeId]) {
-      return Promise.reject(new PSVError(`Node ${nodeId} not found`));
-    }
-    else {
-      return Promise.resolve();
-    }
-  }
-
   setNodes(rawNodes) {
     if (!rawNodes?.length) {
       throw new PSVError('No nodes provided');
@@ -42,7 +33,7 @@ export class ClientSideDatasource extends AbstractDatasource {
       }
       if (!node.links) {
         utils.logWarn(`Node ${node.id} has no links`);
-        nodes.links = [];
+        node.links = [];
       }
 
       nodes[node.id] = node;
@@ -50,8 +41,6 @@ export class ClientSideDatasource extends AbstractDatasource {
 
     rawNodes.forEach((node) => {
       node.links.forEach((link) => {
-        checkLink(node, link, this.plugin.isGps());
-
         if (!nodes[link.nodeId]) {
           throw new PSVError(`Target node ${link.nodeId} of node ${node.id} does not exists`);
         }
@@ -59,6 +48,8 @@ export class ClientSideDatasource extends AbstractDatasource {
         // copy essential data
         link.position = link.position || nodes[link.nodeId].position;
         link.name = link.name || nodes[link.nodeId].name;
+
+        checkLink(node, link, this.plugin.isGps());
 
         linkedNodes[link.nodeId] = true;
       });

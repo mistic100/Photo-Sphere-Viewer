@@ -47,15 +47,14 @@ export class CompassPlugin extends AbstractPlugin {
      */
     this.config = {
       size           : '120px',
-      position       : 'top left',
       backgroundSvg  : compass,
       coneColor      : 'rgba(255, 255, 255, 0.5)',
       navigation     : true,
       navigationColor: 'rgba(255, 0, 0, 0.2)',
       hotspotColor   : 'rgba(0, 0, 0, 0.5)',
       ...options,
+      position       : utils.cleanPosition(options.position, { allowCenter: true, cssOrder: true }) || ['top', 'left'],
     };
-    this.config.position = utils.cleanPosition(this.config.position, 'top left');
 
     /**
      * @private

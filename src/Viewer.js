@@ -77,7 +77,7 @@ export class Viewer extends EventEmitter {
      * @property {number} hFov - horizontal FOV
      * @property {number} aspect - viewer aspect ratio
      * @property {boolean} autorotateEnabled - automatic rotation is enabled
-     * @property {PSV.Animation} animationPromise - promise of the current animation
+     * @property {PSV.utils.Animation} animationPromise - promise of the current animation
      * @property {Promise} loadingPromise - promise of the setPanorama method
      * @property {boolean} littlePlanet - special tweaks for LittlePlanetAdapter
      * @property {number} idleTime - time of the last user action
@@ -826,13 +826,13 @@ export class Viewer extends EventEmitter {
   /**
    * @summary Rotates and zooms the view with a smooth animation
    * @param {PSV.AnimateOptions} options - position and/or zoom level
-   * @returns {PSV.Animation}
+   * @returns {PSV.utils.Animation}
    */
   animate(options) {
     this.__stopAll();
 
     const positionProvided = isExtendedPosition(options);
-    const zoomProvided = 'zoom' in options;
+    const zoomProvided = options.zoom !== undefined;
 
     const animProperties = {};
     let duration;

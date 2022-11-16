@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.3
+* Photo Sphere Viewer 4.8.0
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -11,7 +11,7 @@
 })(this, (function (exports, three, photoSphereViewer, cubemap) { 'use strict';
 
   function _extends() {
-    _extends = Object.assign || function (target) {
+    _extends = Object.assign ? Object.assign.bind() : function (target) {
       for (var i = 1; i < arguments.length; i++) {
         var source = arguments[i];
 
@@ -24,7 +24,6 @@
 
       return target;
     };
-
     return _extends.apply(this, arguments);
   }
 
@@ -36,11 +35,10 @@
   }
 
   function _setPrototypeOf(o, p) {
-    _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
       o.__proto__ = p;
       return o;
     };
-
     return _setPrototypeOf(o, p);
   }
 
@@ -349,14 +347,16 @@
        * @private
        */
 
-      _this.loader = new three.ImageLoader();
+      _this.loader = null;
 
-      if (_this.psv.config.withCredentials) {
-        _this.loader.setWithCredentials(true);
-      }
+      if (_this.psv.config.requestHeaders) {
+        photoSphereViewer.utils.logWarn('CubemapTilesAdapter fallbacks to file loader because "requestHeaders" where provided. ' + 'Consider removing "requestHeaders" if you experience performances issues.');
+      } else {
+        _this.loader = new three.ImageLoader();
 
-      if (_this.psv.config.requestHeaders && typeof _this.psv.config.requestHeaders === 'object') {
-        _this.loader.setRequestHeader(_this.psv.config.requestHeaders);
+        if (_this.psv.config.withCredentials) {
+          _this.loader.setWithCredentials(true);
+        }
       }
 
       _this.psv.on(photoSphereViewer.CONSTANTS.EVENTS.POSITION_UPDATED, _assertThisInitialized(_this));
@@ -697,14 +697,7 @@
       }
 
       var url = panorama.tileUrl(cubemap.CUBE_HASHMAP[tile.face], col, row);
-
-      if (this.psv.config.requestHeaders && typeof this.psv.config.requestHeaders === 'function') {
-        this.loader.setRequestHeader(this.psv.config.requestHeaders(url));
-      }
-
-      return new Promise(function (resolve, reject) {
-        _this5.loader.load(url, resolve, undefined, reject);
-      }).then(function (image) {
+      return this.__loadImage(url).then(function (image) {
         if (!task.isCancelled()) {
           var material = new three.MeshBasicMaterial({
             map: photoSphereViewer.utils.createTexture(image)
@@ -727,6 +720,22 @@
       });
     }
     /**
+     * @private
+     */
+    ;
+
+    _proto.__loadImage = function __loadImage(url) {
+      var _this6 = this;
+
+      if (this.loader) {
+        return new Promise(function (resolve, reject) {
+          _this6.loader.load(url, resolve, undefined, reject);
+        });
+      } else {
+        return this.psv.textureLoader.loadImage(url);
+      }
+    }
+    /**
      * @summary Applies a new texture to the faces
      * @param {int} face
      * @param {int} col
@@ -737,30 +746,30 @@
     ;
 
     _proto.__swapMaterial = function __swapMaterial(face, col, row, material) {
-      var _this6 = this;
+      var _this7 = this;
 
       var uvs = this.prop.geom.getAttribute(ATTR_UV);
 
       for (var c = 0; c < this.prop.facesByTile; c++) {
         var _loop = function _loop(r) {
           // position of the face (two triangles of the same square)
-          var faceCol = col * _this6.prop.facesByTile + c;
-          var faceRow = row * _this6.prop.facesByTile + r; // first vertex for this face (6 vertices in total)
+          var faceCol = col * _this7.prop.facesByTile + c;
+          var faceRow = row * _this7.prop.facesByTile + r; // first vertex for this face (6 vertices in total)
 
           var firstVertex = NB_VERTICES_BY_PLANE * face + 6 * (CUBE_SEGMENTS * faceRow + faceCol); // swap material
 
-          var matIndex = _this6.prop.geom.groups.find(function (g) {
+          var matIndex = _this7.prop.geom.groups.find(function (g) {
             return g.start === firstVertex;
           }).materialIndex;
 
-          _this6.prop.materials[matIndex] = material; // define new uvs
+          _this7.prop.materials[matIndex] = material; // define new uvs
 
-          var top = 1 - r / _this6.prop.facesByTile;
-          var bottom = 1 - (r + 1) / _this6.prop.facesByTile;
-          var left = c / _this6.prop.facesByTile;
-          var right = (c + 1) / _this6.prop.facesByTile;
+          var top = 1 - r / _this7.prop.facesByTile;
+          var bottom = 1 - (r + 1) / _this7.prop.facesByTile;
+          var left = c / _this7.prop.facesByTile;
+          var right = (c + 1) / _this7.prop.facesByTile;
 
-          if (_this6.config.flipTopBottom && (face === 2 || face === 3)) {
+          if (_this7.config.flipTopBottom && (face === 2 || face === 3)) {
             top = 1 - top;
             bottom = 1 - bottom;
             left = 1 - left;

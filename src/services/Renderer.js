@@ -1,8 +1,7 @@
 import { Group, PerspectiveCamera, Raycaster, Scene, Vector3, WebGLRenderer } from 'three';
 import { EVENTS, MESH_USER_DATA, SPHERE_RADIUS } from '../data/constants';
 import { SYSTEM } from '../data/system';
-import { each, isExtendedPosition } from '../utils';
-import { Animation } from '../utils/Animation';
+import { Animation, each, isExtendedPosition } from '../utils';
 import { AbstractService } from './AbstractService';
 
 /**
@@ -300,7 +299,7 @@ export class Renderer extends AbstractService {
    * @summary Performs transition between the current and a new texture
    * @param {PSV.TextureData} textureData
    * @param {PSV.PanoramaOptions} options
-   * @returns {PSV.Animation}
+   * @returns {PSV.utils.Animation}
    * @package
    */
   transition(textureData, options) {

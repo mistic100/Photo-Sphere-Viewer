@@ -1,6 +1,6 @@
 import assert from 'assert';
 
-import { parseAngle, parsePosition, parseSpeed, getXMPValue, cleanPosition } from './psv';
+import { cleanPosition, getXMPValue, parseAngle, parsePosition, parseSpeed } from './psv';
 
 describe('utils:psv:parseAngle', () => {
   it('should normalize number', () => {
@@ -320,20 +320,34 @@ describe('utils:psv:cleanPosition', () => {
   it('should clean various formats', () => {
     assert.deepStrictEqual(cleanPosition('top right'), ['top', 'right']);
     assert.deepStrictEqual(cleanPosition('right top'), ['top', 'right']);
-    assert.deepStrictEqual(cleanPosition('top'), ['top', 'center']);
-    assert.deepStrictEqual(cleanPosition('left'), ['center', 'left']);
     assert.deepStrictEqual(cleanPosition(['top', 'right']), ['top', 'right']);
   });
 
-  it('should dissallow center', () => {
-    assert.deepStrictEqual(cleanPosition('top center', false), ['top', 'center']);
-
-    assert.throws(() => {
-      cleanPosition('center center', false);
-    });
+  it('should add missing center', () => {
+    assert.deepStrictEqual(cleanPosition('top'), ['top', 'center']);
+    assert.deepStrictEqual(cleanPosition('left'), ['center', 'left']);
+    assert.deepStrictEqual(cleanPosition('center'), ['center', 'center']);
   });
 
-  it('should not fail on unparsable values', () => {
-    assert.deepStrictEqual(cleanPosition('foo bar'), ['center', 'center']);
+  it('should dissallow all center', () => {
+    assert.strictEqual(cleanPosition('center center', { allowCenter: false }), null);
+    assert.strictEqual(cleanPosition('center', { allowCenter: false }), null);
+  });
+
+  it('should return null on unparsable values', () => {
+    assert.strictEqual(cleanPosition('foo bar'), null);
+    assert.strictEqual(cleanPosition('TOP CENTER'), null);
+    assert.strictEqual(cleanPosition(''), null);
+    assert.strictEqual(cleanPosition(undefined), null);
+  });
+
+  it('should allow XY order', () => {
+    assert.deepStrictEqual(cleanPosition('right top', { cssOrder: false }), ['right', 'top']);
+    assert.deepStrictEqual(cleanPosition(['top', 'right'], { cssOrder: false }), ['top', 'right']);
+  });
+
+  it('should always order with center', () => {
+    assert.deepStrictEqual(cleanPosition('center top'), ['top', 'center']);
+    assert.deepStrictEqual(cleanPosition('left center'), ['center', 'left']);
   });
 });

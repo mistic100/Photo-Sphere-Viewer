@@ -25,11 +25,8 @@ export function parsePosition(value: string | Point): Point;
 
 /**
  * @summary Parse a CSS-like position into an array of position keywords among top, bottom, left, right and center
- * @param {string | string[]} value
- * @param {string} defaultValue
- * @param {boolean} [allowCenter=true]
  */
-export function cleanPosition(value: string | string[], defaultValue: string, allowCenter?): string[];
+export function cleanPosition(value: string | string[], options?: { allowCenter: boolean, cssOrder: boolean }): string[];
 
 /**
  * @summary Parses an speed

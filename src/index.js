@@ -10,7 +10,6 @@ import { SYSTEM } from './data/system';
 import { AbstractPlugin } from './plugins/AbstractPlugin';
 import { PSVError } from './PSVError';
 import * as utils from './utils';
-import { Animation } from './utils/Animation';
 import { Viewer } from './Viewer';
 import './styles/index.scss';
 
@@ -19,10 +18,6 @@ export {
   AbstractButton,
   AbstractComponent,
   AbstractPlugin,
-  /**
-   * @deprecated use `utils.Animation`
-   */
-  Animation,
   CONSTANTS,
   DEFAULTS,
   EquirectangularAdapter,

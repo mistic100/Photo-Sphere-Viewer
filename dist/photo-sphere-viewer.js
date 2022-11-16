@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.7.3
+* Photo Sphere Viewer 4.8.0
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -30,7 +30,7 @@
   }
 
   function _extends() {
-    _extends = Object.assign || function (target) {
+    _extends = Object.assign ? Object.assign.bind() : function (target) {
       for (var i = 1; i < arguments.length; i++) {
         var source = arguments[i];
 
@@ -43,7 +43,6 @@
 
       return target;
     };
-
     return _extends.apply(this, arguments);
   }
 
@@ -55,11 +54,10 @@
   }
 
   function _setPrototypeOf(o, p) {
-    _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
       o.__proto__ = p;
       return o;
     };
-
     return _setPrototypeOf(o, p);
   }
 
@@ -1725,49 +1723,93 @@
    * @private
    */
 
-  var LEFT_MAP = {
-    0: 'left',
-    0.5: 'center',
-    1: 'right'
-  };
+  var X_VALUES = ['left', 'center', 'right'];
   /**
    * @readonly
    * @private
    */
 
-  var TOP_MAP = {
-    0: 'top',
-    0.5: 'center',
-    1: 'bottom'
-  };
+  var Y_VALUES = ['top', 'center', 'bottom'];
+  /**
+   * @readonly
+   * @private
+   */
+
+  var POS_VALUES = [].concat(X_VALUES, Y_VALUES);
+  /**
+   * @readonly
+   * @private
+   */
+
+  var CENTER = 'center';
   /**
    * @summary Parse a CSS-like position into an array of position keywords among top, bottom, left, right and center
    * @memberOf PSV.utils
    * @param {string | string[]} value
-   * @param {boolean} [allowCenter=true]
+   * @param {object} [options]
+   * @param {boolean} [options.allowCenter=true] allow "center center"
+   * @param {boolean} [options.cssOrder=true] force CSS order (y axis then x axis)
    * @return {string[]}
    */
 
-  function cleanPosition(value, allowCenter) {
-    if (allowCenter === void 0) {
-      allowCenter = true;
+  function cleanPosition(value, _temp) {
+    var _ref2 = _temp === void 0 ? {
+      allowCenter: true,
+      cssOrder: true
+    } : _temp,
+        allowCenter = _ref2.allowCenter,
+        cssOrder = _ref2.cssOrder;
+
+    if (!value) {
+      return null;
     }
 
     if (typeof value === 'string') {
-      var tempPos = parsePosition(value);
-
-      if (!(tempPos.x in LEFT_MAP) || !(tempPos.y in TOP_MAP)) {
-        throw new PSVError("Unable to parse position \"" + value + "\"");
-      }
-
-      value = [TOP_MAP[tempPos.y], LEFT_MAP[tempPos.x]];
+      value = value.split(' ');
     }
 
-    if (!allowCenter && value[0] === 'center' && value[1] === 'center') {
-      throw new PSVError('Unable to parse position "center center"');
+    if (value.length === 1) {
+      if (value[0] === CENTER) {
+        value = [CENTER, CENTER];
+      } else if (X_VALUES.indexOf(value[0]) !== -1) {
+        value = [CENTER, value[0]];
+      } else if (Y_VALUES.indexOf(value[0]) !== -1) {
+        value = [value[0], CENTER];
+      }
+    }
+
+    if (value.length !== 2 || POS_VALUES.indexOf(value[0]) === -1 || POS_VALUES.indexOf(value[1]) === -1) {
+      logWarn("Unparsable position " + value);
+      return null;
+    }
+
+    if (!allowCenter && value[0] === CENTER && value[1] === CENTER) {
+      logWarn("Invalid position center center");
+      return null;
+    }
+
+    if (cssOrder && !positionIsOrdered(value)) {
+      value = [value[1], value[0]];
+    }
+
+    if (value[1] === CENTER && X_VALUES.indexOf(value[0]) !== -1) {
+      value = [CENTER, value[0]];
+    }
+
+    if (value[0] === CENTER && Y_VALUES.indexOf(value[1]) !== -1) {
+      value = [value[1], CENTER];
     }
 
     return value;
+  }
+  /**
+   * @summary Checks if an array of two positions is ordered (y axis then x axis)
+   * @param {string[]} value
+   * @return {boolean}
+   */
+
+  function positionIsOrdered(value) {
+    return Y_VALUES.indexOf(value[0]) !== -1 && X_VALUES.indexOf(value[1]) !== -1;
   }
   /**
    * @summary Parses an speed
@@ -2813,6 +2855,7 @@
     getXMPValue: getXMPValue,
     parsePosition: parsePosition,
     cleanPosition: cleanPosition,
+    positionIsOrdered: positionIsOrdered,
     parseSpeed: parseSpeed,
     parseAngle: parseAngle,
     createTexture: createTexture,
@@ -3229,13 +3272,14 @@
     }
     /**
      * @summary Displays or hides the component
+     * @param {boolean} [visible] - forced state
      */
     ;
 
-    _proto.toggle = function toggle() {
-      if (this.isVisible()) {
+    _proto.toggle = function toggle(visible) {
+      if (visible === false || visible === undefined && this.isVisible()) {
         this.hide();
-      } else {
+      } else if (visible === true || visible === undefined && !this.isVisible()) {
         this.show();
       }
     }
@@ -3409,11 +3453,7 @@
 
           _this2.prop.supported = supported;
 
-          if (!supported) {
-            _this2.hide();
-          } else {
-            _this2.show();
-          }
+          _this2.toggle(supported);
         });
       } else {
         this.prop.supported = supportedOrObject;
@@ -5013,9 +5053,6 @@
    */
 
   var DEPRECATED_OPTIONS = {
-    zoomButtonIncrement: 'zoomButtonIncrement is deprecated, use zoomSpeed',
-    mousewheelSpeed: 'mousewheelSpeed is deprecated, use zoomSpeed',
-    sphereCorrectionReorder: 'sphereCorrectionReorder is deprecated',
     captureCursor: 'captureCursor is deprecated'
   };
   /**
@@ -5256,13 +5293,7 @@
     ;
 
     _proto.refreshUi = function refreshUi() {
-      var availableWidth = this.container.offsetWidth;
-
-      if (availableWidth >= this.prop.contentWidth) {
-        this.show();
-      } else if (availableWidth < this.prop.contentWidth) {
-        this.hide();
-      }
+      this.toggle(this.container.offsetWidth >= this.prop.contentWidth);
 
       this.__refreshButton();
     }
@@ -7220,8 +7251,6 @@
           this.__move(touch.clientX, touch.clientY);
         }
       } else {
-        evt.preventDefault();
-
         this.__moveZoom(evt);
 
         this.__cancelTwoFingersOverlay();
@@ -7599,6 +7628,7 @@
 
     _proto.__moveZoom = function __moveZoom(evt) {
       if (this.state.step === MOVING) {
+        evt.preventDefault();
         var p1 = {
           x: evt.touches[0].clientX,
           y: evt.touches[0].clientY
@@ -7999,7 +8029,7 @@
      * @summary Performs transition between the current and a new texture
      * @param {PSV.TextureData} textureData
      * @param {PSV.PanoramaOptions} options
-     * @returns {PSV.Animation}
+     * @returns {PSV.utils.Animation}
      * @package
      */
     ;
@@ -8176,20 +8206,6 @@
       _AbstractService.prototype.destroy.call(this);
     }
     /**
-     * @summary Loads the panorama texture(s)
-     * @param {*} panorama
-     * @param {PSV.PanoData | PSV.PanoDataProvider} [newPanoData]
-     * @returns {Promise.<PSV.TextureData>}
-     * @throws {PSV.PSVError} when the image cannot be loaded
-     * @package
-     * @deprecated
-     */
-    ;
-
-    _proto.loadTexture = function loadTexture(panorama, newPanoData) {
-      return this.psv.adapter.loadTexture(panorama, newPanoData);
-    }
-    /**
      * @summary Cancels current HTTP requests
      * @package
      */
@@ -8214,11 +8230,11 @@
 
       return new Promise(function (resolve, reject) {
         var progress = 0;
-        onProgress && onProgress(progress);
+        onProgress == null ? void 0 : onProgress(progress);
 
         _this2.loader.load(url, function (result) {
           progress = 100;
-          onProgress && onProgress(progress);
+          onProgress == null ? void 0 : onProgress(progress);
           resolve(result);
         }, function (e) {
           if (e.lengthComputable) {
@@ -8226,7 +8242,7 @@
 
             if (newProgress > progress) {
               progress = newProgress;
-              onProgress && onProgress(progress);
+              onProgress == null ? void 0 : onProgress(progress);
             }
           }
         }, function (err) {
@@ -8313,7 +8329,7 @@
 
     /**
      * @param {PSV.Viewer} psv
-     * @param {{arrow: number, offset: number}} size
+     * @param {{arrow: number, border: number}} size
      */
     function Tooltip(psv, size) {
       var _this;
@@ -8322,7 +8338,7 @@
       /**
        * @override
        * @property {number} arrow
-       * @property {number} offset
+       * @property {number} border
        * @property {number} width
        * @property {number} height
        * @property {string} pos
@@ -8457,12 +8473,22 @@
         throw new PSVError('Uninitialized tooltip cannot be moved');
       }
 
+      if (!config.box) {
+        config.box = {
+          width: 0,
+          height: 0
+        };
+      }
+
       this.config = config;
       var t = this.container;
       var a = this.arrow; // compute size
 
       var style = {
-        posClass: config.position ? cleanPosition(config.position, false) : ['top', 'center'],
+        posClass: cleanPosition(config.position, {
+          allowCenter: false,
+          cssOrder: false
+        }) || ['top', 'center'],
         width: this.prop.width,
         height: this.prop.height,
         top: 0,
@@ -8474,25 +8500,32 @@
       this.__computeTooltipPosition(style, config); // correct position if overflow
 
 
-      var refresh = false;
+      var swapY = null;
+      var swapX = null;
 
-      if (style.top < this.prop.offset) {
-        style.posClass[0] = 'bottom';
-        refresh = true;
-      } else if (style.top + style.height > this.psv.prop.size.height - this.prop.offset) {
-        style.posClass[0] = 'top';
-        refresh = true;
+      if (style.top < 0) {
+        swapY = 'bottom';
+      } else if (style.top + style.height > this.psv.prop.size.height) {
+        swapY = 'top';
       }
 
-      if (style.left < this.prop.offset) {
-        style.posClass[1] = 'right';
-        refresh = true;
-      } else if (style.left + style.width > this.psv.prop.size.width - this.prop.offset) {
-        style.posClass[1] = 'left';
-        refresh = true;
+      if (style.left < 0) {
+        swapX = 'right';
+      } else if (style.left + style.width > this.psv.prop.size.width) {
+        swapX = 'left';
       }
 
-      if (refresh) {
+      if (swapX || swapY) {
+        var ordered = positionIsOrdered(style.posClass);
+
+        if (swapY) {
+          style.posClass[ordered ? 0 : 1] = swapY;
+        }
+
+        if (swapX) {
+          style.posClass[ordered ? 1 : 0] = swapX;
+        }
+
         this.__computeTooltipPosition(style, config);
       } // apply position
 
@@ -8552,61 +8585,98 @@
     ;
 
     _proto.__computeTooltipPosition = function __computeTooltipPosition(style, config) {
-      var topBottom = false;
+      var arrow = this.prop.arrow;
+      var top = config.top;
+      var height = style.height;
+      var left = config.left;
+      var width = style.width;
+      var offsetSide = arrow + this.prop.border;
+      var offsetX = config.box.width / 2 + arrow * 2;
+      var offsetY = config.box.height / 2 + arrow * 2;
 
-      if (!config.box) {
-        config.box = {
-          width: 0,
-          height: 0
-        };
-      }
-
-      switch (style.posClass[0]) {
-        case 'bottom':
-          style.top = config.top + config.box.height + this.prop.offset + this.prop.arrow;
-          style.arrowTop = -this.prop.arrow * 2;
-          topBottom = true;
+      switch (style.posClass.join('-')) {
+        case 'top-left':
+          style.top = top - offsetY - height;
+          style.left = left + offsetSide - width;
+          style.arrowTop = height;
+          style.arrowLeft = width - offsetSide - arrow;
           break;
 
-        case 'center':
-          style.top = config.top + config.box.height / 2 - style.height / 2;
-          style.arrowTop = style.height / 2 - this.prop.arrow;
+        case 'top-center':
+          style.top = top - offsetY - height;
+          style.left = left - width / 2;
+          style.arrowTop = height;
+          style.arrowLeft = width / 2 - arrow;
           break;
 
-        case 'top':
-          style.top = config.top - style.height - this.prop.offset - this.prop.arrow;
-          style.arrowTop = style.height;
-          topBottom = true;
-          break;
-        // no default
-      }
-
-      switch (style.posClass[1]) {
-        case 'right':
-          if (topBottom) {
-            style.left = config.left + config.box.width / 2 - this.prop.offset - this.prop.arrow;
-            style.arrowLeft = this.prop.offset;
-          } else {
-            style.left = config.left + config.box.width + this.prop.offset + this.prop.arrow;
-            style.arrowLeft = -this.prop.arrow * 2;
-          }
-
+        case 'top-right':
+          style.top = top - offsetY - height;
+          style.left = left - offsetSide;
+          style.arrowTop = height;
+          style.arrowLeft = arrow;
           break;
 
-        case 'center':
-          style.left = config.left + config.box.width / 2 - style.width / 2;
-          style.arrowLeft = style.width / 2 - this.prop.arrow;
+        case 'bottom-left':
+          style.top = top + offsetY;
+          style.left = left + offsetSide - width;
+          style.arrowTop = -arrow * 2;
+          style.arrowLeft = width - offsetSide - arrow;
           break;
 
-        case 'left':
-          if (topBottom) {
-            style.left = config.left - style.width + config.box.width / 2 + this.prop.offset + this.prop.arrow;
-            style.arrowLeft = style.width - this.prop.offset - this.prop.arrow * 2;
-          } else {
-            style.left = config.left - style.width - this.prop.offset - this.prop.arrow;
-            style.arrowLeft = style.width;
-          }
+        case 'bottom-center':
+          style.top = top + offsetY;
+          style.left = left - width / 2;
+          style.arrowTop = -arrow * 2;
+          style.arrowLeft = width / 2 - arrow;
+          break;
 
+        case 'bottom-right':
+          style.top = top + offsetY;
+          style.left = left - offsetSide;
+          style.arrowTop = -arrow * 2;
+          style.arrowLeft = arrow;
+          break;
+
+        case 'left-top':
+          style.top = top + offsetSide - height;
+          style.left = left - offsetX - width;
+          style.arrowTop = height - offsetSide - arrow;
+          style.arrowLeft = width;
+          break;
+
+        case 'center-left':
+          style.top = top - height / 2;
+          style.left = left - offsetX - width;
+          style.arrowTop = height / 2 - arrow;
+          style.arrowLeft = width;
+          break;
+
+        case 'left-bottom':
+          style.top = top - offsetSide;
+          style.left = left - offsetX - width;
+          style.arrowTop = arrow;
+          style.arrowLeft = width;
+          break;
+
+        case 'right-top':
+          style.top = top + offsetSide - height;
+          style.left = left + offsetX;
+          style.arrowTop = height - offsetSide - arrow;
+          style.arrowLeft = -arrow * 2;
+          break;
+
+        case 'center-right':
+          style.top = top - height / 2;
+          style.left = left + offsetX;
+          style.arrowTop = height / 2 - arrow;
+          style.arrowLeft = -arrow * 2;
+          break;
+
+        case 'right-bottom':
+          style.top = top - offsetSide;
+          style.left = left + offsetX;
+          style.arrowTop = arrow;
+          style.arrowLeft = -arrow * 2;
           break;
         // no default
       }
@@ -8662,18 +8732,21 @@
       var _this;
 
       _this = _AbstractService.call(this, psv) || this;
-      var testTooltip = new Tooltip(_this.psv);
+      var testTooltip = new Tooltip(_this.psv, {
+        arrow: 0,
+        border: 0
+      });
       /**
        * @summary Computed static sizes
        * @member {Object}
        * @package
-       * @property {number} arrowSize
-       * @property {number} offset
+       * @property {number} arrow
+       * @property {number} border
        */
 
       _this.size = {
         arrow: parseInt(getStyle(testTooltip.arrow, 'borderTopWidth'), 10),
-        offset: parseInt(getStyle(testTooltip.container, 'outlineWidth'), 10)
+        border: parseInt(getStyle(testTooltip.container, 'borderTopLeftRadius'), 10)
       };
       testTooltip.destroy();
       return _this;
@@ -8753,7 +8826,7 @@
        * @property {number} hFov - horizontal FOV
        * @property {number} aspect - viewer aspect ratio
        * @property {boolean} autorotateEnabled - automatic rotation is enabled
-       * @property {PSV.Animation} animationPromise - promise of the current animation
+       * @property {PSV.utils.Animation} animationPromise - promise of the current animation
        * @property {Promise} loadingPromise - promise of the setPanorama method
        * @property {boolean} littlePlanet - special tweaks for LittlePlanetAdapter
        * @property {number} idleTime - time of the last user action
@@ -9555,7 +9628,7 @@
     /**
      * @summary Rotates and zooms the view with a smooth animation
      * @param {PSV.AnimateOptions} options - position and/or zoom level
-     * @returns {PSV.Animation}
+     * @returns {PSV.utils.Animation}
      */
     ;
 
@@ -9565,7 +9638,7 @@
       this.__stopAll();
 
       var positionProvided = isExtendedPosition(options);
-      var zoomProvided = ('zoom' in options);
+      var zoomProvided = options.zoom !== undefined;
       var animProperties = {};
       var duration; // clean/filter position and compute duration
 
@@ -9817,7 +9890,6 @@
   exports.AbstractButton = AbstractButton;
   exports.AbstractComponent = AbstractComponent;
   exports.AbstractPlugin = AbstractPlugin;
-  exports.Animation = Animation;
   exports.CONSTANTS = constants;
   exports.DEFAULTS = DEFAULTS;
   exports.EquirectangularAdapter = EquirectangularAdapter;

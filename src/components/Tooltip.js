@@ -1,6 +1,6 @@
 import { EVENTS } from '../data/constants';
 import { PSVError } from '../PSVError';
-import { addClasses, cleanPosition } from '../utils';
+import { addClasses, cleanPosition, positionIsOrdered } from '../utils';
 import { AbstractComponent } from './AbstractComponent';
 
 const STATE = { NONE: 0, SHOWING: 1, HIDING: 2, READY: 3 };
@@ -35,7 +35,7 @@ export class Tooltip extends AbstractComponent {
 
   /**
    * @param {PSV.Viewer} psv
-   * @param {{arrow: number, offset: number}} size
+   * @param {{arrow: number, border: number}} size
    */
   constructor(psv, size) {
     super(psv, 'psv-tooltip');
@@ -43,7 +43,7 @@ export class Tooltip extends AbstractComponent {
     /**
      * @override
      * @property {number} arrow
-     * @property {number} offset
+     * @property {number} border
      * @property {number} width
      * @property {number} height
      * @property {string} pos
@@ -169,6 +169,13 @@ export class Tooltip extends AbstractComponent {
       throw new PSVError('Uninitialized tooltip cannot be moved');
     }
 
+    if (!config.box) {
+      config.box = {
+        width : 0,
+        height: 0,
+      };
+    }
+
     this.config = config;
 
     const t = this.container;
@@ -176,7 +183,7 @@ export class Tooltip extends AbstractComponent {
 
     // compute size
     const style = {
-      posClass : config.position ? cleanPosition(config.position, false) : ['top', 'center'],
+      posClass : cleanPosition(config.position, { allowCenter: false, cssOrder: false }) || ['top', 'center'],
       width    : this.prop.width,
       height   : this.prop.height,
       top      : 0,
@@ -189,24 +196,28 @@ export class Tooltip extends AbstractComponent {
     this.__computeTooltipPosition(style, config);
 
     // correct position if overflow
-    let refresh = false;
-    if (style.top < this.prop.offset) {
-      style.posClass[0] = 'bottom';
-      refresh = true;
+    let swapY = null;
+    let swapX = null;
+    if (style.top < 0) {
+      swapY = 'bottom';
     }
-    else if (style.top + style.height > this.psv.prop.size.height - this.prop.offset) {
-      style.posClass[0] = 'top';
-      refresh = true;
+    else if (style.top + style.height > this.psv.prop.size.height) {
+      swapY = 'top';
     }
-    if (style.left < this.prop.offset) {
-      style.posClass[1] = 'right';
-      refresh = true;
+    if (style.left < 0) {
+      swapX = 'right';
     }
-    else if (style.left + style.width > this.psv.prop.size.width - this.prop.offset) {
-      style.posClass[1] = 'left';
-      refresh = true;
+    else if (style.left + style.width > this.psv.prop.size.width) {
+      swapX = 'left';
     }
-    if (refresh) {
+    if (swapX || swapY) {
+      const ordered = positionIsOrdered(style.posClass);
+      if (swapY) {
+        style.posClass[ordered ? 0 : 1] = swapY;
+      }
+      if (swapX) {
+        style.posClass[ordered ? 1 : 0] = swapX;
+      }
       this.__computeTooltipPosition(style, config);
     }
 
@@ -268,62 +279,87 @@ export class Tooltip extends AbstractComponent {
    * @private
    */
   __computeTooltipPosition(style, config) {
-    let topBottom = false;
+    const arrow = this.prop.arrow;
+    const top = config.top;
+    const height = style.height;
+    const left = config.left;
+    const width = style.width;
+    const offsetSide = arrow + this.prop.border;
+    const offsetX = config.box.width / 2 + arrow * 2;
+    const offsetY = config.box.height / 2 + arrow * 2;
 
-    if (!config.box) {
-      config.box = {
-        width : 0,
-        height: 0,
-      };
-    }
-
-    switch (style.posClass[0]) {
-      case 'bottom':
-        style.top = config.top + config.box.height + this.prop.offset + this.prop.arrow;
-        style.arrowTop = -this.prop.arrow * 2;
-        topBottom = true;
+    switch (style.posClass.join('-')) {
+      case 'top-left':
+        style.top = top - offsetY - height;
+        style.left = left + offsetSide - width;
+        style.arrowTop = height;
+        style.arrowLeft = width - offsetSide - arrow;
         break;
-
-      case 'center':
-        style.top = config.top + config.box.height / 2 - style.height / 2;
-        style.arrowTop = style.height / 2 - this.prop.arrow;
+      case 'top-center':
+        style.top = top - offsetY - height;
+        style.left = left - width / 2;
+        style.arrowTop = height;
+        style.arrowLeft = width / 2 - arrow;
         break;
-
-      case 'top':
-        style.top = config.top - style.height - this.prop.offset - this.prop.arrow;
-        style.arrowTop = style.height;
-        topBottom = true;
+      case 'top-right':
+        style.top = top - offsetY - height;
+        style.left = left - offsetSide;
+        style.arrowTop = height;
+        style.arrowLeft = arrow;
         break;
-
-      // no default
-    }
-
-    switch (style.posClass[1]) {
-      case 'right':
-        if (topBottom) {
-          style.left = config.left + config.box.width / 2 - this.prop.offset - this.prop.arrow;
-          style.arrowLeft = this.prop.offset;
-        }
-        else {
-          style.left = config.left + config.box.width + this.prop.offset + this.prop.arrow;
-          style.arrowLeft = -this.prop.arrow * 2;
-        }
+      case 'bottom-left':
+        style.top = top + offsetY;
+        style.left = left + offsetSide - width;
+        style.arrowTop = -arrow * 2;
+        style.arrowLeft = width - offsetSide - arrow;
         break;
-
-      case 'center':
-        style.left = config.left + config.box.width / 2 - style.width / 2;
-        style.arrowLeft = style.width / 2 - this.prop.arrow;
+      case 'bottom-center':
+        style.top = top + offsetY;
+        style.left = left - width / 2;
+        style.arrowTop = -arrow * 2;
+        style.arrowLeft = width / 2 - arrow;
         break;
-
-      case 'left':
-        if (topBottom) {
-          style.left = config.left - style.width + config.box.width / 2 + this.prop.offset + this.prop.arrow;
-          style.arrowLeft = style.width - this.prop.offset - this.prop.arrow * 2;
-        }
-        else {
-          style.left = config.left - style.width - this.prop.offset - this.prop.arrow;
-          style.arrowLeft = style.width;
-        }
+      case 'bottom-right':
+        style.top = top + offsetY;
+        style.left = left - offsetSide;
+        style.arrowTop = -arrow * 2;
+        style.arrowLeft = arrow;
+        break;
+      case 'left-top':
+        style.top = top + offsetSide - height;
+        style.left = left - offsetX - width;
+        style.arrowTop = height - offsetSide - arrow;
+        style.arrowLeft = width;
+        break;
+      case 'center-left':
+        style.top = top - height / 2;
+        style.left = left - offsetX - width;
+        style.arrowTop = height / 2 - arrow;
+        style.arrowLeft = width;
+        break;
+      case 'left-bottom':
+        style.top = top - offsetSide;
+        style.left = left - offsetX - width;
+        style.arrowTop = arrow;
+        style.arrowLeft = width;
+        break;
+      case 'right-top':
+        style.top = top + offsetSide - height;
+        style.left = left + offsetX;
+        style.arrowTop = height - offsetSide - arrow;
+        style.arrowLeft = -arrow * 2;
+        break;
+      case 'center-right':
+        style.top = top - height / 2;
+        style.left = left + offsetX;
+        style.arrowTop = height / 2 - arrow;
+        style.arrowLeft = -arrow * 2;
+        break;
+      case 'right-bottom':
+        style.top = top - offsetSide;
+        style.left = left + offsetX;
+        style.arrowTop = arrow;
+        style.arrowLeft = -arrow * 2;
         break;
 
       // no default

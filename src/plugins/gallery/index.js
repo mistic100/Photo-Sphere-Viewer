@@ -152,7 +152,12 @@ export class GalleryPlugin extends AbstractPlugin {
    * @summary Hides or shows the gallery
    */
   toggle() {
-    return this.gallery.toggle();
+    if (this.gallery.isVisible()) {
+      this.hide();
+    }
+    else {
+      this.show();
+    }
   }
 
   /**
@@ -181,7 +186,9 @@ export class GalleryPlugin extends AbstractPlugin {
       id: `${item.id}`,
     }));
 
-    this.gallery.setItems(items);
+    this.gallery.setItems(this.items);
+
+    this.psv.navbar.getButton(GalleryButton.id, false)?.toggle(this.items.length > 0);
   }
 
   /**

@@ -15,18 +15,18 @@ export class TooltipRenderer extends AbstractService {
   constructor(psv) {
     super(psv);
 
-    const testTooltip = new Tooltip(this.psv);
+    const testTooltip = new Tooltip(this.psv, { arrow: 0, border: 0 });
 
     /**
      * @summary Computed static sizes
      * @member {Object}
      * @package
-     * @property {number} arrowSize
-     * @property {number} offset
+     * @property {number} arrow
+     * @property {number} border
      */
     this.size = {
       arrow : parseInt(getStyle(testTooltip.arrow, 'borderTopWidth'), 10),
-      offset: parseInt(getStyle(testTooltip.container, 'outlineWidth'), 10),
+      border: parseInt(getStyle(testTooltip.container, 'borderTopLeftRadius'), 10),
     };
 
     testTooltip.destroy();

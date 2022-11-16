@@ -90,12 +90,13 @@ export class AbstractComponent {
 
   /**
    * @summary Displays or hides the component
+   * @param {boolean} [visible] - forced state
    */
-  toggle() {
-    if (this.isVisible()) {
+  toggle(visible) {
+    if (visible === false || visible === undefined && this.isVisible()) {
       this.hide();
     }
-    else {
+    else if (visible === true || visible === undefined && !this.isVisible()) {
       this.show();
     }
   }

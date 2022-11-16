@@ -31,13 +31,4 @@ export class AbstractDatasource {
     throw new PSVError('loadNode not implemented');
   }
 
-  /**
-   * @summary Loades nodes linked to another node
-   * @param {string} nodeId
-   * @return {Promise<void>}
-   */
-  loadLinkedNodes(nodeId) { // eslint-disable-line no-unused-vars
-    throw new PSVError('loadLinkedNodes not implemented');
-  }
-
 }

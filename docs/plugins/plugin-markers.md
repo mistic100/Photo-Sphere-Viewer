@@ -85,6 +85,7 @@ const viewer = new PhotoSphereViewer.Viewer({
           width: 32,
           height: 32,
           anchor: 'bottom center',
+          zoomLvl: 100,
           tooltip: 'A image marker. <b>Click me!</b>',
           content: document.getElementById('lorem-content').innerHTML
         },
@@ -133,7 +134,7 @@ const viewer = new PhotoSphereViewer.Viewer({
           },
           tooltip: {
             content: 'A dynamic polygon marker',
-            position: 'right bottom'
+            position: 'bottom right'
           }
         },
         {
@@ -215,7 +216,7 @@ markersPlugin.on('select-marker', (e, marker, data) => {
     sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit amet,
     wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac
     dui. <a href="#">Donec non enim</a> in turpis pulvinar facilisis. Ut felis.</p>
-    
+
     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d54469.108394396746!2d6.9617553450295855!3d44.151844842645815!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12cdaf6678af879d%3A0xcabc15aee7b89386!2sParc%20national%20du%20Mercantour!5e0!3m2!1sfr!2sfr!4v1611498421096!5m2!1sfr!2sfr" width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
 
   <h2>Header Level 2</h2>
@@ -417,6 +418,13 @@ And use it in your marker : `fill: 'url(#image)'`.
 Defines where the marker is placed toward its defined position. Any CSS position is valid like `bottom center` or `20% 80%`.
 _(This option is ignored for polygons and polylines)._
 
+#### `zoomLvl` <Badge text="4.8.0"/>
+- type: `number`
+- default: `undefind`
+
+The zoom level which will be applied when calling `gotoMarker()` method or when clicking on the marker in the list.
+If not provided, the current zoom level is kept.
+
 #### `visible`
 - type: `boolean`
 - default: `true`
@@ -427,7 +435,7 @@ Initial visibility of the marker.
 - type: `string | {content: string, position: string, className: string, trigger: string}`
 - default: `{content: null, position: 'top center', className: null, trigger: 'hover'}`
 
-Accepted positions are combinations of `top`, `center`, `bottom` and `left`, `center`, `right` with the exception of `center center`.
+Accepted positions are combinations of `top`, `center`, `bottom` and `left`, `center`, `right`.
 
 Possible triggers are `hover` and `click`.
 
@@ -435,7 +443,7 @@ Possible triggers are `hover` and `click`.
 tooltip: 'This is a marker' // tooltip with default position and style
 
 tooltip: { // tooltip with custom position
-  content : 'This is marker',
+  content: 'This is marker',
   position: 'bottom left',
 }
 
@@ -450,15 +458,15 @@ tooltip: { // tooltip with a custom class shown on click
 If `trigger` is set to `'click'` you won't be able to display a `content` in the side panel.
 :::
 
-#### `listContent`
-- type: `string`
-
-The name that appears in the list of markers. If not provided, the tooltip content will be used.
-
 #### `content`
 - type: `string`
 
 HTML content that will be displayed on the side panel when the marker is clicked.
+
+#### `listContent`
+- type: `string`
+
+The name that appears in the list of markers. If not provided, the tooltip content will be used.
 
 #### `hideList`
 - type: `boolean`
@@ -516,9 +524,9 @@ Removes all markers.
 
 Returns the last marker clicked by the user.
 
-#### `gotoMarker(id, speed): Animation`
+#### `gotoMarker(id[, speed]): Animation`
 
-Moves the view to center a specific marker, with optional [animation](../guide/methods.md#animate-options-animation).
+Moves the view to face a specific marker.
 
 ```js
 markersPlugin.gotoMarker('marker-1', 1500)

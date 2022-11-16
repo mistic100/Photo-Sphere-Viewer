@@ -430,7 +430,6 @@ export class EventsHandler extends AbstractService {
       }
     }
     else {
-      evt.preventDefault();
       this.__moveZoom(evt);
       this.__cancelTwoFingersOverlay();
     }
@@ -757,6 +756,8 @@ export class EventsHandler extends AbstractService {
    */
   __moveZoom(evt) {
     if (this.state.step === MOVING) {
+      evt.preventDefault();
+
       const p1 = { x: evt.touches[0].clientX, y: evt.touches[0].clientY };
       const p2 = { x: evt.touches[1].clientX, y: evt.touches[1].clientY };
 

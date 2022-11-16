@@ -150,11 +150,11 @@
         arrowPosition: 'bottom',
 
         // client mode
-        dataMode: PhotoSphereViewer.VirtualTourPlugin.MODE_CLIENT,
+        // dataMode: PhotoSphereViewer.VirtualTourPlugin.MODE_CLIENT,
         nodes   : nodes,
 
         // server mode (mock)
-        // dataMode: PhotoSphereViewer.VirtualTourPlugin.MODE_SERVER,
+        dataMode: PhotoSphereViewer.VirtualTourPlugin.MODE_SERVER,
         getNode: (nodeId) => {
           console.log('GET node ' + nodeId);
           return Promise.resolve({

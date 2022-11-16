@@ -69,13 +69,7 @@ export class NavbarCaption extends AbstractComponent {
    * @private
    */
   refreshUi() {
-    const availableWidth = this.container.offsetWidth;
-    if (availableWidth >= this.prop.contentWidth) {
-      this.show();
-    }
-    else if (availableWidth < this.prop.contentWidth) {
-      this.hide();
-    }
+    this.toggle(this.container.offsetWidth >= this.prop.contentWidth);
     this.__refreshButton();
   }
 

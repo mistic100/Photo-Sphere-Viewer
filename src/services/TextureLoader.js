@@ -38,19 +38,6 @@ export class TextureLoader extends AbstractService {
   }
 
   /**
-   * @summary Loads the panorama texture(s)
-   * @param {*} panorama
-   * @param {PSV.PanoData | PSV.PanoDataProvider} [newPanoData]
-   * @returns {Promise.<PSV.TextureData>}
-   * @throws {PSV.PSVError} when the image cannot be loaded
-   * @package
-   * @deprecated
-   */
-  loadTexture(panorama, newPanoData) {
-    return this.psv.adapter.loadTexture(panorama, newPanoData);
-  }
-
-  /**
    * @summary Cancels current HTTP requests
    * @package
    */
@@ -71,13 +58,13 @@ export class TextureLoader extends AbstractService {
 
     return new Promise((resolve, reject) => {
       let progress = 0;
-      onProgress && onProgress(progress);
+      onProgress?.(progress);
 
       this.loader.load(
         url,
         (result) => {
           progress = 100;
-          onProgress && onProgress(progress);
+          onProgress?.(progress);
           resolve(result);
         },
         (e) => {
@@ -85,7 +72,7 @@ export class TextureLoader extends AbstractService {
             const newProgress = e.loaded / e.total * 100;
             if (newProgress > progress) {
               progress = newProgress;
-              onProgress && onProgress(progress);
+              onProgress?.(progress);
             }
           }
         },

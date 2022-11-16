@@ -20,7 +20,7 @@ export abstract class AbstractComponent {
   /**
    * @summary Displays or hides the component
    */
-  toggle();
+  toggle(visible?: boolean);
 
   /**
    * @summary Check if the component is visible

@@ -101,10 +101,7 @@ export const READONLY_OPTIONS = {
  * @private
  */
 export const DEPRECATED_OPTIONS = {
-  zoomButtonIncrement    : 'zoomButtonIncrement is deprecated, use zoomSpeed',
-  mousewheelSpeed        : 'mousewheelSpeed is deprecated, use zoomSpeed',
-  sphereCorrectionReorder: 'sphereCorrectionReorder is deprecated',
-  captureCursor          : 'captureCursor is deprecated',
+  captureCursor: 'captureCursor is deprecated',
 };
 
 /**

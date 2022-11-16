@@ -28,6 +28,7 @@ const viewer = new PhotoSphereViewer.Viewer({
         tooltip  : {
           content  : document.querySelector('#tooltip-content').innerText,
           className: 'custom-tooltip',
+          position : 'top',
           trigger  : 'click',
         },
         latitude : 0.11,

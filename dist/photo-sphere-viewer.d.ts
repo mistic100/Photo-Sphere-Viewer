@@ -431,11 +431,8 @@ declare function parsePosition(value: string | Point): Point;
 
 /**
  * @summary Parse a CSS-like position into an array of position keywords among top, bottom, left, right and center
- * @param {string | string[]} value
- * @param {string} defaultValue
- * @param {boolean} [allowCenter=true]
  */
-declare function cleanPosition(value: string | string[], defaultValue: string, allowCenter?): string[];
+declare function cleanPosition(value: string | string[], options?: { allowCenter: boolean, cssOrder: boolean }): string[];
 
 /**
  * @summary Parses an speed
@@ -590,7 +587,7 @@ declare abstract class AbstractComponent {
   /**
    * @summary Displays or hides the component
    */
-  toggle();
+  toggle(visible?: boolean);
 
   /**
    * @summary Check if the component is visible
@@ -1441,4 +1438,4 @@ declare class PSVError extends Error {
   name: 'PSVError';
 }
 
-export { AbstractAdapter, AbstractButton, AbstractComponent, AbstractPlugin, AdapterConstructor, AnimateOptions, Animation, AnimationOptions, constants_d as CONSTANTS, ClickData, CssSize, DEFAULTS, DataHelper, EquirectangularAdapter, EquirectangularAdapterOptions, ExtendedPosition, Loader, Navbar, NavbarCustomButton, Notification, NotificationOptions, Overlay, OverlayOptions, PSVError, Panel, PanelOptions, PanoData, PanoDataProvider, PanoramaOptions, PluginConstructor, Point, Position, SYSTEM, Size, SphereCorrection, TextureData, TextureLoader, Tooltip, TooltipOptions, TooltipPosition, TooltipRenderer, Viewer, ViewerOptions, ViewerProps, registerButton, index_d as utils };
+export { AbstractAdapter, AbstractButton, AbstractComponent, AbstractPlugin, AdapterConstructor, AnimateOptions, constants_d as CONSTANTS, ClickData, CssSize, DEFAULTS, DataHelper, EquirectangularAdapter, EquirectangularAdapterOptions, ExtendedPosition, Loader, Navbar, NavbarCustomButton, Notification, NotificationOptions, Overlay, OverlayOptions, PSVError, Panel, PanelOptions, PanoData, PanoDataProvider, PanoramaOptions, PluginConstructor, Point, Position, SYSTEM, Size, SphereCorrection, TextureData, TextureLoader, Tooltip, TooltipOptions, TooltipPosition, TooltipRenderer, Viewer, ViewerOptions, ViewerProps, registerButton, index_d as utils };
