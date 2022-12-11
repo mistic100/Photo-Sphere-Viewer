@@ -426,11 +426,11 @@
           });
 
           // add markers all hover the sphere
-          for (let i = 0; i < Math.PI * 2; i += Math.PI / 4) {
-            for (let j = -Math.PI / 2 + Math.PI / 4; j < Math.PI / 2; j += Math.PI / 4) {
+          for (let i = 0, k = 1; i < Math.PI * 2; i += Math.PI / 4) {
+            for (let j = -Math.PI / 2 + Math.PI / 4; j < Math.PI / 2; j += Math.PI / 4, k++) {
               a.push({
-                id       : '#' + a.length,
-                tooltip  : '#' + a.length,
+                id       : '#' + k,
+                tooltip  : '#' + k,
                 latitude : j,
                 longitude: i,
                 image    : 'assets/pin-red.png',

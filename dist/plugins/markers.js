@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.8.0
+* Photo Sphere Viewer 4.8.1
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -1266,6 +1266,7 @@
   /**
    * @typedef {Object} PSV.plugins.MarkersPlugin.Options
    * @property {boolean} [clickEventOnMarker=false] If a `click` event is triggered on the viewer additionally to the `select-marker` event.
+   * @property {string | number} [gotoMarkerSpeed=8rpm] Default animation speed for `gotoMarker` method
    * @property {PSV.plugins.MarkersPlugin.Properties[]} [markers]
    */
 
@@ -1323,7 +1324,8 @@
        */
 
       _this.config = _extends({
-        clickEventOnMarker: false
+        clickEventOnMarker: false,
+        gotoMarkerSpeed: '8rpm'
       }, options);
       /**
        * @member {HTMLElement}
@@ -1781,6 +1783,10 @@
     _proto.gotoMarker = function gotoMarker(markerId, speed) {
       var _this6 = this;
 
+      if (speed === void 0) {
+        speed = this.config.gotoMarkerSpeed;
+      }
+
       var marker = this.getMarker(markerId);
       return this.psv.animate(_extends({}, marker.props.position, {
         zoom: marker.config.zoomLvl,
@@ -1911,7 +1917,7 @@
 
             _this7.trigger(EVENTS.SELECT_MARKER_LIST, marker);
 
-            _this7.gotoMarker(marker, 1000);
+            _this7.gotoMarker(marker);
 
             _this7.hideMarkersList();
           }

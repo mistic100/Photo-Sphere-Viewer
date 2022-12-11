@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.8.0
+* Photo Sphere Viewer 4.8.1
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -292,6 +292,14 @@
    * @constant
    */
   var DEFAULT_TRANSITION = 1500;
+  /**
+   * @summary Minimum duration of the animations created with {@link Viewer#animate}
+   * @memberOf PSV.constants
+   * @type {number}
+   * @constant
+   */
+
+  var ANIMATION_MIN_DURATION = 500;
   /**
    * @summary Number of pixels bellow which a mouse move will be considered as a click
    * @memberOf PSV.constants
@@ -739,6 +747,7 @@
   var constants = /*#__PURE__*/Object.freeze({
     __proto__: null,
     DEFAULT_TRANSITION: DEFAULT_TRANSITION,
+    ANIMATION_MIN_DURATION: ANIMATION_MIN_DURATION,
     MOVE_THRESHOLD: MOVE_THRESHOLD,
     DBLCLICK_DELAY: DBLCLICK_DELAY,
     LONGTOUCH_DELAY: LONGTOUCH_DELAY,
@@ -9687,7 +9696,7 @@
 
       this.prop.animationPromise = new Animation({
         properties: animProperties,
-        duration: duration,
+        duration: Math.max(ANIMATION_MIN_DURATION, duration),
         easing: 'inOutSine',
         onTick: function onTick(properties) {
           if (positionProvided) {

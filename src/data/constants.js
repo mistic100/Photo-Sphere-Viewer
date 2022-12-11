@@ -11,6 +11,14 @@
 export const DEFAULT_TRANSITION = 1500;
 
 /**
+ * @summary Minimum duration of the animations created with {@link Viewer#animate}
+ * @memberOf PSV.constants
+ * @type {number}
+ * @constant
+ */
+export const ANIMATION_MIN_DURATION = 500;
+
+/**
  * @summary Number of pixels bellow which a mouse move will be considered as a click
  * @memberOf PSV.constants
  * @type {number}

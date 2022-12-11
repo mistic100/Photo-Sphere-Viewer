@@ -61,6 +61,7 @@ export type SelectMarkerData = {
 
 export type MarkersPluginOptions = {
   clickEventOnMarker?: boolean;
+  gotoMarkerSpeed?: string | number;
   markers?: MarkerProperties[];
 };
 

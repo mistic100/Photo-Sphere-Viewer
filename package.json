@@ -1,6 +1,6 @@
 {
   "name": "photo-sphere-viewer",
-  "version": "4.8.0",
+  "version": "4.8.1",
   "description": "A JavaScript library to display Photo Sphere panoramas",
   "homepage": "https://photo-sphere-viewer.js.org",
   "main": "dist/photo-sphere-viewer.js",
@@ -33,7 +33,7 @@
     "url": "git://github.com/mistic100/Photo-Sphere-Viewer.git"
   },
   "dependencies": {
-    "three": "^0.146.0",
+    "three": "^0.147.0",
     "uevent": "^2.1.1"
   },
   "devDependencies": {
@@ -52,7 +52,6 @@
     "@vuepress/plugin-back-to-top": "^1.8.2",
     "@vuepress/plugin-google-analytics": "^1.8.2",
     "autoprefixer": "^10.3.3",
-    "axios": "^1.0.0",
     "cpx2": "^4.1.2",
     "date-fns": "^2.23.0",
     "eslint": "^8.2.0",

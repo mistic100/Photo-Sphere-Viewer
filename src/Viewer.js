@@ -6,7 +6,15 @@ import { Notification } from './components/Notification';
 import { Overlay } from './components/Overlay';
 import { Panel } from './components/Panel';
 import { CONFIG_PARSERS, DEFAULTS, DEPRECATED_OPTIONS, getConfig, READONLY_OPTIONS } from './data/config';
-import { CHANGE_EVENTS, DEFAULT_TRANSITION, EVENTS, IDS, SPHERE_RADIUS, VIEWER_DATA } from './data/constants';
+import {
+  ANIMATION_MIN_DURATION,
+  CHANGE_EVENTS,
+  DEFAULT_TRANSITION,
+  EVENTS,
+  IDS,
+  SPHERE_RADIUS,
+  VIEWER_DATA
+} from './data/constants';
 import { SYSTEM } from './data/system';
 import errorIcon from './icons/error.svg';
 import { AbstractPlugin } from './plugins/AbstractPlugin';
@@ -877,7 +885,7 @@ export class Viewer extends EventEmitter {
 
     this.prop.animationPromise = new Animation({
       properties: animProperties,
-      duration  : duration,
+      duration  : Math.max(ANIMATION_MIN_DURATION, duration),
       easing    : 'inOutSine',
       onTick    : (properties) => {
         if (positionProvided) {

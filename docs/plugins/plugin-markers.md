@@ -494,6 +494,12 @@ lang: {
 
 _Note: this option is not part of the plugin but is merged with the main [`lang`](../guide/config.md#lang) object._
 
+#### `gotoMarkerSpeed` <Badge text="4.8.1"/>
+- type: `string|number`
+- default `'8rpm'`
+
+Default animation speed for `gotoMarker` method.
+
 #### `clickEventOnMarker`
 - type: `boolean`
 - default: `false`
@@ -529,7 +535,7 @@ Returns the last marker clicked by the user.
 Moves the view to face a specific marker.
 
 ```js
-markersPlugin.gotoMarker('marker-1', 1500)
+markersPlugin.gotoMarker('marker-1', '4rpm')
   .then(() => /* animation complete */);
 ```
 

@@ -1,5 +1,5 @@
 /*!
-* Photo Sphere Viewer 4.8.0
+* Photo Sphere Viewer 4.8.1
 * @copyright 2014-2015 Jérémy Heleine
 * @copyright 2015-2022 Damien "Mistic" Sorel
 * @licence MIT (https://opensource.org/licenses/MIT)
@@ -235,7 +235,7 @@
       var video = document.createElement('video');
       video.crossOrigin = this.psv.config.withCredentials ? 'use-credentials' : 'anonymous';
       video.loop = true;
-      video.playsinline = true;
+      video.playsInline = true;
       video.style.display = 'none';
       video.muted = this.config.muted;
       video.src = src;

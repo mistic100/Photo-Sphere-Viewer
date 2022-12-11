@@ -18,6 +18,7 @@ import './style.scss';
 /**
  * @typedef {Object} PSV.plugins.MarkersPlugin.Options
  * @property {boolean} [clickEventOnMarker=false] If a `click` event is triggered on the viewer additionally to the `select-marker` event.
+ * @property {string | number} [gotoMarkerSpeed=8rpm] Default animation speed for `gotoMarker` method
  * @property {PSV.plugins.MarkersPlugin.Properties[]} [markers]
  */
 
@@ -82,6 +83,7 @@ export class MarkersPlugin extends AbstractPlugin {
      */
     this.config = {
       clickEventOnMarker: false,
+      gotoMarkerSpeed: '8rpm',
       ...options,
     };
 
@@ -438,7 +440,7 @@ export class MarkersPlugin extends AbstractPlugin {
    * @fires PSV.plugins.MarkersPlugin.goto-marker-done
    * @return {PSV.utils.Animation}  A promise that will be resolved when the animation finishes
    */
-  gotoMarker(markerId, speed) {
+  gotoMarker(markerId, speed = this.config.gotoMarkerSpeed) {
     const marker = this.getMarker(markerId);
 
     return this.psv.animate({
@@ -560,7 +562,7 @@ export class MarkersPlugin extends AbstractPlugin {
 
           this.trigger(EVENTS.SELECT_MARKER_LIST, marker);
 
-          this.gotoMarker(marker, 1000);
+          this.gotoMarker(marker);
           this.hideMarkersList();
         }
       },
