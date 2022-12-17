@@ -37,7 +37,7 @@
     "eslint": "^8.29.0",
     "lodash": "^4.17.21",
     "marked": "^4.2.3",
-    "mocha": "^10.1.0",
+    "mocha": "^10.2.0",
     "postcss": "^8.4.19",
     "prettier": "^2.8.0",
     "raw-loader": "^4.0.2",
