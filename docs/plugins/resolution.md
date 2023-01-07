@@ -134,7 +134,7 @@ _Note: this option is not part of the plugin but is merged with the main [`lang`
 Triggered when the resolution is changed.
 
 ```js
-resolutionPlugin.addEventListener('resolution-changed', ({ id }) => {
-    console.log(`Current resolution: ${id}`);
+resolutionPlugin.addEventListener('resolution-changed', ({ resolutionId }) => {
+    console.log(`Current resolution: ${resolutionId}`);
 });
 ```
