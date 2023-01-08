@@ -74,6 +74,8 @@ export class EventsHandler extends AbstractService {
         longtouchTimeout: null as ReturnType<typeof setTimeout>,
         twofingersTimeout: null as ReturnType<typeof setTimeout>,
         ctrlZoomTimeout: null as ReturnType<typeof setTimeout>,
+        wheelTimeout: null as ReturnType<typeof setTimeout>,
+        lastWheelTime: 0,
     };
 
     private readonly keyHandler = new PressHandler();
@@ -372,6 +374,22 @@ export class EventsHandler extends AbstractService {
         const delta = (evt.deltaY / Math.abs(evt.deltaY)) * 5 * this.config.zoomSpeed;
         if (delta !== 0) {
             this.viewer.dynamics.zoom.step(-delta, 5);
+
+            if (evt.timeStamp - this.data.lastWheelTime > 200) {
+                const boundingRect = this.viewer.container.getBoundingClientRect();
+
+                const viewerX = evt.clientX - boundingRect.left;
+                const viewerY = evt.clientY - boundingRect.top;
+
+                const position = this.viewer.dataHelper.viewerCoordsToSphericalCoords({ x: viewerX, y: viewerY });
+
+                this.viewer.dynamics.position.goto(position);
+            }
+
+            this.data.lastWheelTime = evt.timeStamp;
+
+            clearTimeout(this.data.wheelTimeout);
+            this.data.wheelTimeout = setTimeout(() => this.viewer.dynamics.position.stop(), 200);
         }
     }
 
