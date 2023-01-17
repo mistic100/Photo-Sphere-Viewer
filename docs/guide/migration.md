@@ -70,11 +70,11 @@ All the automatic rotation features have been moved to [a new plugin](../plugins
 
 For this version, Photo Sphere Viewer dropped uEvent library to rely exclusively on the native events system.
 
-This means you will have to update all your usage of `on()` and `off()` methods. Let's see that with an example.
+This means you will have to update all your usage of `on()`, `off()`, and `once()` methods. Let's see that with some examples.
 
 :::: tabs
 
-::: tab Before
+::: tab On/Off Before
 
 ```js
 viewer.on('position-updated', (e, position) => {
@@ -86,7 +86,7 @@ viewer.off('position-updated');
 
 :::
 
-::: tab After
+::: tab On/Off After
 
 ```js
 const handler = ({ position }) => {
@@ -96,6 +96,26 @@ const handler = ({ position }) => {
 viewer.addEventListener('position-updated', handler);
 
 viewer.removeEventListener('position-updated', handler);
+```
+
+:::
+
+::: tab Once Before
+
+```js
+viewer.once('ready', () => {
+    console.log('viewer is ready!');
+});
+```
+
+:::
+
+::: tab Once After
+
+```js
+viewer.addEventListener('ready', () => {
+  console.log('viewer is ready');
+}, { once: true });
 ```
 
 :::
