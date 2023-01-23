@@ -44,7 +44,7 @@
     "sass": "^1.57.0",
     "scss-bundle": "^3.1.2",
     "set-versions": "^1.0.3",
-    "sort-package-json": "^2.1.0",
+    "sort-package-json": "^2.2.0",
     "stylelint": "^14.16.0",
     "stylelint-config-standard-scss": "^6.1.0",
     "ts-node": "^10.9.1",
