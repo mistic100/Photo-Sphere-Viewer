@@ -25,7 +25,7 @@
     "@types/mocha": "^10.0.1",
     "@types/three": "^0.148.0",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
-    "@typescript-eslint/parser": "^5.48.0",
+    "@typescript-eslint/parser": "^5.49.0",
     "@vuepress/plugin-active-header-links": "^1.9.7",
     "@vuepress/plugin-back-to-top": "^1.9.7",
     "@vuepress/plugin-google-analytics": "^1.9.7",
