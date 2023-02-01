@@ -41,7 +41,7 @@
     "postcss": "^8.4.19",
     "prettier": "^2.8.0",
     "raw-loader": "^4.0.2",
-    "sass": "^1.57.0",
+    "sass": "^1.58.0",
     "scss-bundle": "^3.1.2",
     "set-versions": "^1.0.3",
     "sort-package-json": "^2.4.0",
