@@ -1,6 +1,6 @@
 import type { TextureData, Viewer } from '@photo-sphere-viewer/core';
 import { CONSTANTS, utils } from '@photo-sphere-viewer/core';
-import { BoxGeometry, Mesh, ShaderMaterial, Vector2, VideoTexture } from 'three';
+import { BoxGeometry, BufferAttribute, Mesh, ShaderMaterial, Vector2, VideoTexture } from 'three';
 import { AbstractVideoAdapter } from '../../shared/AbstractVideoAdapter';
 import { CubemapVideoAdapterConfig, CubemapVideoPanorama } from './model';
 
@@ -33,7 +33,7 @@ export class CubemapVideoAdapter extends AbstractVideoAdapter<CubemapVideoPanora
 
         geometry.clearGroups();
 
-        const uvs = geometry.getAttribute('uv');
+        const uvs = geometry.getAttribute('uv') as BufferAttribute;
 
         /*
           Structure of a frame

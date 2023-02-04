@@ -1,6 +1,7 @@
 import type { TextureData, Viewer } from '@photo-sphere-viewer/core';
 import { AbstractAdapter, CONSTANTS, EquirectangularAdapter, events, PSVError, utils } from '@photo-sphere-viewer/core';
 import {
+    BufferAttribute,
     Frustum,
     ImageLoader,
     MathUtils,
@@ -245,7 +246,7 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<Equirectangular
             geometry.addGroup(i, NB_VERTICES_BY_SMALL_FACE, k++);
         }
 
-        geometry.setAttribute(ATTR_ORIGINAL_UV, geometry.getAttribute(ATTR_UV).clone());
+        geometry.setAttribute(ATTR_ORIGINAL_UV, (geometry.getAttribute(ATTR_UV) as BufferAttribute).clone());
 
         return new Mesh(geometry, []);
     }
@@ -266,7 +267,7 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<Equirectangular
 
         this.state.materials = mesh.material;
         this.state.geom = mesh.geometry;
-        this.state.geom.setAttribute(ATTR_UV, this.state.geom.getAttribute(ATTR_ORIGINAL_UV).clone());
+        this.state.geom.setAttribute(ATTR_UV, (this.state.geom.getAttribute(ATTR_ORIGINAL_UV) as BufferAttribute).clone());
 
         this.state.colSize = panorama.width / panorama.cols;
         this.state.rowSize = panorama.width / 2 / panorama.rows;
@@ -323,7 +324,7 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<Equirectangular
         frustum.setFromProjectionMatrix(projScreenMatrix);
 
         const panorama: EquirectangularTilesPanorama = this.viewer.config.panorama;
-        const verticesPosition = this.state.geom.getAttribute(ATTR_POSITION);
+        const verticesPosition = this.state.geom.getAttribute(ATTR_POSITION) as BufferAttribute;
         const tilesToLoad = [];
 
         for (let col = 0; col < panorama.cols; col++) {
@@ -542,7 +543,7 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<Equirectangular
      * Applies a new texture to the faces
      */
     private __swapMaterial(col: number, row: number, material: MeshBasicMaterial) {
-        const uvs = this.state.geom.getAttribute(ATTR_UV);
+        const uvs = this.state.geom.getAttribute(ATTR_UV) as BufferAttribute;
 
         for (let c = 0; c < this.state.facesByCol; c++) {
             for (let r = 0; r < this.state.facesByRow; r++) {

@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@types/mocha": "^10.0.1",
-    "@types/three": "^0.148.0",
+    "@types/three": "^0.149.0",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "@vuepress/plugin-active-header-links": "^1.9.7",
