@@ -48,7 +48,7 @@
     "stylelint": "^14.16.0",
     "stylelint-config-standard-scss": "^6.1.0",
     "ts-node": "^10.9.1",
-    "tsup": "^6.5.0",
+    "tsup": "^6.6.2",
     "turbo": "^1.7.0",
     "typedoc": "^0.23.21",
     "typedoc-plugin-extras": "^2.3.1",

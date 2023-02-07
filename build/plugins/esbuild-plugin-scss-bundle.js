@@ -24,7 +24,8 @@ export function scssBundlePlugin() {
 
                 return mkdir(path.resolve(outdir), { recursive: true })
                     .then(() => new Bundler(undefined, process.cwd()).bundle(scssFile))
-                    .then(({ bundledContent }) => writeFile(path.resolve(outpath), banner + '\n\n' + bundledContent));
+                    .then(({ bundledContent }) => writeFile(path.resolve(outpath), banner + '\n\n' + bundledContent))
+                    .then(() => undefined);
             });
         },
     };
