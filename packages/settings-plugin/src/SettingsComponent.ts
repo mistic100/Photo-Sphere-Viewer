@@ -13,6 +13,8 @@ export class SettingsComponent extends AbstractComponent {
         this.container.addEventListener('click', this);
         this.container.addEventListener('transitionend', this);
         this.container.addEventListener('keydown', this);
+        this.container.addEventListener('mouseup', (e: MouseEvent) => e.stopPropagation());
+        this.container.addEventListener('mousemove', (e: MouseEvent) => e.stopPropagation());
 
         this.hide();
     }
