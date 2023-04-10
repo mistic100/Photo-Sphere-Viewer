@@ -13,6 +13,10 @@ export class SettingsComponent extends AbstractComponent {
         this.container.addEventListener('click', this);
         this.container.addEventListener('transitionend', this);
         this.container.addEventListener('keydown', this);
+        this.container.addEventListener('mouseup', this);
+        this.container.addEventListener('mousemove', this);
+        this.container.addEventListener('touchend', this);
+        this.container.addEventListener('touchmove', this);
 
         this.hide();
     }
@@ -42,6 +46,12 @@ export class SettingsComponent extends AbstractComponent {
                             break;
                     }
                 }
+                break;
+            case 'mouseup':
+            case 'mousemove':
+            case 'touchend':
+            case 'touchmove':
+                e.stopPropagation();
                 break;
         }
     }
