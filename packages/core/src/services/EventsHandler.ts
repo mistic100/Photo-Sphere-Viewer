@@ -608,6 +608,7 @@ export class EventsHandler extends AbstractService {
             this.__isStep(Step.CLICK)
             && (Math.abs(clientX - this.data.startMouseX) >= this.moveThreshold
                 || Math.abs(clientY - this.data.startMouseY) >= this.moveThreshold)
+            && !this.viewer.overlay.isVisible()
         ) {
             this.viewer.stopAll();
             this.__resetMove();
