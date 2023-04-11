@@ -243,7 +243,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
             this.viewer.needsUpdate();
         } else if (e instanceof events.PositionUpdatedEvent || e instanceof events.ZoomUpdatedEvent) {
             this.__positionArrows();
-        } else if (e instanceof events.ClickEvent) {
+        } else if (e instanceof events.ClickEvent && !this.viewer.overlay.isVisible()) {
             const link = e.data.objects.find((o) => o.userData[LINK_DATA])?.userData[LINK_DATA];
             if (link) {
                 this.setCurrentNode(link.nodeId, link);
@@ -253,7 +253,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
             if (link) {
                 this.setCurrentNode(link.nodeId, link);
             }
-        } else if (e instanceof events.ObjectEnterEvent) {
+        } else if (e instanceof events.ObjectEnterEvent && !this.viewer.overlay.isVisible()) {
             if (e.userDataKey === LINK_DATA) {
                 this.__onEnterObject(e.object, e.viewerPoint);
             }
