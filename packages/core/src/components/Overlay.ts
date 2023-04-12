@@ -1,7 +1,7 @@
 import { KEY_CODES } from '../data/constants';
 import { PSVError } from '../PSVError';
 import type { Viewer } from '../Viewer';
-import { ClickEvent, HideOverlayEvent, KeypressEvent, ShowOverlayEvent } from '../events';
+import { HideOverlayEvent, KeypressEvent, ShowOverlayEvent } from '../events';
 import { AbstractComponent } from './AbstractComponent';
 
 /**
