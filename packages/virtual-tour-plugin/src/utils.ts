@@ -1,11 +1,11 @@
 import { Position, utils } from '@photo-sphere-viewer/core';
-import { Mesh, BufferGeometry, MeshBasicMaterial, MathUtils } from 'three';
+import { Mesh, BufferGeometry, MeshBasicMaterial, MathUtils, HexColorString } from 'three';
 import { GpsPosition } from './model';
 
 /**
  * Changes the color of a mesh
  */
-export function setMeshColor(mesh: Mesh<BufferGeometry, MeshBasicMaterial>, color: string) {
+export function setMeshColor(mesh: Mesh<BufferGeometry, MeshBasicMaterial>, color: HexColorString) {
     mesh.material.color.set(color);
 }
 

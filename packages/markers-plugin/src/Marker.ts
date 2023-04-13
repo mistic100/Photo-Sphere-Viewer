@@ -344,7 +344,7 @@ export class Marker {
                 element.classList.add('psv-marker--has-tooltip');
             }
             if (this.config.content) {
-                element.classList.add('psv-marler--has-content');
+                element.classList.add('psv-marker--has-content');
             }
 
             // apply style

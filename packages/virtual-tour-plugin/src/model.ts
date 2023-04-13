@@ -8,6 +8,7 @@ import type {
 } from '@photo-sphere-viewer/core';
 import type { MarkerConfig } from '@photo-sphere-viewer/markers-plugin';
 import type { MapHotspot } from '@photo-sphere-viewer/map-plugin';
+import { HexColorString } from 'three';
 
 /**
  * Definition of GPS coordinates (longitude, latitude, optional altitude)
@@ -21,15 +22,15 @@ export type VirtualTourArrowStyle = {
     /**
      * @default '#aaaaaa'
      */
-    color?: string;
+    color?: HexColorString;
     /**
      * @default '#aa5500'
      */
-    hoverColor?: string;
+    hoverColor?: HexColorString;
     /**
      * @default '#000000'
      */
-    outlineColor?: string;
+    outlineColor?: HexColorString;
     /**
      * @default [0.5,2]
      */
@@ -72,6 +73,14 @@ export type VirtualTourLink = Partial<ExtendedPosition> & {
      */
     position?: ExtendedPosition;
     /**
+     * override the position the camera rotates to when the link is clicked
+     */
+    rotateBeforeLoad?: ExtendedPosition;
+    /**
+     * set a position the camera rotates after the new node is loaded
+     */
+    rotateAfterLoad?: ExtendedPosition;
+    /**
      * override the GPS position of the node (GPS mode)
      */
     gps?: [number, number, number?];
@@ -83,6 +92,10 @@ export type VirtualTourLink = Partial<ExtendedPosition> & {
      * override global arrow style
      */
     arrowStyle?: VirtualTourArrowStyle;
+     /**
+     * automatically go to an other node after loading (and optionally rotating) the viewer
+     */
+     nextNodeId?: string;
 };
 
 /**
