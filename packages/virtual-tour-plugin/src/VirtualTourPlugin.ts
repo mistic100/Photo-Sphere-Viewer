@@ -150,7 +150,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
         if (this.markers?.config.markers) {
             utils.logWarn(
                 'No default markers can be configured on Markers plugin when using VirtualTour plugin. ' +
-                    'Consider defining `markers` on each tour node.'
+                'Consider defining `markers` on each tour node.'
             );
             delete this.markers.config.markers;
         }
@@ -342,6 +342,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
         const fromNode = this.state.currentNode;
         const fromLinkPosition = fromNode && fromLink ? this.__getLinkPosition(fromNode, fromLink) : null;
+        const rotateToPosition = fromNode && fromLink ? fromLink.rotateToPosition ?? fromLinkPosition : null;
 
         return Promise.all([
             // if this node is already preloading, wait for it
@@ -352,7 +353,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
                 return this.datasource.loadNode(nodeId);
             }),
-            Promise.resolve(fromLinkPosition ? this.config.rotateSpeed : false)
+            Promise.resolve(rotateToPosition ? this.config.rotateSpeed : false)
                 .then((speed) => {
                     if (speed) {
                         return this.viewer.animate({ ...fromLinkPosition, speed });
@@ -430,6 +431,24 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
                 this.state.loadingNode = null;
 
+                return true;
+            })
+            .then(() => {
+                const currentNode = this.state.currentNode;
+                const rotateToPosition = currentNode.rotateToPosition ? utils.isExtendedPosition(currentNode.rotateToPosition) ? currentNode.rotateToPosition : currentNode.rotateToPosition[fromNode?.id] : null;
+
+                Promise.resolve(rotateToPosition ? this.config.rotateSpeed : false)
+                    .then((speed) => {
+                        if (speed) {
+                            return this.viewer.animate({ ...rotateToPosition, speed });
+                        }
+                    })
+                    .then(() => {
+                        const nextNodeId = fromNode && fromLink && currentNode.nextNodeAfterLoad ? currentNode.nextNodeAfterLoad[fromNode.id] : null;
+                        if (nextNodeId) {
+                            this.setCurrentNode(nextNodeId, currentNode.links.find(link => link.nodeId === nextNodeId));
+                        }
+                    });
                 return true;
             })
             .catch((err) => {
