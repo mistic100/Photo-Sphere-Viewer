@@ -342,7 +342,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
         const fromNode = this.state.currentNode;
         const fromLinkPosition = fromNode && fromLink ? this.__getLinkPosition(fromNode, fromLink) : null;
-        const rotateToPosition = fromNode && fromLink ? fromLink.rotateToPosition ?? fromLinkPosition : null;
+        const rotateToPositionBeforeLoad = fromNode && fromLink ? fromLink.rotateToPosition ?? fromLinkPosition : null;
 
         return Promise.all([
             // if this node is already preloading, wait for it
@@ -353,7 +353,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
                 return this.datasource.loadNode(nodeId);
             }),
-            Promise.resolve(rotateToPosition ? this.config.rotateSpeed : false)
+            Promise.resolve(rotateToPositionBeforeLoad ? this.config.rotateSpeed : false)
                 .then((speed) => {
                     if (speed) {
                         return this.viewer.animate({ ...fromLinkPosition, speed });
@@ -435,12 +435,12 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
             })
             .then(() => {
                 const currentNode = this.state.currentNode;
-                const rotateToPosition = currentNode.rotateToPosition ? utils.isExtendedPosition(currentNode.rotateToPosition) ? currentNode.rotateToPosition : currentNode.rotateToPosition[fromNode?.id] : null;
+                const rotateToPositionAfterLoad = currentNode.rotateToPosition ? utils.isExtendedPosition(currentNode.rotateToPosition) ? currentNode.rotateToPosition : currentNode.rotateToPosition[fromNode?.id] : null;
 
-                Promise.resolve(rotateToPosition ? this.config.rotateSpeed : false)
+                Promise.resolve(rotateToPositionAfterLoad ? this.config.rotateSpeed : false)
                     .then((speed) => {
                         if (speed) {
-                            return this.viewer.animate({ ...rotateToPosition, speed });
+                            return this.viewer.animate({ ...rotateToPositionAfterLoad, speed });
                         }
                     })
                     .then(() => {
