@@ -444,7 +444,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
                         }
                     })
                     .then(() => {
-                        const nextNodeId = fromNode && fromLink && currentNode.nextNodeAfterLoad ? currentNode.nextNodeAfterLoad[fromNode.id] : null;
+                        const nextNodeId = fromNode && fromLink ? fromLink.nextNodeId : null;
                         if (nextNodeId) {
                             this.setCurrentNode(nextNodeId, currentNode.links.find(link => link.nodeId === nextNodeId));
                         }

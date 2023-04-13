@@ -87,6 +87,10 @@ export type VirtualTourLink = Partial<ExtendedPosition> & {
      * override global arrow style
      */
     arrowStyle?: VirtualTourArrowStyle;
+     /**
+     * automatically go to an other node after loading (and optionally rotating) the viewer
+     */
+     nextNodeId?: string;
 };
 
 /**
@@ -125,13 +129,9 @@ export type VirtualTourNode = {
     gps?: GpsPosition;
     /**
      * override the position the camera rotates to after the node is loaded 
+     * either a single position or an object: {fromNodeId1: Position, fromNodeId2: Position}
      */
     rotateToPosition?: ExtendedPosition | Record<string, ExtendedPosition>;
-    /**
-     * automatically go to an other node after loading (and optionally rotating) the node
-     * object schema: {fromNode1: toNode3, fromNode3: toNode1}
-     */
-    nextNodeAfterLoad?: Record<string, string>;
     /**
      * thumbnail for the gallery
      */
