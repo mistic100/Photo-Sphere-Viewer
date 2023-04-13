@@ -342,7 +342,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
         const fromNode = this.state.currentNode;
         const fromLinkPosition = fromNode && fromLink ? this.__getLinkPosition(fromNode, fromLink) : null;
-        const rotateBeforeLoad = fromNode && fromLink ? fromLink.rotateBeforeLoad ?? fromLinkPosition : null;
+        const rotateBeforeLoad = fromNode && fromLink && fromLink.rotateBeforeLoad ? fromLink.rotateBeforeLoad : fromLinkPosition;
 
         return Promise.all([
             // if this node is already preloading, wait for it
@@ -356,7 +356,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
             Promise.resolve(rotateBeforeLoad ? this.config.rotateSpeed : false)
                 .then((speed) => {
                     if (speed) {
-                        return this.viewer.animate({ ...fromLinkPosition, speed });
+                        return this.viewer.animate({ ...rotateBeforeLoad, speed });
                     }
                 })
                 .then(() => {
