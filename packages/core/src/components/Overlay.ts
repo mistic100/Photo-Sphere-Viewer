@@ -1,7 +1,7 @@
 import { KEY_CODES } from '../data/constants';
 import { PSVError } from '../PSVError';
 import type { Viewer } from '../Viewer';
-import { HideOverlayEvent, KeypressEvent, ShowOverlayEvent } from '../events';
+import { ClickEvent, HideOverlayEvent, KeypressEvent, ShowOverlayEvent } from '../events';
 import { AbstractComponent } from './AbstractComponent';
 
 /**
@@ -68,9 +68,7 @@ export class Overlay extends AbstractComponent {
         this.text.className = 'psv-overlay-text';
         this.container.appendChild(this.text);
 
-        this.container.addEventListener("mousedown", this);
-        this.container.addEventListener("mousemove", this);
-        this.container.addEventListener("click", this);
+        this.viewer.addEventListener(ClickEvent.type, this);
         this.viewer.addEventListener(KeypressEvent.type, this);
 
         super.hide();
@@ -80,9 +78,7 @@ export class Overlay extends AbstractComponent {
      * @internal
      */
     override destroy() {
-        this.container.removeEventListener("mousedown", this);
-        this.container.removeEventListener("mousemove", this);
-        this.viewer.removeEventListener("click", this);
+        this.viewer.removeEventListener(ClickEvent.type, this);
         this.viewer.removeEventListener(KeypressEvent.type, this);
 
         super.destroy();
@@ -92,28 +88,16 @@ export class Overlay extends AbstractComponent {
      * @internal
      */
     handleEvent(e: Event) {
-        if (e instanceof KeypressEvent) {
+        if (e instanceof ClickEvent) {
+            if (this.isVisible() && this.state.dissmisable) {
+                this.hide();
+                e.stopPropagation();
+            }
+        } else if (e instanceof KeypressEvent) {
             if (this.isVisible() && this.state.dissmisable && e.key === KEY_CODES.Escape) {
                 this.hide();
                 e.preventDefault();
             }
-            return;
-        }
-        
-        switch (e.type) {
-            case 'click':
-                if (this.isVisible()) {
-                    if (this.state.dissmisable) {
-                        this.hide();
-                    }
-                    e.stopPropagation();
-                }
-                break;
-
-            case 'mousedown':
-            case 'mousemove':
-                e.stopPropagation();
-                break;
         }
     }
 
