@@ -342,7 +342,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
         const fromNode = this.state.currentNode;
         const fromLinkPosition = fromNode && fromLink ? this.__getLinkPosition(fromNode, fromLink) : null;
-        const rotateToPositionBeforeLoad = fromNode && fromLink ? fromLink.rotateToPosition ?? fromLinkPosition : null;
+        const rotateBeforeLoad = fromNode && fromLink ? fromLink.rotateBeforeLoad ?? fromLinkPosition : null;
 
         return Promise.all([
             // if this node is already preloading, wait for it
@@ -353,7 +353,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
                 return this.datasource.loadNode(nodeId);
             }),
-            Promise.resolve(rotateToPositionBeforeLoad ? this.config.rotateSpeed : false)
+            Promise.resolve(rotateBeforeLoad ? this.config.rotateSpeed : false)
                 .then((speed) => {
                     if (speed) {
                         return this.viewer.animate({ ...fromLinkPosition, speed });
@@ -435,12 +435,12 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
             })
             .then(() => {
                 const currentNode = this.state.currentNode;
-                const rotateToPositionAfterLoad = currentNode.rotateToPosition ? utils.isExtendedPosition(currentNode.rotateToPosition) ? currentNode.rotateToPosition : currentNode.rotateToPosition[fromNode?.id] : null;
-
-                Promise.resolve(rotateToPositionAfterLoad ? this.config.rotateSpeed : false)
+                const rotateAfterLoad = fromNode && fromLink && fromLink.rotateAfterLoad ? fromLink.rotateAfterLoad : null;
+                
+                Promise.resolve(rotateAfterLoad ? this.config.rotateSpeed : false)
                     .then((speed) => {
                         if (speed) {
-                            return this.viewer.animate({ ...rotateToPositionAfterLoad, speed });
+                            return this.viewer.animate({ ...rotateAfterLoad, speed });
                         }
                     })
                     .then(() => {

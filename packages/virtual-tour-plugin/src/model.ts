@@ -74,7 +74,11 @@ export type VirtualTourLink = Partial<ExtendedPosition> & {
     /**
      * override the position the camera rotates to when the link is clicked
      */
-    rotateToPosition?: ExtendedPosition;
+    rotateBeforeLoad?: ExtendedPosition;
+    /**
+     * set a position the camera rotates after the new node is loaded
+     */
+    rotateAfterLoad?: ExtendedPosition;
     /**
      * override the GPS position of the node (GPS mode)
      */
@@ -127,11 +131,6 @@ export type VirtualTourNode = {
      * GPS position
      */
     gps?: GpsPosition;
-    /**
-     * override the position the camera rotates to after the node is loaded 
-     * either a single position or an object: {fromNodeId1: Position, fromNodeId2: Position}
-     */
-    rotateToPosition?: ExtendedPosition | Record<string, ExtendedPosition>;
     /**
      * thumbnail for the gallery
      */
