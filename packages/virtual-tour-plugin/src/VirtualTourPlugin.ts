@@ -342,7 +342,6 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
         const fromNode = this.state.currentNode;
         const fromLinkPosition = fromNode && fromLink ? this.__getLinkPosition(fromNode, fromLink) : null;
-        const rotateBeforeLoad = fromNode && fromLink && fromLink.rotateBeforeLoad ? fromLink.rotateBeforeLoad : fromLinkPosition;
 
         return Promise.all([
             // if this node is already preloading, wait for it
@@ -353,10 +352,10 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
                 return this.datasource.loadNode(nodeId);
             }),
-            Promise.resolve(rotateBeforeLoad ? this.config.rotateSpeed : false)
+            Promise.resolve(fromLinkPosition ? this.config.rotateSpeed : false)
                 .then((speed) => {
                     if (speed) {
-                        return this.viewer.animate({ ...rotateBeforeLoad, speed });
+                        return this.viewer.animate({ ...fromLinkPosition, speed });
                     }
                 })
                 .then(() => {
@@ -431,24 +430,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
                 this.state.loadingNode = null;
 
-                return true;
-            })
-            .then(() => {
-                const currentNode = this.state.currentNode;
-                const rotateAfterLoad = fromNode && fromLink && fromLink.rotateAfterLoad ? fromLink.rotateAfterLoad : null;
-                
-                Promise.resolve(rotateAfterLoad ? this.config.rotateSpeed : false)
-                    .then((speed) => {
-                        if (speed) {
-                            return this.viewer.animate({ ...rotateAfterLoad, speed });
-                        }
-                    })
-                    .then(() => {
-                        const nextNodeId = fromNode && fromLink ? fromLink.nextNodeId : null;
-                        if (nextNodeId) {
-                            this.setCurrentNode(nextNodeId, currentNode.links.find(link => link.nodeId === nextNodeId));
-                        }
-                    });
+
                 return true;
             })
             .catch((err) => {
@@ -476,6 +458,10 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
         node.links.forEach((link) => {
             const position = this.__getLinkPosition(node, link);
             positions.push(position);
+
+            if (link.linkOffset) {
+                position.yaw += link.linkOffset;
+            }
 
             if (this.is3D) {
                 const mesh = new Mesh(ARROW_GEOM, new MeshLambertMaterial());
