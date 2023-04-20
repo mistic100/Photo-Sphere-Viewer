@@ -33,7 +33,7 @@
     "codesandbox-import-utils": "^2.2.3",
     "date-fns": "^2.29.3",
     "esbuild-plugin-external-global": "^1.0.1",
-    "esbuild-sass-plugin": "^2.8.0",
+    "esbuild-sass-plugin": "^2.9.0",
     "eslint": "^8.38.0",
     "lodash": "^4.17.21",
     "marked": "^4.2.3",
