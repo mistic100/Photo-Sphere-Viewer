@@ -9,7 +9,7 @@ export class DownloadButton extends AbstractButton {
 
     constructor(navbar: Navbar) {
         super(navbar, {
-            className: 'psv-download-butto',
+            className: 'psv-download-button',
             hoverScale: true,
             collapsable: true,
             tabbable: true,
@@ -39,6 +39,7 @@ export class DownloadButton extends AbstractButton {
         } else {
             link.download = this.viewer.config.downloadName || link.href.split('/').pop();
         }
+        link.target = '_blank';
         this.viewer.container.appendChild(link);
         link.click();
 
