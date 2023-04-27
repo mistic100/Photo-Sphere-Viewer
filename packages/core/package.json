@@ -7,7 +7,7 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "dependencies": {
-    "three": "^0.151.3"
+    "three": "^0.152.0"
   },
   "scripts": {
     "build": "tsup",
