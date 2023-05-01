@@ -31,7 +31,7 @@
     "@vuepress/plugin-google-analytics": "^1.9.9",
     "alive-server": "^1.2.9",
     "codesandbox-import-utils": "^2.2.3",
-    "date-fns": "^2.29.3",
+    "date-fns": "^2.30.0",
     "esbuild-plugin-external-global": "^1.0.1",
     "esbuild-sass-plugin": "^2.9.0",
     "eslint": "^8.39.0",
