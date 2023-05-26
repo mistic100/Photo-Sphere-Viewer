@@ -323,6 +323,7 @@ export type ViewerConfig = {
     withCredentials?: boolean;
     /** @default 'zoom move download description caption fullscreen' */
     navbar?: boolean | string | Array<string | NavbarCustomButton>;
+    renderer?: { alpha: boolean, antialias: boolean, preserveDrawingBuffer: boolean  },
     lang?: {
         zoom: string;
         zoomOut: string;
