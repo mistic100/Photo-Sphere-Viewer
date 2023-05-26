@@ -59,6 +59,6 @@
     "vue-slider-component": "^3.2.24",
     "vue-swatches": "^2.1.1",
     "vuepress": "^1.9.9",
-    "yaml": "^2.2.1"
+    "yaml": "^2.3.1"
   }
 }
