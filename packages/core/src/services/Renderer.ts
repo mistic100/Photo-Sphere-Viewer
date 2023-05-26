@@ -60,7 +60,8 @@ export class Renderer extends AbstractService {
     constructor(viewer: Viewer) {
         super(viewer);
 
-        this.renderer = new WebGLRenderer({ alpha: true, antialias: true });
+        this.renderer = new WebGLRenderer(this.config.renderer);
+//         this.renderer = new WebGLRenderer({ alpha: true, antialias: true });
         this.renderer.setPixelRatio(SYSTEM.pixelRatio);
         this.renderer.domElement.className = 'psv-canvas';
 
