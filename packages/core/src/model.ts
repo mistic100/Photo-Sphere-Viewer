@@ -257,7 +257,11 @@ export type NavbarCustomButton = {
      */
     tabbable?: boolean;
 };
-
+/**
+* WebGL Renderer configuration in Three.js
+*
+*/
+export type RenderConfig = { alpha?: boolean, antialias?: boolean, preserveDrawingBuffer?: boolean  };
 /**
  * Viewer configuration
  * @link https://photo-sphere-viewer.js.org/guide/config.html
@@ -323,7 +327,7 @@ export type ViewerConfig = {
     withCredentials?: boolean;
     /** @default 'zoom move download description caption fullscreen' */
     navbar?: boolean | string | Array<string | NavbarCustomButton>;
-    renderer?: { alpha: boolean, antialias: boolean, preserveDrawingBuffer: boolean  },
+    renderer?: RenderConfig,
     lang?: {
         zoom: string;
         zoomOut: string;
@@ -356,6 +360,7 @@ export type ParsedViewerConfig = Omit<
     | 'defaultPitch'
     | 'fisheye'
     | 'requestHeaders'
+    | 'renderer'
     | 'navbar'
     | 'keyboard'
 > & {
@@ -366,6 +371,7 @@ export type ParsedViewerConfig = Omit<
     fisheye?: number;
     requestHeaders?: (url: string) => Record<string, string>;
     navbar?: Array<string | NavbarCustomButton>;
+    renderer?: RenderConfig;
     keyboard?: false | 'always' | 'fullscreen';
 };
 
