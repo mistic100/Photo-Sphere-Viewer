@@ -52,6 +52,7 @@ export const DEFAULTS: Required<ParsedViewerConfig> = {
         'caption',
         'fullscreen',
     ],
+    renderer:{ alpha: true, antialias: true },
     lang: {
         zoom: 'Zoom',
         zoomOut: 'Zoom out',
@@ -152,6 +153,12 @@ export const CONFIG_PARSERS: ConfigParsers<ViewerConfig, ParsedViewerConfig> = {
         }
         // maxFov between 1 and 179
         return MathUtils.clamp(maxFov, 1, 179);
+    },
+    renderer: (rendererConfig) => {
+        return {
+            ...DEFAULTS.renderer,
+            ...rendererConfig,
+        };
     },
     lang: (lang) => {
         if (Array.isArray(lang.twoFingers)) {
