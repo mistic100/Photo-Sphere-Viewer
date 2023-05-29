@@ -372,3 +372,18 @@ keyboardActions: {
   'f': (viewer) => viewer.toggleFullscreen(),
 },
 ```
+
+
+
+#### `renderer`
+
+-   type: `object`
+-   default:
+
+```js
+renderer: { 
+    "alpha": true,
+    "antialias": true
+}
+```
+You can reference [Three.js Documentation](https://threejs.org/docs/#api/en/renderers/WebGLRenderer.preserveDrawingBuffer) regarding `renderer` option.
