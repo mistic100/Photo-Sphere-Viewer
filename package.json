@@ -50,7 +50,7 @@
     "stylelint-stylistic": "^0.4.0",
     "ts-node": "^10.9.1",
     "tsup": "^6.7.0",
-    "turbo": "^1.9.1",
+    "turbo": "^1.10.0",
     "typedoc": "^0.24.1",
     "typedoc-plugin-extras": "^2.3.3",
     "typescript": "^5.0.3",
