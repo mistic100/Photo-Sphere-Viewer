@@ -66,7 +66,7 @@ ${fileContent
 
     // simplify imports
     .replace(
-        /__commonJS\({[\s]+"(.*?)"\(exports, module\) {[\s]+module.exports = (.*?);[\s]+}[\s]+}\);/g,
+        /__commonJS\({[\s]+"(.*?)"\(exports, module\) {[\s]+"use strict";[\s]+module.exports = (.*?);[\s]+}[\s]+}\);/g,
         (_, p1, p2) => `() => ${p2.split('.').pop()};`
     )
     .replace(/__toESM\((.*?)\(\)(, 1)?\)/g, '$1()')

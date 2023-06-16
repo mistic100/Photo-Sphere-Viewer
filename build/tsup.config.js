@@ -45,6 +45,7 @@ ${
             sourcemap: true,
             external: Object.keys(externals),
             noExternal: [/three\/examples\/.*/],
+            target: 'es2021',
             esbuildPlugins: [
                 sassPlugin(),
                 externalGlobalPlugin(externals),

@@ -1,13 +1,13 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "target": "es2021",
     "composite": false,
     "declaration": true,
     "declarationMap": false,
     "stripInternal": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": false,
     "isolatedModules": true,
     "resolveJsonModule": true,
     "moduleResolution": "node",
