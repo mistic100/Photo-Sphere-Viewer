@@ -154,6 +154,7 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
             this.loader = new ImageLoader();
             if (this.viewer.config.withCredentials) {
                 this.loader.setWithCredentials(true);
+                this.loader.setCrossOrigin('use-credentials');
             }
         }
 
@@ -355,7 +356,7 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
                     segmentIndex = Math.floor((i / 3 - this.SPHERE_SEGMENTS) / 2) + this.SPHERE_SEGMENTS;
                 } else {
                     // last row
-                    segmentIndex = Math.floor((i - this.NB_VERTICES - this.SPHERE_SEGMENTS * NB_VERTICES_BY_SMALL_FACE) / 3) 
+                    segmentIndex = Math.floor((i - this.NB_VERTICES - this.SPHERE_SEGMENTS * NB_VERTICES_BY_SMALL_FACE) / 3)
                         + this.SPHERE_HORIZONTAL_SEGMENTS * (this.SPHERE_SEGMENTS - 1);
                 }
                 const segmentRow = Math.floor(segmentIndex / this.SPHERE_SEGMENTS);

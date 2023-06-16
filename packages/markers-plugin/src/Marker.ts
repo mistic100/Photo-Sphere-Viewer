@@ -67,7 +67,7 @@ export class Marker {
 
     constructor(
         private readonly viewer: Viewer,
-        private readonly plugin: MarkersPlugin, 
+        private readonly plugin: MarkersPlugin,
         config: MarkerConfig
     ) {
         if (!config.id) {
@@ -93,6 +93,7 @@ export class Marker {
             this.loader = new TextureLoader();
             if (this.viewer.config.withCredentials) {
                 this.loader.setWithCredentials(true);
+                this.loader.setCrossOrigin('use-credentials');
             }
         }
 

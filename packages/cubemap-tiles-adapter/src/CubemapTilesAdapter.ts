@@ -100,6 +100,7 @@ export class CubemapTilesAdapter extends AbstractAdapter<CubemapTilesPanorama | 
             this.loader = new ImageLoader();
             if (this.viewer.config.withCredentials) {
                 this.loader.setWithCredentials(true);
+                this.loader.setCrossOrigin('use-credentials');
             }
         }
 

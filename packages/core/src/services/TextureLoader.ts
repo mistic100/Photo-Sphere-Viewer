@@ -19,6 +19,7 @@ export class TextureLoader extends AbstractService {
         this.loader.setResponseType('blob');
         if (this.config.withCredentials) {
             this.loader.setWithCredentials(true);
+            this.loader.setCrossOrigin('use-credentials');
         }
     }
 
