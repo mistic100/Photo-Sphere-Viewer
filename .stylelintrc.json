@@ -10,6 +10,8 @@
     "scss/dollar-variable-empty-line-before": null,
     "selector-class-pattern": null,
     "stylistic/indentation": 4,
-    "stylistic/string-quotes": "single"
+    "stylistic/string-quotes": "single",
+    "stylistic/no-eol-whitespace": true,
+    "stylistic/no-extra-semicolons": true
   }
 }
