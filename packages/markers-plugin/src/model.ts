@@ -39,18 +39,22 @@ export type MarkerConfig = {
     /**
      * Array of points defining the polygon in spherical coordinates
      */
+    // eslint-disable-next-line @typescript-eslint/array-type
     polygon?: [number, number][] | [string, string][] | number[] | string[];
     /**
      * Array of points defining the polygon in pixel coordinates on the panorama image
      */
+    // eslint-disable-next-line @typescript-eslint/array-type
     polygonPixels?: [number, number][] | number[];
     /**
      * Array of points defining the polyline in spherical coordinates
      */
+    // eslint-disable-next-line @typescript-eslint/array-type
     polyline?: [number, number][] | [string, string][] | number[] | string[];
     /**
      * Array of points defining the polyline in pixel coordinates on the panorama image
      */
+    // eslint-disable-next-line @typescript-eslint/array-type
     polylinePixels?: [number, number][] | number[];
 
     /**

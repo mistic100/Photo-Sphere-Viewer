@@ -12,7 +12,7 @@ import {
  * Checks if the zoomRange properties are coherent
  * @internal
  */
-export function checkTilesLevels(levels: { zoomRange: [number, number] }[]) {
+export function checkTilesLevels(levels: Array<{ zoomRange: [number, number] }>) {
     let previous = 0;
     levels.forEach((level, i) => {
         if (!level.zoomRange || level.zoomRange.length !== 2) {

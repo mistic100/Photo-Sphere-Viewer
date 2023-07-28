@@ -89,7 +89,7 @@ export class CubemapAdapter extends AbstractAdapter<CubemapPanorama, Texture[]> 
     }
 
     private loadTexturesSeparate(paths: string[]): Promise<Texture[]> {
-        const promises: Promise<Texture>[] = [];
+        const promises: Array<Promise<Texture>> = [];
         const progress = [0, 0, 0, 0, 0, 0];
 
         for (let i = 0; i < 6; i++) {

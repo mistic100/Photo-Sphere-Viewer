@@ -86,7 +86,7 @@ export class AutorotatePlugin extends AbstractConfigurablePlugin<
         /** current index in keypoints */
         idx: -1,
         /** curve between idx and idx + 1 */
-        curve: [] as [number, number][],
+        curve: [] as Array<[number, number]>,
         /** start point of the current step */
         startStep: null as [number, number],
         /** end point of the current step */
@@ -473,7 +473,7 @@ export class AutorotatePlugin extends AbstractConfigurablePlugin<
             workVectors.push(new Vector2(workPoints[i][0] + k * 2 * Math.PI, workPoints[i][1]));
         }
 
-        const curve: [number, number][] = new SplineCurve(workVectors).getPoints(NUM_STEPS * 3).map((p) => [p.x, p.y]);
+        const curve: Array<[number, number]> = new SplineCurve(workVectors).getPoints(NUM_STEPS * 3).map((p) => [p.x, p.y]);
 
         // debugCurve(this.markers, curve, NUM_STEPS);
 

@@ -79,7 +79,7 @@ export abstract class AbstractConfigurablePlugin<
         const readonly = ctor.readonlyOptions;
         const id = ctor.id;
 
-        for (let [key, value] of Object.entries(options) as [keyof TConfig, any][]) {
+        for (let [key, value] of Object.entries(options) as Array<[keyof TConfig, any]>) {
             if (!(key in parser.defaults)) {
                 logWarn(`${id}: Unknown option "${key as string}"`);
                 continue;

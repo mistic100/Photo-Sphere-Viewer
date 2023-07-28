@@ -684,7 +684,7 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
         });
 
         // get pairs of visible/invisible vectors for each invisible vector connected to a visible vector
-        const toBeComputed: { visible: Vector3; invisible: Vector3; index: number }[] = [];
+        const toBeComputed: Array<{ visible: Vector3; invisible: Vector3; index: number }> = [];
         positions3D.forEach((pos, i) => {
             if (!pos.visible) {
                 const neighbours = [

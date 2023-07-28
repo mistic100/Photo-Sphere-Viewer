@@ -1,5 +1,4 @@
 import { Point } from '@photo-sphere-viewer/core';
-import type { SelectHotspot } from './events';
 
 export type MapHotspot = (Point | { yaw: number | string; distance: number }) & {
     /**

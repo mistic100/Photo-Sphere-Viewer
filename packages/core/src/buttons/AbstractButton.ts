@@ -34,7 +34,7 @@ export type ButtonConfig = {
      * override icon when the button is active
      */
     iconActive?: string;
-};
+}
 
 const getConfig = getConfigParser<ButtonConfig>({
     id: null,
@@ -248,4 +248,4 @@ export abstract class AbstractButton extends AbstractComponent {
     }
 }
 
-export type ButtonConstructor = { new (navbar: Navbar): AbstractButton } & typeof AbstractButton;
+export type ButtonConstructor = (new (navbar: Navbar) => AbstractButton) & typeof AbstractButton;

@@ -7,7 +7,7 @@ import { StereoEffect } from 'three/examples/jsm/effects/StereoEffect.js';
 import { StereoPluginEvents, StereoUpdatedEvent } from './events';
 import mobileRotateIcon from './icons/mobile-rotate.svg';
 
-interface WakeLockSentinel {
+type WakeLockSentinel = {
     release(): void;
 }
 

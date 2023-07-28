@@ -53,7 +53,7 @@ export class ResolutionPlugin extends AbstractPlugin<ResolutionPluginEvents> {
             throw new PSVError('Resolution plugin requires the Settings plugin');
         }
 
-        this.settings.addSetting(<OptionsSetting>{
+        this.settings.addSetting({
             id: ResolutionPlugin.id,
             type: 'options',
             label: this.viewer.config.lang.resolution,
@@ -61,7 +61,7 @@ export class ResolutionPlugin extends AbstractPlugin<ResolutionPluginEvents> {
             options: () => this.resolutions,
             apply: (resolution) => this.__setResolutionIfExists(resolution),
             badge: !this.config.showBadge ? null : () => this.state.resolution,
-        });
+        } as OptionsSetting);
 
         this.viewer.addEventListener(events.PanoramaLoadedEvent.type, this);
 

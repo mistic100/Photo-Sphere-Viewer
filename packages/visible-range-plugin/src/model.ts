@@ -1,6 +1,3 @@
-import type { ViewerConfig } from '@photo-sphere-viewer/core';
-import type { VisibleRangePlugin } from './VisibleRangePlugin';
-
 export type Range = [number, number] | [string, string];
 
 export type VisibleRangePluginConfig = {

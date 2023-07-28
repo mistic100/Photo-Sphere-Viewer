@@ -477,7 +477,7 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
             ...options,
         };
 
-        for (let [key, value] of Object.entries(options) as [keyof typeof rawConfig, any][]) {
+        for (let [key, value] of Object.entries(options) as Array<[keyof typeof rawConfig, any]>) {
             if (!(key in DEFAULTS)) {
                 logWarn(`Unknown option ${key}`);
                 continue;
@@ -723,7 +723,7 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
      */
     resize(size: CssSize) {
         const s = size as any;
-        (['width', 'height'] as ('width' | 'height')[]).forEach((dim) => {
+        (['width', 'height'] as Array<'width' | 'height'>).forEach((dim) => {
             if (size && s[dim]) {
                 if (/^[0-9.]+$/.test(s[dim])) {
                     s[dim] += 'px';

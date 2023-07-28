@@ -581,7 +581,7 @@ export class Marker {
 
         // convert texture coordinates to spherical coordinates
         if (this.isPolyPixels()) {
-            this.definition = (actualPoly as [number, number][]).map((coord) => {
+            this.definition = (actualPoly as Array<[number, number]>).map((coord) => {
                 const sphericalCoords = this.viewer.dataHelper.textureCoordsToSphericalCoords({
                     textureX: coord[0],
                     textureY: coord[1],
@@ -591,7 +591,7 @@ export class Marker {
         }
         // clean angles
         else {
-            this.definition = (actualPoly as [number | string, number | string][]).map((coord) => {
+            this.definition = (actualPoly as Array<[number | string, number | string]>).map((coord) => {
                 return [utils.parseAngle(coord[0]), utils.parseAngle(coord[1], true)];
             });
         }
@@ -604,7 +604,7 @@ export class Marker {
         };
 
         // compute x/y/z positions
-        this.state.positions3D = (this.definition as [number, number][]).map((coord) => {
+        this.state.positions3D = (this.definition as Array<[number, number]>).map((coord) => {
             return this.viewer.dataHelper.sphericalCoordsToVector3({ yaw: coord[0], pitch: coord[1] });
         });
     }

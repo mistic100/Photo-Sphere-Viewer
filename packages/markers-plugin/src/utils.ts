@@ -23,7 +23,7 @@ export function greatArcIntermediaryPoint(p1: [number, number], p2: [number, num
  * Given a list of spherical points, offsets yaws in order to have only coutinuous values
  * eg: [0.2, 6.08] is transformed to [0.2, -0.2]
  */
-function getPolygonCoherentPoints(points: [number, number][]) {
+function getPolygonCoherentPoints(points: Array<[number, number]>) {
     const workPoints = [points[0]];
 
     let k = 0;
@@ -47,7 +47,7 @@ function getPolygonCoherentPoints(points: [number, number][]) {
  * @todo Get "visual center" (https://blog.mapbox.com/a-new-algorithm-for-finding-a-visual-center-of-a-polygon-7c77e6492fbc)
  * @internal
  */
-export function getPolygonCenter(polygon: [number, number][]): [number, number] {
+export function getPolygonCenter(polygon: Array<[number, number]>): [number, number] {
     const points = getPolygonCoherentPoints(polygon);
 
     const sum = points.reduce((intermediary, point) => [intermediary[0] + point[0], intermediary[1] + point[1]]);
@@ -58,7 +58,7 @@ export function getPolygonCenter(polygon: [number, number][]): [number, number] 
  * Computes the middle point of a polyline
  * @internal
  */
-export function getPolylineCenter(polyline: [number, number][]): [number, number] {
+export function getPolylineCenter(polyline: Array<[number, number]>): [number, number] {
     const points = getPolygonCoherentPoints(polyline);
 
     // compute each segment length + total length

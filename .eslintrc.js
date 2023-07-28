@@ -1,6 +1,10 @@
 module.exports = {
     root: true,
-    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+    extends: [
+        'eslint:recommended', 
+        'plugin:@typescript-eslint/recommended',
+        'plugin:@typescript-eslint/stylistic',
+    ],
     parser: '@typescript-eslint/parser',
     plugins: ['@typescript-eslint'],
     rules: {
@@ -13,7 +17,8 @@ module.exports = {
         '@typescript-eslint/no-duplicate-enum-values': 'error',
         '@typescript-eslint/no-shadow': 'error',
         '@typescript-eslint/prefer-for-of': 'error',
-        '@typescript-eslint/prefer-optional-chain': 'error',
+        "@typescript-eslint/array-type": ['error', { default: 'array-simple' }],
+        '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
     },
     ignorePatterns: ['**/dist/**/*', '*.js'],
 };

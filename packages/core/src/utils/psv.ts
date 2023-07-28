@@ -344,7 +344,7 @@ export type ConfigParsers<T, U extends T = T> = {
 /**
  * Result of {@link getConfigParser}
  */
-export interface ConfigParser<T, U extends T> {
+export type ConfigParser<T, U extends T> = {
     (config: T): U;
     defaults: Required<U>;
     parsers: ConfigParsers<T, U>;
@@ -382,7 +382,7 @@ export function getConfigParser<T extends Record<string, any>, U extends T = T>(
     defaults: Required<U>,
     parsers?: ConfigParsers<T, U>
 ): ConfigParser<T, U> {
-    const parser = <ConfigParser<T, U>>function (userConfig: T): U {
+    const parser = function (userConfig: T): U {
         if (!userConfig) {
             return clone(defaults);
         }
@@ -394,7 +394,7 @@ export function getConfigParser<T extends Record<string, any>, U extends T = T>(
 
         const config: U = {} as U;
 
-        for (let [key, value] of Object.entries(rawConfig) as [keyof T, any][]) {
+        for (let [key, value] of Object.entries(rawConfig) as Array<[keyof T, any]>) {
             if (parsers && key in parsers) {
                 value = parsers[key](value, {
                     rawConfig: rawConfig,
@@ -410,7 +410,7 @@ export function getConfigParser<T extends Record<string, any>, U extends T = T>(
         }
 
         return config;
-    };
+    } as ConfigParser<T, U>;
 
     parser.defaults = defaults;
     parser.parsers = parsers || ({} as any);

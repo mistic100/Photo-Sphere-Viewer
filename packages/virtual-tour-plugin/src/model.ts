@@ -132,7 +132,7 @@ export type VirtualTourNode = {
     /**
      * additional markers to use on this node
      */
-    markers?: (MarkerConfig & { gps?: GpsPosition })[];
+    markers?: Array<MarkerConfig & { gps?: GpsPosition }>;
     /**
      * configuration of the hotspot when using the MapPlugin
      */

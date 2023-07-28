@@ -374,7 +374,7 @@ export class Tooltip extends AbstractComponent {
         const images = this.content.querySelectorAll('img');
 
         if (images.length > 0) {
-            const promises: Promise<any>[] = [];
+            const promises: Array<Promise<any>> = [];
 
             images.forEach((image) => {
                 promises.push(

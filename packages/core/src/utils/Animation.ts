@@ -55,7 +55,7 @@ type PropertyValues = AnimationOptions<any>['properties']['k'];
 export class Animation<T = any> implements PromiseLike<boolean> {
     private options: AnimationOptions<T>;
     private easing: (t: number) => number = EASINGS['linear'];
-    private callbacks: ((complete: boolean) => void)[] = [];
+    private callbacks: Array<(complete: boolean) => void> = [];
     private start?: number;
     private delayTimeout: ReturnType<typeof setTimeout>;
     private animationFrame: ReturnType<typeof requestAnimationFrame>;
@@ -99,7 +99,7 @@ export class Animation<T = any> implements PromiseLike<boolean> {
 
         if (progress < 1.0) {
             // interpolate properties
-            for (const [name, prop] of Object.entries(this.options.properties) as [string, PropertyValues][]) {
+            for (const [name, prop] of Object.entries(this.options.properties) as Array<[string, PropertyValues]>) {
                 if (prop) {
                     const value = prop.start + (prop.end - prop.start) * this.easing(progress);
                     // @ts-ignore
@@ -111,7 +111,7 @@ export class Animation<T = any> implements PromiseLike<boolean> {
             this.animationFrame = window.requestAnimationFrame((t) => this.__run(t));
         } else {
             // call onTick one last time with final values
-            for (const [name, prop] of Object.entries(this.options.properties) as [string, PropertyValues][]) {
+            for (const [name, prop] of Object.entries(this.options.properties) as Array<[string, PropertyValues]>) {
                 if (prop) {
                     // @ts-ignore
                     current[name] = prop.end;

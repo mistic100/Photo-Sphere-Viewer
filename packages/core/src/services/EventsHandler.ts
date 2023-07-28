@@ -81,7 +81,7 @@ export class EventsHandler extends AbstractService {
         /** current y position of the cursor */
         mouseY: 0,
         /** list of latest positions of the cursor, [time, x, y] */
-        mouseHistory: [] as [number, number, number][],
+        mouseHistory: [] as Array<[number, number, number]>,
         /** distance between fingers when zooming */
         pinchDist: 0,
         /** when the Ctrl key is pressed */
@@ -596,7 +596,7 @@ export class EventsHandler extends AbstractService {
                 this.viewer.dispatchEvent(new evtCtor(evt, object, viewerPoint, key));
             };
 
-            for (const [key, object] of Object.entries(this.state.objectsObservers) as [string, Mesh | null][]) {
+            for (const [key, object] of Object.entries(this.state.objectsObservers) as Array<[string, Mesh | null]>) {
                 const intersection = intersections.find((i) => i.object.userData[key]);
 
                 if (intersection) {

@@ -5,7 +5,7 @@ let debugMarkers: string[] = [];
 /**
  * @internal
  */
-export function debugCurve(markers: MarkersPlugin, curve: [number, number][], stepSize: number) {
+export function debugCurve(markers: MarkersPlugin, curve: Array<[number, number]>, stepSize: number) {
     debugMarkers.forEach((marker) => {
         try {
             markers.removeMarker(marker);

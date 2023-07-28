@@ -347,7 +347,7 @@ export class Renderer extends AbstractService {
     /**
      * Returns intersections with objects in the scene
      */
-    getIntersections(viewerPoint: Point): Intersection<Mesh>[] {
+    getIntersections(viewerPoint: Point): Array<Intersection<Mesh>> {
         vector2.x = (2 * viewerPoint.x) / this.state.size.width - 1;
         vector2.y = (-2 * viewerPoint.y) / this.state.size.height + 1;
 
@@ -355,7 +355,7 @@ export class Renderer extends AbstractService {
 
         return this.raycaster
             .intersectObjects(this.scene.children, true)
-            .filter((i) => (i.object as Mesh).isMesh && !!i.object.userData) as Intersection<Mesh>[];
+            .filter((i) => (i.object as Mesh).isMesh && !!i.object.userData) as Array<Intersection<Mesh>>;
     }
 
     /**
