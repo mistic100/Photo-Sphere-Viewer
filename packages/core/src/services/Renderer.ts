@@ -297,7 +297,7 @@ export class Renderer extends AbstractService {
         this.scene.add(group);
 
         // make sure the new texture is transfered to the GPU before starting the animation
-        this.renderer.setRenderTarget(new WebGLRenderTarget());
+        this.renderer.setRenderTarget(new WebGLRenderTarget<any>());
         this.renderer.render(this.scene, this.camera);
         this.renderer.setRenderTarget(null);
 
