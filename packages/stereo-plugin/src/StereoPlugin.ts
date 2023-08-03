@@ -9,7 +9,7 @@ import mobileRotateIcon from './icons/mobile-rotate.svg';
 
 type WakeLockSentinel = {
     release(): void;
-}
+};
 
 const ID_OVERLAY_PLEASE_ROTATE = 'pleaseRotate';
 

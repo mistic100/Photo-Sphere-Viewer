@@ -316,7 +316,7 @@ Overrides the tooltip content (defaults to the node's `name` property).
 
 -   type: `{ yaw, pitch }`
 
-Offset added to the final link position  order to move the marker/arrow without affecting where the viewer is rotated before going to the next node.
+Offset added to the final link position order to move the marker/arrow without affecting where the viewer is rotated before going to the next node.
 
 #### `arrowStyle` (3d mode only)
 

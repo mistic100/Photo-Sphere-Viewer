@@ -73,7 +73,7 @@ export type VirtualTourLink = Partial<ExtendedPosition> & {
      */
     position?: ExtendedPosition;
     /**
-     * offset added to the final link position  order to move the marker/arrow 
+     * offset added to the final link position  order to move the marker/arrow
      * without affecting where the viewer is rotated before going to the next node
      */
     linkOffset?: Partial<Position>;

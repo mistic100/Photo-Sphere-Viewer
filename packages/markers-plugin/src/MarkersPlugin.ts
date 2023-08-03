@@ -1,7 +1,14 @@
 import type { Point, Position, Tooltip, Viewer } from '@photo-sphere-viewer/core';
 import { AbstractConfigurablePlugin, CONSTANTS, events, PSVError, utils } from '@photo-sphere-viewer/core';
 import { Vector3 } from 'three';
-import { DEFAULT_HOVER_SCALE, ID_PANEL_MARKER, ID_PANEL_MARKERS_LIST, MARKERS_LIST_TEMPLATE, MARKER_DATA, SVG_NS } from './constants';
+import {
+    DEFAULT_HOVER_SCALE,
+    ID_PANEL_MARKER,
+    ID_PANEL_MARKERS_LIST,
+    MARKERS_LIST_TEMPLATE,
+    MARKER_DATA,
+    SVG_NS,
+} from './constants';
 import {
     EnterMarkerEvent,
     GotoMarkerDoneEvent,
@@ -21,28 +28,31 @@ import { MarkersButton } from './MarkersButton';
 import { MarkersListButton } from './MarkersListButton';
 import { MarkerConfig, MarkersPluginConfig, ParsedMarkersPluginConfig, UpdatableMarkersPluginConfig } from './model';
 
-const getConfig = utils.getConfigParser<MarkersPluginConfig, ParsedMarkersPluginConfig>({
-    clickEventOnMarker: false,
-    gotoMarkerSpeed: '8rpm',
-    markers: null,
-    defaultHoverScale: null,
-}, {
-    defaultHoverScale(defaultHoverScale) {
-        if (!defaultHoverScale) {
-            return null;
-        }
-        if (defaultHoverScale === true) {
-            defaultHoverScale = DEFAULT_HOVER_SCALE;
-        }
-        if (typeof defaultHoverScale === 'number') {
-            defaultHoverScale = { amount: defaultHoverScale };
-        }
-        return {
-            ...DEFAULT_HOVER_SCALE,
-            ...defaultHoverScale,
-        };
+const getConfig = utils.getConfigParser<MarkersPluginConfig, ParsedMarkersPluginConfig>(
+    {
+        clickEventOnMarker: false,
+        gotoMarkerSpeed: '8rpm',
+        markers: null,
+        defaultHoverScale: null,
     },
-});
+    {
+        defaultHoverScale(defaultHoverScale) {
+            if (!defaultHoverScale) {
+                return null;
+            }
+            if (defaultHoverScale === true) {
+                defaultHoverScale = DEFAULT_HOVER_SCALE;
+            }
+            if (typeof defaultHoverScale === 'number') {
+                defaultHoverScale = { amount: defaultHoverScale };
+            }
+            return {
+                ...DEFAULT_HOVER_SCALE,
+                ...defaultHoverScale,
+            };
+        },
+    }
+);
 
 /**
  * Displays various markers on the viewer

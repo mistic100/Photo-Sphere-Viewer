@@ -17,7 +17,7 @@ module.exports = {
         '@typescript-eslint/no-duplicate-enum-values': 'error',
         '@typescript-eslint/no-shadow': 'error',
         '@typescript-eslint/prefer-for-of': 'error',
-        "@typescript-eslint/array-type": ['error', { default: 'array-simple' }],
+        '@typescript-eslint/array-type': ['error', { default: 'array-simple' }],
         '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
     },
     ignorePatterns: ['**/dist/**/*', '*.js'],

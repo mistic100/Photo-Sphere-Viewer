@@ -41,8 +41,7 @@ Documentation : ${pkg.homepage}
 
         if (typedoc.name.endsWith('Plugin')) {
             plugins.push(typedoc.name);
-        }
-        else if (typedoc.name.endsWith('Adapter')) {
+        } else if (typedoc.name.endsWith('Adapter')) {
             adapters.push(typedoc.name);
         }
     }
@@ -59,11 +58,11 @@ Documentation : ${pkg.homepage}
 
 # Plugins
 
-${plugins.map(plugin => `- [${plugin}](modules/${plugin}.html)`).join('\n')}
+${plugins.map((plugin) => `- [${plugin}](modules/${plugin}.html)`).join('\n')}
 
 # Adapters
 
-${adapters.map(adapter => `- [${adapter}](modules/${adapter}.html)`).join('\n')}
+${adapters.map((adapter) => `- [${adapter}](modules/${adapter}.html)`).join('\n')}
 `.trim();
 
     console.log(`create ${destFile}`);

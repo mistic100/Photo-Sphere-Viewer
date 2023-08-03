@@ -14,7 +14,10 @@ export class MarkerVisibilityEvent extends MarkersPluginEvent {
     static override readonly type = 'marker-visibility';
     override type: 'marker-visibility';
 
-    constructor(public readonly marker: Marker, public readonly visible: boolean) {
+    constructor(
+        public readonly marker: Marker,
+        public readonly visible: boolean
+    ) {
         super(MarkerVisibilityEvent.type);
     }
 }

@@ -28,7 +28,10 @@ export abstract class AbstractComponent {
         visible: true,
     };
 
-    constructor(protected readonly parent: Viewer | AbstractComponent, config: { className?: string }) {
+    constructor(
+        protected readonly parent: Viewer | AbstractComponent,
+        config: { className?: string }
+    ) {
         this.viewer = parent instanceof AbstractComponent ? parent.viewer : parent;
 
         this.container.className = config.className || '';

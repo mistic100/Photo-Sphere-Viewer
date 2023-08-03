@@ -7,7 +7,7 @@ import type { Viewer } from '../Viewer';
  * @template TEvents union of dispatched events
  */
 export abstract class AbstractPlugin<
-    TEvents extends TypedEvent<AbstractPlugin> = never
+    TEvents extends TypedEvent<AbstractPlugin> = never,
 > extends TypedEventTarget<TEvents> {
     /**
      * Unique identifier of the plugin
@@ -44,7 +44,7 @@ export abstract class AbstractConfigurablePlugin<
     TConfig extends Record<string, any>,
     TParsedConfig extends TConfig = TConfig,
     TUpdatableConfig extends TConfig = TConfig,
-    TEvents extends TypedEvent<AbstractPlugin> = never
+    TEvents extends TypedEvent<AbstractPlugin> = never,
 > extends AbstractPlugin<TEvents> {
     static configParser: ConfigParser<any, any>;
     static readonlyOptions: string[] = [];

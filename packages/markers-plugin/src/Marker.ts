@@ -344,8 +344,10 @@ export class Marker {
         if (this.config.scale && Array.isArray(this.config.scale)) {
             this.config.scale = { zoom: this.config.scale as any };
         }
-        if (typeof this.config.hoverScale === 'boolean')  {
-            this.config.hoverScale = this.config.hoverScale ? this.plugin.config.defaultHoverScale || DEFAULT_HOVER_SCALE : null;
+        if (typeof this.config.hoverScale === 'boolean') {
+            this.config.hoverScale = this.config.hoverScale
+                ? this.plugin.config.defaultHoverScale || DEFAULT_HOVER_SCALE
+                : null;
         } else if (typeof this.config.hoverScale === 'number') {
             this.config.hoverScale = { amount: this.config.hoverScale } as any;
         } else if (!this.config.hoverScale) {
@@ -434,7 +436,7 @@ export class Marker {
             case MarkerType.html:
                 this.definition = this.config.html;
                 element.innerHTML = this.config.html;
-                break
+                break;
         }
 
         // set anchor

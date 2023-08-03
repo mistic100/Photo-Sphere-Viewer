@@ -1,9 +1,6 @@
 {
   "extends": ["stylelint-config-standard-scss"],
-  "plugins": [
-    "stylelint-scss",
-    "stylelint-stylistic"
-  ],
+  "plugins": ["stylelint-scss", "stylelint-stylistic"],
   "rules": {
     "color-function-notation": "legacy",
     "alpha-value-notation": "number",

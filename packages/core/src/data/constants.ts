@@ -121,11 +121,12 @@ export const ICONS = {
     zoomOut,
 };
 
-// @formatter:off
 /**
  * Collection of easing functions
  * @link https://gist.github.com/frederickk/6165768
  */
+// @formatter:off
+// prettier-ignore
 export const EASINGS: Record<string, (t: number) => number> = {
     linear: (t: number) => t,
 

@@ -29,7 +29,10 @@ function getButtonPosition(mapPosition: [string, string], direction: ButtonPosit
 }
 
 export abstract class AbstractMapButton extends AbstractComponent {
-    constructor(protected map: MapComponent, private position: ButtonPosition) {
+    constructor(
+        protected map: MapComponent,
+        private position: ButtonPosition
+    ) {
         super(map, {});
     }
 

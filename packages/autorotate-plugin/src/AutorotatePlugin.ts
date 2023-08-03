@@ -7,11 +7,7 @@ import { AutorotateEvent, AutorotatePluginEvents } from './events';
 import { AutorotateKeypoint, AutorotatePluginConfig, UpdatableAutorotatePluginConfig } from './model';
 // import { debugCurve } from '../../shared/autorotate-utils';
 
-type ParsedAutorotatePluginConfig = Omit<
-    AutorotatePluginConfig,
-    | 'autorotateSpeed'
-    | 'autorotatePitch'
-> & {
+type ParsedAutorotatePluginConfig = Omit<AutorotatePluginConfig, 'autorotateSpeed' | 'autorotatePitch'> & {
     autorotateSpeed?: number;
     autorotatePitch?: number;
 };
@@ -167,7 +163,10 @@ export class AutorotatePlugin extends AbstractConfigurablePlugin<
             }
 
             case events.KeypressEvent.type:
-                if ((e as events.KeypressEvent).key === CONSTANTS.KEY_CODES.Space && this.viewer.state.keyboardEnabled) {
+                if (
+                    (e as events.KeypressEvent).key === CONSTANTS.KEY_CODES.Space
+                    && this.viewer.state.keyboardEnabled
+                ) {
                     this.toggle();
                     e.preventDefault();
                 }
@@ -473,7 +472,9 @@ export class AutorotatePlugin extends AbstractConfigurablePlugin<
             workVectors.push(new Vector2(workPoints[i][0] + k * 2 * Math.PI, workPoints[i][1]));
         }
 
-        const curve: Array<[number, number]> = new SplineCurve(workVectors).getPoints(NUM_STEPS * 3).map((p) => [p.x, p.y]);
+        const curve: Array<[number, number]> = new SplineCurve(workVectors)
+            .getPoints(NUM_STEPS * 3)
+            .map((p) => [p.x, p.y]);
 
         // debugCurve(this.markers, curve, NUM_STEPS);
 

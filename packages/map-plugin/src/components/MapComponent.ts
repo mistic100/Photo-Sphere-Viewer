@@ -70,7 +70,10 @@ export class MapComponent extends AbstractComponent {
         return this.state.collapsed;
     }
 
-    constructor(viewer: Viewer, private plugin: MapPlugin) {
+    constructor(
+        viewer: Viewer,
+        private plugin: MapPlugin
+    ) {
         super(viewer, {
             className: `psv-map ${CONSTANTS.CAPTURE_EVENTS_CLASS}`,
         });
@@ -680,6 +683,7 @@ export class MapComponent extends AbstractComponent {
         let y = 0;
         let z = 0;
 
+        // prettier-ignore
         switch (key) {
             case CONSTANTS.KEY_CODES.ArrowUp: y = 1; break;
             case CONSTANTS.KEY_CODES.ArrowDown: y = -1; break;

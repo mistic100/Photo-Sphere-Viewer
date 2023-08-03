@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
@@ -87,13 +87,16 @@
                         ],
                         tileUrl: (col, row, level) => {
                             // skip top and bottom tiles on higher resolutions
-                            if (level === 1 && (row <= 4 || row >= 14)
-                                || level === 2 && (row <= 13 || row >= 29)) {
+                            if (
+                                (level === 1 && (row <= 4 || row >= 14))
+                                || (level === 2 && (row <= 13 || row >= 29))
+                            ) {
                                 return null;
                             }
-                            if (level === 0 && col === 11 && row === 4
-                                || level === 1 && col === 22 && row === 8
-                                || level === 2 && col === 44 && row === 16
+                            if (
+                                (level === 0 && col === 11 && row === 4)
+                                || (level === 1 && col === 22 && row === 8)
+                                || (level === 2 && col === 44 && row === 16)
                             ) {
                                 return 'error.jpg';
                             }

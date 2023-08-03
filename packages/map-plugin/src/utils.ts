@@ -64,11 +64,7 @@ export function canvasShadow(
 /**
  * Draw an image centered
  */
-export function drawImageCentered(
-    context: CanvasRenderingContext2D,
-    image: ImageSource,
-    size: number
-) {
+export function drawImageCentered(context: CanvasRenderingContext2D, image: ImageSource, size: number) {
     const w = image.width;
     const h = image.height;
 

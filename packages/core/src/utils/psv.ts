@@ -348,7 +348,7 @@ export type ConfigParser<T, U extends T> = {
     (config: T): U;
     defaults: Required<U>;
     parsers: ConfigParsers<T, U>;
-}
+};
 
 /**
  * Creates a function to validate an user configuration object

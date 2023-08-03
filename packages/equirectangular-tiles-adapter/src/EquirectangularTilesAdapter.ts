@@ -148,8 +148,8 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
 
         if (this.viewer.config.requestHeaders) {
             utils.logWarn(
-                'EquirectangularTilesAdapter fallbacks to file loader because "requestHeaders" where provided. ' +
-                'Consider removing "requestHeaders" if you experience performances issues.'
+                'EquirectangularTilesAdapter fallbacks to file loader because "requestHeaders" where provided. '
+                + 'Consider removing "requestHeaders" if you experience performances issues.'
             );
         } else {
             this.loader = new ImageLoader();
@@ -300,7 +300,7 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
         if (texture) {
             material = new MeshBasicMaterial({ map: texture });
         } else {
-            material = new MeshBasicMaterial({ 
+            material = new MeshBasicMaterial({
                 color: this.config.canvasBackground === 'auto' ? '#000' : this.config.canvasBackground,
             });
         }

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
@@ -43,7 +43,7 @@
                 tooltip: 'Cape Florida Light, Key Biscayne',
                 size: { width: 32, height: 32 },
                 anchor: 'bottom center',
-                gps: [-80.155975, 25.666680, 29 + 3],
+                gps: [-80.155975, 25.66668, 29 + 3],
                 data: {
                     map: { image: baseUrl + 'pictos/pin-red.png', size: 25 },
                 },
@@ -58,11 +58,13 @@
                     thumbnail: baseUrl + 'tour/key-biscayne-1-thumb.jpg',
                     name: 'One',
                     links: [{ nodeId: '2', position: { pitch: 0, yaw: '100deg' } }],
-                    markers: [{
-                        ...markerLighthouse,
-                        position: { yaw: '105deg', pitch: '35deg' }, // only used in manual mode
-                    }],
-                    gps: [-80.156350, 25.666750, 3],
+                    markers: [
+                        {
+                            ...markerLighthouse,
+                            position: { yaw: '105deg', pitch: '35deg' }, // only used in manual mode
+                        },
+                    ],
+                    gps: [-80.15635, 25.66675, 3],
                     panoData: { poseHeading: 327 },
                     map: { x: 660, y: 570, color: '#fffd99' },
                 },
@@ -75,11 +77,13 @@
                         { nodeId: '3', position: { pitch: 0, yaw: '120deg' } },
                         { nodeId: '1', position: { pitch: 0, yaw: '280deg' } },
                     ],
-                    markers: [{
-                        ...markerLighthouse,
-                        position: { yaw: '100deg', pitch: '55deg' }, // only used in manual mode
-                    }],
-                    gps: [-80.156110, 25.666700, 5],
+                    markers: [
+                        {
+                            ...markerLighthouse,
+                            position: { yaw: '100deg', pitch: '55deg' }, // only used in manual mode
+                        },
+                    ],
+                    gps: [-80.15611, 25.6667, 5],
                     panoData: { poseHeading: 318 },
                     map: { x: 750, y: 590, color: '#ffb075' },
                 },
@@ -93,7 +97,7 @@
                         { nodeId: '4', position: { pitch: 0, yaw: '220deg' } },
                         { nodeId: '5', position: { pitch: 0, yaw: '270deg' } },
                     ],
-                    gps: [-80.155930, 25.666590, 5],
+                    gps: [-80.15593, 25.66659, 5],
                     panoData: { poseHeading: 328 },
                     map: { x: 815, y: 640, color: '#b7c1ff' },
                 },
@@ -106,7 +110,7 @@
                         { nodeId: '3', position: { pitch: 0, yaw: '40deg' } },
                         { nodeId: '5', position: { pitch: 0, yaw: '300deg' } },
                     ],
-                    gps: [-80.156110, 25.666435, 3],
+                    gps: [-80.15611, 25.666435, 3],
                     panoData: { poseHeading: 78 },
                     map: { x: 750, y: 705, color: '#64dbdb' },
                 },
@@ -120,7 +124,7 @@
                         { nodeId: '3', position: { pitch: 0, yaw: '70deg' } },
                         { nodeId: '4', position: { pitch: 0, yaw: '150deg' } },
                     ],
-                    gps: [-80.156280, 25.666485, 3],
+                    gps: [-80.15628, 25.666485, 3],
                     panoData: { poseHeading: 190 },
                     map: { x: 685, y: 685, color: '#9c9af9' },
                 },
@@ -143,7 +147,7 @@
                     thumbnail: baseUrl + 'tour/key-biscayne-7-thumb.jpg',
                     name: 'Seven',
                     links: [{ nodeId: '6', position: { pitch: 0, yaw: '80deg' } }],
-                    gps: [-80.157090, 25.666340, 3],
+                    gps: [-80.15709, 25.66634, 3],
                     panoData: { poseHeading: 250 },
                     map: { x: 385, y: 745, color: '#8bed82' },
                 },
@@ -180,7 +184,7 @@
                         map: {
                             imageUrl: baseUrl + 'tour/key-biscayne-map.jpg',
                             size: { width: 1600, height: 1200 },
-                            extent: [-80.158123, 25.668050, -80.153824, 25.665308],
+                            extent: [-80.158123, 25.66805, -80.153824, 25.665308],
                         },
 
                         // server mode (mock)

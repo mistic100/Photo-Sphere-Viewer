@@ -34,7 +34,7 @@ export type ButtonConfig = {
      * override icon when the button is active
      */
     iconActive?: string;
-}
+};
 
 const getConfig = getConfigParser<ButtonConfig>({
     id: null,

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
@@ -93,8 +93,10 @@
                         },
                         tileUrl: (face, col, row, level) => {
                             // skip sky tiles on higher resolution
-                            if (face === 'top' && level === 1
-                                || face !== 'bottom' && row <= 2 && level === 1) {
+                            if (
+                                (face === 'top' && level === 1)
+                                || (face !== 'bottom' && row <= 2 && level === 1)
+                            ) {
                                 return null;
                             }
                             return `${baseUrl}cubemap-tiles-24k/${face}_${level}_${col}_${row}.jpg`;

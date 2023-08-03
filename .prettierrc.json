@@ -3,6 +3,7 @@
   "singleQuote": true,
   "printWidth": 120,
   "quoteProps": "consistent",
+  "trailingComma": "es5",
   "overrides": [
     {
       "files": ["**/*.yml", "**/*.json"],

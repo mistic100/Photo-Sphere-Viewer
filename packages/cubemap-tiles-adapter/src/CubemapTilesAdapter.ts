@@ -94,8 +94,8 @@ export class CubemapTilesAdapter extends AbstractAdapter<CubemapTilesPanorama | 
 
         if (this.viewer.config.requestHeaders) {
             utils.logWarn(
-                'CubemapTilesAdapter fallbacks to file loader because "requestHeaders" where provided. ' +
-                'Consider removing "requestHeaders" if you experience performances issues.'
+                'CubemapTilesAdapter fallbacks to file loader because "requestHeaders" where provided. '
+                + 'Consider removing "requestHeaders" if you experience performances issues.'
             );
         } else {
             this.loader = new ImageLoader();

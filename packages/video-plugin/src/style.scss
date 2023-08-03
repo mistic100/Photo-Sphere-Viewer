@@ -87,7 +87,9 @@ $psv-video-bigbutton-color: $psv-buttons-color !default;
             height: 0;
             opacity: 0;
             background: $psv-navbar-background;
-            transition: opacity 0.2s linear, height 0.3s step-end;
+            transition:
+                opacity 0.2s linear,
+                height 0.3s step-end;
 
             @at-root .psv--is-touch & {
                 display: none;
@@ -188,7 +190,9 @@ $psv-video-bigbutton-color: $psv-buttons-color !default;
         cursor: pointer;
         opacity: 0;
         width: 0;
-        transition: opacity 0.2s linear, width 0.3s step-end;
+        transition:
+            opacity 0.2s linear,
+            width 0.3s step-end;
 
         &--pause {
             width: map.get($psv-video-bigbutton-size, portrait);

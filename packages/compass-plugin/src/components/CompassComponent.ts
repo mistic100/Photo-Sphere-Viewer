@@ -21,7 +21,10 @@ export class CompassComponent extends AbstractComponent {
         return this.plugin.config;
     }
 
-    constructor(viewer: Viewer, private plugin: CompassPlugin) {
+    constructor(
+        viewer: Viewer,
+        private plugin: CompassPlugin
+    ) {
         super(viewer, {});
 
         this.background = document.createElement('div');

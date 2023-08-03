@@ -32,7 +32,11 @@ export class ProgressEvent extends TypedEvent<VideoPlugin> {
     static override readonly type = 'progress';
     override type: 'progress';
 
-    constructor(public readonly time: number, public readonly duration: number, public readonly progress: number) {
+    constructor(
+        public readonly time: number,
+        public readonly duration: number,
+        public readonly progress: number
+    ) {
         super(ProgressEvent.type);
     }
 }

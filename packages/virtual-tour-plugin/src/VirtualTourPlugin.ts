@@ -149,8 +149,8 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
         if (this.markers?.config.markers) {
             utils.logWarn(
-                'No default markers can be configured on Markers plugin when using VirtualTour plugin. ' +
-                'Consider defining `markers` on each tour node.'
+                'No default markers can be configured on Markers plugin when using VirtualTour plugin. '
+                + 'Consider defining `markers` on each tour node.'
             );
             delete this.markers.config.markers;
         }
@@ -420,6 +420,8 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
                 this.__renderLinks(node);
                 this.__preload(node);
 
+                this.state.loadingNode = null;
+
                 this.dispatchEvent(
                     new NodeChangedEvent(node, {
                         fromNode,
@@ -427,9 +429,6 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
                         fromLinkPosition,
                     })
                 );
-
-                this.state.loadingNode = null;
-
 
                 return true;
             })

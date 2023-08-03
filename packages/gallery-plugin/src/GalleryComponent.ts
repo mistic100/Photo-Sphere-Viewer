@@ -16,7 +16,10 @@ export class GalleryComponent extends AbstractComponent {
     private readonly observer: IntersectionObserver;
     private readonly items: HTMLElement;
 
-    constructor(private readonly plugin: GalleryPlugin, viewer: Viewer) {
+    constructor(
+        private readonly plugin: GalleryPlugin,
+        viewer: Viewer
+    ) {
         super(viewer, {
             className: `psv-gallery ${CONSTANTS.CAPTURE_EVENTS_CLASS}`,
         });

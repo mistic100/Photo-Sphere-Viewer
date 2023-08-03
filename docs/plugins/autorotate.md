@@ -28,6 +28,7 @@ const viewer = new PhotoSphereViewer.Viewer({
     ],
 });
 ```
+
 :::
 
 ::: tab Keypoints
@@ -60,6 +61,7 @@ const viewer = new PhotoSphereViewer.Viewer({
     ],
 });
 ```
+
 :::
 
 ::::

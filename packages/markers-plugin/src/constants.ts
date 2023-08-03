@@ -37,9 +37,9 @@ export const ID_PANEL_MARKERS_LIST = 'markersList';
  * @internal
  */
 export const DEFAULT_HOVER_SCALE = {
-  amount: 2,
-  duration: 100,
-  easing: 'linear',
+    amount: 2,
+    duration: 100,
+    easing: 'linear',
 };
 
 /**

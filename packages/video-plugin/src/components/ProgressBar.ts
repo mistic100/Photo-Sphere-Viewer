@@ -17,7 +17,10 @@ export class ProgressBar extends AbstractComponent {
         tooltip: null as Tooltip,
     };
 
-    constructor(private readonly plugin: VideoPlugin, viewer: Viewer) {
+    constructor(
+        private readonly plugin: VideoPlugin,
+        viewer: Viewer
+    ) {
         super(viewer, {
             className: 'psv-video-progressbar',
         });

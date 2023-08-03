@@ -79,10 +79,11 @@
                             </div>
 
                             <div class="custom-block danger" v-if="error">
-                                <p class="custom-block-title">This image cannot be loaded</p> 
+                                <p class="custom-block-title">This image cannot be loaded</p>
                                 <p>
-                                    An undefined error occurred while loading the panorama. 
-                                    If your image is very big and you are using Firefox please try with Chrome, as Firefox has trouble loading large base64 images.
+                                    An undefined error occurred while loading the panorama. If your image is very big
+                                    and you are using Firefox please try with Chrome, as Firefox has trouble loading
+                                    large base64 images.
                                 </p>
                             </div>
 
@@ -282,9 +283,9 @@
                                             </v-swatches>
                                         </md-field>
                                         <div class="md-layout-item md-size-25">
-                                            <md-button 
+                                            <md-button
                                                 class="md-primary md-raised"
-                                                style="margin: 10px 0 0 0; min-width: 0;"
+                                                style="margin: 10px 0 0 0; min-width: 0"
                                                 :disabled="!imageData"
                                                 v-on:click="canvasBackground = 'auto'"
                                             >
@@ -448,7 +449,7 @@
                                     :max="1"
                                     :interval="0.1"
                                     :drag-on-click="true"
-                                    :marks="[0,.2,.4,.6,.8,1]"
+                                    :marks="[0, 0.2, 0.4, 0.6, 0.8, 1]"
                                 />
                             </div>
                             <div class="md-layout-item md-size-25">

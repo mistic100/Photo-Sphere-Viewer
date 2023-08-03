@@ -15,11 +15,7 @@ function isMultiTiles(
     return !!(panorama as CubemapMultiTilesPanorama).levels;
 }
 
-function computeTileConfig(
-    tile: CubemapTileLevel,
-    level: number,
-    data: { CUBE_SEGMENTS: number }
-): CubemapTileConfig {
+function computeTileConfig(tile: CubemapTileLevel, level: number, data: { CUBE_SEGMENTS: number }): CubemapTileConfig {
     return {
         ...tile,
         level,
@@ -75,10 +71,7 @@ export function checkPanoramaConfig(
     }
 }
 
-function checkTile(
-    tile: CubemapTilesPanorama | CubemapTileLevel,
-    data: { CUBE_SEGMENTS: number }
-) {
+function checkTile(tile: CubemapTilesPanorama | CubemapTileLevel, data: { CUBE_SEGMENTS: number }) {
     if (!tile.faceSize || !tile.nbTiles) {
         throw new PSVError('Invalid panorama configuration, are you using the right adapter?');
     }

@@ -6,7 +6,10 @@ import { CustomPluginConfig } from './model';
 export class CustomPlugin extends AbstractPlugin<CustomPluginEvents> {
     static override readonly id = 'custom-plugin';
 
-    constructor(viewer: Viewer, private config: CustomPluginConfig) {
+    constructor(
+        viewer: Viewer,
+        private config: CustomPluginConfig
+    ) {
         super(viewer);
     }
 

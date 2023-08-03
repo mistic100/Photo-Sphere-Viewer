@@ -5,7 +5,10 @@ import { OptionsSetting, ToggleSetting } from './model';
 import type { SettingsPlugin } from './SettingsPlugin';
 
 export class SettingsComponent extends AbstractComponent {
-    constructor(private readonly plugin: SettingsPlugin, viewer: Viewer) {
+    constructor(
+        private readonly plugin: SettingsPlugin,
+        viewer: Viewer
+    ) {
         super(viewer, {
             className: `psv-settings ${CONSTANTS.CAPTURE_EVENTS_CLASS}`,
         });

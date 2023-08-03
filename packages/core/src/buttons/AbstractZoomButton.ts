@@ -15,7 +15,11 @@ export class AbstractZoomButton extends AbstractButton {
 
     private readonly handler = new PressHandler();
 
-    constructor(navbar: Navbar, private direction: ZoomButtonDirection, icon: string) {
+    constructor(
+        navbar: Navbar,
+        icon: string,
+        private direction: ZoomButtonDirection
+    ) {
         super(navbar, {
             className: 'psv-zoom-button',
             hoverScale: true,

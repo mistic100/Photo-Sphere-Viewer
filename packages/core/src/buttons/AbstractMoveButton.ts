@@ -30,7 +30,10 @@ export abstract class AbstractMoveButton extends AbstractButton {
 
     private readonly handler = new PressHandler();
 
-    constructor(navbar: Navbar, private direction: MoveButtonDirection) {
+    constructor(
+        navbar: Navbar,
+        private direction: MoveButtonDirection
+    ) {
         super(navbar, {
             className: 'psv-move-button',
             hoverScale: true,

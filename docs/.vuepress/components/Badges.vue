@@ -1,4 +1,5 @@
 <template>
+    <!-- prettier-ignore -->
     <div>
         <a :href="'https://www.npmjs.com/package/@photo-sphere-viewer/' + module" target="_blank" rel="noopener noreferrer">
             <img :src="'https://img.shields.io/npm/v/@photo-sphere-viewer/' + module + '?logo=npm'" alt="NPM version">

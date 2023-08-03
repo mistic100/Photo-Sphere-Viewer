@@ -100,10 +100,10 @@
         <md-button class="md-raised md-dense md-primary" :disabled="loading" v-on:click="apply">Apply</md-button>
 
         <div class="custom-block danger" v-if="error">
-            <p class="custom-block-title">This image cannot be loaded</p> 
+            <p class="custom-block-title">This image cannot be loaded</p>
             <p>
-                An undefined error occurred while loading the panorama. 
-                If your image is very big and you are using Firefox please try with Chrome, as Firefox has trouble loading large base64 images.
+                An undefined error occurred while loading the panorama. If your image is very big and you are using
+                Firefox please try with Chrome, as Firefox has trouble loading large base64 images.
             </p>
         </div>
 

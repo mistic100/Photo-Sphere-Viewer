@@ -6,7 +6,10 @@ import type { VirtualTourPlugin } from '../VirtualTourPlugin';
 export abstract class AbstractDatasource {
     nodes: Record<string, VirtualTourNode> = {};
 
-    constructor(protected readonly plugin: VirtualTourPlugin, protected readonly viewer: Viewer) {}
+    constructor(
+        protected readonly plugin: VirtualTourPlugin,
+        protected readonly viewer: Viewer
+    ) {}
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     destroy() {}

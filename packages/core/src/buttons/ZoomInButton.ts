@@ -6,6 +6,6 @@ export class ZoomInButton extends AbstractZoomButton {
     static override readonly id = 'zoomIn';
 
     constructor(navbar: Navbar) {
-        super(navbar, ZoomButtonDirection.IN, ICONS.zoomIn);
+        super(navbar, ICONS.zoomIn, ZoomButtonDirection.IN);
     }
 }

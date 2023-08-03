@@ -28,7 +28,10 @@ export function checkTilesLevels(levels: Array<{ zoomRange: [number, number] }>)
     });
 }
 
-export function getTileIndexByZoomLevel<T extends { zoomRange: [number, number] }>(levels: T[], zoomLevel: number): number {
+export function getTileIndexByZoomLevel<T extends { zoomRange: [number, number] }>(
+    levels: T[],
+    zoomLevel: number
+): number {
     return levels.findIndex((level) => {
         return zoomLevel >= level.zoomRange[0] && zoomLevel <= level.zoomRange[1];
     });

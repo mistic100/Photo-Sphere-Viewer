@@ -184,7 +184,7 @@ export class Tooltip extends AbstractComponent {
             throw new PSVError('Uninitialized tooltip cannot be moved');
         }
 
-        config.box = config.box ?? this.state.config?.box ?? { width: 0,  height: 0 };
+        config.box = config.box ?? this.state.config?.box ?? { width: 0, height: 0 };
         this.state.config = config;
 
         const t = this.container;

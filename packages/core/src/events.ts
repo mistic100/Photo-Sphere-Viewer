@@ -222,7 +222,10 @@ export class PanoramaErrorEvent extends ViewerEvent {
     override type: 'panorama-error';
 
     /** @internal */
-    constructor(public readonly panorama: any, public readonly error: Error) {
+    constructor(
+        public readonly panorama: any,
+        public readonly error: Error
+    ) {
         super(PanoramaErrorEvent.type);
     }
 }

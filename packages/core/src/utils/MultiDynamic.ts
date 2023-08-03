@@ -5,14 +5,20 @@ import { Dynamic } from './Dynamic';
  */
 export class MultiDynamic<T extends Record<string, Dynamic>> {
     get current(): Record<keyof T, number> {
-        return Object.entries(this.dynamics).reduce((values, [name, dynamic]) => {
-            // @ts-ignore
-            values[name] = dynamic.current;
-            return values;
-        }, {} as Record<keyof T, number>);
+        return Object.entries(this.dynamics).reduce(
+            (values, [name, dynamic]) => {
+                // @ts-ignore
+                values[name] = dynamic.current;
+                return values;
+            },
+            {} as Record<keyof T, number>
+        );
     }
 
-    constructor(private readonly fn: (val: Record<keyof T, number>) => void, private readonly dynamics: T) {
+    constructor(
+        private readonly fn: (val: Record<keyof T, number>) => void,
+        private readonly dynamics: T
+    ) {
         if (this.fn) {
             this.fn(this.current);
         }
@@ -42,10 +48,13 @@ export class MultiDynamic<T extends Record<string, Dynamic>> {
     step(steps: Partial<Record<keyof T, number>>, speedMult = 1) {
         if (speedMult === 0) {
             this.setValue(
-                Object.keys(steps).reduce((values, name: keyof T) => {
-                    values[name] = steps[name] + this.dynamics[name].current;
-                    return values;
-                }, {} as typeof steps)
+                Object.keys(steps).reduce(
+                    (values, name: keyof T) => {
+                        values[name] = steps[name] + this.dynamics[name].current;
+                        return values;
+                    },
+                    {} as typeof steps
+                )
             );
         } else {
             for (const [name, step] of Object.entries(steps)) {

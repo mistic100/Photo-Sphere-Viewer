@@ -7,7 +7,10 @@ import { VideoPlugin } from '../VideoPlugin';
 export class PauseOverlay extends AbstractComponent {
     private readonly button: HTMLElement;
 
-    constructor(private readonly plugin: VideoPlugin, viewer: Viewer) {
+    constructor(
+        private readonly plugin: VideoPlugin,
+        viewer: Viewer
+    ) {
         super(viewer, {
             className: 'psv-video-overlay',
         });

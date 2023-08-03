@@ -50,7 +50,7 @@ class Step {
     private $: number = Step.IDLE;
 
     is(...steps: number[]): boolean {
-        return steps.some(step => this.$ & step);
+        return steps.some((step) => this.$ & step);
     }
 
     set(step: number) {

@@ -6,6 +6,6 @@ export class ZoomOutButton extends AbstractZoomButton {
     static override readonly id = 'zoomOut';
 
     constructor(navbar: Navbar) {
-        super(navbar, ZoomButtonDirection.OUT, ICONS.zoomOut);
+        super(navbar, ICONS.zoomOut, ZoomButtonDirection.OUT);
     }
 }
