@@ -40,7 +40,7 @@
     "marked": "^4.2.3",
     "mocha": "^10.2.0",
     "postcss": "^8.4.21",
-    "prettier": "^2.8.8",
+    "prettier": "^3.0.2",
     "raw-loader": "^4.0.2",
     "sass": "^1.66.1",
     "scss-bundle": "^3.1.2",
