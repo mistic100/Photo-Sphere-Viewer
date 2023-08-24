@@ -167,7 +167,7 @@ export class StereoPlugin extends AbstractPlugin<StereoPluginEvents> {
      */
     private __startWakelock() {
         if ('wakeLock' in navigator) {
-            (navigator as any).wakeLock
+            navigator.wakeLock
                 .request('screen')
                 .then((wakeLock: WakeLockSentinel) => {
                     this.state.wakeLock = wakeLock;
@@ -210,10 +210,10 @@ export class StereoPlugin extends AbstractPlugin<StereoPluginEvents> {
             }
         };
 
-        if (window.screen?.orientation) {
-            window.screen.orientation.lock('landscape').then(null, () => displayRotateMessage());
-            displayRotateMessageTimeout = setTimeout(() => displayRotateMessage(), 500);
-        } else {
+        try {
+            (window.screen.orientation as any).lock('landscape').then(null, () => displayRotateMessage());
+            displayRotateMessageTimeout = setTimeout(() => displayRotateMessage(), 1000);
+        } catch {
             displayRotateMessage();
         }
     }
@@ -222,10 +222,11 @@ export class StereoPlugin extends AbstractPlugin<StereoPluginEvents> {
      * Unlock the device orientation
      */
     private __unlockOrientation() {
-        if (window.screen?.orientation) {
-            window.screen.orientation.unlock();
-        } else {
-            this.viewer.overlay.hide(ID_OVERLAY_PLEASE_ROTATE);
+        this.viewer.overlay.hide(ID_OVERLAY_PLEASE_ROTATE);
+        try {
+            window.screen.orientation?.unlock();
+        } catch {
+            // empty
         }
     }
 }

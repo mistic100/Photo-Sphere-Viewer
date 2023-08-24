@@ -54,7 +54,7 @@
     "turbo": "^1.10.0",
     "typedoc": "^0.24.1",
     "typedoc-plugin-extras": "^2.3.3",
-    "typescript": "^5.1.3",
+    "typescript": "^5.2.2",
     "vue-material": "^1.0.0-beta-16",
     "vue-slider-component": "^3.2.24",
     "vue-swatches": "^2.1.1",
