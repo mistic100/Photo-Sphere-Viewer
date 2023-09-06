@@ -53,7 +53,7 @@
     "tsup": "^7.2.0",
     "turbo": "^1.10.0",
     "typedoc": "^0.25.0",
-    "typedoc-plugin-extras": "^2.3.3",
+    "typedoc-plugin-extras": "^3.0.0",
     "typescript": "^5.2.2",
     "vue-material": "^1.0.0-beta-16",
     "vue-slider-component": "^3.2.24",

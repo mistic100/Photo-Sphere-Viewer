@@ -10319,10 +10319,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
 
-typedoc-plugin-extras@^2.3.3:
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/typedoc-plugin-extras/-/typedoc-plugin-extras-2.3.3.tgz#274b3fd419392b39d94b25597063e792a7c70e40"
-  integrity sha512-n9zOdVSbGQ8rhsSxtmGCQPVEim345MwpeKl9PUC6ToLR8tu3YYA3BEuR9fP0z+FSx1ExU/kGzxY3sn4+FyHE2w==
+typedoc-plugin-extras@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/typedoc-plugin-extras/-/typedoc-plugin-extras-3.0.0.tgz#e41eeb815aaa572beb8c274834a6b7f51dd55b24"
+  integrity sha512-eiAe3qtm2WbV5owdncpt0zHZPqsNZH2mzNGILPd4zqrvEZie3Et9es4cpGZ+8lHO/SI0pVKwsAj7IuMxPNOdYg==
 
 typedoc@^0.25.0:
   version "0.25.0"
