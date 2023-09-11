@@ -43,7 +43,7 @@ export class CompassPlugin extends AbstractConfigurablePlugin<
 
         this.component = new CompassComponent(this.viewer, this);
     }
-    
+
     /**
      * @internal
      */

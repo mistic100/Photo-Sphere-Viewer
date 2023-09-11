@@ -140,7 +140,7 @@ export type MapPluginConfig = {
     /**
      * Default style of hotspots
      */
-    spotStyle?: MapHotspotStyle,
+    spotStyle?: MapHotspotStyle;
 
     /**
      * Make the map static and rotate the pin instead
@@ -183,7 +183,7 @@ export type MapPluginConfig = {
         reset?: boolean;
         /** @default true */
         north?: boolean;
-    },
+    };
 };
 
 export type ParsedMapPluginConfig = Omit<MapPluginConfig, 'position' | 'rotation'> & {

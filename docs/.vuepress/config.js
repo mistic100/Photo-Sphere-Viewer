@@ -123,8 +123,9 @@ module.exports = {
                 {
                     title: 'Official plugins',
                     collapsable: false,
-                    children: getFiles('docs/plugins')
-                        .filter((f) => f !== 'README.md' && f !== 'writing-a-plugin.md' && f !== 'third-party.md'),
+                    children: getFiles('docs/plugins').filter((f) => {
+                        return f !== 'README.md' && f !== 'writing-a-plugin.md' && f !== 'third-party.md';
+                    }),
                 },
                 'third-party',
             ],
@@ -150,7 +151,11 @@ module.exports = {
                                 children: files.map((f) => `${group}/${f}`),
                             }))
                             .sort((a, b) => {
-                                return a.title === 'Basic' ? -1 : b.title === 'Basic' ? 1 : a.title.localeCompare(b.title);
+                                return a.title === 'Basic'
+                                    ? -1
+                                    : b.title === 'Basic'
+                                    ? 1
+                                    : a.title.localeCompare(b.title);
                             });
                     })(),
                 },

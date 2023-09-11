@@ -1,7 +1,27 @@
-import type { Point, Position, Size, Tooltip, TooltipConfig, Viewer } from '@photo-sphere-viewer/core';
+import type {
+    ExtendedPosition,
+    Point,
+    Position,
+    Size,
+    Tooltip,
+    TooltipConfig,
+    Viewer,
+} from '@photo-sphere-viewer/core';
 import { CONSTANTS, PSVError, utils } from '@photo-sphere-viewer/core';
+import {
+    BufferGeometry,
+    Group,
+    MathUtils,
+    Mesh,
+    MeshBasicMaterial,
+    Object3D,
+    PlaneGeometry,
+    RepeatWrapping,
+    Texture,
+    Vector3,
+    VideoTexture,
+} from 'three';
 import type { MarkersPlugin } from './MarkersPlugin';
-import { Group, MathUtils, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, TextureLoader, Vector3 } from 'three';
 import { DEFAULT_HOVER_SCALE, MARKER_DATA, SVG_NS } from './constants';
 import { MarkerConfig, ParsedMarkerConfig } from './model';
 import { getPolygonCenter, getPolylineCenter } from './utils';
@@ -9,6 +29,7 @@ import { getPolygonCenter, getPolylineCenter } from './utils';
 export enum MarkerType {
     image = 'image',
     imageLayer = 'imageLayer',
+    videoLayer = 'videoLayer',
     html = 'html',
     element = 'element',
     polygon = 'polygon',
@@ -34,7 +55,6 @@ export class Marker {
 
     /** @internal */
     tooltip?: Tooltip;
-    private loader?: TextureLoader;
 
     config: ParsedMarkerConfig;
 
@@ -52,6 +72,15 @@ export class Marker {
 
     get threeElement(): Object3D {
         return this.is3d() ? this.element : null;
+    }
+
+    get video(): HTMLVideoElement {
+        if (this.type === MarkerType.videoLayer) {
+            const mesh = this.threeElement.children[0] as Mesh<BufferGeometry, MeshBasicMaterial>;
+            return mesh.material.map.image;
+        } else {
+            utils.logWarn(`Marker ${this.id} is not a video marker`);
+        }
     }
 
     /** @internal */
@@ -91,11 +120,6 @@ export class Marker {
             this.domElement.appendChild(elt);
         } else if (this.is3d()) {
             this.element = this.__createMesh();
-            this.loader = new TextureLoader();
-            if (this.viewer.config.withCredentials) {
-                this.loader.setWithCredentials(true);
-                this.loader.setCrossOrigin('use-credentials');
-            }
         }
 
         if (!this.is3d()) {
@@ -112,6 +136,10 @@ export class Marker {
         }
 
         this.update(config);
+
+        if (this.type === MarkerType.videoLayer) {
+            this.viewer.needsContinuousUpdate(true);
+        }
     }
 
     /**
@@ -125,13 +153,18 @@ export class Marker {
         } else {
             delete this.element[MARKER_DATA];
         }
+
+        if (this.type === MarkerType.videoLayer) {
+            this.viewer.needsContinuousUpdate(false);
+        }
     }
 
     /**
      * Checks if it is a 3D marker (imageLayer)
      */
     is3d(): boolean {
-        return this.type === MarkerType.imageLayer;
+        return this.type === MarkerType.imageLayer
+            || this.type === MarkerType.videoLayer;
     }
 
     /**
@@ -248,12 +281,16 @@ export class Marker {
         if (this.state.visible && this.config.tooltip?.content && this.state.position2D) {
             const config: TooltipConfig = {
                 ...this.config.tooltip,
+                style: {
+                    // prevents conflicts with tooltip tracking
+                    pointerEvents: this.state.staticTooltip ? 'auto' : 'none',
+                },
                 data: this,
                 top: 0,
                 left: 0,
             };
 
-            if (this.isPoly()) {
+            if (this.isPoly() || this.is3d()) {
                 if (clientX || clientY) {
                     const viewerPos = utils.getPosition(this.viewer.container);
                     config.top = clientY - viewerPos.y;
@@ -289,16 +326,6 @@ export class Marker {
             } else {
                 this.tooltip = this.viewer.createTooltip(config);
             }
-        }
-    }
-
-    /**
-     * Recompute the position of the tooltip
-     * @internal
-     */
-    refreshTooltip() {
-        if (this.tooltip) {
-            this.showTooltip();
         }
     }
 
@@ -442,7 +469,7 @@ export class Marker {
             case MarkerType.element:
                 if (this.definition !== this.config.element) {
                     this.definition = this.config.element;
-                    element.childNodes.forEach(n => n.remove());
+                    element.childNodes.forEach((n) => n.remove());
                     element.appendChild(this.config.element);
                     this.config.element.style.display = 'block';
                 }
@@ -609,11 +636,7 @@ export class Marker {
         }
 
         const centroid = this.isPolygon() ? getPolygonCenter(this.definition) : getPolylineCenter(this.definition);
-
-        this.state.position = {
-            yaw: centroid[0],
-            pitch: centroid[1],
-        };
+        this.state.position = { yaw: centroid[0], pitch: centroid[1] };
 
         // compute x/y/z positions
         this.state.positions3D = (this.definition as Array<[number, number]>).map((coord) => {
@@ -626,67 +649,172 @@ export class Marker {
      */
     private __update3d() {
         const element = this.threeElement;
-        const mesh = element.children[0] as Mesh<any, MeshBasicMaterial>;
-
-        if (!utils.isExtendedPosition(this.config.position)) {
-            throw new PSVError('missing marker position');
-        }
-        if (!this.config.size) {
-            throw new PSVError('missing marker size');
-        }
+        const mesh = element.children[0] as Mesh<BufferGeometry, MeshBasicMaterial>;
 
         this.state.dynamicSize = false;
-        this.state.size = this.config.size;
 
-        // convert texture coordinates to spherical coordinates
-        this.state.position = this.viewer.dataHelper.cleanPosition(this.config.position);
+        if (utils.isExtendedPosition(this.config.position)) {
+            if (!this.config.size) {
+                throw new PSVError('missing marker size');
+            }
 
-        // compute x/y/z position
-        this.state.positions3D = [this.viewer.dataHelper.sphericalCoordsToVector3(this.state.position)];
+            this.state.position = this.viewer.dataHelper.cleanPosition(this.config.position);
+            this.state.size = this.config.size;
+
+            mesh.position.set(0.5 - this.state.anchor.x, this.state.anchor.y - 0.5, 0);
+            this.viewer.dataHelper.sphericalCoordsToVector3(this.state.position, element.position);
+
+            element.lookAt(0, element.position.y, 0);
+            switch (this.config.orientation) {
+                case 'horizontal':
+                    element.rotateX(this.state.position.pitch < 0 ? -Math.PI / 2 : Math.PI / 2);
+                    break;
+                case 'vertical-left':
+                    element.rotateY(-Math.PI * 0.4);
+                    break;
+                case 'vertical-right':
+                    element.rotateY(Math.PI * 0.4);
+                    break;
+                // no default
+            }
+
+            // 100 is magic number that gives a coherent size at default zoom level
+            element.scale.set(this.config.size.width / 100, this.config.size.height / 100, 1);
+
+            const p = mesh.geometry.getAttribute('position');
+            this.state.positions3D = [0, 1, 3, 2].map((i) => {
+                const v3 = new Vector3();
+                v3.fromBufferAttribute(p, i);
+                return mesh.localToWorld(v3);
+            });
+        } else {
+            if (this.config.position?.length !== 4) {
+                throw new PSVError('missing marker position');
+            }
+
+            const positions = this.config.position.map((p) => this.viewer.dataHelper.cleanPosition(p));
+            const positions3D = positions.map((p) => this.viewer.dataHelper.sphericalCoordsToVector3(p));
+
+            const centroid = getPolygonCenter(positions.map(({ yaw, pitch }) => [yaw, pitch]));
+            this.state.position = { yaw: centroid[0], pitch: centroid[1] };
+
+            this.state.positions3D = positions3D;
+
+            const p = mesh.geometry.getAttribute('position');
+            [
+                positions3D[0],
+                positions3D[1],
+                positions3D[3], // not a mistake!
+                positions3D[2],
+            ].forEach((v, i) => {
+                p.setX(i, v.x);
+                p.setY(i, v.y);
+                p.setZ(i, v.z);
+            });
+        }
 
         switch (this.type) {
+            case MarkerType.videoLayer:
+                if (this.definition !== this.config.videoLayer) {
+                    mesh.material.map?.dispose();
+
+                    const video = document.createElement('video');
+                    video.crossOrigin = this.viewer.config.withCredentials ? 'use-credentials' : 'anonymous';
+                    video.loop = true;
+                    video.playsInline = true;
+                    video.muted = true;
+                    video.autoplay = true;
+                    video.preload = 'metadata';
+                    video.src = this.config.videoLayer;
+                    this.viewer.container.appendChild(video);
+
+                    mesh.material.map = new VideoTexture(video);
+
+                    if (!utils.isExtendedPosition(this.config.position)) {
+                        video.addEventListener('loadedmetadata', () => {
+                            this.__setTextureWrap(mesh.material.map, { width: video.videoWidth, height: video.videoHeight });
+                        }, { once: true });
+                    }
+
+                    video.play();
+
+                    this.definition = this.config.videoLayer;
+                }
+                break;
+
             case MarkerType.imageLayer:
                 if (this.definition !== this.config.imageLayer) {
-                    if (this.viewer.config.requestHeaders) {
-                        this.loader.setRequestHeader(this.viewer.config.requestHeaders(this.config.imageLayer));
-                    }
-                    mesh.material.map = this.loader.load(this.config.imageLayer, (texture) => {
-                        texture.anisotropy = 4;
-                        this.viewer.needsUpdate();
-                    });
+                    mesh.material.map?.dispose();
+
+                    mesh.material.map = new Texture();
+                    this.viewer.textureLoader.loadImage(this.config.imageLayer)
+                        .then((image) => {
+                            if (!utils.isExtendedPosition(this.config.position)) {
+                                this.__setTextureWrap(mesh.material.map, { width: image.width, height: image.height });
+                            }
+
+                            mesh.material.map.image = image;
+                            mesh.material.map.anisotropy = 4;
+                            mesh.material.map.needsUpdate = true;
+                            this.viewer.needsUpdate();
+                        });
+
                     this.definition = this.config.imageLayer;
                 }
-
-                mesh.position.set(this.state.anchor.x - 0.5, this.state.anchor.y - 0.5, 0);
-
-                mesh.material.opacity = this.config.opacity ?? 1;
-
-                element.position.copy(this.state.positions3D[0]);
-
-                switch (this.config.orientation) {
-                    case 'horizontal':
-                        element.lookAt(0, element.position.y, 0);
-                        element.rotateX(this.state.position.pitch < 0 ? -Math.PI / 2 : Math.PI / 2);
-                        break;
-                    case 'vertical-left':
-                        element.lookAt(0, 0, 0);
-                        element.rotateY(-Math.PI * 0.4);
-                        break;
-                    case 'vertical-right':
-                        element.lookAt(0, 0, 0);
-                        element.rotateY(Math.PI * 0.4);
-                        break;
-                    default:
-                        element.lookAt(0, 0, 0);
-                        break;
-                }
-
-                // 100 is magic number that gives a coherent size at default zoom level
-                element.scale.set(this.config.size.width / 100, this.config.size.height / 100, 1);
                 break;
 
             // no default
         }
+
+        mesh.material.opacity = this.config.opacity ?? 1;
+    }
+
+    /**
+     * For layers positionned by corners, applies offset to the texture in order to keep its proportions
+     */
+    private __setTextureWrap(texture: Texture, imageSize: Size) {
+        if (!imageSize.height || !imageSize.width) {
+            texture.repeat.set(1, 1);
+            texture.offset.set(0, 0);
+            return;
+        }
+
+        const positions = (this.config.position as ExtendedPosition[]).map((p) => {
+            return this.viewer.dataHelper.cleanPosition(p);
+        });
+
+        const w1 = utils.greatArcDistance(
+            [positions[0].yaw, positions[0].pitch],
+            [positions[1].yaw, positions[1].pitch]
+        );
+        const w2 = utils.greatArcDistance(
+            [positions[3].yaw, positions[3].pitch],
+            [positions[2].yaw, positions[2].pitch]
+        );
+        const h1 = utils.greatArcDistance(
+            [positions[1].yaw, positions[1].pitch],
+            [positions[2].yaw, positions[2].pitch]
+        );
+        const h2 = utils.greatArcDistance(
+            [positions[0].yaw, positions[0].pitch],
+            [positions[3].yaw, positions[3].pitch]
+        );
+
+        const layerRatio = (w1 + w2) / (h1 + h2);
+        const imageRatio = imageSize.width / imageSize.height;
+
+        let hMargin = 0;
+        let vMargin = 0;
+        if (layerRatio < imageRatio) {
+            hMargin = imageRatio - layerRatio;
+        } else {
+            vMargin = 1 / imageRatio - 1 / layerRatio;
+        }
+
+        texture.wrapS = RepeatWrapping;
+        texture.wrapT = RepeatWrapping;
+        texture.repeat.set(1 - hMargin, 1 - vMargin);
+        texture.offset.set(hMargin / 2, vMargin / 2);
     }
 
     private __createMesh() {

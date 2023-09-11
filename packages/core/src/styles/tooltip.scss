@@ -10,6 +10,7 @@
     transition-property: opacity, transform;
     transition-timing-function: ease-in-out;
     transition-duration: $psv-tooltip-animate-delay;
+    cursor: default;
 
     &-content {
         color: $psv-tooltip-text-color;

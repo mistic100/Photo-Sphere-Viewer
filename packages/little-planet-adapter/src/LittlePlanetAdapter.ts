@@ -21,10 +21,22 @@ export class LittlePlanetAdapter extends EquirectangularAdapter {
         super(viewer, config);
 
         this.viewer.state.littlePlanet = true;
+    }
+
+    override init() {
+        super.init();
 
         this.viewer.addEventListener(events.SizeUpdatedEvent.type, this);
         this.viewer.addEventListener(events.ZoomUpdatedEvent.type, this);
         this.viewer.addEventListener(events.PositionUpdatedEvent.type, this);
+    }
+
+    override destroy(): void {
+        this.viewer.removeEventListener(events.SizeUpdatedEvent.type, this);
+        this.viewer.removeEventListener(events.ZoomUpdatedEvent.type, this);
+        this.viewer.removeEventListener(events.PositionUpdatedEvent.type, this);
+
+        super.destroy();
     }
 
     override supportsTransition() {

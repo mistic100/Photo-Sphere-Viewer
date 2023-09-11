@@ -76,6 +76,7 @@ export class Renderer extends AbstractService {
         this.scene = new Scene();
 
         this.camera = new PerspectiveCamera(50, 16 / 9, 0.1, 2 * SPHERE_RADIUS);
+        this.camera.matrixWorldAutoUpdate = false;
 
         this.mesh = this.viewer.adapter.createMesh();
         this.mesh.userData = { [VIEWER_DATA]: true };
@@ -205,6 +206,7 @@ export class Renderer extends AbstractService {
                 .multiplyScalar(this.config.fisheye / 2)
                 .negate();
         }
+        this.camera.updateMatrixWorld();
         this.viewer.needsUpdate();
     }
 
@@ -218,7 +220,7 @@ export class Renderer extends AbstractService {
         this.viewer.dispatchEvent(new BeforeRenderEvent(timestamp, elapsed));
         this.viewer.dynamics.update(elapsed);
 
-        if (this.state.needsUpdate) {
+        if (this.state.needsUpdate || this.state.continuousUpdateCount > 0) {
             (this.customRenderer || this.renderer).render(this.scene, this.camera);
             this.viewer.dispatchEvent(new RenderEvent());
             this.state.needsUpdate = false;

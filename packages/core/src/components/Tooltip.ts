@@ -40,6 +40,10 @@ export type TooltipConfig = TooltipPosition & {
      */
     className?: string;
     /**
+     * CSS properties added to the tooltip
+     */
+    style?: Record<string, string>;
+    /**
      * Userdata associated to the tooltip
      */
     data?: any;
@@ -103,6 +107,10 @@ export class Tooltip extends AbstractComponent {
 
         this.container.addEventListener('transitionend', this);
 
+        // allows to interact with static tooltips
+        this.container.addEventListener('touchdown', (e) => e.stopPropagation());
+        this.container.addEventListener('mousedown', (e) => e.stopPropagation());
+
         this.container.style.top = '-1000px';
         this.container.style.left = '-1000px';
 
@@ -145,6 +153,9 @@ export class Tooltip extends AbstractComponent {
 
         if (config.className) {
             addClasses(this.container, config.className);
+        }
+        if (config.style) {
+            Object.assign(this.container.style, config.style);
         }
 
         this.state.state = TooltipState.READY;

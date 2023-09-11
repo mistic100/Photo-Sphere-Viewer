@@ -44,7 +44,7 @@ export type CubemapMultiTilesPanorama = {
     /**
      * low resolution panorama loaded before tiles
      */
-    baseUrl?: string;
+    baseUrl?: CubemapPanorama;
     /**
      * Configuration of tiles by zoom level
      */

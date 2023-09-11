@@ -1,4 +1,5 @@
 import { CONSTANTS, utils } from '@photo-sphere-viewer/core';
+import { Vector3 } from 'three';
 
 /**
  * Returns intermediary point between two points on the sphere
@@ -87,4 +88,29 @@ export function getPolylineCenter(polyline: Array<[number, number]>): [number, n
 
     // this never happens
     return points[Math.round(points.length / 2)];
+}
+
+const C = new Vector3();
+const N = new Vector3();
+const V = new Vector3();
+const X = new Vector3();
+const Y = new Vector3();
+const A = new Vector3();
+
+/**
+ * Given one point in the same direction of the camera and one point behind the camera,
+ * computes an intermediary point on the great circle delimiting the half sphere visible by the camera.
+ * The point is shifted by .01 rad because the projector cannot handle points exactly on this circle.
+ * @todo : does not work with fisheye view (must not use the great circle)
+ * @link http://math.stackexchange.com/a/1730410/327208
+ */
+export function getGreatCircleIntersection(P1: Vector3, P2: Vector3, direction: Vector3): Vector3 {
+    C.copy(direction).normalize();
+    N.crossVectors(P1, P2).normalize();
+    V.crossVectors(N, P1).normalize();
+    X.copy(P1).multiplyScalar(-C.dot(V));
+    Y.copy(V).multiplyScalar(C.dot(P1));
+    const H = new Vector3().addVectors(X, Y).normalize();
+    A.crossVectors(H, C);
+    return H.applyAxisAngle(A, 0.01).multiplyScalar(CONSTANTS.SPHERE_RADIUS);
 }

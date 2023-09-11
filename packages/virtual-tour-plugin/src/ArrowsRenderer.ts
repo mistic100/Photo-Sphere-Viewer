@@ -29,7 +29,6 @@ const LIGHT_INTENSITY = parseInt(REVISION) >= 155 ? Math.PI : 1;
  * Custom renderer to draw the arrows atop the panorama, without being impacted by the zoom level
  */
 export class ArrowsRenderer implements CustomRenderer {
-
     private renderer: WebGLRenderer;
 
     private readonly camera: PerspectiveCamera;
@@ -93,8 +92,7 @@ export class ArrowsRenderer implements CustomRenderer {
     getIntersections(raycaster: Raycaster, vector: Vector2): Array<Intersection<Mesh>> {
         raycaster.setFromCamera(vector, this.camera);
 
-        return raycaster
-            .intersectObjects(this.group.children);
+        return raycaster.intersectObjects(this.group.children);
     }
 
     clearArrows() {
@@ -111,7 +109,11 @@ export class ArrowsRenderer implements CustomRenderer {
         mesh.rotation.order = 'YXZ';
         mesh.rotateY(-position.yaw);
         // 2 = base distance to center
-        this.viewer.dataHelper.sphericalCoordsToVector3({ yaw: position.yaw, pitch: 0 }, mesh.position, 2 * depth * size)
+        this.viewer.dataHelper.sphericalCoordsToVector3(
+            { yaw: position.yaw, pitch: 0 },
+            mesh.position,
+            2 * depth * size
+        );
 
         const outlineMesh = new Mesh(ARROW_OUTLINE_GEOM, new MeshBasicMaterial({ side: BackSide }));
         outlineMesh.scale.copy(mesh.scale);
@@ -132,5 +134,4 @@ export class ArrowsRenderer implements CustomRenderer {
             }
         };
     }
-
 }

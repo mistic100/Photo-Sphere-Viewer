@@ -19,6 +19,7 @@ There are four types of markers :
 
 -   **HTML** defined with the `html`/`element` attribute
 -   **Images** defined with the `image`/`imageLayer` attribute
+-   **Videos** defined with the `videoLayer` attribute
 -   **SVGs** defined with the `square`/`rect`/`circle`/`ellipse`/`path` attribute
 -   **Dynamic polygons & polylines** defined with the `polygon`/`polygonPixels`/`polyline`/`polylinePixels` attribute
 
@@ -246,21 +247,22 @@ You can try markers live in [the playground](../playground.md).
 
 One, and only one, of these options is required for each marker.
 
-| Name             | Type                                     | Description                                                                             |
-| ---------------- | ---------------------------------------- | --------------------------------------------------------------------------------------- |
-| `image`          | `string`                                 | Path to the image representing the marker. Requires `width` and `height` to be defined. |
-| `imageLayer`     | `string`                                 | Path to the image representing the marker. Requires `width` and `height` to be defined. |
-| `html`           | `string`                                 | HTML content of the marker. It is recommended to define `width` and `height`.           |
-| `element`        | `HTMLElement`                            | Existing DOM element.                                                                   |
-| `square`         | `integer`                                | Size of the square.                                                                     |
-| `rect`           | `integer[2]`<br>`{width:int,height:int}` | Size of the rectangle.                                                                  |
-| `circle`         | `integer`                                | Radius of the circle.                                                                   |
-| `ellipse`        | `integer[2]`<br>`{rx:int,ry:int}`        | Radiuses of the ellipse.                                                                |
-| `path`           | `string`                                 | Definition of the path (0,0 will be placed at the defined `position`).                  |
-| `polygon`        | `double[2][]`<br>`string[2][]`           | Array of points defining the polygon in spherical coordinates.                          |
-| `polygonPixels`  | `integer[2][]`                           | Same as `polygon` but in pixel coordinates on the panorama image.                       |
-| `polyline`       | `double[2][]`<br>`string[2][]`           | Same as `polygon` but generates a polyline.                                             |
-| `polylinePixels` | `integer[2][]`                           | Same as `polygonPixels` but generates a polyline.                                       |
+| Name             | Type                                     | Description                                                                   |
+| ---------------- | ---------------------------------------- | ----------------------------------------------------------------------------- |
+| `image`          | `string`                                 | Path to an image file. Requires `width` and `height` to be defined.           |
+| `imageLayer`     | `string`                                 | Path to an image file.                                                        |
+| `videoLayer`     | `string`                                 | Path to a video file.                                                         |
+| `html`           | `string`                                 | HTML content of the marker. It is recommended to define `width` and `height`. |
+| `element`        | `HTMLElement`                            | Existing DOM element.                                                         |
+| `square`         | `integer`                                | Size of the square.                                                           |
+| `rect`           | `integer[2]`<br>`{width:int,height:int}` | Size of the rectangle.                                                        |
+| `circle`         | `integer`                                | Radius of the circle.                                                         |
+| `ellipse`        | `integer[2]`<br>`{rx:int,ry:int}`        | Radiuses of the ellipse.                                                      |
+| `path`           | `string`                                 | Definition of the path (0,0 will be placed at the defined `position`).        |
+| `polygon`        | `double[2][]`<br>`string[2][]`           | Array of points defining the polygon in spherical coordinates.                |
+| `polygonPixels`  | `integer[2][]`                           | Same as `polygon` but in pixel coordinates on the panorama image.             |
+| `polyline`       | `double[2][]`<br>`string[2][]`           | Same as `polygon` but generates a polyline.                                   |
+| `polylinePixels` | `integer[2][]`                           | Same as `polygonPixels` but generates a polyline.                             |
 
 **Examples :**
 
@@ -268,6 +270,7 @@ One, and only one, of these options is required for each marker.
 {
   image: 'pin-red.png',
   imageLayer: 'pin-blue.png',
+  videoLayer: 'intro.mp4',
   html: 'Click here',
   element: document.querySelector('#my-marker'),
   square: 10,
@@ -293,11 +296,20 @@ And `image` marker is rendered flat above the viewer but and `imageLayer` is ren
 The `element` marker accepts [Web Components](https://developer.mozilla.org/docs/Web/API/Web_components/Using_custom_elements).
 If your component has an `updateMarker()` method it will be called by the plugin on each render with a bunch of properties:
 
-- `marker`: reference to the marker object itself
-- `position`: computed 2D position in the viewport
-- `viewerPosition`: current camera orientation in yaw+pitch
-- `zoomLevel`: current zoom level
-- `viewerSize`: size of the viewport
+-   `marker`: reference to the marker object itself
+-   `position`: computed 2D position in the viewport
+-   `viewerPosition`: current camera orientation in yaw+pitch
+-   `zoomLevel`: current zoom level
+-   `viewerSize`: size of the viewport
+
+:::
+
+::: tip "Layers" positionning
+There is two ways to position `imageLayer` and `videoLayer` markers:
+
+-   `position` (one value) + `size` + `anchor` (optional) + `orientation` (optional)
+-   `position` with four values defining the corners of the image/video
+
 :::
 
 ### Options
@@ -310,9 +322,11 @@ Unique identifier of the marker.
 
 #### `position` (required for all but polygons/polylines)
 
--   type: `{ yaw, pitch } | { textureX, textureY }`
+-   type: `{ yaw, pitch } | { textureX, textureY } | array`
 
 Position of the marker in **spherical coordinates** (radians/degrees) or **texture coordinates** (pixels).
+
+For `imageLayer` and `videoLayer` it can be defined as an array of four positions (clockwise from top-left) to precisely place the four corners of the element.
 
 _(This option is ignored for polygons and polylines)._
 
@@ -324,12 +338,14 @@ Size of the marker in pixels.
 
 _(This option is ignored for polygons and polylines)._
 
-#### `orientation` (only for `imageLayer`)
+#### `orientation` (only for `imageLayer`, `videoLayer`)
 
 -   type: `'front' | 'horizontal' | 'vertical-left' | 'vertical-right'`
 -   default: `'front'`
 
 Applies a perspective on the image to make it look like placed on the floor or on a wall.
+
+_(Ignored if `position` is an array)._
 
 #### `scale`
 
@@ -338,7 +354,7 @@ Applies a perspective on the image to make it look like placed on the floor or o
 
 Configures the scale of the marker depending on the zoom level and/or the horizontal angle offset. This aims to give a natural feeling to the size of the marker as the users zooms and moves.
 
-_(This option is ignored for polygons, polylines and `imageLayer` markers)._
+_(This option is ignored for polygons, polylines, `imageLayer` and `videoLayer` markers)._
 
 :::: tabs
 
@@ -416,7 +432,7 @@ Opacity of the marker.
 
 CSS class(es) added to the marker element.
 
-_(This option is ignored for `imageLayer` markers)._
+_(This option is ignored for `imageLayer` and `videoLayer` markers)._
 
 #### `style`
 
@@ -424,7 +440,7 @@ _(This option is ignored for `imageLayer` markers)._
 
 CSS properties to set on the marker (background, border, etc.).
 
-_(This option is ignored for `imageLayer` markers)._
+_(For `imageLayer` and `videoLayer` markers only `cursor` can be configured)._
 
 ```js
 style: {

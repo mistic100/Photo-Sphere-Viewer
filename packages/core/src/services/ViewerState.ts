@@ -18,6 +18,11 @@ export class ViewerState {
     needsUpdate = false;
 
     /**
+     * number of plugins requesting to continuously render the scene
+     */
+    continuousUpdateCount = 0;
+
+    /**
      * if the keyboard events are currently listened to
      */
     keyboardEnabled = false;

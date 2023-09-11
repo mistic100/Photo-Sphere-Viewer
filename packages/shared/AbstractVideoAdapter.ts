@@ -1,5 +1,5 @@
 import type { TextureData, Viewer } from '@photo-sphere-viewer/core';
-import { AbstractAdapter, events, PSVError } from '@photo-sphere-viewer/core';
+import { AbstractAdapter, PSVError } from '@photo-sphere-viewer/core';
 import { BufferGeometry, Material, Mesh, VideoTexture } from 'three';
 
 export type AbstractVideoPanorama = {
@@ -38,25 +38,18 @@ export abstract class AbstractVideoAdapter<TPanorama extends AbstractVideoPanora
 
     constructor(viewer: Viewer) {
         super(viewer);
+    }
 
-        this.viewer.addEventListener(events.BeforeRenderEvent.type, this);
+    override init() {
+        super.init();
+
+        this.viewer.needsContinuousUpdate(true);
     }
 
     override destroy() {
-        this.viewer.removeEventListener(events.BeforeRenderEvent.type, this);
-
         this.__removeVideo();
 
         super.destroy();
-    }
-
-    /**
-     * @internal
-     */
-    handleEvent(e: Event) {
-        if (e instanceof events.BeforeRenderEvent) {
-            this.viewer.needsUpdate();
-        }
     }
 
     override supportsPreload(): boolean {
@@ -80,7 +73,7 @@ export abstract class AbstractVideoAdapter<TPanorama extends AbstractVideoPanora
 
         return this.__videoLoadPromise(video).then(() => {
             const texture = new VideoTexture(video);
-            return { panorama, texture };
+            return { panorama, texture, cacheKey: null };
         });
     }
 
@@ -121,19 +114,14 @@ export abstract class AbstractVideoAdapter<TPanorama extends AbstractVideoPanora
         throw new PSVError('VideoAdapter does not support overlay');
     }
 
-    disposeTexture(textureData: AbstractVideoTexture) {
-        if (textureData.texture) {
-            const video: HTMLVideoElement = textureData.texture.image;
-            video.pause();
-            this.viewer.container.removeChild(video);
-        }
-        textureData.texture?.dispose();
+    disposeTexture(textureData: AbstractVideoTexture): void {
+        textureData.texture.dispose();
     }
 
     private __removeVideo() {
         if (this.video) {
             this.video.pause();
-            this.viewer.container.removeChild(this.video);
+            this.video.remove();
             delete this.video;
         }
     }
@@ -143,11 +131,11 @@ export abstract class AbstractVideoAdapter<TPanorama extends AbstractVideoPanora
         video.crossOrigin = this.viewer.config.withCredentials ? 'use-credentials' : 'anonymous';
         video.loop = true;
         video.playsInline = true;
-        video.style.display = 'none';
         video.muted = this.config.muted;
-        video.src = src;
         video.preload = 'metadata';
+        video.src = src;
 
+        video.style.display = 'none';
         this.viewer.container.appendChild(video);
 
         return video;

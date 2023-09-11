@@ -10,7 +10,16 @@ import {
     SphericalPosition,
 } from '../model';
 import { PSVError } from '../PSVError';
-import { AnimationOptions, applyEulerInverse, getAngle, getShortestArc, isNil, parseAngle, speedToDuration } from '../utils';
+import {
+    AnimationOptions,
+    applyEulerInverse,
+    getAngle,
+    getShortestArc,
+    isExtendedPosition,
+    isNil,
+    parseAngle,
+    speedToDuration,
+} from '../utils';
 import type { Viewer } from '../Viewer';
 import { AbstractService } from './AbstractService';
 
@@ -231,6 +240,42 @@ export class DataHelper extends AbstractService {
     sphericalCoordsToViewerCoords(position: Position): Point {
         this.sphericalCoordsToVector3(position, vector3);
         return this.vector3ToViewerCoords(vector3);
+    }
+
+    /**
+     * Checks if a point in the 3D scene is currently visible
+     */
+    isPointVisible(vector: Vector3): boolean;
+
+    /**
+     * Checks if a point on the sphere is currently visible
+     */
+    isPointVisible(position: Position): boolean;
+
+    /**
+     * @internal
+     */
+    isPointVisible(point: Vector3 | Position): boolean {
+        let vector: Vector3;
+        let viewerPoint: Point;
+
+        if (point instanceof Vector3) {
+            vector = point;
+            viewerPoint = this.vector3ToViewerCoords(point);
+        } else if (isExtendedPosition(point)) {
+            vector = this.sphericalCoordsToVector3(point, vector3);
+            viewerPoint = this.vector3ToViewerCoords(vector);
+        } else {
+            return false;
+        }
+
+        return (
+            vector.dot(this.viewer.state.direction) > 0
+            && viewerPoint.x >= 0
+            && viewerPoint.x <= this.viewer.state.size.width
+            && viewerPoint.y >= 0
+            && viewerPoint.y <= this.viewer.state.size.height
+        );
     }
 
     /**

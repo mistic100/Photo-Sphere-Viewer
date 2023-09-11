@@ -6,6 +6,7 @@ import { Notification } from './components/Notification';
 import { Overlay } from './components/Overlay';
 import { Panel } from './components/Panel';
 import { Tooltip, TooltipConfig } from './components/Tooltip';
+import { Cache } from './data/cache';
 import { CONFIG_PARSERS, DEFAULTS, getViewerConfig, READONLY_OPTIONS } from './data/config';
 import { DEFAULT_TRANSITION, IDS, VIEWER_DATA } from './data/constants';
 import { SYSTEM } from './data/system';
@@ -97,6 +98,7 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
     constructor(config: ViewerConfig) {
         super();
 
+        Cache.init();
         SYSTEM.load();
 
         this.state = new ViewerState();
@@ -120,6 +122,8 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
         this.eventsHandler = new EventsHandler(this);
         this.dataHelper = new DataHelper(this);
         this.dynamics = new ViewerDynamics(this);
+
+        this.adapter.init?.();
 
         this.loader = new Loader(this);
         this.navbar = new Navbar(this);
@@ -150,10 +154,12 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
         }
 
         // load panorama
-        if (this.config.panorama) {
-            this.setPanorama(this.config.panorama);
-        } else {
-            this.loader.show();
+        if (!this.state.loadingPromise) {
+            if (this.config.panorama) {
+                this.setPanorama(this.config.panorama);
+            } else {
+                this.loader.show();
+            }
         }
     }
 
@@ -274,6 +280,17 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
      */
     needsUpdate() {
         this.state.needsUpdate = true;
+    }
+
+    /**
+     * Request the scene to be continuously renderer (when using videos)
+     */
+    needsContinuousUpdate(enabled: boolean) {
+        if (enabled) {
+            this.state.continuousUpdateCount++;
+        } else if (this.state.continuousUpdateCount > 0) {
+            this.state.continuousUpdateCount--;
+        }
     }
 
     /**

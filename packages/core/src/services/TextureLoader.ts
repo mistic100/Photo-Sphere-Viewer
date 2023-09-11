@@ -1,6 +1,7 @@
-import { Cache, FileLoader, ImageLoader } from 'three';
+import { FileLoader, ImageLoader } from 'three';
 import { PSVError } from '../PSVError';
 import type { Viewer } from '../Viewer';
+import { Cache } from '../data/cache';
 import { AbstractService } from './AbstractService';
 
 /**
@@ -46,10 +47,17 @@ export class TextureLoader extends AbstractService {
     /**
      * Loads a Blob with FileLoader
      */
-    loadFile(url: string, onProgress?: (p: number) => void): Promise<Blob> {
-        // unlikely case when the image has already been loaded with the ImageLoader
-        if (Cache.get(url) instanceof HTMLImageElement) {
-            Cache.remove(url);
+    loadFile(url: string, onProgress?: (p: number) => void, cacheKey?: string): Promise<Blob> {
+        const cached = Cache.get(url, cacheKey);
+
+        if (cached) {
+            if (cached instanceof Blob) {
+                onProgress?.(100);
+                return Promise.resolve(cached);
+            } else {
+                // unlikely case when the image has already been loaded with the ImageLoader
+                Cache.remove(url, cacheKey);
+            }
         }
 
         if (this.config.requestHeaders) {
@@ -65,7 +73,8 @@ export class TextureLoader extends AbstractService {
                 (result) => {
                     progress = 100;
                     onProgress?.(progress);
-                    resolve(result as any as Blob);
+                    Cache.add(url, cacheKey, result as any);
+                    resolve(result as any);
                 },
                 (e) => {
                     if (e.lengthComputable) {
@@ -86,11 +95,13 @@ export class TextureLoader extends AbstractService {
     /**
      * Loads an image with ImageLoader or with FileLoader if progress is tracked or if request headers are configured
      */
-    loadImage(url: string, onProgress?: (p: number) => void): Promise<HTMLImageElement> {
-        // unlikely case when the image has already been loaded with the FileLoader
-        const cached = Cache.get(url);
+    loadImage(url: string, onProgress?: (p: number) => void, cacheKey?: string): Promise<HTMLImageElement> {
+        const cached = Cache.get(url, cacheKey);
+
         if (cached) {
+            onProgress?.(100);
             if (cached instanceof Blob) {
+                // unlikely case when the image has already been loaded with the FileLoader
                 return this.blobToImage(cached);
             } else {
                 return Promise.resolve(cached);
@@ -98,9 +109,13 @@ export class TextureLoader extends AbstractService {
         }
 
         if (!onProgress && !this.config.requestHeaders) {
-            return this.imageLoader.loadAsync(url);
+            return this.imageLoader.loadAsync(url)
+                .then((result) => {
+                    Cache.add(url, cacheKey, result);
+                    return result;
+                });
         } else {
-            return this.loadFile(url, onProgress).then((blob) => this.blobToImage(blob));
+            return this.loadFile(url, onProgress, cacheKey).then((blob) => this.blobToImage(blob));
         }
     }
 

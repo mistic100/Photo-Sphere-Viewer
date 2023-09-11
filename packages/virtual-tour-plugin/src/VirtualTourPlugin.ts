@@ -255,7 +255,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
         delete this.markers;
         delete this.compass;
         delete this.gallery;
-        delete this.arrowsRenderer
+        delete this.arrowsRenderer;
 
         super.destroy();
     }
@@ -531,7 +531,6 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
                     depth = MathUtils.mapLinear(linksDist[link.nodeId], minDist, maxDist, 0.5, 1.5);
                 }
                 this.arrowsRenderer.addArrow(link, position, depth);
-
             } else {
                 if (this.isGps) {
                     position.pitch += this.config.markerPitchOffset;
@@ -555,10 +554,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
                     config.element = config.element(link);
                 }
 
-                this.markers.addMarker(
-                    config as any,
-                    false
-                );
+                this.markers.addMarker(config as any, false);
             }
         });
 
@@ -608,7 +604,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
     private __onEnterMarker(marker: Marker, link: VirtualTourLink) {
         this.__getTooltipContent(link.nodeId)
-            .then(content => {
+            .then((content) => {
                 if (content) {
                     this.markers.updateMarker({
                         id: marker.id,
@@ -627,7 +623,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
         setMeshColor(mesh as any, link.arrowStyle?.hoverColor || this.config.arrowStyle.hoverColor);
 
         this.__getTooltipContent(link.nodeId)
-            .then(content => {
+            .then((content) => {
                 if (content) {
                     this.state.currentTooltip = this.viewer.createTooltip({
                         left: viewerPoint.x,

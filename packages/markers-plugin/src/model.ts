@@ -6,7 +6,6 @@ import type { Marker } from './Marker';
  */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface MarkerElement extends HTMLElement {
-
     updateMarker?(params: {
         marker: Marker;
         position: Point;
@@ -14,7 +13,6 @@ export interface MarkerElement extends HTMLElement {
         zoomLevel: number;
         viewerSize: Size;
     }): void;
-
 }
 
 /**
@@ -22,17 +20,21 @@ export interface MarkerElement extends HTMLElement {
  */
 export type MarkerConfig = {
     /**
-     * Path to the image representing the marker
+     * Path to an image
      */
     image?: string;
     /**
-     * Path to the image representing the marker
+     * Path to an image
      */
     imageLayer?: string;
     /**
+     * Path to a video
+     */
+    videoLayer?: string;
+    /**
      * HTML content of the marker
      */
-    html?: string ;
+    html?: string;
     /**
      * Exiting DOM element
      */
@@ -84,10 +86,11 @@ export type MarkerConfig = {
     id: string;
     /**
      * Position of the marker (required but for `polygon` and `polyline`)
+     * The array form is used for `imageLayer` and `videoLayer`
      */
-    position?: ExtendedPosition;
+    position?: ExtendedPosition | [ExtendedPosition, ExtendedPosition, ExtendedPosition, ExtendedPosition];
     /**
-     * Size of the marker (required for `image` and `imageLayer`, recommended for `html`, ignored for others)
+     * Size of the marker (required for `image`, recommended for `html`, ignored for others)
      */
     size?: Size;
     /**
@@ -95,7 +98,7 @@ export type MarkerConfig = {
      */
     orientation?: 'front' | 'horizontal' | 'vertical-left' | 'vertical-right';
     /**
-     * Configures the scale of the marker depending on the zoom level and/or the horizontal offset (ignored for `polygon`, `polyline` and `imageLayer`)
+     * Configures the scale of the marker depending on the zoom level and/or the horizontal offset (ignored for `polygon`, `polyline`, `imageLayer`, `videoLayer`)
      */
     scale?:
         | [number, number]
@@ -112,11 +115,11 @@ export type MarkerConfig = {
      */
     opacity?: number;
     /**
-     * CSS class(es) added to the marker element (ignored for `imageLayer`)
+     * CSS class(es) added to the marker element (ignored for `imageLayer`, `videoLayer`)
      */
     className?: string;
     /**
-     * CSS properties to set on the marker (background, border, etc.) (ignored for `imagerLayer`)
+     * CSS properties to set on the marker (background, border, etc.) (ignored for `imagerLayer`, `videoLayer`)
      */
     style?: Record<string, string>;
     /**

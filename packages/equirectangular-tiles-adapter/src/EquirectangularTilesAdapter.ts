@@ -149,6 +149,10 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
                 + 'Consider removing "requestHeaders" if you experience performances issues.'
             );
         }
+    }
+
+    override init() {
+        super.init();
 
         this.viewer.addEventListener(events.PositionUpdatedEvent.type, this);
         this.viewer.addEventListener(events.ZoomUpdatedEvent.type, this);
@@ -219,12 +223,18 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
             }
 
             return this.adapter.loadTexture(panorama.baseUrl, panorama.basePanoData).then((textureData) => ({
-                panorama: panorama,
+                panorama,
+                panoData,
+                cacheKey: textureData.cacheKey,
                 texture: textureData.texture,
-                panoData: panoData,
             }));
         } else {
-            return Promise.resolve({ panorama, panoData, texture: null });
+            return Promise.resolve({
+                panorama,
+                panoData,
+                cacheKey: panorama.tileUrl(0, 0, 0),
+                texture: null,
+            });
         }
     }
 
@@ -325,7 +335,6 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
         }
 
         const camera = this.viewer.renderer.camera;
-        camera.updateMatrixWorld();
         projScreenMatrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
         frustum.setFromProjectionMatrix(projScreenMatrix);
 
@@ -422,7 +431,8 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
      * Loads and draw a tile
      */
     private __loadTile(tile: EquirectangularTile, task: Task): Promise<any> {
-        return this.viewer.textureLoader.loadImage(tile.url)
+        return this.viewer.textureLoader
+            .loadImage(tile.url, null, this.viewer.state.textureData.cacheKey)
             .then((image: HTMLImageElement) => {
                 if (!task.isCancelled()) {
                     if (this.config.debug) {

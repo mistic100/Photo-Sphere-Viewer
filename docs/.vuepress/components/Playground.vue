@@ -601,7 +601,10 @@
                         <md-button
                             class="md-primary"
                             v-on:click="completeMarker"
-                            v-if="markerForm.type && (markerForm.saved || markerForm.type === 'polygon' || markerForm.type === 'polyline')"
+                            v-if="
+                                markerForm.type &&
+                                (markerForm.saved || markerForm.type === 'polygon' || markerForm.type === 'polyline')
+                            "
                         >
                             Done
                         </md-button>
@@ -811,7 +814,6 @@ __s.remove();
                 },
             ];
 
-            
             this.sphereCorrection = cloneDeep(this.DEFAULT_SPHERE_CORRECTION);
             this.options = cloneDeep(this.DEFAULT_OPTIONS);
             this.adapterOptions = cloneDeep(this.DEFAULT_ADAPTER_OPTIONS);

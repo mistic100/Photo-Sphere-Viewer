@@ -121,7 +121,7 @@ export class EquirectangularAdapter extends AbstractAdapter<string, Texture> {
             return Promise.reject(new PSVError('Invalid panorama url, are you using the right adapter?'));
         }
 
-        const blob = await this.viewer.textureLoader.loadFile(panorama, (p) => this.viewer.loader.setProgress(p));
+        const blob = await this.viewer.textureLoader.loadFile(panorama, (p) => this.viewer.loader.setProgress(p), panorama);
         const xmpPanoData = useXmpPanoData ? await this.loadXMP(blob) : null;
         const img = await this.viewer.textureLoader.blobToImage(blob);
 
@@ -163,7 +163,12 @@ export class EquirectangularAdapter extends AbstractAdapter<string, Texture> {
 
         const texture = this.createEquirectangularTexture(img, panoData);
 
-        return { panorama, texture, panoData };
+        return {
+            panorama,
+            texture,
+            panoData,
+            cacheKey: panorama,
+        };
     }
 
     /**
@@ -315,9 +320,6 @@ export class EquirectangularAdapter extends AbstractAdapter<string, Texture> {
     }
 
     private __setUniform(mesh: EquirectangularMesh, uniform: string, value: any) {
-        if (mesh.material.uniforms[uniform].value instanceof Texture) {
-            mesh.material.uniforms[uniform].value.dispose();
-        }
         mesh.material.uniforms[uniform].value = value;
     }
 

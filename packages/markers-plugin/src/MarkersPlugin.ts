@@ -1,6 +1,9 @@
-import type { Point, Position, Tooltip, Viewer } from '@photo-sphere-viewer/core';
-import { AbstractConfigurablePlugin, CONSTANTS, events, PSVError, utils } from '@photo-sphere-viewer/core';
+import type { Point, Position, Viewer } from '@photo-sphere-viewer/core';
+import { AbstractConfigurablePlugin, PSVError, events, utils } from '@photo-sphere-viewer/core';
 import { Vector3 } from 'three';
+import { Marker, MarkerType } from './Marker';
+import { MarkersButton } from './MarkersButton';
+import { MarkersListButton } from './MarkersListButton';
 import {
     DEFAULT_HOVER_SCALE,
     ID_PANEL_MARKER,
@@ -14,8 +17,8 @@ import {
     GotoMarkerDoneEvent,
     HideMarkersEvent,
     LeaveMarkerEvent,
-    MarkersPluginEvents,
     MarkerVisibilityEvent,
+    MarkersPluginEvents,
     RenderMarkersListEvent,
     SelectMarkerEvent,
     SelectMarkerListEvent,
@@ -23,10 +26,8 @@ import {
     ShowMarkersEvent,
     UnselectMarkerEvent,
 } from './events';
-import { Marker, MarkerType } from './Marker';
-import { MarkersButton } from './MarkersButton';
-import { MarkersListButton } from './MarkersListButton';
 import { MarkerConfig, MarkersPluginConfig, ParsedMarkersPluginConfig, UpdatableMarkersPluginConfig } from './model';
+import { getGreatCircleIntersection } from './utils';
 
 const getConfig = utils.getConfigParser<MarkersPluginConfig, ParsedMarkersPluginConfig>(
     {
@@ -166,35 +167,37 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
             case events.ObjectHoverEvent.type:
                 if ((e as events.ObjectEvent).userDataKey === MARKER_DATA) {
                     const event = (e as events.ObjectEvent).originalEvent;
-                    const marker = (e as events.ObjectEvent).object.userData[MARKER_DATA];
+                    const marker: Marker = (e as events.ObjectEvent).object.userData[MARKER_DATA];
                     switch (e.type) {
                         case events.ObjectEnterEvent.type:
-                            if (marker.config.tooltip || marker.config.content) {
+                            if (marker.config.style?.cursor) {
+                                this.viewer.setCursor(marker.config.style.cursor);
+                            } else if (marker.config.tooltip || marker.config.content) {
                                 this.viewer.setCursor('pointer');
                             }
-                            this.__onMouseEnter(event, marker);
+                            this.__onEnterMarker(event, marker);
                             break;
                         case events.ObjectLeaveEvent.type:
                             this.viewer.setCursor(null);
-                            this.__onMouseLeave(event, marker);
+                            this.__onLeaveMarker(marker);
                             break;
                         case events.ObjectHoverEvent.type:
-                            this.__onMouseMove(event, marker);
+                            this.__onHoverMarker(event, marker);
                             break;
                     }
                 }
                 break;
 
             case 'mouseenter':
-                this.__onMouseEnter(e as MouseEvent, this.__getTargetMarker(e.target as HTMLElement));
+                this.__onEnterMarker(e as MouseEvent, this.__getTargetMarker(e.target as HTMLElement));
                 break;
 
             case 'mouseleave':
-                this.__onMouseLeave(e as MouseEvent, this.__getTargetMarker(e.target as HTMLElement));
+                this.__onLeaveMarker(this.__getTargetMarker(e.target as HTMLElement));
                 break;
 
             case 'mousemove':
-                this.__onMouseMove(e as MouseEvent, this.__getTargetMarker(e.target as HTMLElement));
+                this.__onHoverMarker(e as MouseEvent, this.__getTargetMarker(e.target as HTMLElement, true));
                 break;
 
             case 'contextmenu':
@@ -626,11 +629,6 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
                 marker.hideTooltip();
             } else if (marker.state.staticTooltip) {
                 marker.showTooltip();
-            } else if (
-                marker.config.tooltip?.trigger === 'click'
-                || (marker === this.state.hoveringMarker && !marker.isPoly())
-            ) {
-                marker.refreshTooltip();
             } else if (marker !== this.state.hoveringMarker) {
                 marker.hideTooltip();
             }
@@ -647,7 +645,7 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
     private __applyScale(marker: Marker, {
         zoomLevel,
         viewerPosition,
-        mouseover
+        mouseover,
     }: {
         zoomLevel: number;
         viewerPosition: Position;
@@ -666,20 +664,24 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
      * It tests if the point is in the general direction of the camera, then check if it's in the viewport
      */
     private __isMarkerVisible(marker: Marker, position: Point): boolean {
-        return (
-            marker.state.positions3D[0].dot(this.viewer.state.direction) > 0
-            && position.x + marker.state.size.width >= 0
-            && position.x - marker.state.size.width <= this.viewer.state.size.width
-            && position.y + marker.state.size.height >= 0
-            && position.y - marker.state.size.height <= this.viewer.state.size.height
-        );
+        if (marker.is3d()) {
+            return marker.state.positions3D.some((vector) => this.viewer.dataHelper.isPointVisible(vector));
+        } else {
+            return (
+                marker.state.positions3D[0].dot(this.viewer.state.direction) > 0
+                && position.x + marker.state.size.width >= 0
+                && position.x - marker.state.size.width <= this.viewer.state.size.width
+                && position.y + marker.state.size.height >= 0
+                && position.y - marker.state.size.height <= this.viewer.state.size.height
+            );
+        }
     }
 
     /**
      * Computes viewer coordinates of a marker
      */
     private __getMarkerPosition(marker: Marker): Point {
-        if (marker.isPoly()) {
+        if (marker.isPoly() || marker.is3d()) {
             return this.viewer.dataHelper.sphericalCoordsToViewerCoords(marker.state.position);
         } else {
             const position = this.viewer.dataHelper.vector3ToViewerCoords(marker.state.positions3D[0]);
@@ -730,7 +732,7 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
         // compute intermediary vector for each pair (the loop is reversed for splice to insert at the right place)
         toBeComputed.reverse().forEach((pair) => {
             positions3D.splice(pair.index, 0, {
-                vector: this.__getPolyIntermediaryPoint(pair.visible, pair.invisible),
+                vector: getGreatCircleIntersection(pair.visible, pair.invisible, this.viewer.state.direction),
                 visible: true,
             });
         });
@@ -742,24 +744,6 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
     }
 
     /**
-     * Given one point in the same direction of the camera and one point behind the camera,
-     * computes an intermediary point on the great circle delimiting the half sphere visible by the camera.
-     * The point is shifted by .01 rad because the projector cannot handle points exactly on this circle.
-     * @todo : does not work with fisheye view (must not use the great circle)
-     * @link http://math.stackexchange.com/a/1730410/327208
-     */
-    private __getPolyIntermediaryPoint(P1: Vector3, P2: Vector3): Vector3 {
-        const C = this.viewer.state.direction.clone().normalize();
-        const N = new Vector3().crossVectors(P1, P2).normalize();
-        const V = new Vector3().crossVectors(N, P1).normalize();
-        const X = P1.clone().multiplyScalar(-C.dot(V));
-        const Y = V.clone().multiplyScalar(C.dot(P1));
-        const H = new Vector3().addVectors(X, Y).normalize();
-        const a = new Vector3().crossVectors(H, C);
-        return H.applyAxisAngle(a, 0.01).multiplyScalar(CONSTANTS.SPHERE_RADIUS);
-    }
-
-    /**
      * Returns the marker associated to an event target
      */
     private __getTargetMarker(target: HTMLElement, closest = false): Marker {
@@ -768,17 +752,10 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
     }
 
     /**
-     * Checks if an event target is in the tooltip
-     */
-    private __targetOnTooltip(target: HTMLElement, tooltip: Tooltip): boolean {
-        return target && tooltip ? utils.hasParent(target, tooltip.container) : false;
-    }
-
-    /**
      * Handles mouse enter events, show the tooltip for non polygon markers
      */
-    private __onMouseEnter(e: MouseEvent, marker: Marker) {
-        if (marker && !marker.isPoly()) {
+    private __onEnterMarker(e: MouseEvent, marker?: Marker) {
+        if (marker) {
             this.state.hoveringMarker = marker;
 
             this.dispatchEvent(new EnterMarkerEvent(marker));
@@ -800,9 +777,8 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
     /**
      * Handles mouse leave events, hide the tooltip
      */
-    private __onMouseLeave(e: MouseEvent, marker: Marker) {
-        // do not hide if we enter the tooltip itself while hovering a polygon
-        if (marker && !(marker.isPoly() && this.__targetOnTooltip(e.relatedTarget as HTMLElement, marker.tooltip))) {
+    private __onLeaveMarker(marker?: Marker) {
+        if (marker) {
             this.dispatchEvent(new LeaveMarkerEvent(marker));
 
             if (marker.isNormal() || marker.isSvg()) {
@@ -817,6 +793,8 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
 
             if (!marker.state.staticTooltip && marker.config.tooltip?.trigger === 'hover') {
                 marker.hideTooltip();
+            } else if (marker.state.staticTooltip) {
+                marker.showTooltip();
             }
         }
     }
@@ -824,38 +802,11 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
     /**
      * Handles mouse move events, refreshUi the tooltip for polygon markers
      */
-    private __onMouseMove(e: MouseEvent, targetMarker?: Marker) {
-        let marker;
-
-        if (targetMarker?.isPoly()) {
-            marker = targetMarker;
-        }
-        // do not hide if we enter the tooltip itself while hovering a polygon
-        else if (
-            this.state.hoveringMarker
-            && this.__targetOnTooltip(e.target as HTMLElement, this.state.hoveringMarker.tooltip)
-        ) {
-            marker = this.state.hoveringMarker;
-        }
-
-        if (marker) {
-            if (!this.state.hoveringMarker) {
-                this.dispatchEvent(new EnterMarkerEvent(marker));
-
-                this.state.hoveringMarker = marker;
-            }
-
-            if (!marker.state.staticTooltip) {
+    private __onHoverMarker(e: MouseEvent, marker?: Marker) {
+        if (marker && (marker.isPoly() || marker.is3d())) {
+            if (marker.config.tooltip?.trigger === 'hover') {
                 marker.showTooltip(e.clientX, e.clientY);
             }
-        } else if (this.state.hoveringMarker?.isPoly()) {
-            this.dispatchEvent(new LeaveMarkerEvent(this.state.hoveringMarker));
-
-            if (!this.state.hoveringMarker.state.staticTooltip) {
-                this.state.hoveringMarker.hideTooltip();
-            }
-
-            this.state.hoveringMarker = null;
         }
     }
 

@@ -373,3 +373,41 @@ keyboardActions: {
 -   default: `{ alpha: true, antialias: true }`
 
 Configuration of the ThreeJS WebGLRenderer.
+
+## Cache
+
+Photo Sphere Viewer contains a cache system to save resources when switching back and forth between multiple panoramas.
+This cache is global and shared across viewers (_note:_ is not related to ThreeJS Cache, which should not be enabled).
+
+To get the cache instance, import it from `@photo-sphere-viewer/core`, then you can configure it.
+
+```js
+import { Cache } from '@photo-sphere-viewer/core';
+
+Cache.enabled = false;
+Cache.ttl = 300;
+Cache.maxItems = 3;
+```
+
+#### `enabled`
+
+-   type: `boolean`
+-   default: `true`
+
+Allows to completely disable the cache.
+
+#### `ttl`
+
+-   type: `number`
+-   default: `600`
+
+Maximum retention duration in minutes.
+
+#### `maxItems`
+
+-   type: `number`
+-   default: `10`
+
+Maximum number of items stored in the case.
+
+_Note:_ the actual number of files will be greater with cubemap and tiles adapters.

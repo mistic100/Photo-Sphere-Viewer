@@ -162,9 +162,22 @@ export type PanoramaOptions = Partial<ExtendedPosition> & {
  * Result of {@link AbstractAdapter.loadTexture}
  */
 export type TextureData<T = Texture | Texture[] | Record<string, Texture>, P = any> = {
+    /**
+     * Actual texture or list of textures
+     */
     texture: T;
+    /**
+     * Equirectangular pano data
+     */
     panoData?: PanoData;
+    /**
+     * Original panorama definition
+     */
     panorama: P;
+    /**
+     * Key used in the loader cache
+     */
+    cacheKey: string;
 };
 
 /**

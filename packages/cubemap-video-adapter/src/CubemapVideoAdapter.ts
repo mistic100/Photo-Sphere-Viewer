@@ -151,7 +151,6 @@ void main() {
         const { texture } = textureData;
         const video: HTMLVideoElement = texture.image;
 
-        mesh.material.uniforms.mapped.value?.dispose();
         mesh.material.uniforms.mapped.value = texture;
         mesh.material.uniforms.vidWH.value.set(video.videoWidth, video.videoHeight);
 

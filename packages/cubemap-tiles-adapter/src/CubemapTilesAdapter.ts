@@ -96,6 +96,10 @@ export class CubemapTilesAdapter extends AbstractAdapter<CubemapTilesPanorama | 
                 + 'Consider removing "requestHeaders" if you experience performances issues.'
             );
         }
+    }
+
+    override init() {
+        super.init();
 
         this.viewer.addEventListener(events.PositionUpdatedEvent.type, this);
         this.viewer.addEventListener(events.ZoomUpdatedEvent.type, this);
@@ -125,15 +129,15 @@ export class CubemapTilesAdapter extends AbstractAdapter<CubemapTilesPanorama | 
         }
     }
 
-    override supportsTransition(panorama: CubemapTilesPanorama) {
+    override supportsTransition(panorama: CubemapTilesPanorama | CubemapMultiTilesPanorama) {
         return !!panorama.baseUrl;
     }
 
-    override supportsPreload(panorama: CubemapTilesPanorama) {
+    override supportsPreload(panorama: CubemapTilesPanorama | CubemapMultiTilesPanorama) {
         return !!panorama.baseUrl;
     }
 
-    override loadTexture(panorama: CubemapTilesPanorama): Promise<CubemapTexture> {
+    override loadTexture(panorama: CubemapTilesPanorama | CubemapMultiTilesPanorama): Promise<CubemapTexture> {
         try {
             checkPanoramaConfig(panorama, { CUBE_SEGMENTS });
         } catch (e) {
@@ -152,11 +156,16 @@ export class CubemapTilesAdapter extends AbstractAdapter<CubemapTilesPanorama | 
             }
 
             return this.adapter.loadTexture(panorama.baseUrl).then((textureData) => ({
-                panorama: panorama,
+                panorama,
+                cacheKey: textureData.cacheKey,
                 texture: textureData.texture,
             }));
         } else {
-            return Promise.resolve({ panorama, texture: null });
+            return Promise.resolve({
+                panorama,
+                cacheKey: panorama.tileUrl('front', 0, 0, 0),
+                texture: null,
+            });
         }
     }
 
@@ -251,7 +260,6 @@ export class CubemapTilesAdapter extends AbstractAdapter<CubemapTilesPanorama | 
         }
 
         const camera = this.viewer.renderer.camera;
-        camera.updateMatrixWorld();
         projScreenMatrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
         frustum.setFromProjectionMatrix(projScreenMatrix);
 
@@ -340,7 +348,8 @@ export class CubemapTilesAdapter extends AbstractAdapter<CubemapTilesPanorama | 
      * Loads and draw a tile
      */
     private __loadTile(tile: CubemapTile, task: Task): Promise<any> {
-        return this.viewer.textureLoader.loadImage(tile.url)
+        return this.viewer.textureLoader
+            .loadImage(tile.url, null, this.viewer.state.textureData.cacheKey)
             .then((image) => {
                 if (!task.isCancelled()) {
                     if (this.config.debug) {

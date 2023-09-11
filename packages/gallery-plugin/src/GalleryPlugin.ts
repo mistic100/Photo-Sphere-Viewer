@@ -39,7 +39,7 @@ export class GalleryPlugin extends AbstractConfigurablePlugin<
 
         this.gallery = new GalleryComponent(this, this.viewer);
     }
-    
+
     /**
      * @internal
      */

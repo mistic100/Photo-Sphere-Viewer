@@ -98,7 +98,9 @@ __s.remove();
                 mousewheel: false,
                 navbar: false,
             });
-            this.viewer.setPanorama('https://photo-sphere-viewer-data.netlify.app/assets/sphere.jpg', { showLoader: false });
+            this.viewer.setPanorama('https://photo-sphere-viewer-data.netlify.app/assets/sphere.jpg', {
+                showLoader: false,
+            });
             this.viewer.addEventListener('ready', () => {
                 this.loaded = true;
                 this.viewer.dynamics.position.roll({ yaw: false }, 0.2);

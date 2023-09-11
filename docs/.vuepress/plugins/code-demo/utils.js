@@ -47,7 +47,9 @@ function getFullCss({ css, packages, cdnImport }) {
     return `
 ${packages
     .filter(({ style }) => style)
-    .map(({ name, version }) => `@import '${cdnImport ? buildPath({ name, version, type: 'css' }) : `../node_modules/${name}/index.css`}';`)
+    .map(({ name, version }) => {
+        return `@import '${cdnImport ? buildPath({ name, version, type: 'css' }) : `../node_modules/${name}/index.css`}';`;
+    })
     .join('\n')}
 
 html, body, #viewer {
@@ -164,8 +166,8 @@ export function getCodeSandboxValue({ title, js, css, html, packages }) {
                         return deps;
                     }, {}),
                     devDependencies: {
-                        'parcel': '^2.9.0',
-                        'typescript': '^5.2.0',
+                        parcel: '^2.9.0',
+                        typescript: '^5.2.0',
                     },
                 },
             },

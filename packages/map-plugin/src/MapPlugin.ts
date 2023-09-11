@@ -56,7 +56,11 @@ const getConfig = utils.getConfigParser<MapPluginConfig, ParsedMapPluginConfig>(
             return overlayImage;
         },
         spotStyle: (spotStyle, { rawConfig }) => {
-            [['spotColor', 'color'], ['spotImage', 'image'], ['spotSize', 'size']].forEach((oldName, newName) => {
+            [
+                ['spotColor', 'color'],
+                ['spotImage', 'image'],
+                ['spotSize', 'size'],
+            ].forEach((oldName, newName) => {
                 // @ts-ignore
                 if (rawConfig[oldName]) {
                     utils.logWarn(`map: "${oldName}" is deprecated, use "spotStyle.${newName}" instead`);
@@ -108,7 +112,7 @@ export class MapPlugin extends AbstractConfigurablePlugin<
 
         this.component = new MapComponent(this.viewer, this);
     }
-    
+
     /**
      * @internal
      */

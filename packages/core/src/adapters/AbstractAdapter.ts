@@ -26,6 +26,12 @@ export abstract class AbstractAdapter<TPanorama, TTexture> {
     constructor(protected readonly viewer: Viewer) {}
 
     /**
+     * Initializes the adapter
+     */
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    init(): void {}
+
+    /**
      * Destroys the adapter
      */
     // eslint-disable-next-line @typescript-eslint/no-empty-function
