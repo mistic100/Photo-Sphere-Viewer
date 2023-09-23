@@ -467,6 +467,8 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
                     this.__addNodeMarkers(node);
                 }
 
+                this.gallery?.show();
+                
                 this.__renderLinks(node);
                 this.__preload(node);
 
