@@ -89,7 +89,7 @@ export class GalleryPlugin extends AbstractConfigurablePlugin<
      */
     handleEvent(e: Event) {
         if (e instanceof events.PanoramaLoadedEvent) {
-            const item = this.items.find((i) => utils.deepEqual(i.panorama, e.data.panorama));
+            const item = this.items.find((i) => utils.deepEqual(i.panorama, e.data.panorama) && i.id === e.data.id);
             this.currentId = item?.id;
             this.gallery.setActive(item?.id);
         } else if (e instanceof events.ShowPanelEvent) {
