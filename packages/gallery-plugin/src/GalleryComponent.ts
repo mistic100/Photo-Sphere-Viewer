@@ -160,9 +160,13 @@ export class GalleryComponent extends AbstractComponent {
         currentActive?.classList.remove(ACTIVE_CLASS);
 
         if (id) {
-            const nextActive = this.items.querySelector(`[data-${GALLERY_ITEM_DATA_KEY}="${id}"]`);
-            nextActive?.classList.add(ACTIVE_CLASS);
-            nextActive?.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+            const nextActive = this.items.querySelector(`[data-${GALLERY_ITEM_DATA_KEY}="${id}"]`) as HTMLElement;
+            if (nextActive) {
+                nextActive.classList.add(ACTIVE_CLASS);
+                // nextActive.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+                this.items.parentElement.scrollLeft =
+                    nextActive.offsetLeft + nextActive.clientWidth / 2 - this.items.parentElement.clientWidth / 2;
+            }
         }
     }
 }
