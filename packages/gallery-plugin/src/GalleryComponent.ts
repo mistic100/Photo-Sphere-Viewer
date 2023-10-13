@@ -162,6 +162,7 @@ export class GalleryComponent extends AbstractComponent {
         if (id) {
             const nextActive = this.items.querySelector(`[data-${GALLERY_ITEM_DATA_KEY}="${id}"]`);
             nextActive?.classList.add(ACTIVE_CLASS);
+            nextActive?.scrollIntoView({ behavior: 'smooth', inline: 'center' });
         }
     }
 }
