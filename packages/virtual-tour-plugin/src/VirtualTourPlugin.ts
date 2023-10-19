@@ -32,6 +32,7 @@ const getConfig = utils.getConfigParser<VirtualTourPluginConfig>(
         preload: false,
         transitionOptions: {
             speed: '20rpm',
+            showLoader: true,
             fadeIn: true,
             rotation: true,
         },
@@ -394,6 +395,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
                 const transitionOptions: VirtualTourTransitionOptions = {
                     speed: (getConfig.defaults.transitionOptions as any).speed,
+                    showLoader: (getConfig.defaults.transitionOptions as any).showLoader,
                     fadeIn: (getConfig.defaults.transitionOptions as any).fadeIn,
                     rotation: (getConfig.defaults.transitionOptions as any).rotation,
                     rotateTo: fromLinkPosition,
@@ -419,7 +421,10 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
                     throw utils.getAbortError();
                 }
 
-                this.viewer.loader.show();
+                if(transitionOptions.showLoader)
+                {
+                    this.viewer.loader.show();
+                }
 
                 this.state.currentNode = node;
 
@@ -444,6 +449,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
                         sphereCorrection: node.sphereCorrection,
                         transition: !transitionOptions.fadeIn ? false : transitionOptions.rotation ? true : 'fade-only',
                         speed: transitionOptions.speed,
+                        showLoader: transitionOptions.showLoader,
                         position: transitionOptions.rotateTo,
                         zoom: transitionOptions.zoomTo,
                     })
@@ -612,7 +618,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
                         id: marker.id,
                         tooltip: {
                             className: 'psv-virtual-tour-tooltip',
-                            content: content, 
+                            content: content,
                         },
                     });
                 }

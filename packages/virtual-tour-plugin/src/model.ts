@@ -69,6 +69,11 @@ export type VirtualTourTransitionOptions = {
      */
     speed?: string | number;
     /**
+     * show the loader while loading the new panorama
+     * @default true
+     */
+    showLoader?: boolean;
+    /**
      * Enable fade-in between nodes
      * @default true
      */
@@ -216,10 +221,10 @@ export type VirtualTourPluginConfig = {
 
     /**
      * Configuration of the transition between nodes. Can be a callback.
-     * @default `{ speed: '20rpm', fadeIn: true, rotation: true }`
+     * @default `{ speed: '20rpm', fadeIn: true, rotation: true, showLoader: true }`
      */
     transitionOptions?:
-        | Pick<VirtualTourTransitionOptions, 'speed' | 'fadeIn' | 'rotation'>
+        | Pick<VirtualTourTransitionOptions, 'speed' | 'fadeIn' | 'rotation' | 'showLoader'>
         | ((
               toNode: VirtualTourNode,
               fromNode?: VirtualTourNode,
