@@ -22,7 +22,7 @@ jobs:
         run: |
           echo "NPM_TAG=$(echo ${{ github.event.inputs.version }} | cut -d '-' -f2 -s | cut -d '.' -f1 -s)" >> $GITHUB_OUTPUT
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: '16'
           cache: 'yarn'
