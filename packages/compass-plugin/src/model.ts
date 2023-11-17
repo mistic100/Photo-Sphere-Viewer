@@ -53,6 +53,7 @@ export type CompassPluginConfig = {
      * @default 'rgba(0, 0, 0, 0.5)'
      */
     hotspotColor?: string;
+    className?: string;
 };
 
 export type ParsedCompassPluginConfig = Omit<CompassPluginConfig, 'position'> & {
