@@ -579,7 +579,7 @@ Default value is:
 
 (The 3D model cannot be modified).
 
-#### `markerVerticalOffset` (markers+GPS mode only)
+#### `markerPitchOffset` (markers+GPS mode only)
 
 -   type: `number`
 -   default: `-0.1`
