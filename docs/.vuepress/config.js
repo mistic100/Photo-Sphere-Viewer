@@ -18,12 +18,12 @@ function listFiles(dir) {
 }
 
 function getFiles(dir) {
-    const absoluteDir = posixJoin(process.cwd(), dir);
+    const absoluteDir = posixJoin(__dirname, '..', dir);
     return listFiles(absoluteDir).map((f) => f.substr(absoluteDir.length + 1));
 }
 
 module.exports = {
-    dest: './public',
+    dest: '../public',
     title: 'Photo Sphere Viewer',
     description: 'A JavaScript library to display Photo Sphere panoramas',
     // prettier-ignore
@@ -124,7 +124,7 @@ module.exports = {
                 {
                     title: 'Official plugins',
                     collapsable: false,
-                    children: getFiles('docs/plugins').filter((f) => {
+                    children: getFiles('plugins').filter((f) => {
                         return f !== 'README.md' && f !== 'writing-a-plugin.md' && f !== 'third-party.md';
                     }),
                 },
@@ -137,7 +137,7 @@ module.exports = {
                     sidebarDepth: 0,
                     collapsable: false,
                     children: (() => {
-                        const demoFiles = getFiles('docs/demos')
+                        const demoFiles = getFiles('demos')
                             .map((f) => f.split('/'))
                             .filter((f) => f.length === 2)
                             .reduce((groups, [dir, file]) => {

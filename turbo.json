@@ -18,10 +18,17 @@
     "test": {
       "inputs": ["src/**"]
     },
+    "build-doc": {},
+    "//#build-doc": {
+      "dependsOn": ["photo-sphere-viewer-doc#build-doc"]
+    },
     "watch": {
       "cache": false
     },
     "//#watch": {
+      "cache": false
+    },
+    "serve-doc": {
       "cache": false
     },
     "npm-link": {

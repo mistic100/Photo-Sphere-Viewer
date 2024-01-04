@@ -98,4 +98,4 @@ jobs:
       - name: build
         run: |
           yarn install
-          yarn doc:build
+          yarn doc:build-doc
