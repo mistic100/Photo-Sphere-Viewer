@@ -123,7 +123,7 @@ export class GalleryComponent extends AbstractComponent {
 
             case 'click':
                 // prevent click on drag
-                if (Math.abs(this.state.initMouse - (e as MouseEvent).clientX) < 10) {
+                if (Math.abs(this.state.initMouse - (e as MouseEvent).clientX) < 1000) {
                     const item = utils.getClosest(e.target as HTMLElement, `[data-${GALLERY_ITEM_DATA_KEY}]`);
                     if (item) {
                         this.plugin.__click(item.dataset[GALLERY_ITEM_DATA]);
