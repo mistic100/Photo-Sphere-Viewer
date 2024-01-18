@@ -80,6 +80,7 @@ export class GalleryComponent extends AbstractComponent {
      * @internal
      */
     handleEvent(e: Event) {
+        const clickOffset = window.innerWidth <= this.state.breakpoint ? 1000 : 10;
         switch (e.type) {
             case 'wheel': {
                 if (window.innerWidth > this.state.breakpoint) {
@@ -123,7 +124,7 @@ export class GalleryComponent extends AbstractComponent {
 
             case 'click':
                 // prevent click on drag
-                if (Math.abs(this.state.initMouse - (e as MouseEvent).clientX) < 1000) {
+                if (Math.abs(this.state.initMouse - (e as MouseEvent).clientX) < clickOffset) {
                     const item = utils.getClosest(e.target as HTMLElement, `[data-${GALLERY_ITEM_DATA_KEY}]`);
                     if (item) {
                         this.plugin.__click(item.dataset[GALLERY_ITEM_DATA]);
