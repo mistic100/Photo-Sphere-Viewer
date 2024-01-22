@@ -28,21 +28,21 @@ jobs:
           echo "YARN_CACHE_DIR=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - name: yarn cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         if: github.ref_name == 'main'
         with:
           key: yarn-${{ hashFiles('yarn.lock') }}
           path: ${{ steps.data.outputs.YARN_CACHE_DIR }}
 
       - name: yarn cache ro
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         if: github.ref_name != 'main'
         with:
           key: yarn-${{ hashFiles('yarn.lock') }}
           path: ${{ steps.data.outputs.YARN_CACHE_DIR }}
 
       - name: turbo cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         if: github.ref_name == 'main'
         with:
           path: .turbo
@@ -51,7 +51,7 @@ jobs:
             turbo-
 
       - name: turbo cache ro
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         if: github.ref_name != 'main'
         with:
           path: .turbo
@@ -81,13 +81,13 @@ jobs:
           echo "YARN_CACHE_DIR=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - name: yarn cache ro
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           key: yarn-${{ hashFiles('yarn.lock') }}
           path: ${{ steps.data.outputs.YARN_CACHE_DIR }}
 
       - name: turbo cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         if: github.ref_name == 'main'
         with:
           path: .turbo
@@ -96,7 +96,7 @@ jobs:
             turbo_doc-
 
       - name: turbo cache ro
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         if: github.ref_name != 'main'
         with:
           path: .turbo
