@@ -272,15 +272,18 @@ export class EquirectangularAdapter extends AbstractAdapter<string, Texture, Pan
 
             if (this.config.blur) {
                 ctx.filter = `blur(${buffer.width / 2048}px)`;
+                // add -0.1% of margin to avoid black borders
+                const m = buffer.width * 0.001;
+                ctx.drawImage(img, -m, -m, buffer.width + m * 2, buffer.height + m * 2);
+            } else {
+                ctx.drawImage(
+                    img,
+                    resizedPanoData.croppedX,
+                    resizedPanoData.croppedY,
+                    resizedPanoData.croppedWidth,
+                    resizedPanoData.croppedHeight
+                );
             }
-
-            ctx.drawImage(
-                img,
-                resizedPanoData.croppedX,
-                resizedPanoData.croppedY,
-                resizedPanoData.croppedWidth,
-                resizedPanoData.croppedHeight
-            );
 
             const t = createTexture(buffer);
 
