@@ -1,15 +1,18 @@
-import { FileLoader, ImageLoader } from 'three';
 import { PSVError } from '../PSVError';
 import type { Viewer } from '../Viewer';
 import { Cache } from '../data/cache';
 import { AbstractService } from './AbstractService';
+import { BlobLoader } from '../lib/BlobLoader';
+import { ImageLoader } from '../lib/ImageLoader';
 
 /**
  * Image and texture loading system
  */
 export class TextureLoader extends AbstractService {
-    private readonly fileLoader: FileLoader;
+    private readonly fileLoader: BlobLoader;
     private readonly imageLoader: ImageLoader;
+
+    private abortCtrl: AbortController;
 
     /**
      * @internal
@@ -17,9 +20,7 @@ export class TextureLoader extends AbstractService {
     constructor(viewer: Viewer) {
         super(viewer);
 
-        this.fileLoader = new FileLoader();
-        this.fileLoader.setResponseType('blob');
-
+        this.fileLoader = new BlobLoader();
         this.imageLoader = new ImageLoader();
 
         if (this.config.withCredentials) {
@@ -41,7 +42,8 @@ export class TextureLoader extends AbstractService {
      * @internal
      */
     abortLoading() {
-        // noop implementation waiting for https://github.com/mrdoob/three.js/pull/23070
+        this.abortCtrl?.abort();
+        this.abortCtrl = null;
     }
 
     /**
@@ -64,6 +66,8 @@ export class TextureLoader extends AbstractService {
             this.fileLoader.setRequestHeader(this.config.requestHeaders(url));
         }
 
+        this.abortCtrl = new AbortController();
+
         return new Promise((resolve, reject) => {
             let progress = 0;
             onProgress?.(progress);
@@ -73,8 +77,8 @@ export class TextureLoader extends AbstractService {
                 (result) => {
                     progress = 100;
                     onProgress?.(progress);
-                    Cache.add(url, cacheKey, result as any);
-                    resolve(result as any);
+                    Cache.add(url, cacheKey, result);
+                    resolve(result);
                 },
                 (e) => {
                     if (e.lengthComputable) {
@@ -87,7 +91,8 @@ export class TextureLoader extends AbstractService {
                 },
                 (err) => {
                     reject(err);
-                }
+                },
+                this.abortCtrl.signal
             );
         });
     }
@@ -109,9 +114,18 @@ export class TextureLoader extends AbstractService {
         }
 
         if (!onProgress && !this.config.requestHeaders) {
-            return this.imageLoader.loadAsync(url).then((result) => {
-                Cache.add(url, cacheKey, result);
-                return result;
+            this.abortCtrl = new AbortController();
+
+            return new Promise((resolve, reject) => {
+                this.imageLoader.load(
+                    url,
+                    (result) => {
+                        Cache.add(url, cacheKey, result);
+                        resolve(result);
+                    },
+                    reject,
+                    this.abortCtrl.signal
+                );
             });
         } else {
             return this.loadFile(url, onProgress, cacheKey).then((blob) => this.blobToImage(blob));
