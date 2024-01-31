@@ -1537,10 +1537,10 @@
   resolved "https://registry.yarnpkg.com/@types/tapable/-/tapable-1.0.8.tgz#b94a4391c85666c7b73299fd3ad79d4faa435310"
   integrity sha512-ipixuVrh2OdNmauvtT51o3d8z12p6LtFW9in7U79der/kwejjdNchQC5UMn5u/KxNoM7VHHOs/l8KS8uHxhODQ==
 
-"@types/three@^0.160.0":
-  version "0.160.0"
-  resolved "https://registry.yarnpkg.com/@types/three/-/three-0.160.0.tgz#7915a97e0a14ccaa9ccbb9f190c5730b04a23075"
-  integrity sha512-jWlbUBovicUKaOYxzgkLlhkiEQJkhCVvg4W2IYD2trqD2om3VK4DGLpHH5zQHNr7RweZK/5re/4IVhbhvxbV9w==
+"@types/three@^0.161.0":
+  version "0.161.0"
+  resolved "https://registry.yarnpkg.com/@types/three/-/three-0.161.0.tgz#e793547a2892d367c740950b2e82d36ffad3b496"
+  integrity sha512-VrgtT08x7SQYtMuhVJDVNBgOGdUCvb6o5DP/DI/sz7jVyHdoDr3rZc6w/OcHZlUCVf0UGYPtflAjUUfI49Dhsg==
   dependencies:
     "@types/stats.js" "*"
     "@types/webxr" "*"
@@ -10268,10 +10268,10 @@ thenify-all@^1.0.0:
   dependencies:
     any-promise "^1.0.0"
 
-three@^0.160.0:
-  version "0.160.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.160.0.tgz#cd1e4dbd01aee0719280a9086d75545db52b7a8f"
-  integrity sha512-DLU8lc0zNIPkM7rH5/e1Ks1Z8tWCGRq6g8mPowdDJpw1CFBJMU7UoJjC6PefXW7z//SSl0b2+GCw14LB+uDhng==
+three@^0.161.0:
+  version "0.161.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.161.0.tgz#38aafaa82fe5467fde2e33933515d1b6beb17d91"
+  integrity sha512-LC28VFtjbOyEu5b93K0bNRLw1rQlMJ85lilKsYj6dgTu+7i17W+JCCEbvrpmNHF1F3NAUqDSWq50UD7w9H2xQw==
 
 through2@^2.0.0:
   version "2.0.5"
