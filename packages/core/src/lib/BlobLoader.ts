@@ -74,7 +74,9 @@ export class BlobLoader extends Loader<Blob, string> {
 
                                     }
 
-                                });
+                                }).catch((err) => {
+                                    onError(err)
+                                  });
 
                             }
 
