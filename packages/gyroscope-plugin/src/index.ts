@@ -1,9 +1,11 @@
-import { DEFAULTS, registerButton } from '@photo-sphere-viewer/core';
+import { addI18n, registerButton } from '@photo-sphere-viewer/core';
 import { GyroscopeButton } from './GyroscopeButton';
 import * as events from './events';
 
-DEFAULTS.lang[GyroscopeButton.id] = 'Gyroscope';
 registerButton(GyroscopeButton, 'caption:right');
+addI18n('en', {
+    [GyroscopeButton.id]: 'Gyroscope',
+});
 
 export { GyroscopePlugin } from './GyroscopePlugin';
 export * from './model';

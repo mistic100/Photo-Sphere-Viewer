@@ -25,6 +25,7 @@ export { AbstractComponent } from './components/AbstractComponent';
 export { registerButton } from './components/Navbar';
 export { Cache } from './data/cache';
 export { DEFAULTS } from './data/config';
+export { addI18n } from './data/i18n';
 export { SYSTEM } from './data/system';
 export { TypedEvent } from './lib/TypedEventTarget';
 export { AbstractPlugin, AbstractConfigurablePlugin } from './plugins/AbstractPlugin';

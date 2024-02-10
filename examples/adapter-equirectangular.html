@@ -37,13 +37,15 @@
             {
                 "imports": {
                     "three": "/node_modules/three/build/three.module.js",
-                    "@photo-sphere-viewer/core": "/dist/core/index.module.js"
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/i18n/": "/dist/i18n/"
                 }
             }
         </script>
 
         <script type="module">
-            import { Viewer, DEFAULTS } from '@photo-sphere-viewer/core';
+            import { Viewer, DEFAULTS, addI18n } from '@photo-sphere-viewer/core';
+            import '@photo-sphere-viewer/i18n/fr.mjs';
 
             const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
 
@@ -74,6 +76,10 @@
                 // mousewheelCtrlKey: true,
                 // moveSpeed: 2,
                 // zoomSpeed: 2,
+                // language: 'fr',
+                // lang: {
+                //     description: 'Détails',
+                // },
                 navbar: [
                     'zoom',
                     'move',

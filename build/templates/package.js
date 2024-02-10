@@ -4,9 +4,6 @@ export const packageJson = (pkg) =>
 
         const content = {
             ...pkg,
-            main: 'index.cjs',
-            module: 'index.module.js',
-            types: 'index.d.ts',
             license: 'MIT',
             repository: {
                 type: 'git',
@@ -24,6 +21,14 @@ export const packageJson = (pkg) =>
                 ...(pkg.keywords || []),
             ],
         };
+
+        if (!pkg.psv.i18n) {
+            content.main = 'index.cjs';
+            content.module = 'index.module.js';
+            content.types = 'index.d.ts';
+        } else {
+            delete content.main;
+        }
 
         if (pkg.psv.style) {
             content.style = 'index.css';

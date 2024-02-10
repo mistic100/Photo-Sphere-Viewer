@@ -1,9 +1,11 @@
-import { DEFAULTS, registerButton } from '@photo-sphere-viewer/core';
-import * as events from './events';
+import { addI18n, registerButton } from '@photo-sphere-viewer/core';
 import { GalleryButton } from './GalleryButton';
+import * as events from './events';
 
-DEFAULTS.lang[GalleryButton.id] = 'Gallery';
 registerButton(GalleryButton, 'caption:left');
+addI18n('en', {
+    [GalleryButton.id]: 'Gallery',
+});
 
 export { GalleryPlugin } from './GalleryPlugin';
 export * from './model';

@@ -1,0 +1,30 @@
+{
+  "name": "@photo-sphere-viewer/i18n",
+  "version": "0.0.0",
+  "description": "Translation files for PhotoSphereViewer",
+  "homepage": "https://photo-sphere-viewer.js.org",
+  "license": "MIT",
+  "keywords": [
+    "languages"
+  ],
+  "peerDependencies": {
+    "@photo-sphere-viewer/core": "0.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "lint": "eslint . --fix",
+    "publish-dist": "cd dist && npm publish --tag=$NPM_TAG --access=public",
+    "npm-link": "cd dist && npm link"
+  },
+  "psv": {
+    "globalName": "PhotoSphereViewer",
+    "i18n": true
+  },
+  "exports": {
+    "./*": {
+      "import": "./*.mjs",
+      "require": "./*.cjs"
+    }
+  }
+}

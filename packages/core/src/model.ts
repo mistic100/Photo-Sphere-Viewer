@@ -346,6 +346,8 @@ export type ViewerConfig = {
     withCredentials?: boolean;
     /** @default 'zoom move download description caption fullscreen' */
     navbar?: boolean | string | Array<string | NavbarCustomButton>;
+    /** @default 'en' */
+    language?: string;
     lang?: Record<string, string>;
     keyboard?: boolean | 'always' | 'fullscreen' | Record<string, ACTIONS | ((viewer: Viewer) => void)>;
     keyboardActions?: Record<string, ACTIONS | ((viewer: Viewer) => void)>;

@@ -6,6 +6,7 @@ import { ParsedViewerConfig, ReadonlyViewerConfig, ViewerConfig } from '../model
 import { pluginInterop } from '../plugins/AbstractPlugin';
 import { ConfigParsers, clone, getConfigParser, logWarn, parseAngle } from '../utils';
 import { ACTIONS, KEY_CODES } from './constants';
+import { LANGS } from './i18n';
 
 /**
  * Default options
@@ -49,24 +50,8 @@ export const DEFAULTS: Required<ParsedViewerConfig> = {
         'caption',
         'fullscreen',
     ],
-    lang: {
-        zoom: 'Zoom',
-        zoomOut: 'Zoom out',
-        zoomIn: 'Zoom in',
-        moveUp: 'Move up',
-        moveDown: 'Move down',
-        moveLeft: 'Move left',
-        moveRight: 'Move right',
-        description: 'Description',
-        download: 'Download',
-        fullscreen: 'Fullscreen',
-        loading: 'Loading...',
-        menu: 'Menu',
-        close: 'Close',
-        twoFingers: 'Use two fingers to navigate',
-        ctrlZoom: 'Use ctrl + scroll to zoom the image',
-        loadError: "The panorama can't be loaded",
-    },
+    language: 'en',
+    lang: null,
     keyboard: 'fullscreen',
     keyboardActions: {
         [KEY_CODES.ArrowUp]: ACTIONS.ROTATE_UP,
@@ -147,9 +132,13 @@ export const CONFIG_PARSERS: ConfigParsers<ViewerConfig, ParsedViewerConfig> = {
         // maxFov between 1 and 179
         return MathUtils.clamp(maxFov, 1, 179);
     },
-    lang: (lang) => {
+    lang: (lang, { rawConfig: { language }}) => {
+        if (!LANGS[language]) {
+            logWarn(`Lang "${language}" is not loaded.`);
+        }
         return {
-            ...DEFAULTS.lang,
+            ...LANGS['en'],
+            ...LANGS[language],
             ...lang,
         };
     },

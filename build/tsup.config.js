@@ -20,30 +20,31 @@ const externals = {
 };
 
 export default function createConfig(pkg) {
-    const banner = `/*!
+    return defineConfig((options) => {
+        const i18n = !!pkg.psv.i18n;
+        const dev = options.watch || options.define?.['config'] === 'dev';
+        const dts = !i18n && !dev && options.define?.['dts'] !== 'off';
+
+        const banner = `/*!
  * ${pkg.psv.globalName} ${pkg.version}
 ${
     pkg.name === '@photo-sphere-viewer/core' ? ' * @copyright 2014-2015 Jérémy Heleine\n' : ''
-} * @copyright ${new Date().getFullYear()} Damien "Mistic" Sorel
+} * @copyright ${new Date().getFullYear()} Damien "Mistic" Sorel${i18n ? ' and contributors' : ''}
  * @licence MIT (https://opensource.org/licenses/MIT)
  */`;
 
-    return defineConfig((options) => {
-        const dev = options.watch || options.define?.['config'] === 'dev';
-        const dts = !dev && options.define?.['dts'] !== 'off';
-
         return {
-            entryPoints: [pkg.main],
+            entryPoints: i18n ? ['./src/*.ts'] : [pkg.main],
             outDir: 'dist',
-            format: dev ? ['esm'] : ['iife', 'esm', 'cjs'],
+            format: dev ? ['esm'] : i18n ? ['esm', 'cjs'] : ['iife', 'esm', 'cjs'],
             globalName: pkg.psv.globalName,
             outExtension({ format }) {
                 return {
-                    js: { iife: '.js', cjs: '.cjs', esm: '.module.js' }[format],
+                    js: { iife: '.js', cjs: '.cjs', esm: i18n ? '.mjs' : '.module.js' }[format],
                 };
             },
             dts: dts,
-            sourcemap: true,
+            sourcemap: !i18n,
             external: Object.keys(externals),
             noExternal: [/three\/examples\/.*/],
             target: 'es2021',
@@ -60,7 +61,7 @@ ${
                     : [
                           scssBundlePlugin(),
                           assetsPlugin({
-                              'LICENSE': license(),
+                              'LICENSE': license(pkg),
                               '.npmrc': npmrc(),
                               'README.md': readme(pkg),
                               'package.json': packageJson(pkg),
