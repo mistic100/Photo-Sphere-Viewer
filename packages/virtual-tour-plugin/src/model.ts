@@ -36,6 +36,10 @@ export type VirtualTourArrowStyle = {
      * @default 1
      */
     size?: number;
+    /**
+     * @default 'arrow'
+     */
+    model?: 'arrow' | 'triangle';
 };
 
 /**

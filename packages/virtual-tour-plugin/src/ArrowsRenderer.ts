@@ -18,7 +18,7 @@ import {
     WebGLRenderer,
 } from 'three';
 import type { VirtualTourPlugin } from './VirtualTourPlugin';
-import { ARROW_GEOM, ARROW_OUTLINE_GEOM, LINK_DATA } from './constants';
+import { ARROW_GEOM, ARROW_OUTLINE_GEOM, LINK_DATA, TRIANGLE_GEOM, TRIANGLE_OUTLINE_GEOM } from './constants';
 import { VirtualTourLink } from './model';
 import { setMeshColor } from './utils';
 
@@ -101,8 +101,10 @@ export class ArrowsRenderer implements CustomRenderer {
 
     addArrow(link: VirtualTourLink, position: Position, depth: number) {
         const size = link.arrowStyle?.size || this.plugin.config.arrowStyle.size;
+        const model = link.arrowStyle?.model || this.plugin.config.arrowStyle.model;
 
-        const mesh = new Mesh(ARROW_GEOM, new MeshLambertMaterial());
+        const meshGeom = model === "triangle" ? TRIANGLE_GEOM : ARROW_GEOM;
+        const mesh = new Mesh(meshGeom, new MeshLambertMaterial());
         mesh.userData = { [LINK_DATA]: link };
         mesh.renderOrder = 1000 + this.group.children.length;
         mesh.scale.multiplyScalar(size);
@@ -115,7 +117,8 @@ export class ArrowsRenderer implements CustomRenderer {
             2 * depth * size
         );
 
-        const outlineMesh = new Mesh(ARROW_OUTLINE_GEOM, new MeshBasicMaterial({ side: BackSide }));
+        const outlineMeshGeom = model === "triangle" ? TRIANGLE_OUTLINE_GEOM : ARROW_OUTLINE_GEOM;
+        const outlineMesh = new Mesh(outlineMeshGeom, new MeshBasicMaterial({ side: BackSide }));
         outlineMesh.scale.copy(mesh.scale);
         outlineMesh.position.copy(mesh.position);
         outlineMesh.rotation.copy(mesh.rotation);

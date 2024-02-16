@@ -580,10 +580,11 @@ Default value is:
   hoverColor  : 0xaa5500,
   outlineColor: 0x000000,
   size        : 1,
+  model       : arrow,
 }
 ```
 
-(The 3D model cannot be modified).
+The 3D model can be choosen betwen `arrow` or `triangle`.
 
 #### `markerPitchOffset` (markers+GPS mode only)
 
