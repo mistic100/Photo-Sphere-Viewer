@@ -633,7 +633,7 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
         this.state.animation = new Animation({
             properties: properties,
             duration: duration,
-            easing: 'inOutSine',
+            easing: options.easing || 'inOutSine',
             onTick: (props) => {
                 if (positionProvided) {
                     this.dynamics.position.setValue({
