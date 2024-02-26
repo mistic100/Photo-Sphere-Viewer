@@ -1,14 +1,16 @@
 {
   "extends": ["stylelint-config-standard-scss"],
-  "plugins": ["stylelint-scss", "stylelint-stylistic"],
+  "plugins": ["stylelint-scss", "@stylistic/stylelint-plugin"],
   "rules": {
     "color-function-notation": "legacy",
     "alpha-value-notation": "number",
-    "scss/dollar-variable-empty-line-before": null,
     "selector-class-pattern": null,
-    "stylistic/indentation": 4,
-    "stylistic/string-quotes": "single",
-    "stylistic/no-eol-whitespace": true,
-    "stylistic/no-extra-semicolons": true
+
+    "scss/dollar-variable-empty-line-before": null,
+
+    "@stylistic/indentation": 4,
+    "@stylistic/string-quotes": "single",
+    "@stylistic/no-eol-whitespace": true,
+    "@stylistic/no-extra-semicolons": true
   }
 }
