@@ -50,6 +50,6 @@
     "turbo": "^1.12.2",
     "typedoc": "^0.25.0",
     "typedoc-plugin-extras": "^3.0.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.3.3"
   }
 }
