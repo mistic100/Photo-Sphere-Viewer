@@ -48,7 +48,7 @@ export class MarkerPolygon extends AbstractDomMarker {
         return this.type === MarkerType.polyline || this.type === MarkerType.polylinePixels;
     }
 
-    private get coords(): [number, number][][] {
+    private get coords(): Array<Array<[number, number]>> {
         return this.definition;
     }
 
@@ -124,7 +124,7 @@ export class MarkerPolygon extends AbstractDomMarker {
 
         // convert texture coordinates to spherical coordinates
         if (this.isPixels) {
-            this.definition = (actualPoly as [number, number][][]).map((coords) => {
+            this.definition = (actualPoly as Array<Array<[number, number]>>).map((coords) => {
                 return coords.map((coord) => {
                     const sphericalCoords = this.viewer.dataHelper.textureCoordsToSphericalCoords({
                         textureX: coord[0],
@@ -136,7 +136,7 @@ export class MarkerPolygon extends AbstractDomMarker {
         }
         // clean angles
         else {
-            this.definition = (actualPoly as [number, number][][] | [string, string][][]).map((coords) => {
+            this.definition = (actualPoly as Array<Array<[number, number]>> | Array<Array<[string, string]>>).map((coords) => {
                 return coords.map((coord) => {
                     return [utils.parseAngle(coord[0]), utils.parseAngle(coord[1], true)];
                 });

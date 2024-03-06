@@ -65,17 +65,17 @@ export type MarkerConfig = {
      */
     // eslint-disable-next-line @typescript-eslint/array-type
     polygon?:
-        | [number, number][]
-        | [number, number][][]
-        | [string, string][]
-        | [string, string][][];
+        | Array<[number, number]>
+        | Array<Array<[number, number]>>
+        | Array<[string, string]>
+        | Array<Array<[string, string]>>;
     /**
      * Array of points defining the polygon in pixel coordinates on the panorama image
      */
     // eslint-disable-next-line @typescript-eslint/array-type
     polygonPixels?: 
-        | [number, number][] 
-        | [number, number][][];
+        | Array<[number, number]> 
+        | Array<Array<[number, number]>>;
     /**
      * Array of points defining the polyline in spherical coordinates
      */
