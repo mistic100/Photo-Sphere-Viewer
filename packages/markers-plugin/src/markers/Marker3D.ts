@@ -170,7 +170,7 @@ export class Marker3D extends Marker {
                         src: this.config.videoLayer,
                         withCredentials: this.viewer.config.withCredentials,
                         muted: true,
-                        autoplay: true,
+                        autoplay: this.config.autoplay ?? true,
                     });
 
                     const texture = new VideoTexture(video);
@@ -189,8 +189,6 @@ export class Marker3D extends Marker {
                             this.__setTextureWrap(material);
                         }
                     }, { once: true });
-
-                    video.play();
 
                     this.definition = this.config.videoLayer;
                 } else {

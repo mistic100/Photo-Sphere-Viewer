@@ -184,6 +184,11 @@ export type MarkerConfig = {
      */
     hideList?: boolean;
     /**
+     * Autoplay of `videoLayer` markers
+     * @default true
+     */
+    autoplay?: boolean;
+    /**
      * Any custom data you want to attach to the marker
      */
     data?: any;
