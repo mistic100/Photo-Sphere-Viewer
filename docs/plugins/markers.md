@@ -592,6 +592,13 @@ The name that appears in the list of markers. If not provided, the tooltip conte
 
 Hide the marker in the markers list.
 
+#### `autoplay`
+
+-   type: `boolean`
+-   default: `true`
+
+Autoplay of `videoLayer` markers
+
 #### `data`
 
 -   type: `any`
