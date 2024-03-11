@@ -49,7 +49,7 @@ jobs:
           git log --pretty=format:"%s" $PREVIOUS_TAG...${{ github.ref_name }} | node ./build/prepare-changelog.mjs $PREVIOUS_TAG ${{ github.ref_name }}
 
       - name: create release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           draft: true
           body_path: dist/changelog_${{ github.ref_name }}.md
