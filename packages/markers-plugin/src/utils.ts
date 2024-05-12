@@ -9,7 +9,20 @@ function greatArcIntermediaryPoint(p1: [number, number], p2: [number, number], f
     const [λ1, φ1] = p1;
     const [λ2, φ2] = p2;
 
-    const r = utils.greatArcDistance(p1, p2);
+   //const r = utils.greatArcDistance(p1, p2);
+    //according to the link above, the r should be the angular distance, not the ArcDistance
+	const coslon1=Math.cos(λ1);
+	const coslon2=Math.cos(λ2);
+	const coslat1=Math.cos(φ1);
+	const coslat2=Math.cos(φ2);
+	const sinlon1=Math.sin(λ1);
+	const sinlon2=Math.sin(λ2);
+	const sinlat1=Math.sin(φ1);
+	const sinlat2=Math.sin(φ2);
+	const dx=coslon1-coslon2;
+	const dy=sinlon1-sinlon2;
+	const dz=sinlat1-sinlat2;
+	const r=Math.sqrt(dx*dx+dy*dy+dz*dz);
     const a = Math.sin((1 - f) * r) / Math.sin(r);
     const b = Math.sin(f * r) / Math.sin(r);
     const x = a * Math.cos(φ1) * Math.cos(λ1) + b * Math.cos(φ2) * Math.cos(λ2);
