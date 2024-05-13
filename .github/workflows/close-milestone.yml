@@ -21,7 +21,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - if: ${{ steps.close.outputs.milestone_id != null }}
-        uses: bflad/action-milestone-comment@v1
+        uses: bflad/action-milestone-comment@v2
         with:
           milestone: ${{ steps.close.outputs.milestone_id }}
           body: |
