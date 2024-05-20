@@ -100,8 +100,8 @@ $psv-overlay-title-color: black !default;
 $psv-overlay-text-font: 20px sans-serif !default;
 $psv-overlay-text-color: rgba(0, 0, 0, 0.8) !default;
 $psv-overlay-image-size: (
-    portrait: 50vw,
-    landscape: 25vw,
+    portrait: 50%,
+    landscape: 33%,
 ) !default;
 
 // *** Z-INDEXES ***

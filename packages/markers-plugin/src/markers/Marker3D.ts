@@ -190,6 +190,10 @@ export class Marker3D extends Marker {
                         }
                     }, { once: true });
 
+                    if (video.autoplay) {
+                        video.play();
+                    }
+
                     this.definition = this.config.videoLayer;
                 } else {
                     material.alpha = this.config.opacity;

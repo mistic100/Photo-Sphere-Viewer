@@ -1,7 +1,9 @@
-/guide/adapters/tiles.html /guide/adapters/equirectangular-tiles.html
-/guide/adapters/tiles /guide/adapters/equirectangular-tiles.html
 /guide/cropped-panorama.html /guide/adapters/equirectangular.html#cropped-panorama
 /guide/cropped-panorama /guide/adapters/equirectangular.html#cropped-panorama
+/guide/adapters/tiles.html /guide/adapters/equirectangular-tiles.html
+/guide/adapters/tiles /guide/adapters/equirectangular-tiles.html
+/guide/adapters/little-planet.html /demos/advanced/animation.html
+/guide/adapters/little-planet /demos/advanced/animation.html
 /plugins/plugin-autorotate-keypoints.html /plugins/autorotate.html
 /plugins/plugin-autorotate-keypoints /plugins/autorotate.html
 /plugins/plugin-autorotate.html /plugins/autorotate.html
@@ -27,3 +29,4 @@
 /plugins/plugin-visible-range.html /plugins/visible-range.html
 /plugins/plugin-visible-range /plugins/visible-range.html
 /demos/basic/overlay.html /plugins/overlays.html
+/demos/basic/overlay /plugins/overlays.html

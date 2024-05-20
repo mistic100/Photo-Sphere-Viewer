@@ -122,9 +122,9 @@ const viewer = new Viewer({
                     // polygon marker
                     id: 'polygon',
                     polygon: [
-                        [6.2208, 0.0906], [0.0443, 0.1028], [0.2322, 0.0849], [0.4531, 0.0387],
+                        [6.2208, 0.0906],  [0.0443, 0.1028],  [0.2322, 0.0849], [0.4531, 0.0387],
                         [0.5022, -0.0056], [0.4587, -0.0396], [0.252, -0.0453], [0.0434, -0.0575],
-                        [6.1302, -0.0623], [6.0094, -0.0169], [6.0471, 0.032], [6.2208, 0.0906],
+                        [6.1302, -0.0623], [6.0094, -0.0169], [6.0471, 0.0320], [6.2208, 0.0906],
                     ],
                     svgStyle: {
                         fill: 'rgba(200, 0, 0, 0.2)',
@@ -247,43 +247,53 @@ You can try markers live in [the playground](../playground.md).
 
 One, and only one, of these options is required for each marker.
 
-| Name             | Type                                     | Description                                                                   |
-| ---------------- | ---------------------------------------- | ----------------------------------------------------------------------------- |
-| `image`          | `string`                                 | Path to an image file. Requires `width` and `height` to be defined.           |
-| `imageLayer`     | `string`                                 | Path to an image file.                                                        |
-| `videoLayer`     | `string`                                 | Path to a video file.                                                         |
-| `html`           | `string`                                 | HTML content of the marker. It is recommended to define `width` and `height`. |
-| `element`        | `HTMLElement`                            | Existing DOM element.                                                         |
-| `square`         | `integer`                                | Size of the square.                                                           |
-| `rect`           | `integer[2]`<br>`{width:int,height:int}` | Size of the rectangle.                                                        |
-| `circle`         | `integer`                                | Radius of the circle.                                                         |
-| `ellipse`        | `integer[2]`<br>`{rx:int,ry:int}`        | Radiuses of the ellipse.                                                      |
-| `path`           | `string`                                 | Definition of the path (0,0 will be placed at the defined `position`).        |
-| `polygon`        | `double[2][]`<br>`string[2][]`           | Array of points defining the polygon in spherical coordinates.                |
-| `polygonPixels`  | `integer[2][]`                           | Same as `polygon` but in pixel coordinates on the panorama image.             |
-| `polyline`       | `double[2][]`<br>`string[2][]`           | Same as `polygon` but generates a polyline.                                   |
-| `polylinePixels` | `integer[2][]`                           | Same as `polygonPixels` but generates a polyline.                             |
+#### `image`
 
-**Examples :**
+-   type: `string`
 
-```js
+Path to an image file. Requires `size` to be defined.
+
+```js{3}
 {
-  image: 'pin-red.png',
-  imageLayer: 'pin-blue.png',
-  videoLayer: 'intro.mp4',
-  html: 'Click here',
-  element: document.querySelector('#my-marker'),
-  square: 10,
-  rect: [10, 5],
-  rect: {width: 10, height: 5},
-  circle: 10,
-  ellipse: [10, 5],
-  ellipse: {rx: 10, ry: 5},
-  path: 'M 0 0 L 60 60 L 60 0 L 0 60 L 0 0',
-  polygon: [[0.2, 0.4], [0.9, 1.1], [1.5, 0.7]],
-  polygonPixels: [[100, 200], [150, 300], [300, 200]],
-  polyline: [[0.2, 0.4], [0.9, 1.1]],
-  polylinePixels: [[100, 200], [150, 300]],
+    id: 'marker-1',
+    image: 'pin-red.png',
+    position: { yaw: 0, pitch: 0 },
+    size: { width: 32, height: 32 },
+}
+```
+
+#### `imageLayer`
+
+-   type: `string`
+
+Path to an image file.
+
+::: tip "Layers" positionning
+There is two ways to position `imageLayer` and `videoLayer` markers:
+
+-   `position` (one value) + `size` + `anchor` (optional) + `orientation` (optional)
+-   `position` with four values defining the corners of the image/video
+
+[Check the demo](../demos/markers/layers.md)
+:::
+
+```js{3}
+{
+    id: 'marker-1',
+    imageLayer: 'pin-red.png',
+    position: { yaw: 0, pitch: 0 },
+    size: { width: 32, height: 32 },
+}
+
+{
+    id: 'marker-2',
+    imageLayer: 'pin-red.png',
+    position: [
+        { yaw: -0.2, pitch: 0.2 },
+        { yaw: 0.2, pitch: 0.2 },
+        { yaw: 0.2, pitch: -0.2 },
+        { yaw: -0.2, pitch: -0.2 },
+    ],
 }
 ```
 
@@ -291,6 +301,50 @@ One, and only one, of these options is required for each marker.
 Both allows to display an image but the difference is in the rendering technique.
 And `image` marker is rendered flat above the viewer but and `imageLayer` is rendered inside the panorama itself, this allows for more natural movements and scaling.
 :::
+
+#### `videoLayer`
+
+-   type: `string`
+
+Path to a video file. It is positionned exactly like `imageLayer`. It can be used with the [`chromaKey`](#chromakey) option.
+
+```js{3}
+{
+    id: 'marker-1',
+    videoLayer: 'intro.mp4',
+    position: { yaw: 0, pitch: 0 },
+    size: { width: 600, height: 400 },
+}
+```
+
+#### `html`
+
+-   type: `string`
+
+HTML content of the marker. It is recommended to define th `size`.
+
+```js{3}
+{
+    id: 'marker-1',
+    html: '<string>Click here</strong>',
+    position: { yaw: 0, pitch: 0 },
+    size: { width: 100, height: 30 },
+}
+```
+
+#### `element`
+
+-   type: `HTMLElement`
+
+Existing DOM element.
+
+```js{3}
+{
+    id: 'marker-1',
+    element: document.querySelector('#my-marker'),
+    position: { yaw: 0, pitch: 0 },
+}
+```
 
 ::: tip Custom element markers
 The `element` marker accepts [Web Components](https://developer.mozilla.org/docs/Web/API/Web_components/Using_custom_elements).
@@ -305,14 +359,149 @@ If your component has an `updateMarker()` method it will be called by the plugin
 [Check the demo](../demos/markers/custom-element.md)
 :::
 
-::: tip "Layers" positionning
-There is two ways to position `imageLayer` and `videoLayer` markers:
+#### `polygon`
 
--   `position` (one value) + `size` + `anchor` (optional) + `orientation` (optional)
--   `position` with four values defining the corners of the image/video
+-   type: `number[2][] | number[2][][] | string[2][] | string[2][][]`
 
-[Check the demo](../demos/markers/layers.md)
-:::
+Array of points defining the polygon in spherical coordinates (degrees or radians).  
+The polygon can have one or more holes by defined them in a nested array (the syntax is [similar to GeoJSON](https://geojson.readthedocs.io/en/latest/#polygon)).
+
+```js{3,8-11}
+{
+    id: 'marker-1',
+    polygon: [[0.2, 0.4], [0.9, 1.1], [1.5, 0.7]];
+}
+
+{
+    id: 'marker-2',
+    polygon: [
+        [[0.2, 0.4], [0.9, 1.1], [1.5, 0.7]],
+        [[0.3, 0.5], [1.4, 0.8], [0.8, 1.0]], // holes coordinates must be in reverse order
+    ],
+}
+```
+
+#### `polygonPixels`
+
+-   type: `number[2][] | number[2][][]`
+
+Same as `polygon` but in pixel coordinates on the panorama image.
+
+```js{3}
+{
+    id: 'marker-1',
+    polygonPixels: [[100, 200], [150, 300], [300, 200]],
+}
+```
+
+#### `polyline`
+
+-   type: `number[2][] | string[2][]`
+
+Same as `polygon` but generates a polyline.
+
+```js{3}
+{
+    id: 'marker-1',
+    polyline: [[0.2, 0.4], [0.9, 1.1]],
+}
+```
+
+#### `polylinePixels`
+
+-   type: `number[2][] | string[2][]`
+
+Same as `polygonPixels` but generates a polyline.
+
+```js{3}
+{
+    id: 'marker-1',
+    polylinePixels: [[100, 200], [150, 300]],
+}
+```
+
+#### `square`
+
+-   type: `integer`
+
+Size of the square. 
+
+```js{3}
+{
+    id: 'marker-1',
+    square: 10,
+    position: { yaw: 0, pitch: 0 },
+}
+```
+
+#### `rect`
+
+-   type: `integer[2] | { width: integer, height: integer }`
+
+Size of the rectangle. 
+
+```js{3,9}
+{
+    id: 'marker-1',
+    rect: [10, 5],
+    position: { yaw: 0, pitch: 0 },
+}
+
+{
+    id: 'marker-2',
+    rect: { width: 10, height: 5 },
+    position: { yaw: 0, pitch: 0 },
+}
+```
+
+#### `circle`
+
+-   type: `integer`
+
+Radius of the circle.
+
+```js{3}
+{
+    id: 'marker-1',
+    circle: 10,
+    position: { yaw: 0, pitch: 0 },
+}
+```
+
+#### `ellipse`
+
+-   type: `integer[2] | { rx: integer, ry: integer }`;
+
+Radiuses of the ellipse.
+
+```js{3,9}
+{
+    id: 'marker-1',
+    ellipse: [10, 5],
+    position: { yaw: 0, pitch: 0 },
+}
+
+{
+    id: 'marker-2',
+    ellipse: { rx: 10, ry: 5 },
+    position: { yaw: 0, pitch: 0 },
+}
+```
+
+#### `path`
+
+-   type: `string`
+
+Definition of the path (0,0 will be placed at the defined `position`).
+
+```js{3}
+{
+    id: 'marker-1',
+    path: 'M0,0 L60,60 L60,0 L0,60 L0,0',
+    position: { yaw: 0, pitch: 0 },
+}
+```
+
 
 ### Options
 

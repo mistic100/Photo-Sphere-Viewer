@@ -10,7 +10,6 @@ The supported adapters are:
 -   [cubemap](cubemap.md): used to load cubemaps projections (six textures)
 -   [cubemap tiles](cubemap-tiles.md): used to load tiled cubemap panoramas
 -   [cubemap video](cubemap-video.md): used to load cubemap video
--   [little planet](little-planet.md): used to display equirectangular panoramas with a little planet effect
 
 ## Import an adapter
 

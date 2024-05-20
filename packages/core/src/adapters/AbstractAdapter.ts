@@ -91,7 +91,7 @@ export abstract class AbstractAdapter<TPanorama, TTexture, TData> {
     /**
      * Creates the mesh
      */
-    abstract createMesh(scale?: number): Mesh;
+    abstract createMesh(): Mesh;
 
     /**
      * Applies the texture to the mesh

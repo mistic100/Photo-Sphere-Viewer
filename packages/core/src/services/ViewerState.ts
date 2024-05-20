@@ -68,11 +68,6 @@ export class ViewerState {
     loadingPromise: Promise<any> = null;
 
     /**
-     * special tweaks for LittlePlanetAdapter
-     */
-    littlePlanet = false;
-
-    /**
      * time of the last user action
      */
     idleTime = -1;

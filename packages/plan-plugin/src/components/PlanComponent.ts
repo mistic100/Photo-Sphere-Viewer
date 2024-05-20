@@ -304,6 +304,10 @@ export class PlanComponent extends AbstractComponent {
 
         utils.toggleClass(this.container, 'psv-plan--maximized', this.state.maximized);
 
+        if (this.state.maximized) {
+            this.map.getContainer().focus();
+        }
+
         this.maximizeButton?.update();
     }
 

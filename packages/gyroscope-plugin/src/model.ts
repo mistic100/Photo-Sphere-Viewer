@@ -20,3 +20,5 @@ export type GyroscopePluginConfig = {
      */
     moveMode?: 'smooth' | 'fast';
 };
+
+export type UpdatableGyroscopePluginConfig = Omit<GyroscopePluginConfig, 'absolutePosition'>;

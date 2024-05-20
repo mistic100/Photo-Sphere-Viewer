@@ -142,6 +142,9 @@ export class MapComponent extends AbstractComponent {
     }
 
     override destroy(): void {
+        this.canvas.width = 0;
+        this.canvas.height = 0;
+
         window.removeEventListener('touchmove', this);
         window.removeEventListener('mousemove', this);
         window.removeEventListener('touchend', this);

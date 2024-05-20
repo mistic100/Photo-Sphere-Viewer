@@ -6,7 +6,7 @@ export class DeviceOrientationControls {
     screenOrientation: number;
     alphaOffset: number;
 
-    constructor(object: Object3D);
+    constructor(object: Object3D, preferAbsolute: boolean);
 
     connect();
 

@@ -350,8 +350,8 @@ export class CubemapAdapter extends AbstractAdapter<CubemapPanorama, Texture[], 
         };
     }
 
-    createMesh(scale = 1): CubemapMesh {
-        const cubeSize = CONSTANTS.SPHERE_RADIUS * 2 * scale;
+    createMesh(): CubemapMesh {
+        const cubeSize = CONSTANTS.SPHERE_RADIUS * 2;
         const geometry = new BoxGeometry(cubeSize, cubeSize, cubeSize).scale(1, 1, -1);
 
         const materials = [];

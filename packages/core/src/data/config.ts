@@ -65,7 +65,8 @@ export const DEFAULTS: Required<ParsedViewerConfig> = {
         close: 'Close',
         twoFingers: 'Use two fingers to navigate',
         ctrlZoom: 'Use ctrl + scroll to zoom the image',
-        loadError: "The panorama can't be loaded",
+        loadError: 'The panorama cannot be loaded',
+        webglError: 'Your browser does not seem to support WebGL',
     },
     keyboard: 'fullscreen',
     keyboardActions: {
@@ -116,6 +117,10 @@ export const CONFIG_PARSERS: ConfigParsers<ViewerConfig, ParsedViewerConfig> = {
         }
         if (!(adapter[0] as any).id) {
             throw new PSVError(`Adapter has no id.`);
+        }
+        if ((adapter[0] as any).id === 'little-planet') {
+            logWarn('LittlePlanetAdapter support has been removed, use `{ fisheye: 2, maxFov: 130 }` to achieve similar effect.');
+            adapter = defValue;
         }
         return adapter;
     },

@@ -99,14 +99,8 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
     constructor(config: ViewerConfig) {
         super();
 
-        Cache.init();
-        SYSTEM.load();
-
-        this.state = new ViewerState();
-        this.config = getViewerConfig(config);
-
+        // init
         this.parent = getElement(config.container);
-
         if (!this.parent) {
             throw new PSVError(`"container" element not found.`);
         }
@@ -119,6 +113,23 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
         this.parent.appendChild(this.container);
 
         checkStylesheet(this.container, 'core');
+
+        this.state = new ViewerState();
+        this.config = getViewerConfig(config);
+
+        this.__setSize(this.config.size);
+
+        this.overlay = new Overlay(this);
+
+        try {
+            SYSTEM.load();
+        } catch (err) {
+            console.error(err);
+            this.showError(this.config.lang.webglError);
+            return;
+        }
+
+        Cache.init();
 
         // @ts-ignore
         this.adapter = new this.config.adapter[0](this, this.config.adapter[1]);
@@ -135,10 +146,8 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
         this.navbar = new Navbar(this);
         this.panel = new Panel(this);
         this.notification = new Notification(this);
-        this.overlay = new Overlay(this);
 
-        // init
-        this.resize(this.config.size);
+        this.autoSize();
         this.setCursor(null);
 
         resolveBoolean(SYSTEM.isTouchEnabled, (enabled) => {
@@ -185,12 +194,12 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
         this.children.slice().forEach((child) => child.destroy());
         this.children.length = 0;
 
-        this.eventsHandler.destroy();
-        this.renderer.destroy();
-        this.textureLoader.destroy();
-        this.dataHelper.destroy();
-        this.adapter.destroy();
-        this.dynamics.destroy();
+        this.eventsHandler?.destroy();
+        this.renderer?.destroy();
+        this.textureLoader?.destroy();
+        this.dataHelper?.destroy();
+        this.adapter?.destroy();
+        this.dynamics?.destroy();
 
         this.parent.removeChild(this.container);
         // @ts-ignore
@@ -277,7 +286,7 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
      * Checks if the viewer is in fullscreen
      */
     isFullscreenEnabled(): boolean {
-        return isFullscreenEnabled(this.parent);
+        return isFullscreenEnabled(this.parent, SYSTEM.isIphone);
     }
 
     /**
@@ -678,6 +687,11 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
      * Resizes the viewer
      */
     resize(size: CssSize) {
+        this.__setSize(size);
+        this.autoSize();
+    }
+
+    private __setSize(size: CssSize) {
         const s = size as any;
         (['width', 'height'] as Array<'width' | 'height'>).forEach((dim) => {
             if (size && s[dim]) {
@@ -687,8 +701,6 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
                 this.parent.style[dim] = s[dim];
             }
         });
-
-        this.autoSize();
     }
 
     /**
@@ -696,7 +708,7 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
      */
     enterFullscreen() {
         if (!this.isFullscreenEnabled()) {
-            requestFullscreen(this.parent);
+            requestFullscreen(this.parent, SYSTEM.isIphone);
         }
     }
 
@@ -705,7 +717,7 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
      */
     exitFullscreen() {
         if (this.isFullscreenEnabled()) {
-            exitFullscreen();
+            exitFullscreen(SYSTEM.isIphone);
         }
     }
 

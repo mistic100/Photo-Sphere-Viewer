@@ -9,6 +9,8 @@ function greatArcIntermediaryPoint(p1: [number, number], p2: [number, number], f
     const [λ1, φ1] = p1;
     const [λ2, φ2] = p2;
 
+    // note: "r" should be the angular distance, see "intermediatePointTo" in the above article
+    // but "greatArcDistance" gives identiqual results up to 0.00001 radians and is faster
     const r = utils.greatArcDistance(p1, p2);
     const a = Math.sin((1 - f) * r) / Math.sin(r);
     const b = Math.sin(f * r) / Math.sin(r);

@@ -200,7 +200,7 @@ tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretiu
                                 polygon: [
                                     [6.0848, 0.1806], [0.1022, 0.3166], [0.6333, 0.3836], [1.2396, 0.5112],
                                     [1.7922, 0.5544], [2.7635, 0.7853], [3.3688, 0.4723], [3.6902, 0.6161],
-                                    [4.2981, 0.6942], [4.6605, 0.6618], [5.4694, 0.188], [5.7125, 0.1302],
+                                    [4.2981, 0.6942], [4.6605, 0.6618], [5.4694, 0.1880], [5.7125, 0.1302],
                                 ],
                                 hideList: true,
                             });
@@ -210,8 +210,13 @@ tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretiu
                                 id: 'polygon-1',
                                 // prettier-ignore
                                 polygonPixels: [
-                                    [2941, 1413], [3042, 1402], [3041, 1555], [2854, 1559],
-                                    [2739, 1516], [2775, 1469], [2941, 1413],
+                                    [
+                                        [2941, 1413], [3042, 1402], [3041, 1555], [2854, 1559],
+                                        [2739, 1516], [2775, 1469], [2941, 1413],
+                                    ],
+                                    [
+                                        [2900, 1450], [2900, 1500], [2950, 1500], [2950, 1450], 
+                                    ],
                                 ],
                                 svgStyle: {
                                     fill: 'rgba(255,0,0,0.2)',
@@ -219,7 +224,7 @@ tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretiu
                                     strokeWidth: '2px',
                                 },
                                 tooltip: {
-                                    content: 'Simple polygon',
+                                    content: 'Polygon with hole',
                                     position: 'bottom right',
                                 },
                             });
@@ -248,8 +253,8 @@ tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretiu
                                 id: 'polyline',
                                 // prettier-ignore
                                 polylinePixels: [
-                                    2478, 1635, 2184, 1747, 1674, 1953, 1166, 1852,
-                                    709, 1669, 301, 1519, 94, 1399, 34, 1356,
+                                    [2478, 1635], [2184, 1747], [1674, 1953], [1166, 1852],
+                                    [709, 1669], [301, 1519], [94, 1399], [34, 1356],
                                 ],
                                 svgStyle: {
                                     stroke: 'rgba(80, 150, 50, 0.8)',

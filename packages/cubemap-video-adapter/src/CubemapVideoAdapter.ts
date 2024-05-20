@@ -42,8 +42,8 @@ export class CubemapVideoAdapter extends AbstractVideoAdapter<CubemapVideoPanora
         return super.loadTexture(panorama);
     }
 
-    createMesh(scale = 1): CubemapMesh {
-        const cubeSize = CONSTANTS.SPHERE_RADIUS * 2 * scale;
+    createMesh(): CubemapMesh {
+        const cubeSize = CONSTANTS.SPHERE_RADIUS * 2;
         const geometry = new BoxGeometry(cubeSize, cubeSize, cubeSize).scale(1, 1, -1).toNonIndexed() as BoxGeometry;
 
         geometry.clearGroups();

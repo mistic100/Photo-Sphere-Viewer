@@ -171,8 +171,8 @@ export class CubemapTilesAdapter extends AbstractAdapter<
         }
     }
 
-    createMesh(scale = 1): CubemapMesh {
-        const cubeSize = CONSTANTS.SPHERE_RADIUS * 2 * scale;
+    createMesh(): CubemapMesh {
+        const cubeSize = CONSTANTS.SPHERE_RADIUS * 2;
         const geometry = new BoxGeometry(cubeSize, cubeSize, cubeSize, CUBE_SEGMENTS, CUBE_SEGMENTS, CUBE_SEGMENTS)
             .scale(1, 1, -1)
             .toNonIndexed() as BoxGeometry;

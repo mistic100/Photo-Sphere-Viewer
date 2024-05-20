@@ -89,6 +89,13 @@ export class CompassComponent extends AbstractComponent {
         }
     }
 
+    override destroy(): void {
+        this.canvas.width = 0;
+        this.canvas.height = 0;
+
+        super.destroy();
+    }
+
     applyConfig() {
         this.container.className = `psv-compass psv-compass--${this.config.position.join('-')}`;
 

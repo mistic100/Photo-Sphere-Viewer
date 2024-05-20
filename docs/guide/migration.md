@@ -26,7 +26,6 @@ Here is the full list of packages you might need :
 -   @photo-sphere-viewer/cubemap-video-adapter
 -   @photo-sphere-viewer/equirectangular-tiles-adapter
 -   @photo-sphere-viewer/equirectangular-video-adapter
--   @photo-sphere-viewer/little-planet-adapter
 -   @photo-sphere-viewer/autorotate-plugin
 -   @photo-sphere-viewer/compass-plugin
 -   @photo-sphere-viewer/gallery-plugin

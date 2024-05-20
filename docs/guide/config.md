@@ -142,7 +142,8 @@ lang: {
   close: 'Close',
   twoFingers: 'Use two fingers to navigate',
   ctrlZoom: 'Use ctrl + scroll to zoom the image',
-  loadError: 'The panorama can\'t be loaded',
+  loadError: 'The panorama cannot be loaded',
+  webglError: 'Your browser does not seem to support WebGL',
 }
 ```
 
@@ -201,10 +202,6 @@ Requires to use the ctrl key to zoom the panorama. This allows to scroll on the 
 Requires two fingers to rotate the panorama. This allows standard touch-scroll navigation in the page containing the viewer. If enabled, an overlay asking the user to use two fingers is displayed when only one finger is detected.
 
 ## Advanced options
-
-#### ~~`overlay`~~
-
-Deprecated: please migrate to the [Overlays plugin](../plugins/overlays.md).
 
 #### `sphereCorrection`
 

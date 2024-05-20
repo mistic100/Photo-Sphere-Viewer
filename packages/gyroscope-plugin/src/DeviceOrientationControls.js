@@ -11,7 +11,7 @@ const _q1 = new Quaternion(-Math.sqrt(0.5), 0, 0, Math.sqrt(0.5)); // - PI/2 aro
  * @internal
  */
 export class DeviceOrientationControls {
-    constructor(object) {
+    constructor(object, preferAbsolute) {
         if (window.isSecureContext === false) {
             console.error(
                 'THREE.DeviceOrientationControls: DeviceOrientationEvent is only available in secure contexts (https)'
@@ -22,6 +22,8 @@ export class DeviceOrientationControls {
 
         const EPS = 0.000001;
         const lastQuaternion = new Quaternion();
+
+        let nonAbsoluteListener = false;
 
         this.object = object;
         this.object.rotation.reorder('YXZ');
@@ -34,6 +36,15 @@ export class DeviceOrientationControls {
         this.alphaOffset = 0; // radians
 
         const onDeviceOrientationChangeEvent = function (event) {
+            scope.deviceOrientation = event;
+        };
+
+        const onDeviceOrientationAbsoluteChangeEvent = function (event) {
+            // if the 'deviceorientationabsolute' event is supported, automatically remove the 'deviceorientation' listener 
+            if (nonAbsoluteListener) {
+                window.removeEventListener('deviceorientation', onDeviceOrientationChangeEvent);
+                nonAbsoluteListener = false;
+            }
             scope.deviceOrientation = event;
         };
 
@@ -67,6 +78,10 @@ export class DeviceOrientationControls {
                         if (response == 'granted') {
                             window.addEventListener('orientationchange', onScreenOrientationChangeEvent);
                             window.addEventListener('deviceorientation', onDeviceOrientationChangeEvent);
+                            if (preferAbsolute) {
+                                window.addEventListener('deviceorientationabsolute', onDeviceOrientationAbsoluteChangeEvent);
+                                nonAbsoluteListener = true;
+                            }
                         }
                     })
                     .catch(function (error) {
@@ -75,6 +90,10 @@ export class DeviceOrientationControls {
             } else {
                 window.addEventListener('orientationchange', onScreenOrientationChangeEvent);
                 window.addEventListener('deviceorientation', onDeviceOrientationChangeEvent);
+                if (preferAbsolute) {
+                    window.addEventListener('deviceorientationabsolute', onDeviceOrientationAbsoluteChangeEvent);
+                    nonAbsoluteListener = true;
+                }
             }
 
             scope.enabled = true;
@@ -83,6 +102,8 @@ export class DeviceOrientationControls {
         this.disconnect = function () {
             window.removeEventListener('orientationchange', onScreenOrientationChangeEvent);
             window.removeEventListener('deviceorientation', onDeviceOrientationChangeEvent);
+            window.removeEventListener('deviceorientationabsolute', onDeviceOrientationAbsoluteChangeEvent);
+            nonAbsoluteListener = false;
 
             scope.enabled = false;
         };

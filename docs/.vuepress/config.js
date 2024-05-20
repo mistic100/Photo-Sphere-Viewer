@@ -100,7 +100,6 @@ module.exports = {
                                 'adapters/cubemap',
                                 'adapters/cubemap-tiles',
                                 'adapters/cubemap-video',
-                                'adapters/little-planet',
                             ],
                         },
                         {

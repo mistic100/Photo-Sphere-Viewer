@@ -53,7 +53,7 @@ Applies camera roll (rotation on Z axis).
 
 -   type: `boolean`
 -   default: `false`
--   updatable: yes
+-   updatable: no
 
 By default the camera will keep its current horizontal position when the gyroscope is enabled. Turn this option `true` to enable absolute positionning and only use the device orientation.
 

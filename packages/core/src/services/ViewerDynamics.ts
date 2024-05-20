@@ -33,9 +33,9 @@ export class ViewerDynamics extends AbstractService {
             }),
             pitch: new Dynamic(null, {
                 defaultValue: this.config.defaultPitch,
-                min: !this.viewer.state.littlePlanet ? -Math.PI / 2 : 0,
-                max: !this.viewer.state.littlePlanet ? Math.PI / 2 : Math.PI * 2,
-                wrap: this.viewer.state.littlePlanet,
+                min: -Math.PI / 2,
+                max: Math.PI / 2,
+                wrap: false,
             }),
         }
     );

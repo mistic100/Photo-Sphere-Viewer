@@ -121,11 +121,11 @@ $psv-loader-width: 100px;
 
 ## Overlay
 
-| variable                 | default                              | description                                      |
-| ------------------------ | ------------------------------------ | ------------------------------------------------ |
-| $psv-overlay-opacity     | .8                                   | Opacity of the overlay                           |
-| $psv-overlay-title-font  | 30px sans-serif                      | Font of the overlay title                        |
-| $psv-overlay-title-color | black                                | Color of the overlay title                       |
-| $psv-overlay-text-font   | 20px sans-serif                      | Font of the overlay text                         |
-| $psv-overlay-text-color  | rgba(0, 0, 0, .8)                    | Color of the overlay text                        |
-| $psv-overlay-image-size  | (portrait: 50vw,<br>landscape: 25vw) | Image/Icon size, depending on screen orientation |
+| variable                 | default                            | description                                      |
+| ------------------------ | ---------------------------------- | ------------------------------------------------ |
+| $psv-overlay-opacity     | .8                                 | Opacity of the overlay                           |
+| $psv-overlay-title-font  | 30px sans-serif                    | Font of the overlay title                        |
+| $psv-overlay-title-color | black                              | Color of the overlay title                       |
+| $psv-overlay-text-font   | 20px sans-serif                    | Font of the overlay text                         |
+| $psv-overlay-text-color  | rgba(0, 0, 0, .8)                  | Color of the overlay text                        |
+| $psv-overlay-image-size  | (portrait: 50%,<br>landscape: 33%) | Image/Icon size, depending on screen orientation |

@@ -14,7 +14,7 @@
     "codesandbox-import-utils": "^2.2.3",
     "date-fns": "^2.30.0",
     "lodash": "^4.17.21",
-    "marked": "^4.2.3",
+    "marked": "4.2.12",
     "raw-loader": "^4.0.2",
     "vue-material": "^1.0.0-beta-16",
     "vue-slider-component": "^3.2.24",

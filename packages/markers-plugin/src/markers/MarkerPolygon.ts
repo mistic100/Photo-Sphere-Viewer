@@ -11,12 +11,15 @@ import { AbstractDomMarker } from './AbstractDomMarker';
  * @internal
  */
 export class MarkerPolygon extends AbstractDomMarker {
+
+    private positions3D: Vector3[][];
+
     constructor(viewer: Viewer, plugin: MarkersPlugin, config: MarkerConfig) {
         super(viewer, plugin, config);
     }
 
     override createElement(): void {
-        this.element = document.createElementNS(SVG_NS, this.isPolygon ? 'polygon' : 'polyline');
+        this.element = document.createElementNS(SVG_NS, 'path');
         this.element[MARKER_DATA] = this;
     }
 
@@ -45,16 +48,34 @@ export class MarkerPolygon extends AbstractDomMarker {
         return this.type === MarkerType.polyline || this.type === MarkerType.polylinePixels;
     }
 
+    private get coords(): Array<Array<[number, number]>> {
+        return this.definition;
+    }
+
     override render(): Point {
-        const positions = this.__getPolyPositions();
-        const isVisible = positions.length > (this.isPolygon ? 2 : 1);
+        const positions = this.__getAllPolyPositions();
+        const isVisible = positions[0].length > (this.isPolygon ? 2 : 1);
 
         if (isVisible) {
             const position = this.viewer.dataHelper.sphericalCoordsToViewerCoords(this.state.position);
 
-            const points = positions.map((pos) => pos.x - position.x + ',' + (pos.y - position.y)).join(' ');
+            const points = positions
+                .filter((innerPos, i) => {
+                    return innerPos.length > 0 && (this.isPolygon || i === 0);
+                })
+                .map((innerPos) => {
+                    let innerPoints = 'M';
+                    innerPoints += innerPos
+                        .map((pos) => `${pos.x - position.x},${pos.y - position.y}`)
+                        .join('L');
+                    if (this.isPolygon) {
+                        innerPoints += 'Z';
+                    }
+                    return innerPoints;
+                })
+                .join(' ');
 
-            this.domElement.setAttributeNS(null, 'points', points);
+            this.domElement.setAttributeNS(null, 'd', points);
             this.domElement.setAttributeNS(null, 'transform', `translate(${position.x} ${position.y})`);
 
             return position;
@@ -89,7 +110,7 @@ export class MarkerPolygon extends AbstractDomMarker {
         }
 
         // fold arrays: [1,2,3,4] => [[1,2],[3,4]]
-        const actualPoly: any = this.config[this.type];
+        let actualPoly: any = this.config[this.type];
         if (!Array.isArray(actualPoly[0])) {
             for (let i = 0; i < actualPoly.length; i++) {
                 // @ts-ignore
@@ -97,29 +118,47 @@ export class MarkerPolygon extends AbstractDomMarker {
             }
         }
 
+        if (!Array.isArray(actualPoly[0][0])) {
+            actualPoly = [actualPoly];
+        }
+
         // convert texture coordinates to spherical coordinates
         if (this.isPixels) {
-            this.definition = (actualPoly as Array<[number, number]>).map((coord) => {
-                const sphericalCoords = this.viewer.dataHelper.textureCoordsToSphericalCoords({
-                    textureX: coord[0],
-                    textureY: coord[1],
+            this.definition = (actualPoly as Array<Array<[number, number]>>).map((coords) => {
+                return coords.map((coord) => {
+                    const sphericalCoords = this.viewer.dataHelper.textureCoordsToSphericalCoords({
+                        textureX: coord[0],
+                        textureY: coord[1],
+                    });
+                    return [sphericalCoords.yaw, sphericalCoords.pitch];
                 });
-                return [sphericalCoords.yaw, sphericalCoords.pitch];
             });
         }
         // clean angles
         else {
-            this.definition = (actualPoly as Array<[number | string, number | string]>).map((coord) => {
-                return [utils.parseAngle(coord[0]), utils.parseAngle(coord[1], true)];
+            this.definition = (actualPoly as Array<Array<[number, number]>> | Array<Array<[string, string]>>).map((coords) => {
+                return coords.map((coord) => {
+                    return [utils.parseAngle(coord[0]), utils.parseAngle(coord[1], true)];
+                });
             });
         }
 
-        const centroid = this.isPolygon ? getPolygonCenter(this.definition) : getPolylineCenter(this.definition);
+        const centroid = this.isPolygon ? getPolygonCenter(this.coords[0]) : getPolylineCenter(this.coords[0]);
         this.state.position = { yaw: centroid[0], pitch: centroid[1] };
 
         // compute x/y/z positions
-        this.state.positions3D = (this.definition as Array<[number, number]>).map((coord) => {
-            return this.viewer.dataHelper.sphericalCoordsToVector3({ yaw: coord[0], pitch: coord[1] });
+        this.positions3D = this.coords.map((coords) => {
+            return coords.map((coord) => {
+                return this.viewer.dataHelper.sphericalCoordsToVector3({ yaw: coord[0], pitch: coord[1] });
+            });
+        });
+
+        this.state.positions3D = this.positions3D[0];
+    }
+
+    private __getAllPolyPositions(): Point[][] {
+        return this.positions3D.map(positions => {
+            return this.__getPolyPositions(positions);
         });
     }
 
@@ -127,11 +166,11 @@ export class MarkerPolygon extends AbstractDomMarker {
      * Computes viewer coordinates of each point of a polygon/polyline<br>
      * It handles points behind the camera by creating intermediary points suitable for the projector
      */
-    private __getPolyPositions(): Point[] {
-        const nbVectors = this.state.positions3D.length;
+    private __getPolyPositions(positions: Vector3[]): Point[] {
+        const nbVectors = positions.length;
 
         // compute if each vector is visible
-        const positions3D = this.state.positions3D.map((vector) => {
+        const positions3D = positions.map((vector) => {
             return {
                 vector: vector,
                 visible: vector.dot(this.viewer.state.direction) > 0,

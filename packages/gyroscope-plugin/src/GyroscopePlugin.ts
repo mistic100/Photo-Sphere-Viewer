@@ -3,7 +3,7 @@ import { AbstractConfigurablePlugin, events, utils } from '@photo-sphere-viewer/
 import { Object3D, Vector3 } from 'three';
 import { DeviceOrientationControls } from './DeviceOrientationControls';
 import { GyroscopePluginEvents, GyroscopeUpdatedEvent } from './events';
-import { GyroscopePluginConfig } from './model.js';
+import { GyroscopePluginConfig, UpdatableGyroscopePluginConfig } from './model.js';
 
 const getConfig = utils.getConfigParser<GyroscopePluginConfig>(
     {
@@ -32,12 +32,13 @@ const direction = new Vector3();
 export class GyroscopePlugin extends AbstractConfigurablePlugin<
     GyroscopePluginConfig,
     GyroscopePluginConfig,
-    GyroscopePluginConfig,
+    UpdatableGyroscopePluginConfig,
     GyroscopePluginEvents
 > {
     static override readonly id = 'gyroscope';
     static override readonly VERSION = PKG_VERSION;
     static override readonly configParser = getConfig;
+    static override readonly readonlyOptions: Array<keyof GyroscopePluginConfig> = ['absolutePosition'];
 
     private readonly state = {
         isSupported: this.__checkSupport(),
@@ -74,6 +75,7 @@ export class GyroscopePlugin extends AbstractConfigurablePlugin<
 
         this.stop();
 
+        this.controls?.disconnect();
         delete this.controls;
 
         super.destroy();
@@ -138,14 +140,10 @@ export class GyroscopePlugin extends AbstractConfigurablePlugin<
 
                 // enable gyro controls
                 if (!this.controls) {
-                    this.controls = new DeviceOrientationControls(new Object3D());
-                } else {
-                    this.controls.connect();
+                    this.controls = new DeviceOrientationControls(new Object3D(), this.config.absolutePosition);
                 }
 
-                // force reset
-                this.controls.deviceOrientation = null;
-                this.controls.screenOrientation = 0;
+                // reset
                 this.controls.alphaOffset = 0;
 
                 this.state.alphaOffset = this.config.absolutePosition ? 0 : null;
@@ -160,8 +158,6 @@ export class GyroscopePlugin extends AbstractConfigurablePlugin<
      */
     stop() {
         if (this.isEnabled()) {
-            this.controls.disconnect();
-
             this.state.enabled = false;
             this.viewer.config.moveInertia = this.state.config_moveInertia;
 

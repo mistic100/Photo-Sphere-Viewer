@@ -15,15 +15,13 @@
             {
                 "imports": {
                     "three": "/node_modules/three/build/three.module.js",
-                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
-                    "@photo-sphere-viewer/little-planet-adapter": "/dist/little-planet-adapter/index.module.js"
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js"
                 }
             }
         </script>
 
         <script type="module">
             import { Viewer } from '@photo-sphere-viewer/core';
-            import { LittlePlanetAdapter } from '@photo-sphere-viewer/little-planet-adapter';
 
             const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
 
@@ -40,10 +38,13 @@
 
             const viewer = new Viewer({
                 container: 'photosphere',
-                adapter: LittlePlanetAdapter,
                 panorama: panos[0].url,
                 caption: panos[0].caption,
                 loadingImg: baseUrl + 'loader.gif',
+                fisheye: 2,
+                maxFov: 130,
+                defaultZoomLvl: 0,
+                defaultPitch: -Math.PI / 2,
                 navbar: [
                     'zoom',
                     'move',
@@ -59,9 +60,9 @@
                                 viewer.setPanorama(panos[i].url, {
                                     position: {
                                         yaw: 0,
-                                        pitch: 0,
+                                        pitch: -Math.PI / 2,
                                     },
-                                    zoom: 50,
+                                    zoom: 0,
                                     caption: panos[i].caption,
                                     description: panos[i].description,
                                 });

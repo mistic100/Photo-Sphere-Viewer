@@ -11,7 +11,8 @@
     cursor: default;
 
     &-image {
-        margin-bottom: 4vh;
+        width: 100%;
+        text-align: center;
 
         svg {
             width: map.get($psv-overlay-image-size, portrait);
@@ -24,6 +25,7 @@
 
     &-title {
         color: $psv-overlay-title-color;
+        margin-top: 1em;
         font: $psv-overlay-title-font;
         text-align: center;
     }

@@ -160,13 +160,11 @@ export abstract class Marker {
             this.config.opacity = 1;
         }
 
-        this.config.rotation = 0;
-        if (!utils.isNil(config.rotation)) {
-            try {
-                this.config.rotation = utils.parseAngle(config.rotation);
-            } catch (e) {
-                utils.logWarn((e as PSVError).message);
-            }
+        try {
+            this.config.rotation = utils.parseAngle(this.config.rotation ?? 0);
+        } catch (e) {
+            utils.logWarn((e as PSVError).message);
+            this.config.rotation = 0;
         }
 
         this.state.anchor = utils.parsePoint(this.config.anchor);

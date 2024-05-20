@@ -85,9 +85,9 @@ export class EquirectangularVideoAdapter extends AbstractVideoAdapter<
         });
     }
 
-    createMesh(scale = 1): EquirectangularMesh {
+    createMesh(): EquirectangularMesh {
         const geometry = new SphereGeometry(
-            CONSTANTS.SPHERE_RADIUS * scale,
+            CONSTANTS.SPHERE_RADIUS,
             this.SPHERE_SEGMENTS,
             this.SPHERE_HORIZONTAL_SEGMENTS,
             -Math.PI / 2

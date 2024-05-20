@@ -84,7 +84,9 @@ export class EquirectangularAdapter extends AbstractAdapter<string, Texture, Pan
                 logWarn('Web Worker API not available');
                 this.config.interpolateBackground = false;
             } else {
-                this.interpolationWorker = new Worker(interpolationWorkerSrc);
+                this.interpolationWorker = new Worker(interpolationWorkerSrc, {
+                    name: 'photo-sphere-viewer-interpolation',
+                });
             }
         }
 
@@ -321,10 +323,12 @@ export class EquirectangularAdapter extends AbstractAdapter<string, Texture, Pan
 
             const t = createTexture(buffer);
 
-            if (this.config.interpolateBackground && (
-                panoData.croppedWidth !== panoData.fullWidth
-                || panoData.croppedHeight !== panoData.fullHeight
-            )) {
+            if (this.config.interpolateBackground
+                && resizedPanoData.fullWidth <= 8096
+                && (
+                    panoData.croppedWidth !== panoData.fullWidth
+                    || panoData.croppedHeight !== panoData.fullHeight
+                )) {
                 this.interpolationWorker.postMessage({
                     image: ctx.getImageData(
                         resizedPanoData.croppedX,
@@ -348,10 +352,10 @@ export class EquirectangularAdapter extends AbstractAdapter<string, Texture, Pan
         return createTexture(img);
     }
 
-    createMesh(scale = 1): EquirectangularMesh {
+    createMesh(): EquirectangularMesh {
         // The middle of the panorama is placed at yaw=0
         const geometry = new SphereGeometry(
-            SPHERE_RADIUS * scale,
+            SPHERE_RADIUS,
             this.SPHERE_SEGMENTS,
             this.SPHERE_HORIZONTAL_SEGMENTS,
             -Math.PI / 2

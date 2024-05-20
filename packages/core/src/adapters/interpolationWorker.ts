@@ -10,7 +10,9 @@ function interpolationWorker() {
         const panoData: PanoData = e.data.panoData;
 
         const buffer = new OffscreenCanvas(panoData.fullWidth, panoData.fullHeight);
-        const ctx = buffer.getContext('2d');
+        const ctx = buffer.getContext('2d', {
+            willReadFrequently: true,
+        });
 
         const img = new OffscreenCanvas(panoData.croppedWidth, panoData.croppedHeight);
         const ctxImg = img.getContext('2d');
