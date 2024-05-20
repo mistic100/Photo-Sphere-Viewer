@@ -4428,10 +4428,10 @@ esbuild-plugin-external-global@^1.0.1:
   resolved "https://registry.yarnpkg.com/esbuild-plugin-external-global/-/esbuild-plugin-external-global-1.0.1.tgz#e3bba0e3a561f61b395bec0984a90ed0de06c4ce"
   integrity sha512-NDzYHRoShpvLqNcrgV8ZQh61sMIFAry5KLTQV83BPG5iTXCCu7h72SCfJ97bW0GqtuqDD/1aqLbKinI/rNgUsg==
 
-esbuild-sass-plugin@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/esbuild-sass-plugin/-/esbuild-sass-plugin-3.2.0.tgz#9ea19331bda6f0c12ab75a7b829f7a2078a8c8c5"
-  integrity sha512-a+e7rYx4sDHgtKWN2n6/7lH5fgfvJaT6AMHmFhBKZy2ZTSN91X5q12l+DNVYJ8cWViEjJNWEd7k7UVcCg/2S/Q==
+esbuild-sass-plugin@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/esbuild-sass-plugin/-/esbuild-sass-plugin-3.3.0.tgz#a6664f8f73451dc15fe2748a8d3d334fb5f873af"
+  integrity sha512-btH77lGkASp1VHyji0dAanomatCwq1dmfrjAIjhv+GgR9LK2m1hbRr+t4kbjveyqCwmdBfRkboj+Pfaruok1Mg==
   dependencies:
     resolve "^1.22.8"
     sass "^1.71.1"
