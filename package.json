@@ -13,8 +13,7 @@
     "format": "prettier -w .",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "serve": "turbo run watch --parallel",
-    "serve:filter": "run() { turbo run watch --parallel --filter=$1... --filter=//; }; run",
+    "serve": "turbo run watch --concurrency 50",
     "npm-link": "turbo run npm-link --output-logs=new-only",
     "doc:build": "turbo run build-doc --force",
     "doc:serve": "turbo run serve-doc",
@@ -47,7 +46,7 @@
     "ts-node": "^10.9.1",
     "tsc": "^2.0.4",
     "tsup": "^8.0.1",
-    "turbo": "^1.12.2",
+    "turbo": "^1.13.3",
     "typedoc": "^0.25.0",
     "typedoc-plugin-extras": "^3.0.0",
     "typescript": "^5.4.5"

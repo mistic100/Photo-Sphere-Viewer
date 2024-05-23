@@ -23,10 +23,12 @@
       "dependsOn": ["photo-sphere-viewer-doc#build-doc"]
     },
     "watch": {
-      "cache": false
+      "cache": false,
+      "persistent": true
     },
     "//#watch": {
-      "cache": false
+      "cache": false,
+      "persistent": true
     },
     "serve-doc": {
       "cache": false
