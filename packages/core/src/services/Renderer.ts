@@ -90,7 +90,6 @@ export class Renderer extends AbstractService {
         this.camera.matrixWorldAutoUpdate = false;
 
         this.mesh = this.viewer.adapter.createMesh();
-        this.mesh.renderOrder = 1;
         this.mesh.userData = { [VIEWER_DATA]: true };
 
         this.meshContainer = new Group();
@@ -298,7 +297,10 @@ export class Renderer extends AbstractService {
 
         const group = new Group();
         const mesh = this.viewer.adapter.createMesh();
-        mesh.renderOrder = 2;
+        mesh.onBeforeRender = function (renderer) {
+            // must be drawn on top
+            renderer.clearDepth();
+        };
         this.viewer.adapter.setTexture(mesh, textureData, true);
         this.viewer.adapter.setTextureOpacity(mesh, 0);
         this.setPanoramaPose(textureData.panoData, mesh);
