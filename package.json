@@ -47,7 +47,7 @@
     "stylelint-stylistic": "^0.4.3",
     "ts-node": "^10.9.1",
     "tsc": "^2.0.4",
-    "tsup": "^8.0.1",
+    "tsup": "^8.1.0",
     "turbo": "^1.13.3",
     "typedoc": "^0.25.0",
     "typedoc-plugin-extras": "^3.0.0",
