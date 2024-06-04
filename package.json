@@ -43,7 +43,7 @@
     "set-versions": "^1.0.3",
     "sort-package-json": "^2.10.0",
     "stylelint": "^15.11.0",
-    "stylelint-config-standard-scss": "^11.1.0",
+    "stylelint-config-standard-scss": "^13.1.0",
     "stylelint-stylistic": "^0.4.3",
     "ts-node": "^10.9.1",
     "tsc": "^2.0.4",
