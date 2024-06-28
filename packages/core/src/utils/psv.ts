@@ -100,7 +100,7 @@ const CENTER = 'center';
 
 /**
  * Translate CSS values like "top center" or "10% 50%" as top and left positions (0-1 range)
- * @description The implementation is as close as possible to the "background-position" specification
+ * The implementation is as close as possible to the "background-position" specification
  * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/background-position}
  */
 export function parsePoint(value: string | Point): Point {
@@ -205,7 +205,7 @@ export function cssPositionIsOrdered(value: string[]): boolean {
 }
 
 /**
- * @summary Parses an speed
+ * Parses an speed
  * @param speed in radians/degrees/revolutions per second/minute
  * @throws {@link PSVError} when the speed cannot be parsed
  */

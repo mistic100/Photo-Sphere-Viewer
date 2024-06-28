@@ -12,7 +12,7 @@ export type DualFisheyeAdapterConfig = {
 };
 
 /**
- * @link https://github.com/acalcutt/Gear360_html5_viewer
+ * @see https://github.com/acalcutt/Gear360_html5_viewer
  */
 export class DualFisheyeAdapter extends EquirectangularAdapter {
     static override readonly id: string = 'dual-fisheye';

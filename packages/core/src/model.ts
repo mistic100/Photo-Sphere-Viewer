@@ -300,7 +300,7 @@ export type NavbarCustomButton = {
 
 /**
  * Viewer configuration
- * @link https://photo-sphere-viewer.js.org/guide/config.html
+ * @see https://photo-sphere-viewer.js.org/guide/config.html
  */
 export type ViewerConfig = {
     container: HTMLElement | string;

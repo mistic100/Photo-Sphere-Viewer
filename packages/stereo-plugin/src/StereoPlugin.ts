@@ -90,7 +90,7 @@ export class StereoPlugin extends AbstractPlugin<StereoPluginEvents> {
 
     /**
      * Enables the stereo view
-     * @description
+     *
      *  - enables wake lock
      *  - enables full screen
      *  - starts gyroscope controle

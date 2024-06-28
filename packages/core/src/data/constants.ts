@@ -123,7 +123,7 @@ export const ICONS = {
 
 /**
  * Collection of easing functions
- * @link https://gist.github.com/frederickk/6165768
+ * @see https://gist.github.com/frederickk/6165768
  */
 // @formatter:off
 // prettier-ignore

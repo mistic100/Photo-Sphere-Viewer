@@ -388,7 +388,7 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
 
     /**
      * Updates the existing marker with the same id
-     * @description Every property can be changed but you can't change its type (Eg: `image` to `html`)
+     * Every property can be changed but you can't change its type (Eg: `image` to `html`)
      */
     updateMarker(config: MarkerConfig, render = true) {
         const marker = this.getMarker(config.id);

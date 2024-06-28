@@ -68,7 +68,7 @@ const enum TooltipState {
 
 /**
  * Tooltip component
- * @description Never instanciate tooltips directly use {@link Viewer#createTooltip} instead
+ * Never instanciate tooltips directly use {@link Viewer#createTooltip} instead
  */
 export class Tooltip extends AbstractComponent {
     /**

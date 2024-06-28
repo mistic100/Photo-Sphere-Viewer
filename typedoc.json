@@ -7,7 +7,6 @@
   "excludePrivate": true,
   "entryPointStrategy": "packages",
   "readme": ".typedoc/README.md",
-  "gaID": "UA-28192323-3",
   "entryPoints": ["packages/*"],
   "exclude": ["packages/shared"],
   "validation": {

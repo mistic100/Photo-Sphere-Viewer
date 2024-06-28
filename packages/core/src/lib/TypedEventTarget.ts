@@ -14,7 +14,7 @@ export abstract class TypedEvent<TTarget extends TypedEventTarget<any>> extends 
 
 /**
  * Decorator for EventTarget allowing to strongly type events and listeners
- * @link https://rjzaworski.com/2021/06/event-target-with-typescript
+ * @see https://rjzaworski.com/2021/06/event-target-with-typescript
  * @template TEvents union of dispatched events
  */
 export class TypedEventTarget<TEvents extends TypedEvent<any>> extends EventTarget {

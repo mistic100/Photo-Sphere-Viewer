@@ -66,7 +66,7 @@ export function getAngle(position1: Position, position2: Position): number {
 
 /**
  * Returns the distance between two points on a sphere of radius one
- * @link http://www.movable-type.co.uk/scripts/latlong.html
+ * @see http://www.movable-type.co.uk/scripts/latlong.html
  */
 export function greatArcDistance([yaw1, pitch1]: [number, number], [yaw2, pitch2]: [number, number]): number {
     // if yaw delta is > PI, apply an offset to only consider the shortest arc

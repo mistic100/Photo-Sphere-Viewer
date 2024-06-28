@@ -164,12 +164,6 @@ module.exports = {
         },
     },
     plugins: [
-        [
-            '@vuepress/google-analytics',
-            {
-                ga: 'UA-28192323-3',
-            },
-        ],
         ['@vuepress/back-to-top'],
         require('./plugins/code-demo'),
         require('./plugins/dialog'),

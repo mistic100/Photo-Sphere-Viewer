@@ -31,8 +31,8 @@ export type AnimationOptions<T> = {
 type PropertyValues = AnimationOptions<any>['properties']['k'];
 
 /**
- * @summary Interpolation helper for animations
- * @description
+ * Interpolation helper for animations
+ *
  * Implements the Promise API with an additional "cancel" method.
  * The promise is resolved with `true` when the animation is completed and `false` if the animation is cancelled.
  * @template T the type of interpoalted properties

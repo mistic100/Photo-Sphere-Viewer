@@ -78,7 +78,7 @@ export function getClosest(el: HTMLElement, selector: string): HTMLElement | nul
 
 /**
  * Gets the position of an element in the viewer without reflow
- * @description Will gives the same result as getBoundingClientRect() as soon as there are no CSS transforms
+ * Will gives the same result as getBoundingClientRect() as soon as there are no CSS transforms
  */
 export function getPosition(el: HTMLElement): Point {
     let x = 0;

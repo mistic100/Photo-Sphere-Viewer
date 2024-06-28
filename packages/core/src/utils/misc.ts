@@ -1,6 +1,6 @@
 /**
  * Transforms a string to dash-case
- * @link https://github.com/shahata/dasherize
+ * @see https://github.com/shahata/dasherize
  */
 export function dasherize(str: string): string {
     return str.replace(/[A-Z](?:(?=[^A-Z])|[A-Z]*(?=[A-Z][^A-Z]|$))/g, (s, i) => {
@@ -26,10 +26,9 @@ export function throttle<T extends (...args: any) => any>(callback: T, wait: num
 
 /**
  * Test if an object is a plain object
- * @description Test if an object is a plain object, i.e. is constructed
- * by the built-in Object constructor and inherits directly from Object.prototype
- * or null.
- * @link https://github.com/lodash/lodash/blob/master/isPlainObject.js
+ * Test if an object is a plain object, i.e. is constructed by the built-in
+ * Object constructor and inherits directly from Object.prototype or null.
+ * @see https://github.com/lodash/lodash/blob/master/isPlainObject.js
  */
 export function isPlainObject<T extends Record<string, any>>(value: any): value is T {
     if (typeof value !== 'object' || value === null || Object.prototype.toString.call(value) !== '[object Object]') {
@@ -47,7 +46,7 @@ export function isPlainObject<T extends Record<string, any>>(value: any): value 
 
 /**
  * Merges the enumerable attributes of two objects
- * @description Replaces arrays and alters the target object.
+ * Replaces arrays and alters the target object.
  * @copyright Nicholas Fisher <nfisher110@gmail.com>
  */
 export function deepmerge<T>(target: T, src: T): T {
@@ -123,7 +122,7 @@ export function firstNonNull<T>(...values: T[]): T | null {
 
 /**
  * Returns deep equality between objects
- * @link https://gist.github.com/egardner/efd34f270cc33db67c0246e837689cb9
+ * @see https://gist.github.com/egardner/efd34f270cc33db67c0246e837689cb9
  */
 export function deepEqual(obj1: any, obj2: any): boolean {
     if (obj1 === obj2) {

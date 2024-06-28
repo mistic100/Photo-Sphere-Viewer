@@ -327,7 +327,7 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
 
     /**
      * Loads a new panorama file
-     * @description Loads a new panorama file, optionally changing the camera position/zoom and activating the transition animation.<br>
+     * Loads a new panorama file, optionally changing the camera position/zoom and activating the transition animation.<br>
      * If the "options" parameter is not defined, the camera will not move and the ongoing animation will continue.<br>
      * If another loading is already in progress it will be aborted.
      * @returns promise resolved with false if the loading was aborted by another call
@@ -675,7 +675,7 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
 
     /**
      * Stops the ongoing animation
-     * @description The return value is a Promise because the is no guaranty the animation can be stopped synchronously.
+     * The return value is a Promise because the is no guaranty the animation can be stopped synchronously.
      */
     stopAnimation(): PromiseLike<any> {
         if (this.state.animation) {
@@ -751,7 +751,7 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
 
     /**
      * Creates a new tooltip
-     * @description Use {@link Tooltip.move} to update the tooltip without re-create
+     * Use {@link Tooltip.move} to update the tooltip without re-create
      * @throws {@link PSVError} if the configuration is invalid
      */
     createTooltip(config: TooltipConfig): Tooltip {
