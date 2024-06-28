@@ -10280,10 +10280,10 @@ thenify-all@^1.0.0:
   dependencies:
     any-promise "^1.0.0"
 
-three@^0.165.0:
-  version "0.165.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.165.0.tgz#43b93b9b56c71b7eeee6b531d737ab573633ccd1"
-  integrity sha512-cc96IlVYGydeceu0e5xq70H8/yoVT/tXBxV/W8A/U6uOq7DXc4/s1Mkmnu6SqoYGhSRWWYFOhVwvq6V0VtbplA==
+three@^0.166.0:
+  version "0.166.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.166.0.tgz#8baa462b03430a87bdcbfed850f4d30fae0359f1"
+  integrity sha512-3Gw7oyZ/vCmz3RmNx1xuyNu7Ou/igDtoh953QsJh/QkAoi6B7jpkKwk05N8Y7/9bZeIE44zdC+i2KZNF+KWQ8A==
 
 through2@^2.0.0:
   version "2.0.5"
