@@ -36,7 +36,7 @@
     "esbuild-plugin-external-global": "^1.0.1",
     "esbuild-sass-plugin": "^3.3.0",
     "eslint": "^8.57.0",
-    "inquirer": "^9.2.22",
+    "inquirer": "^9.3.2",
     "mocha": "^10.5.0",
     "postcss": "^8.4.21",
     "prettier": "^2.8.8",
