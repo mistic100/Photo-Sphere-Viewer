@@ -87,7 +87,7 @@ export class Renderer extends AbstractService {
         this.scene = new Scene();
 
         this.camera = new PerspectiveCamera(50, 16 / 9, 0.1, 2 * SPHERE_RADIUS);
-        this.camera.matrixWorldAutoUpdate = false;
+        this.camera.matrixAutoUpdate = false;
 
         this.mesh = this.viewer.adapter.createMesh();
         this.mesh.userData = { [VIEWER_DATA]: true };
@@ -221,7 +221,10 @@ export class Renderer extends AbstractService {
                 .negate();
         }
         this.camera.rotateZ(-this.state.roll);
+
+        this.camera.updateMatrix();
         this.camera.updateMatrixWorld();
+
         this.viewer.needsUpdate();
         this.frustumNeedsUpdate = true;
     }
