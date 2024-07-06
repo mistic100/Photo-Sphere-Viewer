@@ -17,6 +17,6 @@
     "rollup-plugin-string": "^3.0.0",
     "rollup-plugin-ts": "^3.4.5",
     "sass": "^1.77.6",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.3"
   }
 }
