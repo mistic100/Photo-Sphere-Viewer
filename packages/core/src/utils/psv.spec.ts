@@ -341,7 +341,7 @@ describe('utils:psv:cleanPosition', () => {
         assert.deepStrictEqual(cleanCssPosition('center'), ['center', 'center']);
     });
 
-    it('should dissallow all center', () => {
+    it('should disallow all center', () => {
         assert.strictEqual(cleanCssPosition('center center', { allowCenter: false, cssOrder: true }), null);
         assert.strictEqual(cleanCssPosition('center', { allowCenter: false, cssOrder: true }), null);
     });

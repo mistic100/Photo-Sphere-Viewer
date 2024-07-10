@@ -569,7 +569,7 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
             id: IDS.ERROR,
             image: errorIcon,
             title: message,
-            dissmisable: false,
+            dismissable: false,
         });
     }
 

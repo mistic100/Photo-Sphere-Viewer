@@ -941,7 +941,7 @@ __s.remove();
                 this.viewer.loader.hide();
                 this.viewer.overlay.show({
                     title: 'Please select a panorama file',
-                    dissmisable: false,
+                    dismissable: false,
                 });
             }
         },

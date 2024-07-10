@@ -28,7 +28,7 @@ export type OverlayConfig = {
      * if the user can hide the overlay by clicking
      * @default true
      */
-    dissmisable?: boolean;
+    dismissable?: boolean;
 };
 
 /**
@@ -41,7 +41,7 @@ export class Overlay extends AbstractComponent {
     protected override readonly state = {
         visible: false,
         contentId: null as string,
-        dissmisable: true,
+        dismissable: true,
     };
 
     private readonly image: HTMLElement;
@@ -88,12 +88,12 @@ export class Overlay extends AbstractComponent {
      */
     handleEvent(e: Event) {
         if (e.type === 'click') {
-            if (this.isVisible() && this.state.dissmisable) {
+            if (this.isVisible() && this.state.dismissable) {
                 this.hide();
                 e.stopPropagation();
             }
         } else if (e instanceof KeypressEvent) {
-            if (this.isVisible() && this.state.dissmisable && e.key === KEY_CODES.Escape) {
+            if (this.isVisible() && this.state.dismissable && e.key === KEY_CODES.Escape) {
                 this.hide();
                 e.preventDefault();
             }
@@ -124,7 +124,7 @@ export class Overlay extends AbstractComponent {
         }
 
         this.state.contentId = config.id || null;
-        this.state.dissmisable = config.dissmisable !== false;
+        this.state.dismissable = config.dismissable !== false;
         this.image.innerHTML = config.image || '';
         this.title.innerHTML = config.title || '';
         this.text.innerHTML = config.text || '';

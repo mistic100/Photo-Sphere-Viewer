@@ -31,7 +31,7 @@ function showOverlay() {
     viewer.overlay.show({
         image: document.getElementById('overlay-icon').innerHTML,
         title: 'Lorem ipsum dolor sit amet',
-        dissmisable: true,
+        dismissable: true,
     });
 }
 
