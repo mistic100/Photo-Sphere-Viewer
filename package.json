@@ -42,7 +42,7 @@
     "scss-bundle": "^3.1.2",
     "set-versions": "^1.0.3",
     "sort-package-json": "^2.10.0",
-    "stylelint": "^16.7.0",
+    "stylelint": "^16.8.1",
     "stylelint-config-standard-scss": "^13.1.0",
     "ts-node": "^10.9.1",
     "tsc": "^2.0.4",
