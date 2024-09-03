@@ -426,7 +426,7 @@ Each node can still have a `map` property to override `color`, `image` and `size
 
 Callback used to replace/modify the tooltip for a link. The first parameter is the default tooltip content which contains the node `name` + `thumbnail` + `caption`.
 
-#### `arrowStyle` (3d mode only)
+#### `arrowStyle`
 
 -   type: `object`
 -   updatable: no
