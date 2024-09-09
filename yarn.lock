@@ -947,11 +947,6 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.21.2.tgz#e4291e3c1bc637083f87936c333cdbcad22af63b"
   integrity sha512-6UUxd0+SKomjdzuAcp+HAmxw1FlGBnl1v2yEPSabtx4lBfdXHDVsW7+lQkgz9cNFJGY3AWR7+V8P5BqkD9L9nA==
 
-"@shikijs/core@1.10.0":
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/@shikijs/core/-/core-1.10.0.tgz#ec3356ace7cb8b41f6baee0116f036fca85054cc"
-  integrity sha512-BZcr6FCmPfP6TXaekvujZcnkFmJHZ/Yglu97r/9VjzVndQA56/F4WjUKtJRQUnK59Wi7p/UTAOekMfCJv7jnYg==
-
 "@shikijs/core@1.15.1", "@shikijs/core@^1.13.0":
   version "1.15.1"
   resolved "https://registry.yarnpkg.com/@shikijs/core/-/core-1.15.1.tgz#05485c742e7657a84a7a28b0897398555caf1327"
@@ -959,12 +954,27 @@
   dependencies:
     "@types/hast" "^3.0.4"
 
+"@shikijs/core@1.16.3":
+  version "1.16.3"
+  resolved "https://registry.yarnpkg.com/@shikijs/core/-/core-1.16.3.tgz#082b53928bf201a8d7cfbe0b5540dc1c609d0a5e"
+  integrity sha512-yETIvrETCeC39gSPIiSADmjri9FwKmxz0QvONMtTIUYlKZe90CJkvcjPksayC2VQOtzOJonEiULUa8v8crUQvA==
+  dependencies:
+    "@shikijs/vscode-textmate" "^9.2.0"
+    "@types/hast" "^3.0.4"
+    oniguruma-to-js "0.3.3"
+    regex "4.3.2"
+
 "@shikijs/transformers@^1.13.0":
   version "1.15.1"
   resolved "https://registry.yarnpkg.com/@shikijs/transformers/-/transformers-1.15.1.tgz#c0204d85e48ba4ca7e6d15901657d9f29d34b37c"
   integrity sha512-PPWwXJTO8Zd04Y9Xy3zfBUN4K+kZ8fkpAnMXOJWBt4FjhyMQruVEOGuUDWtVO9TbMM26pFCXlpnXeJabkxGC5g==
   dependencies:
     shiki "1.15.1"
+
+"@shikijs/vscode-textmate@^9.2.0":
+  version "9.2.2"
+  resolved "https://registry.yarnpkg.com/@shikijs/vscode-textmate/-/vscode-textmate-9.2.2.tgz#24571f50625c7cd075f9efe0def8b9d2c0930ada"
+  integrity sha512-TMp15K+GGYrWlZM8+Lnj9EaHEFmOen0WJBrfa17hF7taDOYthuPPV0GWzfd/9iMij0akS/8Yw2ikquH7uVi/fg==
 
 "@stylistic/stylelint-plugin@^3.0.0":
   version "3.0.0"
@@ -3432,6 +3442,11 @@ onetime@^5.1.2:
   dependencies:
     mimic-fn "^2.1.0"
 
+oniguruma-to-js@0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/oniguruma-to-js/-/oniguruma-to-js-0.3.3.tgz#3527f7e0fb9e5259c10962a7b015f28c602280dd"
+  integrity sha512-m90/WEhgs8g4BxG37+Nu3YrMfJDs2YXtYtIllhsEPR+wP3+K4EZk6dDUvy2v2K4MNFDDOYKL4/yqYPXDqyozTQ==
+
 open@^8.4.2:
   version "8.4.2"
   resolved "https://registry.yarnpkg.com/open/-/open-8.4.2.tgz#5b5ffe2a8f793dcd2aad73e550cb87b59cb084f9"
@@ -3784,6 +3799,11 @@ regenerator-runtime@^0.13.11:
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz#f6dca3e7ceec20590d07ada785636a90cdca17f9"
   integrity sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==
 
+regex@4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/regex/-/regex-4.3.2.tgz#a68a68c9b337a77bf4ce4ed0b4b1a49d97cb3b7b"
+  integrity sha512-kK/AA3A9K6q2js89+VMymcboLOlF5lZRCYJv3gzszXFHBr6kO6qLGzbm+UIugBEV8SMMKCTR59txoY6ctRHYVw==
+
 require-directory@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/require-directory/-/require-directory-2.1.1.tgz#8c64ad5fd30dab1c976e2344ffe7f792a6a6df42"
@@ -4033,7 +4053,7 @@ shebang-regex@^3.0.0:
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-3.0.0.tgz#ae16f1644d873ecad843b0307b143362d4c42172"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
 
-shiki@1.15.1, shiki@^1.13.0:
+shiki@1.15.1:
   version "1.15.1"
   resolved "https://registry.yarnpkg.com/shiki/-/shiki-1.15.1.tgz#074dcaa9278b54c46e82abcd3f254317e39b2ed7"
   integrity sha512-QPtVwbafyHmH9Z90iEZgZL4BhqFh5RMnRq2Bic0Cqp5lgbpbkn4nNmed0zzXbh/yPFs2PpkCviM9qcrbN+9zAA==
@@ -4041,12 +4061,14 @@ shiki@1.15.1, shiki@^1.13.0:
     "@shikijs/core" "1.15.1"
     "@types/hast" "^3.0.4"
 
-shiki@^1.9.1:
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/shiki/-/shiki-1.10.0.tgz#304ab080a12458abc78eb0cb83eb0f7ace546215"
-  integrity sha512-YD2sXQ+TMD/F9BimV9Jn0wj35pqOvywvOG/3PB6hGHyGKlM7TJ9tyJ02jOb2kF8F0HfJwKNYrh3sW7jEcuRlXA==
+shiki@^1.13.0, shiki@^1.16.2:
+  version "1.16.3"
+  resolved "https://registry.yarnpkg.com/shiki/-/shiki-1.16.3.tgz#d78b0c644c2a46b25ec638a9a58861999bd3495c"
+  integrity sha512-GypUE+fEd06FqDs63LSAVlmq7WsahhPQU62cgZxGF+TJT5LjD2k7HTxXj4/CKOVuMM3+wWQ1t4Y5oooeJFRRBQ==
   dependencies:
-    "@shikijs/core" "1.10.0"
+    "@shikijs/core" "1.16.3"
+    "@shikijs/vscode-textmate" "^9.2.0"
+    "@types/hast" "^3.0.4"
 
 signal-exit@^3.0.0, signal-exit@^3.0.3:
   version "3.0.7"
@@ -4621,21 +4643,21 @@ typedoc-plugin-extras@^3.1.0:
   resolved "https://registry.yarnpkg.com/typedoc-plugin-extras/-/typedoc-plugin-extras-3.1.0.tgz#e435891ad87c796d23edb6929ceb6a1797f274f1"
   integrity sha512-8tNeq2fgl2HCUZ6eZuAoLLKEvB/WrRS4He9MtTfo3X3Pa8Iw3TS5D0g8krDhUXUk1uHpXVAVHm8rSOMS2mdJRw==
 
-typedoc@^0.26.3:
-  version "0.26.3"
-  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.26.3.tgz#723b2c4ca5dd1d9baf43d6a5a1f4d640ba4207a8"
-  integrity sha512-6d2Sw9disvvpdk4K7VNjKr5/3hzijtfQVHRthhDqJgnhMHy1wQz4yPMJVKXElvnZhFr0nkzo+GzjXDTRV5yLpg==
+typedoc@^0.26.7:
+  version "0.26.7"
+  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.26.7.tgz#1980e3ed51c6c315b7a09786b2b9af1106a3aa80"
+  integrity sha512-gUeI/Wk99vjXXMi8kanwzyhmeFEGv1LTdTQsiyIsmSYsBebvFxhbcyAx7Zjo4cMbpLGxM4Uz3jVIjksu/I2v6Q==
   dependencies:
     lunr "^2.3.9"
     markdown-it "^14.1.0"
     minimatch "^9.0.5"
-    shiki "^1.9.1"
-    yaml "^2.4.5"
+    shiki "^1.16.2"
+    yaml "^2.5.1"
 
-typescript@^5.5.3:
-  version "5.5.3"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.5.3.tgz#e1b0a3c394190838a0b168e771b0ad56a0af0faa"
-  integrity sha512-/hreyEujaB0w76zKo6717l3L0o/qEUtRgdvUBvlkhoWeOVMjMuHNHk0BRBzikzuGDqNmPQbg5ifMEqsHLiIUcQ==
+typescript@^5.6.2:
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.6.2.tgz#d1de67b6bef77c41823f822df8f0b3bcff60a5a0"
+  integrity sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==
 
 uc.micro@^2.0.0, uc.micro@^2.1.0:
   version "2.1.0"
@@ -4857,10 +4879,10 @@ y18n@^5.0.5:
   resolved "https://registry.yarnpkg.com/y18n/-/y18n-5.0.8.tgz#7f4934d0f7ca8c56f95314939ddcd2dd91ce1d55"
   integrity sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==
 
-yaml@^2.4.5, yaml@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.5.0.tgz#c6165a721cf8000e91c36490a41d7be25176cf5d"
-  integrity sha512-2wWLbGbYDiSqqIKoPjar3MPgB94ErzCtrNE1FdqGuaO0pi2JGjmE8aW8TDZwzU7vuxcGRdL/4gPQwQ7hD5AMSw==
+yaml@^2.5.0, yaml@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.5.1.tgz#c9772aacf62cb7494a95b0c4f1fb065b563db130"
+  integrity sha512-bLQOjaX/ADgQ20isPJRvF0iRUHIxVhYvr53Of7wGcWlO2jvtUlH5m87DsmulFVxRpNLOnI4tB6p/oh8D7kpn9Q==
 
 yargs-parser@^10.0.0:
   version "10.1.0"
