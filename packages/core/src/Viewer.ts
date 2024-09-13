@@ -105,10 +105,10 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
 
     constructor(config: ViewerConfig) {
         super();
-        if (config) this.init(config);
+        if (config) this.constructorInit(config);
     }
 
-    init(config: ViewerConfig) {
+    constructorInit(config: ViewerConfig) {
         // init
         this.parent = getElement(config.container);
         if (!this.parent) {
