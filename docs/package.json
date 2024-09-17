@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "codesandbox-import-utils": "^2.2.3",
-    "date-fns": "^2.30.0",
+    "date-fns": "^4.1.0",
     "lodash-es": "^4.17.21",
     "markdown-it-container": "^4.0.0",
     "marked": "^14.1.0",
