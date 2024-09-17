@@ -64,7 +64,7 @@ markers.addEventListener('select-marker', ({ marker }) => {
     }
 });
 
-// bellow is custom animation to make Rick's position change
+// below is custom animation to make Rick's position change
 
 const positions = [
     [

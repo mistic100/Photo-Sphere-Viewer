@@ -151,7 +151,7 @@ Size of the central pin.
 -   default: `null`
 -   updatable: yes
 
-Markers visible on the map. See bellow. You can also use `setHotspots()` method.
+Markers visible on the map. See below. You can also use `setHotspots()` method.
 
 #### `spotStyle`
 

@@ -63,7 +63,7 @@ packages:
 -   type: `GalleryItem[]`
 -   updatable: no, use `setItems()` method
 
-The list of items, see bellow.
+The list of items, see below.
 
 #### `visibleOnLoad`
 
@@ -153,7 +153,7 @@ If you use a [custom navbar](../guide/navbar.md) you will need to manually add t
 
 | variable | default | description |
 | -------- | ------- | ----------- |
-| $psv-gallery-breakpoint | 500px | Screen size bellow which the gallery is displayed full-height |
+| $psv-gallery-breakpoint | 500px | Screen size below which the gallery is displayed full-height |
 | $psv-gallery-padding | 15px | Padding of the container |
 | $psv-gallery-border | 1px solid $psv-caption-text-color | Border between the gallery and the navbar |
 | $psv-gallery-background | $psv-navbar-background | Background of the gallery |

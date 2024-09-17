@@ -82,7 +82,7 @@ Overlays seem very similar to image/video markers but serve different purposes:
 -   type: `OverlayConfig[]`
 -   updatable: no
 
-The list of overlays, see bellow. Can be updated with various [methods](#methods).
+The list of overlays, see below. Can be updated with various [methods](#methods).
 
 #### `autoclear`
 

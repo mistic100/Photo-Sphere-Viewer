@@ -154,7 +154,7 @@ Size of the cone of the compass.
 -   default: `null`
 -   updatable: yes
 
-Small dots visible on the map. See bellow. You can also use `setHotspots()` method.
+Small dots visible on the map. See below. You can also use `setHotspots()` method.
 
 #### `spotStyle`
 

@@ -134,7 +134,7 @@ Refer to the main [config page](../guide/config.md).
 
 -   type: `array`
 
-Definition of the links of this node. [See bellow](#links).
+Definition of the links of this node. [See below](#links).
 
 #### `gps` (required in GPS mode)
 

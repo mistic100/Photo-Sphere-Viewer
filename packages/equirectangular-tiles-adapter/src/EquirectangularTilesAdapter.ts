@@ -12,7 +12,7 @@ import { EquirectangularTileConfig, checkPanoramaConfig, getTileConfig, getTileC
 
 /* the faces of the top and bottom rows are made of a single triangle (3 vertices)
  * all other faces are made of two triangles (6 vertices)
- * bellow is the indexing of each face vertices
+ * below is the indexing of each face vertices
  *
  * first row faces:
  *     ⋀

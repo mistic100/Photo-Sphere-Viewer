@@ -19,7 +19,7 @@ export const DEFAULT_TRANSITION = 1500;
 export const ANIMATION_MIN_DURATION = 500;
 
 /**
- * Number of pixels bellow which a mouse move will be considered as a click
+ * Number of pixels below which a mouse move will be considered as a click
  */
 export const MOVE_THRESHOLD = 4;
 
