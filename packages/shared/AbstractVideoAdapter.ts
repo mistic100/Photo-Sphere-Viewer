@@ -4,7 +4,7 @@ import { BufferGeometry, Material, Mesh, VideoTexture } from 'three';
 import { createVideo } from './video-utils';
 
 export type AbstractVideoPanorama = {
-    source: string | MediaStream;
+    source: string | MediaStream | HTMLVideoElement;
 };
 
 export type AbstractVideoAdapterConfig = {
@@ -69,7 +69,7 @@ export abstract class AbstractVideoAdapter<
             return Promise.reject(new PSVError('Video adapters require VideoPlugin to be loaded too.'));
         }
 
-        const video = createVideo({
+        const video = panorama.source instanceof HTMLVideoElement ? panorama.source : createVideo({
             src: panorama.source,
             withCredentials: this.viewer.config.withCredentials,
             muted: this.config.muted,
