@@ -205,7 +205,7 @@ Existing DOM element.
 }
 ```
 
-[Check the demo](../demos//markers//youtube-element.md)
+[Check the demo](../demos/markers/youtube-element.md)
 
 #### `polygon`
 
