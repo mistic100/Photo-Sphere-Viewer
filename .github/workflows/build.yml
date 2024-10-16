@@ -18,7 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./.github/workflows/shared/setup
+      - name: setup
+        uses: ./.github/workflows/shared/setup
 
       - name: build
         run: yarn ci:build
@@ -30,21 +31,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./.github/workflows/shared/setup
+      - name: setup
+        uses: ./.github/workflows/shared/setup
 
       - name: e2e
         run: |
           yarn ci:build
           yarn ci:e2e
 
-  # build-doc:
-  #   runs-on: ubuntu-latest
-  #   needs: build
+  build-doc:
+    runs-on: ubuntu-latest
+    needs: build
 
-  #   steps:
-  #     - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - uses: ./.github/workflows/shared/setup
+      - name: setup
+        uses: ./.github/workflows/shared/setup
 
-  #     - name: build-doc
-  #       run: yarn ci:build-doc
+      - name: build
+        run: yarn ci:build-doc
