@@ -1,5 +1,9 @@
 name: setup
 
+inputs:
+  turbo-cache:
+    default: True
+
 runs:
   using: composite
 
@@ -16,35 +20,35 @@ runs:
 
     - name: yarn cache
       uses: actions/cache@v4
-      # if: github.ref_name == 'main'
+      if: ${{ !startsWith(github.ref_name, 'dependabot') }}
       with:
         key: yarn-${{ hashFiles('yarn.lock') }}
         path: ${{ steps.data.outputs.YARN_CACHE_DIR }}
 
-    # - name: yarn cache ro
-    #   uses: actions/cache/restore@v4
-    #   if: github.ref_name != 'main'
-    #   with:
-    #     key: yarn-${{ hashFiles('yarn.lock') }}
-    #     path: ${{ steps.data.outputs.YARN_CACHE_DIR }}
+    - name: yarn cache ro
+      uses: actions/cache/restore@v4
+      if: ${{ startsWith(github.ref_name, 'dependabot') }}
+      with:
+        key: yarn-${{ hashFiles('yarn.lock') }}
+        path: ${{ steps.data.outputs.YARN_CACHE_DIR }}
 
     - name: turbo cache
       uses: actions/cache@v4
-      # if: github.ref_name == 'main'
+      if: ${{ inputs.turbo-cache && !startsWith(github.ref_name, 'dependabot') }}
       with:
         path: .turbo
         key: turbo-${{ github.sha }}
         restore-keys: |
           turbo-
 
-    # - name: turbo cache ro
-    #   uses: actions/cache/restore@v4
-    #   if: github.ref_name != 'main'
-    #   with:
-    #     path: .turbo
-    #     key: turbo-${{ github.sha }}
-    #     restore-keys: |
-    #       turbo-
+    - name: turbo cache ro
+      uses: actions/cache/restore@v4
+      if: ${{ inputs.turbo-cache && startsWith(github.ref_name, 'dependabot') }}
+      with:
+        path: .turbo
+        key: turbo-${{ github.sha }}
+        restore-keys: |
+          turbo-
 
     - name: install
       shell: bash

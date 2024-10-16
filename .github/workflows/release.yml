@@ -17,24 +17,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - name: setup
+        uses: ./.github/workflows/shared/setup
         with:
-          node-version: '20'
-
-      - name: data
-        id: data
-        run: |
-          echo "YARN_CACHE_DIR=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-      - name: yarn cache ro
-        uses: actions/cache/restore@v4
-        with:
-          key: yarn-${{ hashFiles('yarn.lock') }}
-          path: ${{ steps.data.outputs.YARN_CACHE_DIR }}
+          turbo-cache: false
 
       - name: build
         run: |
-          yarn install --frozen-lockfile
           yarn ci:version ${{ github.ref_name }}
           yarn ci:build
 
