@@ -18,93 +18,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: data
-        id: data
-        run: |
-          echo "YARN_CACHE_DIR=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-      - name: yarn cache
-        uses: actions/cache@v4
-        if: github.ref_name == 'main'
-        with:
-          key: yarn-${{ hashFiles('yarn.lock') }}
-          path: ${{ steps.data.outputs.YARN_CACHE_DIR }}
-
-      - name: yarn cache ro
-        uses: actions/cache/restore@v4
-        if: github.ref_name != 'main'
-        with:
-          key: yarn-${{ hashFiles('yarn.lock') }}
-          path: ${{ steps.data.outputs.YARN_CACHE_DIR }}
-
-      - name: turbo cache
-        uses: actions/cache@v4
-        if: github.ref_name == 'main'
-        with:
-          path: .turbo
-          key: turbo-${{ github.sha }}
-          restore-keys: |
-            turbo-
-
-      - name: turbo cache ro
-        uses: actions/cache/restore@v4
-        if: github.ref_name != 'main'
-        with:
-          path: .turbo
-          key: turbo-${{ github.sha }}
-          restore-keys: |
-            turbo-
+      - uses: ./.github/workflows/shared/setup
 
       - name: build
-        run: |
-          yarn install
-          yarn ci:build
+        run: yarn ci:build
 
-  build-doc:
+  e2e:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+      - uses: ./.github/workflows/shared/setup
 
-      - name: data
-        id: data
+      - name: e2e
         run: |
-          echo "YARN_CACHE_DIR=$(yarn cache dir)" >> $GITHUB_OUTPUT
+          yarn ci:build
+          yarn ci:e2e
 
-      - name: yarn cache ro
-        uses: actions/cache/restore@v4
-        with:
-          key: yarn-${{ hashFiles('yarn.lock') }}
-          path: ${{ steps.data.outputs.YARN_CACHE_DIR }}
+  # build-doc:
+  #   runs-on: ubuntu-latest
+  #   needs: build
 
-      - name: turbo cache
-        uses: actions/cache@v4
-        if: github.ref_name == 'main'
-        with:
-          path: .turbo
-          key: turbo_doc-${{ github.sha }}
-          restore-keys: |
-            turbo_doc-
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: turbo cache ro
-        uses: actions/cache/restore@v4
-        if: github.ref_name != 'main'
-        with:
-          path: .turbo
-          key: turbo_doc-${{ github.sha }}
-          restore-keys: |
-            turbo_doc-
+  #     - uses: ./.github/workflows/shared/setup
 
-      - name: build
-        run: |
-          yarn install
-          yarn ci:build-doc
+  #     - name: build-doc
+  #       run: yarn ci:build-doc

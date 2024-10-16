@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer</title>
+
+        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="../style.css" />
+    </head>
+    <body>
+        <div id="photosphere"></div>
+
+        <script type="text/template" id="description">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Haec para/doca illi, nos admirabilia dicamus. Tibi hoc
+              incredibile, quod beatissimum. Sed et illum, quem nominavi, et ceteros sophistas, ut e Platone intellegi potest,
+              lusos videmus a Socrate. <a href="http://loripsum.net/" target="_blank">Qui ita affectus, beatum esse numquam
+                probabis;</a> Duo Reges: constructio interrete.
+              <mark>Contineo me ab exemplis.</mark>
+              Virtutis, magnitudinis animi, patientiae, fortitudinis fomentis dolor mitigari solet. Claudii libidini, qui tum erat
+              summo ne imperio, dederetur. Quare hoc videndum est, possitne nobis hoc ratio philosophorum dare. Nos autem non
+              solum beatae vitae istam esse oblectationem videmus, sed etiam levamentum miseriarum.
+            </p>
+
+            <p>Hic quoque suus est de summoque bono dissentiens dici vere Peripateticus non potest. Cum ageremus, inquit, vitae
+              beatum et eundem supremum diem, scribebamus haec. Atqui reperies, inquit, in hoc quidem pertinacem; Minime vero
+              istorum quidem, inquit. Hosne igitur laudas et hanc eorum, inquam, sententiam sequi nos censes oportere? </p>
+
+            <p>Eaedem res maneant alio modo. Sed haec quidem liberius ab eo dicuntur et saepius. <a href="http://loripsum.net/"
+                                                                                                    target="_blank">Primum divisit
+              ineleganter;</a> <a href="http://loripsum.net/" target="_blank">Quae contraria sunt his, malane?</a> Hoc loco tenere
+              se Triarius non potuit. Illa tamen simplicia, vestra versuta. Progredientibus autem aetatibus sensim tardeve potius
+              quasi nosmet ipsos cognoscimus. </p>
+        </script>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "/node_modules/three/build/three.module.js",
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import { Viewer, DEFAULTS } from '@photo-sphere-viewer/core';
+
+            const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+            const viewer = new Viewer({
+                container: 'photosphere',
+                panorama: baseUrl + 'sphere.jpg',
+                caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
+                description: document.querySelector('#description').innerHTML,
+                loadingImg: baseUrl + 'loader.gif',
+                keyboard: 'always',
+                lang: {
+                    myButton: 'Click me',
+                },
+                navbar: [
+                    'zoom',
+                    'move',
+                    'download',
+                    {
+                        title: 'myButton',
+                        className: 'custom-button',
+                        content: '🔄',
+                        onClick(viewer) {
+                            alert('Custom button clicked');
+                        }
+                    },
+                    'caption',
+                    'fullscreen',
+                ],
+            });
+
+            window.viewer = viewer;
+        </script>
+    </body>
+</html>

@@ -13,8 +13,10 @@ const DIST_DIR = 'dist';
 
 const packages = fs.readdirSync(path.join(rootDir, PACKAGES_DIR)).filter((name) => name !== 'shared');
 
+const open = process.argv[2] !== '--no-open';
+
 liveServer.start({
-    open: true,
+    open: open,
     root: path.join(rootDir, EXAMPLES_DIR),
     watch: [
         path.join(rootDir, EXAMPLES_DIR),
