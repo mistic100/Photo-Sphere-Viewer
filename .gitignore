@@ -7,3 +7,5 @@ docs/.vitepress/.temp
 !docs/.typedoc
 dist
 /public
+cypress/reports
+cypress/screenshots

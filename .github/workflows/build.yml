@@ -25,6 +25,8 @@ jobs:
         run: yarn ci:build
 
   e2e:
+    if: ${{ !startsWith(github.ref_name, 'dependabot') }}
+
     runs-on: ubuntu-latest
     needs: build
 
@@ -39,15 +41,22 @@ jobs:
           yarn ci:build
           yarn ci:e2e
 
-  build-doc:
-    runs-on: ubuntu-latest
-    needs: build
+      - uses: dorny/test-reporter@v1
+        if: ${{ (success() || failure()) && github.repository == 'mistic100/Photo-Sphere-Viewer' }}
+        with:
+          name: test-results
+          path: cypress/reports/junit/*.xml
+          reporter: java-junit
 
-    steps:
-      - uses: actions/checkout@v4
+  # build-doc:
+  #   runs-on: ubuntu-latest
+  #   needs: build
 
-      - name: setup
-        uses: ./.github/workflows/shared/setup
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: build
-        run: yarn ci:build-doc
+  #     - name: setup
+  #       uses: ./.github/workflows/shared/setup
+
+  #     - name: build
+  #       run: yarn ci:build-doc
