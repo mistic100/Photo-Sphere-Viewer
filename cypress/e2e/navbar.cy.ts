@@ -1,6 +1,6 @@
 import { callViewer, waitNoLoader } from '../utils';
 
-describe('basic', () => {
+describe('navbar', () => {
     beforeEach(() => {
         localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/basic.html');
@@ -23,6 +23,31 @@ describe('basic', () => {
         callViewer(viewer => viewer.setOption('caption', '<strong>Name:</strong> Lorem Ipsum'));
 
         cy.get('.psv-caption-content').should('have.text', 'Name: Lorem Ipsum');
+    });
+
+    it('should show the description in the side panel', () => {
+        cy.get('.psv-panel').should('not.be.visible');
+
+        cy.get('.psv-description-button').click();
+
+        cy.get('.psv-panel')
+            .should('be.visible')
+            .should('include.text', 'Parc national du Mercantour © Damien Sorel')
+            .should('include.text', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit');
+    });
+
+    it('should enter and exit fullscreen', () => {
+        cy.document().its('fullscreenElement').should('be.null');
+
+        cy.get('.psv-fullscreen-button').realClick();
+
+        cy.wait(500);
+
+        cy.document().its('fullscreenElement').should('not.be.null');
+
+        cy.get('.psv-fullscreen-button').realClick();
+
+        cy.document().its('fullscreenElement').should('be.null');
     });
 
     it('should translate navbar buttons', () => {
