@@ -8,8 +8,8 @@ export default defineConfig({
         scrollBehavior: false,
         screenshotOnRunFailure: false,
     },
-    reporter: 'mocha-junit-reporter',
+    reporter: 'build/mocha-reporter.js',
     reporterOptions: {
-        mochaFile: 'cypress/reports/junit/report.xml',
+        title: 'e2e',
     },
 });

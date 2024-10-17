@@ -24,6 +24,13 @@ jobs:
       - name: build
         run: yarn ci:build
 
+      - uses: dorny/test-reporter@v1
+        if: ${{ (success() || failure()) && github.repository == 'mistic100/Photo-Sphere-Viewer' }}
+        with:
+          name: tests-results
+          path: reports/*.json
+          reporter: mocha-json
+
   e2e:
     if: ${{ !startsWith(github.ref_name, 'dependabot') }}
 
@@ -44,9 +51,9 @@ jobs:
       - uses: dorny/test-reporter@v1
         if: ${{ (success() || failure()) && github.repository == 'mistic100/Photo-Sphere-Viewer' }}
         with:
-          name: test-results
-          path: cypress/reports/junit/*.xml
-          reporter: java-junit
+          name: e2e-results
+          path: reports/*.json
+          reporter: mocha-json
 
   # build-doc:
   #   runs-on: ubuntu-latest
