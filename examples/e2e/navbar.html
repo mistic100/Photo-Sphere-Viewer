@@ -52,8 +52,6 @@
                 panorama: baseUrl + 'sphere-small.jpg',
                 caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
                 description: document.querySelector('#description').innerHTML,
-                loadingImg: baseUrl + 'loader.gif',
-                keyboard: 'always',
                 lang: {
                     myButton: 'Click me',
                 },
@@ -64,9 +62,18 @@
                     {
                         title: 'myButton',
                         className: 'custom-button',
-                        content: '🔄',
+                        content: '😺',
                         onClick(viewer) {
                             alert('Custom button clicked');
+                        }
+                    },
+                    {
+                        title: 'Other button',
+                        className: 'custom-button',
+                        content: '🍉',
+                        collapsable: false,
+                        onClick(viewer) {
+                            alert('Custom button 2 clicked');
                         }
                     },
                     'caption',

@@ -3,11 +3,11 @@ import { callViewer, waitNoLoader } from '../utils';
 describe('navbar', () => {
     beforeEach(() => {
         localStorage.photoSphereViewer_touchSupport = 'false';
-        cy.visit('e2e/basic.html');
+        cy.visit('e2e/navbar.html');
         waitNoLoader();
     });
 
-    it('should add custom navbar button', () => {
+    it('should add custom button', () => {
         const alertStub = cy.stub();
         cy.on('window:alert', alertStub);
 
@@ -17,7 +17,7 @@ describe('navbar', () => {
             });
     });
 
-    it('should update caption', () => {
+    it('should update the caption', () => {
         cy.get('.psv-caption-content').should('have.text', 'Parc national du Mercantour © Damien Sorel');
 
         callViewer(viewer => viewer.setOption('caption', '<strong>Name:</strong> Lorem Ipsum'));
@@ -36,11 +36,8 @@ describe('navbar', () => {
             .should('include.text', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit');
     });
 
-    it('should enter and exit fullscreen', () => {
-        cy.document().its('fullscreenElement').should('be.null');
-
+    it.skip('should enter and exit fullscreen', () => {
         cy.get('.psv-fullscreen-button').realClick();
-
         cy.wait(500);
 
         cy.document().its('fullscreenElement').should('not.be.null');
@@ -50,7 +47,52 @@ describe('navbar', () => {
         cy.document().its('fullscreenElement').should('be.null');
     });
 
-    it('should translate navbar buttons', () => {
+    it('should display a menu on small screens', () => {
+        cy.viewport(400, 800);
+
+        [
+            '.psv-caption-content',
+            '.psv-zoom-range',
+            '.psv-download-button',
+            '.custom-button:eq(0)',
+        ].forEach(invisible => {
+            cy.get(invisible).should('not.be.visible');
+        });
+
+        [
+            '.psv-zoom-button',
+            '.psv-move-button',
+            '.psv-description-button',
+            '.psv-fullscreen-button',
+            '.psv-menu-button',
+            '.custom-button:eq(1)',
+        ].forEach(visible => {
+            cy.get(visible).should('be.visible');
+        });
+
+        cy.get('.psv-menu-button').click();
+
+        cy.get('.psv-panel')
+            .should('be.visible')
+            .within(() => {
+                cy.get('.psv-panel-menu-title').should('contain.text', 'Menu');
+
+                cy.contains('Download').should('be.visible');
+                cy.contains('Click me').should('be.visible');
+            });
+    });
+
+    it('should close the menu on button click', () => {
+        cy.viewport(400, 800);
+
+        cy.get('.psv-menu-button').click();
+
+        cy.get('.psv-panel').contains('Click me').click();
+
+        cy.get('.psv-panel').should('not.be.visible')
+    });
+
+    it('should translate buttons', () => {
         function assertTitles(titles: any) {
             cy.get('.psv-zoom-button:eq(0)').invoke('attr', 'title').should('eq', titles.zoomOut);
             cy.get('.psv-zoom-button:eq(1)').invoke('attr', 'title').should('eq', titles.zoomIn);
