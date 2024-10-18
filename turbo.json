@@ -17,7 +17,8 @@
       "inputs": ["src/**"]
     },
     "test": {
-      "inputs": ["src/**"]
+      "inputs": ["src/**"],
+      "outputs": ["reports/**"]
     },
     "build-doc": {},
     "//#build-doc": {

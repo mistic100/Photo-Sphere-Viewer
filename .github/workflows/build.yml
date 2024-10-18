@@ -24,10 +24,11 @@ jobs:
       - name: build
         run: yarn ci:build
 
-      - uses: dorny/test-reporter@v1
+      - uses: dorny/test-reporter@1a288b62f8b75c0f433cbfdbc2e4800fbae50bd7
         if: ${{ (success() || failure()) && github.repository == 'mistic100/Photo-Sphere-Viewer' }}
         with:
-          name: build
+          name: mocha
+          use-actions-summary: true
           path: 'packages/*/reports/mocha.json'
           reporter: mocha-json
 
@@ -48,10 +49,11 @@ jobs:
           yarn ci:build
           yarn ci:e2e
 
-      - uses: dorny/test-reporter@v1
+      - uses: dorny/test-reporter@1a288b62f8b75c0f433cbfdbc2e4800fbae50bd7
         if: ${{ (success() || failure()) && github.repository == 'mistic100/Photo-Sphere-Viewer' }}
         with:
-          name: e2e
+          name: cypress
+          use-actions-summary: true
           path: cypress/reports/e2e.json
           reporter: mocha-json
 
