@@ -27,8 +27,8 @@ jobs:
       - uses: dorny/test-reporter@v1
         if: ${{ (success() || failure()) && github.repository == 'mistic100/Photo-Sphere-Viewer' }}
         with:
-          name: tests-results
-          path: reports/*.json
+          name: build
+          path: 'packages/*/reports/mocha.json'
           reporter: mocha-json
 
   e2e:
@@ -51,8 +51,8 @@ jobs:
       - uses: dorny/test-reporter@v1
         if: ${{ (success() || failure()) && github.repository == 'mistic100/Photo-Sphere-Viewer' }}
         with:
-          name: e2e-results
-          path: reports/*.json
+          name: e2e
+          path: cypress/reports/e2e.json
           reporter: mocha-json
 
   # build-doc:

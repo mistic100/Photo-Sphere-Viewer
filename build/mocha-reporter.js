@@ -13,13 +13,13 @@ module.exports = class MultiReporter extends BaseReporter {
         if (options.reporterOptions?.cypress) {
             new CypressJsonReporter(runner, {
                 reporterOption: {
-                    output: path.join(__dirname, '../reports/e2e.json'),
+                    output: 'cypress/reports/e2e.json',
                 },
             });
         } else {
             new JsonReporter(runner, {
                 reporterOption: {
-                    output: path.join(__dirname, '../reports', `${options.reporterOption.title}.json`),
+                    output: `reports/mocha.json`,
                 },
             });
         }
