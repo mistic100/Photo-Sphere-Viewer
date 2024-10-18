@@ -6,7 +6,7 @@ import assert from 'assert';
 const testDir = path.join(__dirname, 'fixtures/prepare-changelog');
 
 describe('prepare-changelog', () => {
-    it('should works', (done) => {
+    it('should generate the changelog', (done) => {
         const gitLog = readFileSync(path.join(testDir, 'git-log.txt'), { encoding: 'utf8' });
 
         const proc = exec(`node ${path.join(__dirname, '../../../build/prepare-changelog.mjs')} 5.7.4 5.8.0`, { cwd: testDir }, (err) => {

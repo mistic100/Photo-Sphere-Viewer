@@ -10,6 +10,6 @@ export default defineConfig({
     },
     reporter: 'build/mocha-reporter.js',
     reporterOptions: {
-        title: 'e2e',
+        cypress: true,
     },
 });
