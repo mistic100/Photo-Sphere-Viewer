@@ -171,7 +171,6 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
         this.markers = this.viewer.getPlugin('markers');
         this.compass = this.viewer.getPlugin('compass');
-        this.gallery = this.viewer.getPlugin('gallery');
 
         if (this.markers?.config.markers) {
             utils.logWarn(
@@ -181,15 +180,17 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
             delete this.markers.config.markers;
         }
 
-        if (this.config.map) {
-            this.map = this.viewer.getPlugin('map');
-            if (!this.map) {
-                utils.logWarn('The map is configured on the VirtualTourPlugin but the MapPlugin is not loaded.');
-            }
-        }
-
         if (this.isGps) {
             this.plan = this.viewer.getPlugin('plan');
+        }
+
+        if (!this.isServerSide) {
+            this.gallery = this.viewer.getPlugin('gallery');
+            this.map = this.viewer.getPlugin('map');
+
+            if (this.config.map && !this.map) {
+                utils.logWarn('The map is configured on the VirtualTourPlugin but the MapPlugin is not loaded.');
+            }
         }
 
         this.datasource = this.isServerSide
@@ -279,41 +280,9 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
         }
         this.setCurrentNode(startNodeId);
 
-        if (this.gallery) {
-            this.gallery.setItems(
-                nodes.map((node) => ({
-                    id: node.id,
-                    panorama: node.panorama,
-                    name: node.name,
-                    thumbnail: node.thumbnail,
-                })),
-                (id) => {
-                    this.setCurrentNode(id as string);
-                }
-            );
-        }
-
-        if (this.map) {
-            this.map.setHotspots([
-                ...nodes.map((node) => ({
-                    ...(node.map || {}),
-                    ...this.__getNodeMapPosition(node),
-                    id: LINK_ID + node.id,
-                    tooltip: node.name,
-                })),
-            ]);
-        }
-
-        if (this.plan) {
-            this.plan.setHotspots([
-                ...nodes.map((node) => ({
-                    ...(node.plan || {}),
-                    coordinates: node.gps,
-                    id: LINK_ID + node.id,
-                    tooltip: node.name,
-                })),
-            ]);
-        }
+        this.__setGalleryItems();
+        this.__setMapHotspots();
+        this.__setPlanHotspots();
     }
 
     /**
@@ -431,10 +400,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
                 const node = this.state.currentNode;
 
-                if (this.map) {
-                    const center = this.__getNodeMapPosition(node);
-                    this.map.setCenter(center);
-                }
+                this.map?.setCenter(this.__getNodeMapPosition(node));
 
                 this.plan?.setCoordinates(node.gps);
 
@@ -473,6 +439,112 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
                 throw err;
             });
+    }
+
+    /**
+     * Updates a node (client mode only)
+     * All properties but "id" are optional, the new config will be merged with the previous
+     * @throws {@link PSVError} if not in client mode
+     */
+    updateNode(newNode: Partial<VirtualTourNode> & { id: VirtualTourNode['id'] }) {
+        if (this.isServerSide) {
+            throw new PSVError('Cannot update node in server side mode');
+        }
+        if (!newNode.id) {
+            throw new PSVError('No id given for node');
+        }
+
+        const node = this.datasource.nodes[newNode.id];
+        if (!node) {
+            throw new PSVError(`Node ${newNode.id} does not exist`);
+        }
+
+        Object.assign(node, newNode);
+
+        if (newNode.name || newNode.thumbnail || newNode.panorama) {
+            this.__setGalleryItems();
+        }
+        if (newNode.name || newNode.gps || newNode.map) {
+            this.__setMapHotspots();
+        }
+        if (newNode.name || newNode.gps || newNode.plan) {
+            this.__setPlanHotspots();
+        }
+
+        if (this.state.currentNode?.id === node.id) {
+            if (newNode.panorama || newNode.panoData || newNode.sphereCorrection) {
+                this.setCurrentNode(node.id, { forceUpdate: true });
+                return;
+            }
+
+            if (newNode.caption) {
+                this.viewer.setOption('caption', node.caption);
+            }
+            if (newNode.description) {
+                this.viewer.setOption('description', node.description);
+            }
+
+            if (newNode.links || newNode.gps && this.isGps) {
+                this.arrowsRenderer.clear();
+                this.compass?.clearHotspots();
+                this.__renderLinks(node);
+            }
+
+            if (newNode.gps) {
+                this.plan?.setCoordinates(node.gps);
+            }
+
+            if (newNode.gps || newNode.map) {
+                this.map?.setCenter(this.__getNodeMapPosition(node));
+            }
+
+            if (newNode.markers || node.markers && newNode.gps && this.isGps) {
+                this.markers?.clearMarkers();
+                this.__addNodeMarkers(node);
+            }
+        }
+    }
+
+    private __setGalleryItems() {
+        if (this.gallery) {
+            this.gallery.setItems(
+                Object.values(this.datasource.nodes).map((node) => ({
+                    id: node.id,
+                    panorama: node.panorama,
+                    name: node.name,
+                    thumbnail: node.thumbnail,
+                })),
+                (id) => {
+                    this.setCurrentNode(id as string);
+                }
+            );
+        }
+    }
+
+    private __setMapHotspots() {
+        if (this.map) {
+            this.map.setHotspots(
+                Object.values(this.datasource.nodes).map((node) => ({
+                    ...(node.map || {}),
+                    ...this.__getNodeMapPosition(node),
+                    id: LINK_ID + node.id,
+                    tooltip: node.name,
+                }))
+            );
+        }
+    }
+
+    private __setPlanHotspots() {
+        if (this.plan) {
+            this.plan.setHotspots(
+                Object.values(this.datasource.nodes).map((node) => ({
+                    ...(node.plan || {}),
+                    coordinates: node.gps,
+                    id: LINK_ID + node.id,
+                    tooltip: node.name,
+                }))
+            );
+        }
     }
 
     /**
