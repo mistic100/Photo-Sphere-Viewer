@@ -37,6 +37,7 @@ const getConfig = utils.getConfigParser<VirtualTourPluginConfig>(
             rotation: true,
         },
         linksOnCompass: true,
+        showLinkTooltip: true,
         getLinkTooltip: null,
         markerStyle: null,
         arrowStyle: DEFAULT_ARROW,
@@ -266,8 +267,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
             throw new PSVError('Cannot set nodes in server side mode');
         }
 
-        this.state.currentTooltip?.hide();
-        this.state.currentTooltip = null;
+        this.__hideTooltip();
         this.state.currentNode = null;
 
         (this.datasource as ClientSideDatasource).setNodes(nodes);
@@ -358,13 +358,10 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
                 if (transitionOptions.showLoader) {
                     this.viewer.loader.show();
                 }
+                
+                this.__hideTooltip();
 
                 this.state.currentNode = node;
-
-                if (this.state.currentTooltip) {
-                    this.state.currentTooltip.hide();
-                    this.state.currentTooltip = null;
-                }
 
                 this.arrowsRenderer.clear();
                 if (this.gallery?.config.hideOnClick) {
@@ -472,6 +469,8 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
         }
 
         if (this.state.currentNode?.id === node.id) {
+            this.__hideTooltip();
+
             if (newNode.panorama || newNode.panoData || newNode.sphereCorrection) {
                 this.setCurrentNode(node.id, { forceUpdate: true });
                 return;
@@ -608,9 +607,6 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
         if (this.config.getLinkTooltip) {
             content = this.config.getLinkTooltip(content, link, node);
         }
-        if (!content) {
-            content = node.id;
-        }
         return content;
     }
 
@@ -623,20 +619,26 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
             y: evt.clientY - viewerPos.y,
         };
 
-        this.state.currentTooltip = this.viewer.createTooltip({
-            ...LOADING_TOOLTIP,
-            left: viewerPoint.x,
-            top: viewerPoint.y,
-            box: {
-                // separate the tooltip from the cursor
-                width: 20,
-                height: 20,
-            },
-        }),
+        if (this.config.showLinkTooltip) {
+            this.state.currentTooltip = this.viewer.createTooltip({
+                ...LOADING_TOOLTIP,
+                left: viewerPoint.x,
+                top: viewerPoint.y,
+                box: {
+                    // separate the tooltip from the cursor
+                    width: 20,
+                    height: 20,
+                },
+            }),
 
-        this.__getTooltipContent(link).then((content) => {
-            this.state.currentTooltip.update(content);
-        });
+            this.__getTooltipContent(link).then((content) => {
+                if (content) {
+                    this.state.currentTooltip.update(content);
+                } else {
+                    this.__hideTooltip();
+                }
+            });
+        }
 
         this.map?.setActiveHotspot(LINK_ID + link.nodeId);
         this.plan?.setActiveHotspot(LINK_ID + link.nodeId);
@@ -653,25 +655,25 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
             y: evt.clientY - viewerPos.y,
         };
 
-        if (this.state.currentTooltip) {
-            this.state.currentTooltip.move({
-                left: viewerPoint.x,
-                top: viewerPoint.y,
-            });
-        }
+        this.state.currentTooltip?.move({
+            left: viewerPoint.x,
+            top: viewerPoint.y,
+        });
     }
 
     /** @internal */
     __onLeaveArrow(link: VirtualTourLink) {
-        if (this.state.currentTooltip) {
-            this.state.currentTooltip.hide();
-            this.state.currentTooltip = null;
-        }
+        this.__hideTooltip();
 
         this.map?.setActiveHotspot(null);
         this.plan?.setActiveHotspot(null);
 
         this.dispatchEvent(new LeaveArrowEvent(link, this.state.currentNode));
+    }
+
+    private __hideTooltip() {
+        this.state.currentTooltip?.hide();
+        this.state.currentTooltip = null;
     }
 
     /**

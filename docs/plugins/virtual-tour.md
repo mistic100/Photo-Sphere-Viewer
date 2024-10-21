@@ -361,6 +361,22 @@ The default behaviour is to rotate the view to face the direction of the link an
 
 If the [Compass plugin](./compass.md) is enabled, displays the links on the compass.
 
+#### `showLinkTooltip`
+
+-   type: `boolean`
+-   default: `true`
+-   updatable: no
+
+Should a tooltip be displayed on each link. The default tooltip contains `name` + `thumbnail` + `caption`, it is customizable with the [getLinkTooltip](#getlinktooltipcontent-link-node) option.
+
+#### `getLinkTooltip(content, link, node)`
+
+-   type: `function(string, link, node) => string`
+-   default: `null`
+-   updatable: no
+
+Callback used to replace/modify the tooltip for a link. The first parameter is the default tooltip content.
+
 #### `map` (client mode only)
 
 Configuration when using the [Map plugin](./map.md).
@@ -433,14 +449,6 @@ Each node can still have a `map` property to override `color`, `image` and `size
 ::::
 
 :::::
-
-#### `getLinkTooltip(content, link, node)`
-
--   type: `function(string, link, node) => string`
--   default: `null`
--   updatable: no
-
-Callback used to replace/modify the tooltip for a link. The first parameter is the default tooltip content which contains the node `name` + `thumbnail` + `caption`.
 
 #### `arrowStyle`
 

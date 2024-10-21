@@ -230,6 +230,11 @@ export type VirtualTourPluginConfig = {
      */
     linksOnCompass?: boolean;
     /**
+     * display a tooltip on each link, by default it contains "name" + "thumbnail" + "caption"
+     * @default true
+     */
+    showLinkTooltip?: boolean;
+    /**
      * callback to modify the content of the tooltip
      */
     getLinkTooltip?: (content: string, link: VirtualTourLink, node: VirtualTourNode) => string;
