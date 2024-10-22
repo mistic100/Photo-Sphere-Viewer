@@ -16,6 +16,9 @@
     "lint": {
       "inputs": ["src/**"]
     },
+    "photo-sphere-viewer-e2e#lint": {
+      "inputs": ["e2e/**", "support/**", "utils/**"]
+    },
     "test": {
       "inputs": ["src/**"],
       "outputs": ["reports/**"]

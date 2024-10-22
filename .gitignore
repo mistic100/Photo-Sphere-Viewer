@@ -9,4 +9,5 @@ dist
 /public
 reports
 cypress/screenshots
+cypress/snapshots/diff
 .tmp

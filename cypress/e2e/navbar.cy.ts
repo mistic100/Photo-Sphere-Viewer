@@ -7,11 +7,18 @@ describe('navbar', () => {
         waitViewerReady();
     });
 
+    it('should have a navbar', () => {
+        cy.get('.psv-navbar')
+            .should('be.visible')
+            .compareSnapshot('base');
+    });
+
     it('should have a custom button', () => {
         const alertStub = cy.stub();
         cy.on('window:alert', alertStub);
 
-        cy.get('.custom-button:eq(0)').click()
+        cy.get('.custom-button:eq(0)')
+            .click()
             .then(() => {
                 expect(alertStub.getCall(0)).to.be.calledWith('Custom button clicked');
             });
@@ -23,6 +30,8 @@ describe('navbar', () => {
         callViewer('change caption via options', viewer => viewer.setOption('caption', '<strong>Name:</strong> Lorem Ipsum'));
 
         cy.get('.psv-caption-content').should('have.text', 'Name: Lorem Ipsum');
+
+        cy.get('.psv-navbar').compareSnapshot('update-caption');
 
         callViewer('change caption via API', viewer => viewer.navbar.setCaption('Loading...'));
 
@@ -37,7 +46,8 @@ describe('navbar', () => {
         cy.get('.psv-panel')
             .should('be.visible')
             .should('include.text', 'Parc national du Mercantour © Damien Sorel')
-            .should('include.text', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit');
+            .should('include.text', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit')
+            .compareSnapshot('description');
     });
 
     // does not work in headless mode
@@ -60,11 +70,14 @@ describe('navbar', () => {
 
         cy.get('.psv-caption-content').should('not.be.visible');
 
+        cy.get('.psv-navbar').compareSnapshot('no-caption');
+
         cy.get('.psv-description-button').click();
 
-        cy.get('.psv-notification')
+        cy.get('.psv-notification-content')
             .should('be.visible')
-            .should('have.text', 'Parc national du Mercantour © Damien Sorel');
+            .should('have.text', 'Parc national du Mercantour © Damien Sorel')
+            .compareSnapshot('caption-notification');
 
         cy.get('.psv-description-button').click();
 
@@ -95,6 +108,8 @@ describe('navbar', () => {
             cy.get(visible).should('be.visible');
         });
 
+        cy.get('.psv-navbar').compareSnapshot('with-menu');
+
         cy.get('.psv-menu-button').click();
 
         cy.get('.psv-panel')
@@ -104,7 +119,8 @@ describe('navbar', () => {
 
                 cy.contains('Download').should('be.visible');
                 cy.contains('Click me').should('be.visible');
-            });
+            })
+            .compareSnapshot('menu-content');
 
         cy.get('.psv-panel-close-button').click();
 
@@ -167,19 +183,21 @@ describe('navbar', () => {
     });
 
     it('should update the buttons', () => {
-        function assertButtons(titles: string[]) {
+        function assertButtons(expected: string[]) {
             cy.get('.psv-button').then($buttons => {
                 const titles = $buttons
                     .filter(':visible')
                     .map((i, btn) => btn.getAttribute('title'))
                     .get();
-                expect(titles).to.have.members(titles);
+                expect(titles).to.have.members(expected);
             });
         }
 
         callViewer('change buttons via options', viewer => viewer.setOption('navbar', 'zoom move'));
 
         assertButtons(['Zoom out', 'Zoom in', 'Move left', 'Move right', 'Move up', 'Move down']);
+
+        cy.get('.psv-navbar').compareSnapshot('update-buttons');
 
         callViewer('change buttons via API', viewer => viewer.navbar.setButtons(['download', 'fullscreen']));
 
@@ -191,6 +209,8 @@ describe('navbar', () => {
 
         cy.get('.psv-fullscreen-button').should('not.be.visible');
 
+        cy.get('.psv-navbar').compareSnapshot('hide-button');
+
         callViewer('show fullscreen button', viewer => viewer.navbar.getButton('fullscreen').show());
 
         cy.get('.psv-fullscreen-button').should('be.visible');
@@ -200,6 +220,8 @@ describe('navbar', () => {
         callViewer('disable download button', viewer => viewer.navbar.getButton('download').disable());
 
         cy.get('.psv-download-button').should('have.class', 'psv-button--disabled');
+
+        cy.get('.psv-navbar').compareSnapshot('disable-button');
 
         callViewer('enable download button', viewer => viewer.navbar.getButton('download').enable());
 
@@ -223,5 +245,7 @@ describe('navbar', () => {
                 cy.get('#title').should('have.text', 'Custom element');
                 cy.get('#value').should('have.text', '50');
             });
+
+        cy.get('.psv-custom-button').compareSnapshot('custom-element');
     });
 });

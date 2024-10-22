@@ -1,0 +1,9 @@
+{
+  "name": "photo-sphere-viewer-e2e",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint . --fix"
+  }
+}

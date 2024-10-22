@@ -14,3 +14,7 @@ export function callViewer(log: string, cb: (viewer: Viewer) => void) {
     cy.log(`Viewer: ${log}`);
     cy.window({ log: false }).its('viewer', { log: false }).then(cb);
 }
+
+export function createBaseSnapshot() {
+    Cypress.env('visualRegressionType', 'base');
+}
