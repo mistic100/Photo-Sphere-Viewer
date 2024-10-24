@@ -3,7 +3,8 @@
         "types": [
             "cypress",
             "node",
-            "cypress-real-events"
+            "cypress-real-events",
+            "cypress-mochawesome-reporter"
         ]
     }
 }

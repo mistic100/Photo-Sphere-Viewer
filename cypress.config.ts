@@ -1,5 +1,7 @@
 import { defineConfig } from 'cypress';
 import { configureVisualRegression } from 'cypress-visual-regression';
+// @ts-ignore
+import  cypressMochawesomeReporterPlugin from 'cypress-mochawesome-reporter/plugin';
 
 export default defineConfig({
     e2e: {
@@ -13,6 +15,7 @@ export default defineConfig({
         },
         setupNodeEvents(on) {
             configureVisualRegression(on);
+            cypressMochawesomeReporterPlugin(on);
 
             on('before:browser:launch', (browser, launchOptions) => {
                 // should be bigger than the largest viewport used + browser UI elements

@@ -1,6 +1,5 @@
 const BaseReporter = require('mocha/lib/reporters/base');
 const SpecReporter = require('mocha/lib/reporters/spec');
-const JsonReporter = require('mocha/lib/reporters/json');
 const path = require('path');
 const fs = require('fs');
 
@@ -11,17 +10,29 @@ module.exports = class MultiReporter extends BaseReporter {
         new SpecReporter(runner, {});
 
         if (options.reporterOptions?.cypress) {
+            const MochawesomeReporter = require('cypress-mochawesome-reporter/lib/reporter');
+            this.mochawesome = new MochawesomeReporter(runner, {});
+
             new CypressJsonReporter(runner, {
                 reporterOption: {
                     output: 'cypress/reports/e2e.json',
                 },
             });
         } else {
+            const JsonReporter = require('mocha/lib/reporters/json');
             new JsonReporter(runner, {
                 reporterOption: {
                     output: 'reports/mocha.json',
                 },
             });
+        }
+    }
+
+    done(failures, exit) {
+        if (this.mochawesome) {
+            this.mochawesome.done(failures, exit);
+        } else {
+            exit(failures);
         }
     }
 };
