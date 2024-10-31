@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@stylistic/stylelint-plugin": "^3.1.0",
-    "@types/mocha": "^10.0.7",
+    "@types/mocha": "^10.0.9",
     "@types/three": "^0.169.0",
     "@typescript-eslint/eslint-plugin": "^7.16.0",
     "@typescript-eslint/parser": "^7.16.0",
@@ -42,7 +42,7 @@
     "esbuild-sass-plugin": "^3.3.0",
     "eslint": "^8.57.0",
     "inquirer": "^12.0.0",
-    "mocha": "^10.7.0",
+    "mocha": "^10.8.2",
     "mocha-junit-reporter": "^2.2.1",
     "postcss": "^8.4.21",
     "prettier": "^2.8.8",
