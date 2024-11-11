@@ -6092,10 +6092,10 @@ thenify-all@^1.0.0:
   dependencies:
     any-promise "^1.0.0"
 
-three@^0.169.0:
-  version "0.169.0"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.169.0.tgz#4a62114988ad9728d73526d1f1de6760c56b4adc"
-  integrity sha512-Ed906MA3dR4TS5riErd4QBsRGPcx+HBDX2O5yYE5GqJeFQTPU+M56Va/f/Oph9X7uZo3W3o4l2ZhBZ6f6qUv0w==
+three@^0.170.0:
+  version "0.170.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.170.0.tgz#6087f97aab79e9e9312f9c89fcef6808642dfbb7"
+  integrity sha512-FQK+LEpYc0fBD+J8g6oSEyyNzjp+Q7Ks1C568WWaoMRLW+TkNNWmenWeGgJjV105Gd+p/2ql1ZcjYvNiPZBhuQ==
 
 throttleit@^1.0.0:
   version "1.0.1"
