@@ -53,7 +53,7 @@
     "selfsigned": "^2.4.1",
     "sort-package-json": "^2.12.0",
     "stylelint": "^16.11.0",
-    "stylelint-config-standard-scss": "^13.1.0",
+    "stylelint-config-standard-scss": "^14.0.0",
     "ts-node": "^10.9.2",
     "tsc": "^2.0.4",
     "tsup": "^8.3.5",
