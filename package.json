@@ -33,7 +33,7 @@
     "@cypress/code-coverage": "^3.13.6",
     "@eslint/js": "^9.16.0",
     "@lcov-viewer/istanbul-report": "^1.4.0",
-    "@stylistic/eslint-plugin": "^2.11.0",
+    "@stylistic/eslint-plugin": "^2.12.0",
     "@stylistic/stylelint-plugin": "^3.1.1",
     "@types/mocha": "^10.0.9",
     "@types/three": "^0.169.0",
@@ -60,7 +60,7 @@
     "turbo": "^2.3.0",
     "typedoc": "^0.27.3",
     "typescript": "^5.7.2",
-    "typescript-eslint": "^8.17.0"
+    "typescript-eslint": "^8.18.0"
   },
   "resolutions": {
     "yargs": "^17.7.2",
