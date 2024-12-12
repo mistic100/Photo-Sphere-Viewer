@@ -37,7 +37,7 @@ ${
         if (!dev) {
             plugins.push(
                 budgetPlugin(pkg.psv.budget),
-                scssBundlePlugin(),
+                // scssBundlePlugin(),
                 assetsPlugin({
                     'LICENSE': license(),
                     '.npmrc': npmrc(),
