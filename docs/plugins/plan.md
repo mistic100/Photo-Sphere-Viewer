@@ -362,11 +362,11 @@ Triggered when the map is maximized (`view=maximized`), minimized or opened (`vi
 
 ## SCSS variables
 
-| variable | default | description |
-| -------- | ------- | ----------- |
-| $psv-plan-radius | 8px | Corner radius of the widget |
-| $psv-plan-shadow | 0 0 5px rgba(0, 0, 0, .7) | Shadow applied to the widget |
-| $psv-plan-button-size | 34px | Size of buttons |
-| $psv-plan-button-background | rgba(0, 0, 0, .5) | Background color of buttons |
-| $psv-plan-button-color | white | Icon color if buttons |
-| $psv-map-transition | ease-in-out .3s | Transition |
+| variable           | default                   | description                  |
+| ------------------ | ------------------------- | ---------------------------- |
+| $radius            | 8px                       | Corner radius of the widget  |
+| $shadow            | 0 0 5px rgba(0, 0, 0, .7) | Shadow applied to the widget |
+| $button-size       | 34px                      | Size of buttons              |
+| $button-background | rgba(0, 0, 0, .5)         | Background color of buttons  |
+| $button-color      | white                     | Icon color if buttons        |
+| $transition        | ease-in-out .3s           | Transition                   |

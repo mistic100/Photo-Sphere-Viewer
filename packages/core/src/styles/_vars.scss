@@ -1,0 +1,119 @@
+// *** MAIN ***
+$main-background-stops: #fff 0%,
+    #fdfdfd 16%,
+    #fbfbfb 33%,
+    #f8f8f8 49%,
+    #efefef 66%,
+    #dfdfdf 82%,
+    #bfbfbf 100% !default;
+$main-background: radial-gradient($main-background-stops) !default;
+$element-focus-outline: 2px solid #007cff !default;
+
+// *** LOADER ***
+$loader-bg-color: rgba(61, 61, 61, 0.5) !default;
+$loader-color: rgba(255, 255, 255, 0.7) !default;
+$loader-width: 150px !default;
+$loader-tickness: 10px !default;
+$loader-border: 3px !default;
+$loader-font: 600 16px sans-serif !default;
+
+// *** NAVBAR ***
+$navbar-height: 40px !default;
+$navbar-background: rgba(61, 61, 61, 0.5) !default;
+
+$caption-font: 16px sans-serif !default;
+$caption-text-color: rgba(255, 255, 255, 0.7) !default;
+
+$buttons-height: 20px !default;
+$buttons-padding: (($navbar-height - $buttons-height) * 0.5) !default;
+$buttons-background: transparent !default;
+$buttons-active-background: rgba(255, 255, 255, 0.2) !default;
+$buttons-color: rgba(255, 255, 255, 0.7) !default;
+$buttons-disabled-opacity: 0.5 !default;
+
+$buttons-hover-scale: 1.2 !default;
+$buttons-hover-scale-delay: 200ms !default;
+
+$zoom-range-width: 80px !default;
+$zoom-range-tickness: 1px !default;
+$zoom-range-diameter: 7px !default;
+$zoom-range-media-min-width: 600px !default;
+
+// *** TOOLTIP ***
+$tooltip-background: rgba(61, 61, 61, 0.8) !default;
+$tooltip-animate-offset: 5px !default;
+$tooltip-animate-delay: 100ms !default;
+$tooltip-radius: 4px !default;
+$tooltip-padding: 0.5em 1em !default;
+$tooltip-arrow-size: 7px !default;
+$tooltip-max-width: 200px !default;
+
+$tooltip-text-color: rgb(255, 255, 255) !default;
+$tooltip-font: 14px sans-serif !default;
+$tooltip-text-shadow: 0 1px #000 !default;
+
+$tooltip-shadow-color: rgba(90, 90, 90, 0.7) !default;
+$tooltip-shadow-offset: 3px !default; // the shadow is always at the opposite side of the arrow
+
+// *** PANEL ***
+$panel-background: rgba(10, 10, 10, 0.7) !default;
+$panel-text-color: rgb(220, 220, 220) !default;
+$panel-font: 16px sans-serif !default;
+$panel-width: 400px !default;
+$panel-padding: 1em !default;
+$panel-animate-delay: 100ms !default;
+
+$panel-resizer-width: 9px !default; // must be odd
+$panel-resizer-background: rgba(0, 0, 0, 0.9) !default;
+$panel-resizer-grip-color: #fff !default;
+$panel-resizer-grip-height: 29px !default; // must be odd
+$panel-close-button-size: 32px !default;
+$panel-close-button-background: $panel-resizer-background !default;
+$panel-close-button-color: #fff !default;
+$panel-close-button-animate-delay: 300ms !default;
+
+$panel-title-font: 24px sans-serif !default;
+$panel-title-icon-size: 24px !default;
+$panel-title-margin: 24px !default;
+
+$panel-menu-item-height: 1.5em !default;
+$panel-menu-item-padding: 0.5em 1em !default;
+$panel-menu-item-active-outline: 1px !default;
+$panel-menu-odd-background: rgba(255, 255, 255, 0.1) !default;
+$panel-menu-even-background: transparent !default;
+$panel-menu-hover-background: rgba(255, 255, 255, 0.2) !default;
+
+// *** NOTIFICATION ***
+$notification-position-from: -$navbar-height !default;
+$notification-position-to: $navbar-height * 2 !default;
+$notification-animate-delay: 200ms !default;
+$notification-background: $tooltip-background !default;
+$notification-radius: $tooltip-radius !default;
+$notification-padding: $tooltip-padding !default;
+$notification-font: $tooltip-font !default;
+$notification-text-color: $tooltip-text-color !default;
+
+// *** OVERLAY ***
+$overlay-opacity: 0.8 !default;
+$overlay-icon-color: rgb(48, 48, 48) !default;
+$overlay-title-font: 30px sans-serif !default;
+$overlay-title-color: black !default;
+$overlay-text-font: 20px sans-serif !default;
+$overlay-text-color: rgba(0, 0, 0, 0.8) !default;
+$overlay-image-size: (
+    portrait: 50%,
+    landscape: 33%,
+) !default;
+
+// *** Z-INDEXES ***
+$canvas-zindex: 0 !default;
+$hud-zindex: 10 !default;
+$polygon-marker-zindex: 20 !default;
+$marker-zindex: 30 !default;
+$ui-zindex: 40 !default;
+$tooltip-zindex: 50 !default;
+$loader-zindex: 80 !default;
+$panel-zindex: 90 !default;
+$navbar-zindex: 90 !default;
+$notification-zindex: 100 !default;
+$overlay-zindex: 110 !default;

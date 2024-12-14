@@ -1,6 +1,5 @@
-@import '../../shared/vars';
-
-$psv-compass-margin: 10px !default;
+@use '../../../core/src/styles/vars' as psv;
+@use 'vars' as compass;
 
 .psv-container {
     --psv-compass-plugin-loaded: true;
@@ -8,13 +7,13 @@ $psv-compass-margin: 10px !default;
 
 .psv-compass {
     position: absolute;
-    margin: $psv-compass-margin;
-    z-index: $psv-ui-zindex - 1; // under map/plan
+    margin: compass.$margin;
+    z-index: psv.$ui-zindex - 1; // under map/plan
     cursor: default;
     aspect-ratio: 1;
 
     @at-root .psv--has-navbar & {
-        margin-bottom: calc(#{$psv-navbar-height} + #{$psv-compass-margin});
+        margin-bottom: calc(#{psv.$navbar-height} + #{compass.$margin});
     }
 
     canvas,

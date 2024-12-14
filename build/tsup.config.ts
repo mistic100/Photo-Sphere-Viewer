@@ -3,7 +3,6 @@ import { sassPlugin } from 'esbuild-sass-plugin';
 import { defineConfig } from 'tsup';
 import { assetsPlugin } from './plugins/esbuild-plugin-assets';
 import { budgetPlugin } from './plugins/esbuild-plugin-budget';
-// import { istanbulPlugin } from './plugins/esbuild-plugin-istanbul';
 import { mapFixPlugin } from './plugins/esbuild-plugin-map-fix';
 import { scssBundlePlugin } from './plugins/esbuild-plugin-scss-bundle';
 import { license } from './templates/license';

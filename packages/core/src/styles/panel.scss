@@ -1,3 +1,7 @@
+@use 'sass:math';
+@use 'sass:list';
+@use 'vars' as psv;
+
 @function make-dot-shadow($color, $w, $h) {
     $val: 1px 0 $color;
     $x: 3;
@@ -18,22 +22,22 @@
 
 .psv-panel {
     position: absolute;
-    z-index: $psv-panel-zindex;
+    z-index: psv.$panel-zindex;
     right: 0;
     height: 100%;
-    width: $psv-panel-width;
-    max-width: calc(100% - #{$psv-panel-resizer-width});
-    background: $psv-panel-background;
+    width: psv.$panel-width;
+    max-width: calc(100% - #{psv.$panel-resizer-width});
+    background: psv.$panel-background;
     transform: translate3d(100%, 0, 0);
     opacity: 0;
     transition-property: opacity, transform;
     transition-timing-function: ease-in-out;
-    transition-duration: $psv-panel-animate-delay;
+    transition-duration: psv.$panel-animate-delay;
     cursor: default;
-    margin-left: $psv-panel-resizer-width;
+    margin-left: psv.$panel-resizer-width;
 
     .psv--has-navbar & {
-        height: calc(100% - #{$psv-navbar-height});
+        height: calc(100% - #{psv.$navbar-height});
     }
 
     &-close-button {
@@ -41,20 +45,20 @@
         position: absolute;
         top: -1px;
         right: 0;
-        width: math.div($psv-panel-close-button-size, 5) * 3;
-        height: math.div($psv-panel-close-button-size, 5) * 3;
-        padding: math.div($psv-panel-close-button-size, 5);
+        width: math.div(psv.$panel-close-button-size, 5) * 3;
+        height: math.div(psv.$panel-close-button-size, 5) * 3;
+        padding: math.div(psv.$panel-close-button-size, 5);
         background: transparent;
-        color: $psv-panel-close-button-color;
-        transition: background $psv-panel-close-button-animate-delay ease-in-out;
+        color: psv.$panel-close-button-color;
+        transition: background psv.$panel-close-button-animate-delay ease-in-out;
         cursor: pointer;
 
         svg {
-            transition: transform $psv-panel-close-button-animate-delay ease-in-out;
+            transition: transform psv.$panel-close-button-animate-delay ease-in-out;
         }
 
         &:hover {
-            background: $psv-panel-close-button-background;
+            background: psv.$panel-close-button-background;
 
             svg {
                 transform: scale(-1);
@@ -66,27 +70,27 @@
         display: none;
         position: absolute;
         top: 0;
-        left: -$psv-panel-resizer-width;
-        width: $psv-panel-resizer-width;
+        left: -#{psv.$panel-resizer-width};
+        width: psv.$panel-resizer-width;
         height: 100%;
-        background-color: $psv-panel-resizer-background;
+        background-color: psv.$panel-resizer-background;
         cursor: col-resize;
 
-        $psv-panel-resizer-grip-width: $psv-panel-resizer-width - 4px;
+        $panel-resizer-grip-width: psv.$panel-resizer-width - 4px;
 
-        @if $psv-panel-resizer-grip-width > 0 {
+        @if $panel-resizer-grip-width > 0 {
             &::before {
                 content: '';
                 position: absolute;
                 top: 50%;
-                left: ($psv-panel-resizer-width - $psv-panel-resizer-grip-width) * 0.5 - 1px;
-                margin-top: (-$psv-panel-resizer-grip-height * 0.5);
+                left: #{psv.$panel-resizer-width - $panel-resizer-grip-width * 0.5 - 1px};
+                margin-top: -#{psv.$panel-resizer-grip-height * 0.5};
                 width: 1px;
                 height: 1px;
                 box-shadow: make-dot-shadow(
-                    $psv-panel-resizer-grip-color,
-                    $psv-panel-resizer-grip-width,
-                    $psv-panel-resizer-grip-height
+                    psv.$panel-resizer-grip-color,
+                    $panel-resizer-grip-width,
+                    psv.$panel-resizer-grip-height
                 );
                 background: transparent;
             }
@@ -97,12 +101,12 @@
         width: 100%;
         height: 100%;
         box-sizing: border-box;
-        color: $psv-panel-text-color;
-        font: $psv-panel-font;
+        color: psv.$panel-text-color;
+        font: psv.$panel-font;
         overflow: auto;
 
         &:not(&--no-margin) {
-            padding: $psv-panel-padding;
+            padding: psv.$panel-padding;
         }
 
         &--no-interaction {
@@ -122,7 +126,7 @@
         }
     }
 
-    @container psv-container (max-width: #{$psv-panel-width}) {
+    @container psv-container (max-width: #{psv.$panel-width}) {
         width: 100% !important;
         max-width: none;
 
@@ -141,14 +145,14 @@
         flex: none;
         display: flex;
         align-items: center;
-        font: $psv-panel-title-font;
-        margin: $psv-panel-title-margin $psv-panel-title-margin * 0.5;
+        font: psv.$panel-title-font;
+        margin: psv.$panel-title-margin psv.$panel-title-margin * 0.5;
 
         /* stylelint-disable-next-line no-descending-specificity */
         svg {
-            width: $psv-panel-title-icon-size;
-            height: $psv-panel-title-icon-size;
-            margin-right: $psv-panel-title-margin * 0.5;
+            width: psv.$panel-title-icon-size;
+            height: psv.$panel-title-icon-size;
+            margin-right: psv.$panel-title-margin * 0.5;
         }
     }
 
@@ -161,8 +165,8 @@
     }
 
     &-item {
-        min-height: $psv-panel-menu-item-height;
-        padding: $psv-panel-menu-item-padding;
+        min-height: psv.$panel-menu-item-height;
+        padding: psv.$panel-menu-item-padding;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -170,15 +174,15 @@
         transition: background 0.1s ease-in-out;
 
         &--active {
-            outline: $psv-panel-menu-item-active-outline solid currentcolor;
-            outline-offset: -$psv-panel-menu-item-active-outline;
+            outline: psv.$panel-menu-item-active-outline solid currentcolor;
+            outline-offset: -#{psv.$panel-menu-item-active-outline};
         }
 
         &-icon {
             flex: none;
-            height: $psv-panel-menu-item-height;
-            width: $psv-panel-menu-item-height;
-            margin-right: #{list.nth($psv-panel-menu-item-padding, 1)};
+            height: psv.$panel-menu-item-height;
+            width: psv.$panel-menu-item-height;
+            margin-right: #{list.nth(psv.$panel-menu-item-padding, 1)};
 
             img {
                 max-width: 100%;
@@ -193,28 +197,28 @@
         }
 
         &:focus-visible {
-            outline: $psv-element-focus-outline;
-            outline-offset: -#{list.nth($psv-element-focus-outline, 1)};
+            outline: psv.$element-focus-outline;
+            outline-offset: -#{list.nth(psv.$element-focus-outline, 1)};
         }
     }
 
     &--stripped &-item {
         &:hover {
-            background: $psv-panel-menu-hover-background;
+            background: psv.$panel-menu-hover-background;
         }
 
         &:nth-child(odd),
         &:nth-child(odd)::before {
-            background: $psv-panel-menu-odd-background;
+            background: psv.$panel-menu-odd-background;
         }
 
         &:nth-child(even),
         &:nth-child(even)::before {
-            background: $psv-panel-menu-even-background;
+            background: psv.$panel-menu-even-background;
         }
     }
 }
 
 .psv-container:not(.psv--is-touch) .psv-panel-menu-item:hover {
-    background: $psv-panel-menu-hover-background;
+    background: psv.$panel-menu-hover-background;
 }

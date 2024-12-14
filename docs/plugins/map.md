@@ -393,15 +393,15 @@ Triggered when the map is maximized (`view=maximized`), minimized or opened (`vi
 
 ## SCSS variables
 
-| variable | default | description |
-| -------- | ------- | ----------- |
-| $psv-map-radius | 8px | Corner radius of the widget (only if shape=square) |
-| $psv-map-shadow | 0 0 5px rgba(0, 0, 0, .7) | Shadow applied to the widget |
-| $psv-map-background | rgba(61, 61, 61, .7) | Background color of the map |
-| $psv-map-button-size | 34px | Size of buttons |
-| $psv-map-button-background | rgba(0, 0, 0, .5) | Background color of buttons |
-| $psv-map-button-color | $psv-buttons-color | Color of buttons |
-| $psv-map-toolbar-font | 12px sans-serif | Font for the zoom indicator |
-| $psv-map-toolbar-text-color | white | Color of the zoom indicator |
-| $psv-map-toolbar-background | #222 | Background color of the zoom indicator |
-| $psv-map-transition | ease-in-out .3s | Transition |
+| variable            | default                   | description                                        |
+| ------------------- | ------------------------- | -------------------------------------------------- |
+| $radius             | 8px                       | Corner radius of the widget (only if shape=square) |
+| $shadow             | 0 0 5px rgba(0, 0, 0, .7) | Shadow applied to the widget                       |
+| $background         | rgba(61, 61, 61, .7)      | Background color of the map                        |
+| $button-size        | 34px                      | Size of buttons                                    |
+| $button-background  | rgba(0, 0, 0, .5)         | Background color of buttons                        |
+| $button-color       | core.$buttons-color       | Color of buttons                                   |
+| $toolbar-font       | 12px sans-serif           | Font for the zoom indicator                        |
+| $toolbar-text-color | white                     | Color of the zoom indicator                        |
+| $toolbar-background | #222                      | Background color of the zoom indicator             |
+| $transition         | ease-in-out .3s           | Transition                                         |

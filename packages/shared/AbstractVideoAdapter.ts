@@ -73,11 +73,11 @@ export abstract class AbstractVideoAdapter<
         const video = panorama.source instanceof HTMLVideoElement
             ? panorama.source
             : createVideo({
-                src: panorama.source,
-                withCredentials: this.viewer.config.withCredentials,
-                muted: this.config.muted,
-                autoplay: false,
-            });
+                    src: panorama.source,
+                    withCredentials: this.viewer.config.withCredentials,
+                    muted: this.config.muted,
+                    autoplay: false,
+                });
 
         await this.__videoLoadPromise(video);
 

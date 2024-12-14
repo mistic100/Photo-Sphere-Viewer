@@ -1,39 +1,42 @@
+@use 'sass:map';
+@use 'vars' as psv;
+
 .psv-overlay {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     position: absolute;
-    z-index: $psv-overlay-zindex;
+    z-index: psv.$overlay-zindex;
     inset: 0;
-    background: $psv-main-background;
-    opacity: $psv-overlay-opacity;
+    background: psv.$main-background;
+    opacity: psv.$overlay-opacity;
     cursor: default;
 
     &-image {
         width: 100%;
         text-align: center;
-        color: $psv-overlay-icon-color;
+        color: psv.$overlay-icon-color;
 
         svg {
-            width: map.get($psv-overlay-image-size, portrait);
+            width: map.get(psv.$overlay-image-size, portrait);
 
             @container psv-container (orientation: landscape) {
-                width: map.get($psv-overlay-image-size, landscape);
+                width: map.get(psv.$overlay-image-size, landscape);
             }
         }
     }
 
     &-title {
-        color: $psv-overlay-title-color;
+        color: psv.$overlay-title-color;
         margin-top: 1em;
-        font: $psv-overlay-title-font;
+        font: psv.$overlay-title-font;
         text-align: center;
     }
 
     &-text {
-        color: $psv-overlay-text-color;
-        font: $psv-overlay-text-font;
+        color: psv.$overlay-text-color;
+        font: psv.$overlay-text-font;
         opacity: 0.8;
         text-align: center;
     }

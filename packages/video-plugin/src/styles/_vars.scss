@@ -1,0 +1,22 @@
+@use '../../../core/src/styles/vars' as psv;
+
+$progressbar-height: 3px !default;
+$progressbar-height-active: 5px !default;
+$progressbar-container: 20px !default;
+$progressbar-progress-color: psv.$buttons-color !default;
+$progressbar-buffer-color: psv.$buttons-active-background !default;
+$progressbar-handle-size: 9px !default;
+$progressbar-handle-color: white !default;
+
+$volume-height: 80px !default;
+$volume-width: $progressbar-height-active !default;
+$volume-bar-color: $progressbar-progress-color !default;
+$volume-track-color: $progressbar-buffer-color !default;
+$volume-handle-size: $progressbar-handle-size !default;
+$volume-handle-color: $progressbar-handle-color !default;
+
+$bigbutton-size: (
+    portrait: 20vw,
+    landscape: 10vw,
+) !default;
+$bigbutton-color: psv.$buttons-color !default;

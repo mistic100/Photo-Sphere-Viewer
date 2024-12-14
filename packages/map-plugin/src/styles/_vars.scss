@@ -1,0 +1,14 @@
+@use '../../../core/src/styles/vars' as psv;
+
+$margin: 10px !default;
+$radius: 8px !default;
+$shadow: 0 0 5px rgba(0, 0, 0, 0.7) !default;
+$background: rgba(61, 61, 61, 0.7) !default;
+$toolbar-font: 12px sans-serif !default;
+$toolbar-background: #222 !default;
+$toolbar-text-color: white !default;
+$button-size: 34px !default;
+$button-spacing: 3px !default;
+$button-color: psv.$buttons-color !default;
+$button-background: rgba(0, 0, 0, 0.5) !default;
+$transition: ease-in-out 0.3s !default;
