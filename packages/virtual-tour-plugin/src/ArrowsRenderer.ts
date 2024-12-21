@@ -5,7 +5,6 @@ import { CSS2DObject, CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRe
 import { CSS3DObject, CSS3DRenderer } from 'three/examples/jsm/renderers/CSS3DRenderer.js';
 import { LINK_DATA } from './constants';
 import { VirtualTourArrowStyle, VirtualTourLink } from './model';
-import { checkArrowStyle } from './utils';
 import { type VirtualTourPlugin } from './VirtualTourPlugin';
 
 const ARROW_DATA = 'arrow';
@@ -213,7 +212,7 @@ export class ArrowsRenderer extends AbstractComponent {
 
         const conf = {
             ...this.arrowStyle,
-            ...checkArrowStyle(link.arrowStyle),
+            ...link.arrowStyle,
         };
 
         element.classList.add('psv-virtual-tour-link');

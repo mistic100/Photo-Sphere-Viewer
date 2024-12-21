@@ -151,11 +151,7 @@ export type PanoramaOptions = {
      * enable transition (rotation + fading) between old and new panorama
      * @default true
      */
-    transition?: boolean | 'fade-only' | TransitionOptions;
-    /**
-     * @deprecated Use `transition.speed`
-     */
-    speed?: string | number;
+    transition?: boolean | TransitionOptions;
     /**
      * show the loader while loading the new panorama
      * @default true
@@ -384,7 +380,7 @@ export type ViewerConfig = {
     /** @default 'zoom move download description caption fullscreen' */
     navbar?: boolean | string | Array<string | NavbarCustomButton>;
     lang?: Record<string, string>;
-    keyboard?: boolean | 'always' | 'fullscreen' | Record<string, ACTIONS | ((viewer: Viewer) => void)>;
+    keyboard?: boolean | 'always' | 'fullscreen';
     keyboardActions?: Record<string, ACTIONS | ((viewer: Viewer, e: KeyboardEvent) => void)>;
 };
 
@@ -401,7 +397,6 @@ export type ParsedViewerConfig = Omit<
     | 'fisheye'
     | 'requestHeaders'
     | 'navbar'
-    | 'keyboard'
 > & {
     adapter?: [AdapterConstructor, any];
     plugins?: Array<[PluginConstructor, any]>;
@@ -411,7 +406,6 @@ export type ParsedViewerConfig = Omit<
     fisheye?: number;
     requestHeaders?: (url: string) => Record<string, string>;
     navbar?: Array<string | NavbarCustomButton>;
-    keyboard?: false | 'always' | 'fullscreen';
 };
 
 /**

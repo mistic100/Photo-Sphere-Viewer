@@ -69,12 +69,6 @@ import {
  * Photo Sphere Viewer controller
  */
 export class Viewer extends TypedEventTarget<ViewerEvents> {
-    /**
-     * Change the order in which the panoData and sphereCorrection angles are applied from 'ZXY' to 'YXZ'
-     * @deprecated Will be removed in version 5.12
-     */
-    static useNewAnglesOrder = true;
-
     readonly state: ViewerState;
     readonly config: ParsedViewerConfig;
 

@@ -140,17 +140,6 @@ export abstract class Marker {
             throw new PSVError(`cannot change marker ${config.id} type`);
         }
 
-        if (utils.isExtendedPosition(config)) {
-            utils.logWarn('Use the "position" property to configure the position of a marker');
-            config.position = this.viewer.dataHelper.cleanPosition(config);
-        }
-
-        if ('width' in config && 'height' in config) {
-            utils.logWarn('Use the "size" property to configure the size of a marker');
-            // @ts-ignore
-            config.size = { width: config['width'], height: config['height'] };
-        }
-
         this.config = utils.deepmerge(this.config, config as any);
         if (typeof this.config.tooltip === 'string') {
             this.config.tooltip = { content: this.config.tooltip };

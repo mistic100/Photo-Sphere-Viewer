@@ -115,11 +115,6 @@ export class OverlaysPlugin extends AbstractConfigurablePlugin<
             throw new PSVError(`Missing overlay "path"`);
         }
 
-        if (config.type === 'video') {
-            utils.logWarn('"video" overlay are not supported anymore');
-            return;
-        }
-
         const parsedConfig: OverlayConfig = {
             id: Math.random().toString(36).substring(2),
             opacity: 1,
@@ -136,14 +131,6 @@ export class OverlaysPlugin extends AbstractConfigurablePlugin<
         } else {
             this.__addCubeImageOverlay(parsedConfig as any);
         }
-    }
-
-    /**
-     * @deprecated
-     */
-    getVideo(_: string): any {
-        utils.logWarn('"video" overlay are not supported anymore');
-        return null;
     }
 
     /**
@@ -177,11 +164,6 @@ export class OverlaysPlugin extends AbstractConfigurablePlugin<
      * Add a spherical overlay
      */
     private async __addSphereImageOverlay(config: SphereOverlayConfig) {
-        if (config.width || config.height || config.pitch || config.yaw) {
-            utils.logWarn(`Positionned overlays are not supported anymore`);
-            return;
-        }
-
         const currentPanoData = this.viewer.state.textureData.panoData as PanoData;
 
         const adapter = this.__getEquirectangularAdapter();

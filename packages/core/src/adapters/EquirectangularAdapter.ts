@@ -4,21 +4,13 @@ import type { Viewer } from '../Viewer';
 import { SPHERE_RADIUS } from '../data/constants';
 import { SYSTEM } from '../data/system';
 import { EquirectangularPanorama, PanoData, PanoDataProvider, PanoramaPosition, Position, TextureData } from '../model';
-import { createTexture, getConfigParser, getXMPValue, isNil, logWarn, mergePanoData } from '../utils';
+import { createTexture, getConfigParser, getXMPValue, isNil, mergePanoData } from '../utils';
 import { AbstractAdapter } from './AbstractAdapter';
 
 /**
  * Configuration for {@link EquirectangularAdapter}
  */
 export type EquirectangularAdapterConfig = {
-    /**
-     * @deprecated Use CSS to change the background color of '.psv-canvas'
-     */
-    backgroundColor?: string;
-    /**
-     * @deprecated Not supported anymore
-     */
-    interpolateBackground?: boolean;
     /**
      * number of faces of the sphere geometry, higher values may decrease performances
      * @default 64
@@ -41,8 +33,6 @@ export type EquirectangularTextureData = TextureData<Texture, string | Equirecta
 
 const getConfig = getConfigParser<EquirectangularAdapterConfig>(
     {
-        backgroundColor: null,
-        interpolateBackground: false,
         resolution: 64,
         useXmpData: true,
         blur: false,
@@ -53,18 +43,6 @@ const getConfig = getConfigParser<EquirectangularAdapterConfig>(
                 throw new PSVError('EquirectangularAdapter resolution must be power of two.');
             }
             return resolution;
-        },
-        backgroundColor: (backgroundColor) => {
-            if (backgroundColor) {
-                logWarn(`EquirectangularAdapter.backgroundColor is deprecated, use 'canvasBackground' main option instead.`);
-            }
-            return backgroundColor;
-        },
-        interpolateBackground: (interpolateBackground) => {
-            if (interpolateBackground) {
-                logWarn(`EquirectangularAdapter.interpolateBackground is not supported anymore.`);
-            }
-            return false;
         },
     },
 );
@@ -91,10 +69,6 @@ export class EquirectangularAdapter extends AbstractAdapter<string | Equirectang
 
         this.SPHERE_SEGMENTS = this.config.resolution;
         this.SPHERE_HORIZONTAL_SEGMENTS = this.SPHERE_SEGMENTS / 2;
-
-        if (this.config.backgroundColor) {
-            viewer.config.canvasBackground = config.backgroundColor;
-        }
     }
 
     override supportsTransition() {

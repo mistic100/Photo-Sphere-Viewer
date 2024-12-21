@@ -75,7 +75,6 @@ function meshes(group: Group) {
 }
 
 const getConfig = utils.getConfigParser<EquirectangularTilesAdapterConfig>({
-    backgroundColor: null,
     resolution: 64,
     showErrorTile: true,
     baseBlur: true,

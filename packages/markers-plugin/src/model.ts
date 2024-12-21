@@ -113,10 +113,6 @@ export type MarkerConfig = {
      */
     rotation?: string | number | { yaw?: number | string; pitch?: number | string; roll?: number | string };
     /**
-     * @deprecated Use `rotation` as an object
-     */
-    orientation?: 'front' | 'horizontal' | 'vertical-left' | 'vertical-right';
-    /**
      * Configures the scale of the marker depending on the zoom level and/or the horizontal offset (ignored for `polygon`, `polyline`, `imageLayer`, `videoLayer`)
      */
     scale?:

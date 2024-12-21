@@ -19,7 +19,7 @@ import {
     VirtualTourPluginConfig,
     VirtualTourTransitionOptions,
 } from './model';
-import { checkArrowStyle, gpsToSpherical } from './utils';
+import { gpsToSpherical } from './utils';
 
 const getConfig = utils.getConfigParser<VirtualTourPluginConfig>(
     {
@@ -39,10 +39,7 @@ const getConfig = utils.getConfigParser<VirtualTourPluginConfig>(
         linksOnCompass: true,
         showLinkTooltip: true,
         getLinkTooltip: null,
-        markerStyle: null,
         arrowStyle: DEFAULT_ARROW,
-        markerPitchOffset: null,
-        arrowPosition: null,
         arrowsPosition: {
             minPitch: 0.3,
             maxPitch: Math.PI / 2,
@@ -65,36 +62,16 @@ const getConfig = utils.getConfigParser<VirtualTourPluginConfig>(
             return positionMode;
         },
         renderMode(renderMode) {
-            if (renderMode === 'markers') {
-                utils.logWarn(`VirtualTourPlugin: "renderMode" markers has been replaced by 2d`);
-                return '2d';
-            }
             if (renderMode !== '3d' && renderMode !== '2d') {
                 throw new PSVError('VirtualTourPlugin: invalid renderMode');
             }
             return renderMode;
         },
-        markerStyle(markerStyle) {
-            if (markerStyle) {
-                utils.logWarn(`VirtualTourPlugin: "markerStyle" is deprecated`);
-            }
-            return null;
-        },
-        arrowPosition(arrowPosition) {
-            if (arrowPosition) {
-                utils.logWarn(`VirtualTourPlugin: "arrowPosition" is deprecated`);
-            }
-            return null;
-        },
-        arrowsPosition(arrowsPosition, { defValue, rawConfig }) {
-            if (!utils.isNil(rawConfig.markerPitchOffset)) {
-                utils.logWarn(`VirtualTourPlugin: "markerPitchOffset" is deprecated, use "arrowsPosition.linkPitchOffset" instead`);
-                arrowsPosition.linkPitchOffset = rawConfig.markerPitchOffset;
-            }
+        arrowsPosition(arrowsPosition, { defValue }) {
             return { ...defValue, ...arrowsPosition };
         },
         arrowStyle(arrowStyle, { defValue }) {
-            return { ...defValue, ...checkArrowStyle(arrowStyle) };
+            return { ...defValue, arrowStyle };
         },
         map(map, { rawConfig }) {
             if (map) {
@@ -338,10 +315,6 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
                     ...options,
                 };
 
-                if ('fadeIn' in transitionOptions) {
-                    utils.logWarn('VirtualTourTransitionOptions.fadeIn is deprecated, use "effect" instead.');
-                    transitionOptions.effect = transitionOptions.fadeIn ? 'fade' : 'none';
-                }
                 if (!transitionOptions.effect) {
                     transitionOptions.effect = 'none';
                 }

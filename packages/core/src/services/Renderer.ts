@@ -42,7 +42,7 @@ import {
     TextureData,
     TransitionOptions,
 } from '../model';
-import { Animation, isNil, logWarn } from '../utils';
+import { Animation, isNil } from '../utils';
 import { Viewer } from '../Viewer';
 import { AbstractService } from './AbstractService';
 
@@ -296,18 +296,7 @@ export class Renderer extends AbstractService {
      */
     setPanoramaPose(panoData: PanoData, mesh: Object3D = this.mesh) {
         const cleanCorrection = this.viewer.dataHelper.cleanPanoramaPose(panoData);
-
-        const i = (cleanCorrection.pan ? 1 : 0) + (cleanCorrection.tilt ? 1 : 0) + (cleanCorrection.roll ? 1 : 0);
-        if (!Viewer.useNewAnglesOrder && i > 1) {
-            logWarn(`'panoData' Euler angles have changed in version 5.11.0.`);
-            logWarn(`Remove your 'useNewAnglesOrder' override to remove this warning (you might have to adapt your poseHeading/posePitch/poseRoll parameters).`);
-        }
-
-        if (Viewer.useNewAnglesOrder) {
-            mesh.rotation.set(cleanCorrection.tilt, cleanCorrection.pan, cleanCorrection.roll, 'YXZ');
-        } else {
-            mesh.rotation.set(-cleanCorrection.tilt, -cleanCorrection.pan, -cleanCorrection.roll, 'ZXY');
-        }
+        mesh.rotation.set(cleanCorrection.tilt, cleanCorrection.pan, cleanCorrection.roll, 'YXZ');
     }
 
     /**
@@ -316,18 +305,7 @@ export class Renderer extends AbstractService {
      */
     setSphereCorrection(sphereCorrection: SphereCorrection, group: Object3D = this.meshContainer) {
         const cleanCorrection = this.viewer.dataHelper.cleanSphereCorrection(sphereCorrection);
-
-        const i = (cleanCorrection.pan ? 1 : 0) + (cleanCorrection.tilt ? 1 : 0) + (cleanCorrection.roll ? 1 : 0);
-        if (!Viewer.useNewAnglesOrder && i > 1) {
-            logWarn(`'sphereCorrection' Euler angles have changed in version 5.11.0.`);
-            logWarn(`Remove your 'useNewAnglesOrder' override to remove this warning (you might have to adapt your poseHeading/posePitch/poseRoll parameters).`);
-        }
-
-        if (Viewer.useNewAnglesOrder) {
-            group.rotation.set(cleanCorrection.tilt, cleanCorrection.pan, cleanCorrection.roll, 'YXZ');
-        } else {
-            group.rotation.set(cleanCorrection.tilt, cleanCorrection.pan, cleanCorrection.roll, 'ZXY');
-        }
+        group.rotation.set(cleanCorrection.tilt, cleanCorrection.pan, cleanCorrection.roll, 'YXZ');
     }
 
     /**

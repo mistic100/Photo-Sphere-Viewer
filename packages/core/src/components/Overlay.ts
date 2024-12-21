@@ -1,7 +1,6 @@
 import { CAPTURE_EVENTS_CLASS, KEY_CODES } from '../data/constants';
 import { HideOverlayEvent, KeypressEvent, ShowOverlayEvent } from '../events';
 import { PSVError } from '../PSVError';
-import { logWarn } from '../utils';
 import type { Viewer } from '../Viewer';
 import { AbstractComponent } from './AbstractComponent';
 
@@ -25,10 +24,6 @@ export type OverlayConfig = {
      * secondary message
      */
     text?: string;
-    /**
-     * @deprecated Use `dismissible`
-     */
-    dissmisable?: boolean;
     /**
      * if the user can hide the overlay by clicking
      * @default true
@@ -126,11 +121,6 @@ export class Overlay extends AbstractComponent {
     override show(config: string | OverlayConfig) {
         if (typeof config === 'string') {
             config = { title: config };
-        }
-
-        if ('dissmisable' in config) {
-            logWarn('Replace "dissmisable" by "dismissible"');
-            config.dismissible = config.dissmisable;
         }
 
         this.state.contentId = config.id || null;

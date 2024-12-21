@@ -29,11 +29,6 @@ export abstract class AbstractDatasource {
         if (!node.panorama) {
             throw new PSVError(`No panorama provided for node ${node.id}`);
         }
-        if ('position' in node) {
-            utils.logWarn('Use the "gps" property to configure the GPS position of a virtual node');
-            // @ts-ignore
-            node.gps = node['position'];
-        }
         if (this.plugin.isGps && !(node.gps?.length >= 2)) {
             throw new PSVError(`No GPS position provided for node ${node.id}`);
         }
@@ -55,15 +50,6 @@ export abstract class AbstractDatasource {
         }
         if (link.nodeId === node.id) {
             throw new PSVError(`Node ${node.id} links to itself`);
-        }
-        if (Array.isArray(link.position)) {
-            utils.logWarn('Use the "gps" property to configure the GPS position of a virtual link');
-            link.gps = link.position as any;
-            delete link.position;
-        }
-        if (utils.isExtendedPosition(link)) {
-            utils.logWarn('Use the "position" property to configure the position of a virtual link');
-            link.position = this.viewer.dataHelper.cleanPosition(link);
         }
         if (!this.plugin.isGps && !utils.isExtendedPosition(link.position)) {
             throw new PSVError(`No position provided for link ${link.nodeId} of node ${node.id}`);

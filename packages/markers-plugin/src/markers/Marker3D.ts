@@ -116,26 +116,9 @@ export class Marker3D extends Marker {
             this.viewer.dataHelper.sphericalCoordsToVector3(this.state.position, group.position);
 
             group.lookAt(0, group.position.y, 0);
-            if (this.config.orientation) {
-                utils.logWarn(`Marker#orientation is deprecated, use "rotation.yaw" or "rotation.pitch" instead`);
-                mesh.rotateZ(-this.config.rotation.roll);
-                switch (this.config.orientation) {
-                    case 'horizontal':
-                        group.rotateX(this.state.position.pitch < 0 ? -Math.PI / 2 : Math.PI / 2);
-                        break;
-                    case 'vertical-left':
-                        group.rotateY(-Math.PI * 0.4);
-                        break;
-                    case 'vertical-right':
-                        group.rotateY(Math.PI * 0.4);
-                        break;
-                    // no default
-                }
-            } else {
-                mesh.rotateY(-this.config.rotation.yaw);
-                mesh.rotateX(-this.config.rotation.pitch);
-                mesh.rotateZ(-this.config.rotation.roll);
-            }
+            mesh.rotateY(-this.config.rotation.yaw);
+            mesh.rotateX(-this.config.rotation.pitch);
+            mesh.rotateZ(-this.config.rotation.roll);
 
             const p = mesh.geometry.getAttribute('position');
             this.state.positions3D = [0, 1, 3, 2].map((i) => {

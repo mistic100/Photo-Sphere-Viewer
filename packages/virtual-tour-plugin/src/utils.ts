@@ -44,18 +44,3 @@ function bearing(p1: [number, number], p2: [number, number]): number {
     const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(long2 - long1);
     return Math.atan2(y, x);
 }
-
-/**
- * @deprecated
- */
-export function checkArrowStyle(style: any): any {
-    if (style && ['color', 'hoverColor', 'outlineColor'].some(key => key in style)) {
-        utils.logWarn(`VirtualTourPlugin: "arrowStyle" does not support color, hoverColor, outlineColor anymore`);
-        return undefined;
-    }
-    if (style && typeof style.size === 'number') {
-        utils.logWarn(`VirtualTourPlugin: "arrowStyle.size" must be an object (width + height, in pixels)`);
-        delete style.size;
-    }
-    return style;
-}

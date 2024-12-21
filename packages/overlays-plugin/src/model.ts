@@ -3,8 +3,6 @@ import type { CubemapPanorama } from '@photo-sphere-viewer/cubemap-adapter';
 
 export type BaseOverlayConfig = {
     id?: string;
-    /* @deprecated */
-    type?: 'image' | 'video';
     /**
      * @default 1
      */
@@ -20,16 +18,6 @@ export type BaseOverlayConfig = {
  */
 export type SphereOverlayConfig = BaseOverlayConfig & {
     path: string;
-    /* @deprecated */
-    yaw?: any;
-    /* @deprecated */
-    pitch?: any;
-    /* @deprecated */
-    width?: any;
-    /* @deprecated */
-    height?: any;
-    /* @deprecated */
-    chromaKey?: any;
 };
 
 /**

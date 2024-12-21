@@ -123,10 +123,6 @@ export const CONFIG_PARSERS: ConfigParsers<ViewerConfig, ParsedViewerConfig> = {
         if (!(adapter[0] as any).id) {
             throw new PSVError(`Adapter has no id.`);
         }
-        if ((adapter[0] as any).id === 'little-planet') {
-            logWarn('LittlePlanetAdapter support has been removed, use `{ fisheye: 2, maxFov: 130 }` to achieve similar effect.');
-            adapter = defValue;
-        }
         return adapter;
     },
     defaultYaw: (defaultYaw) => {
@@ -171,16 +167,6 @@ export const CONFIG_PARSERS: ConfigParsers<ViewerConfig, ParsedViewerConfig> = {
             ...DEFAULTS.lang,
             ...lang,
         };
-    },
-    keyboard: (keyboard) => {
-        if (!keyboard) {
-            return false;
-        }
-        if (typeof keyboard === 'object') {
-            logWarn(`Use keyboardActions to configure the keyboard actions, keyboard option must be either true, false, 'fullscreen' or 'always'`);
-            return 'fullscreen';
-        }
-        return keyboard === 'always' ? 'always' : 'fullscreen';
     },
     keyboardActions: (keyboardActions, { rawConfig }) => {
         if (rawConfig.keyboard && typeof rawConfig.keyboard === 'object') {

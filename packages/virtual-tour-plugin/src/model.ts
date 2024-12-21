@@ -41,19 +41,7 @@ export type VirtualTourArrowStyle = {
      * CSS properties to set on the arrow
      */
     style?: Record<string, string>;
-
-    /** @deprecated */
-    color?: string;
-    /** @deprecated */
-    hoverColor?: string;
-    /** @deprecated */
-    outlineColor?: string;
 };
-
-/**
- * @deprecated
- */
-export type VirtualTourMarkerStyle = any;
 
 /**
  * Behaviour of the transition between nodes
@@ -74,10 +62,6 @@ export type VirtualTourTransitionOptions = {
      * @default '20rpm'
      */
     speed?: string | number;
-    /**
-     * @deprecated Use `effect` instead
-     */
-    fadeIn?: boolean;
     /**
      * Enable rotation in the direction of the next node
      * @default true
@@ -116,10 +100,6 @@ export type VirtualTourLink = Partial<ExtendedPosition> & {
      * define the GPS position of the node (GPS mode)
      */
     gps?: [number, number, number?];
-    /**
-     * @deprecated
-     */
-    markerStyle?: VirtualTourMarkerStyle;
     /**
      * override global arrow style
      */
@@ -201,7 +181,7 @@ export type VirtualTourPluginConfig = {
      * configure rendering mode of links
      * @default '3d'
      */
-    renderMode?: '3d' | '2d' | 'markers';
+    renderMode?: '3d' | '2d';
     /**
      * initial nodes (client mode)
      */
@@ -220,10 +200,10 @@ export type VirtualTourPluginConfig = {
     preload?: boolean | ((node: VirtualTourNode, link: VirtualTourLink) => boolean);
     /**
      * Configuration of the transition between nodes. Can be a callback.
-     * @default `{ showLoader: true, speed: '20rpm', fadeIn: true, rotation: true }`
+     * @default `{ showLoader: true, speed: '20rpm', effect: 'fade', rotation: true }`
      */
     transitionOptions?:
-        | Pick<VirtualTourTransitionOptions, 'showLoader' | 'speed' | 'effect' | 'fadeIn' | 'rotation'>
+        | Pick<VirtualTourTransitionOptions, 'showLoader' | 'speed' | 'effect' | 'rotation'>
         | ((
             toNode: VirtualTourNode,
             fromNode?: VirtualTourNode,
@@ -244,21 +224,9 @@ export type VirtualTourPluginConfig = {
      */
     getLinkTooltip?: (content: string, link: VirtualTourLink, node: VirtualTourNode) => string;
     /**
-     * @deprecated
-     */
-    markerStyle?: VirtualTourMarkerStyle;
-    /**
      * global arrow style
      */
     arrowStyle?: VirtualTourArrowStyle;
-    /**
-     * @deprecated
-     */
-    markerPitchOffset?: number;
-    /**
-     * @deprecated
-     */
-    arrowPosition?: 'top' | 'bottom';
     /**
      * configuration of the arrows container
      */
