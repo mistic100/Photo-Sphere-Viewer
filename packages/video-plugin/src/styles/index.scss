@@ -1,26 +1,6 @@
 @use 'sass:map';
-@import '../../shared/vars';
-
-$psv-progressbar-height: 3px !default;
-$psv-progressbar-height-active: 5px !default;
-$psv-progressbar-container: 20px !default;
-$psv-progressbar-progress-color: $psv-buttons-color !default;
-$psv-progressbar-buffer-color: $psv-buttons-active-background !default;
-$psv-progressbar-handle-size: 9px !default;
-$psv-progressbar-handle-color: white !default;
-
-$psv-volume-height: 80px !default;
-$psv-volume-width: $psv-progressbar-height-active !default;
-$psv-volume-bar-color: $psv-progressbar-progress-color !default;
-$psv-volume-track-color: $psv-progressbar-buffer-color !default;
-$psv-volume-handle-size: $psv-progressbar-handle-size !default;
-$psv-volume-handle-color: $psv-progressbar-handle-color !default;
-
-$psv-video-bigbutton-size: (
-    portrait: 20vw,
-    landscape: 10vw,
-) !default;
-$psv-video-bigbutton-color: $psv-buttons-color !default;
+@use '../../../core/src/styles/vars' as psv;
+@use 'vars' as video;
 
 .psv-container {
     --psv-video-plugin-loaded: true;
@@ -32,12 +12,12 @@ $psv-video-bigbutton-color: $psv-buttons-color !default;
         left: 0;
         bottom: 0;
         width: 100%;
-        height: $psv-progressbar-container;
+        height: video.$progressbar-container;
         cursor: pointer;
-        z-index: $psv-navbar-zindex - 1;
+        z-index: psv.$navbar-zindex - 1;
 
         @at-root .psv--has-navbar & {
-            bottom: $psv-navbar-height;
+            bottom: psv.$navbar-height;
         }
 
         & > * {
@@ -45,30 +25,30 @@ $psv-video-bigbutton-color: $psv-buttons-color !default;
             left: 0;
             bottom: 0;
             width: 100%;
-            height: $psv-progressbar-height;
+            height: video.$progressbar-height;
             transition: height 0.2s linear;
         }
 
         &:hover > * {
-            height: $psv-progressbar-height-active;
+            height: video.$progressbar-height-active;
         }
 
         &__progress {
-            background-color: $psv-progressbar-progress-color;
+            background-color: video.$progressbar-progress-color;
         }
 
         &__buffer {
-            background-color: $psv-progressbar-buffer-color;
+            background-color: video.$progressbar-buffer-color;
         }
 
         &__handle {
             display: none;
-            height: $psv-progressbar-handle-size !important;
-            width: $psv-progressbar-handle-size;
+            height: video.$progressbar-handle-size !important;
+            width: video.$progressbar-handle-size;
             border-radius: 50%;
-            margin-bottom: #{- ($psv-progressbar-handle-size - $psv-progressbar-height-active) * 0.5};
-            margin-left: #{- $psv-progressbar-handle-size * 0.5};
-            background: $psv-progressbar-handle-color;
+            margin-bottom: #{- (video.$progressbar-handle-size - video.$progressbar-height-active) * 0.5};
+            margin-left: #{- video.$progressbar-handle-size * 0.5};
+            background: video.$progressbar-handle-color;
         }
     }
 
@@ -85,12 +65,12 @@ $psv-video-bigbutton-color: $psv-buttons-color !default;
         &__container {
             position: absolute;
             left: 0;
-            bottom: $psv-navbar-height;
-            padding: $psv-buttons-height 0;
-            width: $psv-navbar-height;
+            bottom: psv.$navbar-height;
+            padding: psv.$buttons-height 0;
+            width: psv.$navbar-height;
             height: 0;
             opacity: 0;
-            background: $psv-navbar-background;
+            background: psv.$navbar-background;
             transition:
                 opacity 0.2s linear,
                 height 0.3s step-end;
@@ -102,32 +82,32 @@ $psv-video-bigbutton-color: $psv-buttons-color !default;
 
         &__range {
             position: relative;
-            height: $psv-volume-height;
+            height: video.$volume-height;
         }
 
         &__progress,
         &__track {
             position: absolute;
             bottom: 0;
-            left: #{($psv-navbar-height - $psv-volume-width) * 0.5};
-            width: $psv-volume-width;
-            background: $psv-volume-bar-color;
+            left: #{(psv.$navbar-height - video.$volume-width) * 0.5};
+            width: video.$volume-width;
+            background: video.$volume-bar-color;
         }
 
         &__track {
             height: 100%;
-            background: $psv-volume-track-color;
+            background: video.$volume-track-color;
         }
 
         &__handle {
             position: absolute;
-            left: #{($psv-navbar-height - $psv-volume-width) * 0.5};
-            height: $psv-volume-handle-size;
-            width: $psv-volume-handle-size;
+            left: #{(psv.$navbar-height - video.$volume-width) * 0.5};
+            height: video.$volume-handle-size;
+            width: video.$volume-handle-size;
             border-radius: 50%;
-            margin-left: #{- ($psv-volume-handle-size - $psv-volume-width) * 0.5};
-            margin-bottom: #{- $psv-volume-handle-size * 0.5};
-            background: $psv-volume-handle-color;
+            margin-left: #{- (video.$volume-handle-size - video.$volume-width) * 0.5};
+            margin-bottom: #{- video.$volume-handle-size * 0.5};
+            background: video.$volume-handle-color;
         }
     }
 
@@ -135,7 +115,7 @@ $psv-video-bigbutton-color: $psv-buttons-color !default;
         position: relative;
 
         &:hover .psv-video-volume__container {
-            height: $psv-volume-height;
+            height: video.$volume-height;
             opacity: 1;
             transition-timing-function: linear, step-start;
             transition-delay: 0.2s;
@@ -180,7 +160,7 @@ $psv-video-bigbutton-color: $psv-buttons-color !default;
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: $psv-overlay-zindex;
+        z-index: psv.$overlay-zindex;
         pointer-events: none;
     }
 
@@ -189,7 +169,7 @@ $psv-video-bigbutton-color: $psv-buttons-color !default;
         border: none;
         background: none;
         padding: 0;
-        color: $psv-video-bigbutton-color;
+        color: video.$bigbutton-color;
         pointer-events: auto;
         cursor: pointer;
         opacity: 0;
@@ -199,12 +179,12 @@ $psv-video-bigbutton-color: $psv-buttons-color !default;
             width 0.3s step-end;
 
         &--pause {
-            width: map.get($psv-video-bigbutton-size, portrait);
+            width: map.get(video.$bigbutton-size, portrait);
             opacity: 1;
             transition-timing-function: linear, step-start;
 
             @container psv-container (orientation: landscape) {
-                width: map.get($psv-video-bigbutton-size, landscape);
+                width: map.get(video.$bigbutton-size, landscape);
             }
         }
 

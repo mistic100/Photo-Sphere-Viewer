@@ -1,0 +1,92 @@
+@use 'sass:list';
+@use '../../../core/src/styles/vars' as psv;
+@use 'vars' as settings;
+
+.psv-container {
+    --psv-settings-plugin-loaded: true;
+}
+
+.psv-settings {
+    position: absolute;
+    bottom: psv.$navbar-height;
+    background: settings.$background;
+    box-shadow: settings.$shadow;
+    font: settings.$font;
+    color: settings.$text-color;
+    z-index: psv.$navbar-zindex;
+    opacity: 0;
+    transition: opacity 0.1s linear;
+    margin: settings.$margin;
+
+    &--open {
+        opacity: 1;
+    }
+
+    &-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.psv-settings-item {
+    height: settings.$item-height;
+    padding: settings.$item-padding;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: pointer;
+
+    &:hover {
+        background: settings.$hover-background;
+    }
+
+    &:focus-visible {
+        outline: psv.$element-focus-outline;
+        outline-offset: -#{list.nth(psv.$element-focus-outline, 1)};
+    }
+
+    *:not(:last-child) {
+        margin-right: 1em;
+    }
+
+    &-label {
+        flex: 1;
+        font-weight: bold;
+    }
+
+    &-value {
+        flex: none;
+    }
+
+    &-icon {
+        flex: none;
+        height: 1em;
+        width: 1em;
+
+        svg {
+            width: 100%;
+            height: 100%;
+            vertical-align: initial;
+        }
+    }
+
+    &--header {
+        border-bottom: 1px solid currentcolor;
+
+        svg {
+            transform: scaleX(-1);
+        }
+    }
+}
+
+.psv-settings-badge {
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    border-radius: 0.2em;
+    padding: 0.2em;
+    background: settings.$badge-background;
+    color: settings.$badge-text-color;
+    font: settings.$badge-font;
+}

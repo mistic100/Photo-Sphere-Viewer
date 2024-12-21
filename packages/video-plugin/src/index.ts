@@ -16,4 +16,4 @@ export * from './model';
 export { events };
 
 /** @internal  */
-import './style.scss';
+import './styles/index.scss';

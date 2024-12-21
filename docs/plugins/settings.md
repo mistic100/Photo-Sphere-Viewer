@@ -154,14 +154,14 @@ If you use a [custom navbar](../guide/navbar.md) you will need to manually add t
 
 ## SCSS variables
 
-| variable | default | description |
-| -------- | ------- | ----------- |
-| $psv-settings-font | $psv-caption-font | Font of settings |
-| $psv-settings-text-color | $psv-panel-text-color | Text color of settings |
-| $psv-settings-background | $psv-panel-background | Background color of settings |
-| $psv-settings-item-height | $psv-panel-menu-item-height | Height of each settings item |
-| $psv-settings-item-padding | $psv-panel-menu-item-padding | Padding of each settings item |
-| $psv-settings-hover-background | $psv-panel-menu-hover-background | Background color of items on mouse hover |
-| $psv-settings-badge-font | 10px / .9 monospace | Font of the badge displayed on the button |
-| $psv-settings-badge-text-color | white | Text color if the badge |
-| $psv-settings-badge-background | #111 | Background color of the badge |
+| variable          | default                           | description                               |
+| ----------------- | --------------------------------- | ----------------------------------------- |
+| $font             | core.$caption-font                | Font of settings                          |
+| $text-color       | core.$panel-text-color            | Text color of settings                    |
+| $background       | core.$panel-background            | Background color of settings              |
+| $item-height      | core.$panel-menu-item-height      | Height of each settings item              |
+| $item-padding     | core.$panel-menu-item-padding     | Padding of each settings item             |
+| $hover-background | core.$panel-menu-hover-background | Background color of items on mouse hover  |
+| $badge-font       | 10px / .9 monospace               | Font of the badge displayed on the button |
+| $badge-text-color | white                             | Text color if the badge                   |
+| $badge-background | #111                              | Background color of the badge             |

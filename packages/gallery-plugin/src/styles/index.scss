@@ -1,38 +1,28 @@
-@import '../../shared/vars';
-
-$psv-gallery-padding: 15px !default;
-$psv-gallery-border: 1px solid $psv-caption-text-color !default;
-$psv-gallery-background: $psv-navbar-background !default;
-$psv-gallery-item-radius: 5px !default;
-$psv-gallery-item-active-border: 3px solid white !default;
-$psv-gallery-title-font: $psv-caption-font !default;
-$psv-gallery-title-color: $psv-caption-text-color !default;
-$psv-gallery-title-background: rgba(0, 0, 0, 0.6) !default;
-$psv-gallery-thumb-hover-scale: 1.2 !default;
-$psv-gallery-breakpoint: 500px !default;
+@use '../../../core/src/styles/vars' as psv;
+@use 'vars' as gallery;
 
 .psv-container {
     --psv-gallery-plugin-loaded: true;
 }
 
 .psv-gallery {
-    --psv-gallery-breakpoint: #{$psv-gallery-breakpoint};
+    --psv-gallery-breakpoint: #{gallery.$breakpoint};
 
     position: absolute;
     left: 0;
     bottom: 0;
     width: 100%;
-    background: $psv-gallery-background;
-    border-bottom: $psv-gallery-border;
+    background: gallery.$background;
+    border-bottom: gallery.$border;
     overflow: hidden;
     transition: transform ease-in-out 0.1s;
     transform: translateY(100%);
-    z-index: $psv-ui-zindex + 1; // above map/plan
+    z-index: psv.$ui-zindex + 1; // above map/plan
     cursor: default;
 
     @at-root .psv--has-navbar & {
-        bottom: $psv-navbar-height;
-        transform: translateY(calc(100% + #{$psv-navbar-height}));
+        bottom: psv.$navbar-height;
+        transform: translateY(calc(100% + #{psv.$navbar-height}));
     }
 
     &--open {
@@ -42,19 +32,19 @@ $psv-gallery-breakpoint: 500px !default;
     &-container {
         display: flex;
         align-content: flex-start;
-        padding: $psv-gallery-padding;
+        padding: gallery.$padding;
         overflow-x: auto;
     }
 
     &-item {
         flex: none;
         position: relative;
-        border-radius: $psv-gallery-item-radius;
+        border-radius: gallery.$item-radius;
         overflow: hidden;
         cursor: pointer;
 
         &:not(:last-child) {
-            margin-right: $psv-gallery-padding;
+            margin-right: gallery.$padding;
         }
 
         &-title {
@@ -68,10 +58,10 @@ $psv-gallery-breakpoint: 500px !default;
             width: 100%;
             height: 2.2em;
             padding: 0.5em;
-            background: $psv-gallery-title-background;
-            font: $psv-gallery-title-font;
+            background: gallery.$title-background;
+            font: gallery.$title-font;
             line-height: 1.2em;
-            color: $psv-gallery-title-color;
+            color: gallery.$title-color;
             z-index: 2;
             transition: height ease-in-out 0.2s;
 
@@ -105,7 +95,7 @@ $psv-gallery-breakpoint: 500px !default;
         }
 
         &:hover &-thumb {
-            transform: scale3d($psv-gallery-thumb-hover-scale, $psv-gallery-thumb-hover-scale, 1);
+            transform: scale3d(gallery.$thumb-hover-scale, gallery.$thumb-hover-scale, 1);
         }
 
         &--active::after {
@@ -116,25 +106,25 @@ $psv-gallery-breakpoint: 500px !default;
             width: 100%;
             height: 100%;
             box-sizing: border-box;
-            border: $psv-gallery-item-active-border;
+            border: gallery.$item-active-border;
             z-index: 3;
         }
     }
 
-    @container psv-container (max-width: #{$psv-gallery-breakpoint}) {
+    @container psv-container (max-width: #{gallery.$breakpoint}) {
         top: 0;
 
         &-container {
             flex-wrap: wrap;
-            height: calc(100% - #{$psv-panel-close-button-size});
-            margin-top: $psv-panel-close-button-size;
-            padding: 0 0 0 $psv-gallery-padding;
+            height: calc(100% - #{psv.$panel-close-button-size});
+            margin-top: psv.$panel-close-button-size;
+            padding: 0 0 0 gallery.$padding;
             overflow: hidden auto;
         }
 
         &-item {
-            width: calc(50% - #{$psv-gallery-padding}) !important;
-            margin-bottom: $psv-gallery-padding;
+            width: calc(50% - #{gallery.$padding}) !important;
+            margin-bottom: gallery.$padding;
         }
 
         .psv-panel-close-button {

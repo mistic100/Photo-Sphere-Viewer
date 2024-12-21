@@ -1,11 +1,10 @@
 import type { Plugin } from 'esbuild';
-import { mkdir, writeFile } from 'fs/promises';
+import { mkdir, readFile, writeFile } from 'fs/promises';
+import { glob } from 'glob';
 import path from 'path';
-import { Bundler } from 'scss-bundle';
-import prettyBytes from 'pretty-bytes';
 
 /**
- * Generates a bundled scss file
+ * Copy SCSS files and generates main index.scss
  */
 export function scssBundlePlugin(): Plugin {
     return {
@@ -15,25 +14,34 @@ export function scssBundlePlugin(): Plugin {
                 return;
             }
 
-            const outdir = build.initialOptions.outdir;
-            const outpath = outdir + '/index.scss';
-
             build.onEnd((result) => {
-                const scssFile = Object.keys(result.metafile.inputs).find(file => file.endsWith('.scss'));
+                const scssFile = Object.keys(result.metafile.inputs).find(file => file.endsWith('index.scss'));
                 if (!scssFile) {
                     return;
                 }
 
+                const outdir = build.initialOptions.outdir;
                 const banner = build.initialOptions.banner.css;
 
-                return mkdir(path.resolve(outdir), { recursive: true })
-                    .then(() => new Bundler(undefined, process.cwd()).bundle(scssFile))
-                    .then(({ bundledContent }) => banner + '\n\n' + bundledContent)
-                    .then((content) => {
-                        console.log('SCSS', outpath, prettyBytes(content.length));
-                        return writeFile(path.resolve(outpath), content);
-                    })
-                    .then(() => undefined);
+                console.log('SCSS', 'Copy files');
+
+                return mkdir(outdir + '/styles', { recursive: true })
+                    .then(() => glob(`${path.dirname(scssFile)}/*.scss`))
+                    .then(files => Promise.all([
+                        // copy each file fixing paths to core
+                        ...files.map(file => readFile(file, 'utf-8')
+                            .then((content) => {
+                                content = content.replace(
+                                    new RegExp(`../../../core/src/styles`, 'g'),
+                                    `../../core/styles`,
+                                );
+                                if (file.endsWith('index.scss')) {
+                                    content = banner + '\n' + content;
+                                }
+                                return writeFile(outdir + '/styles/' + path.basename(file), content);
+                            })),
+                    ]))
+                    .then(() => void 0);
             });
         },
     };

@@ -1,104 +1,106 @@
+@use 'vars' as psv;
+
 .psv-tooltip {
     position: absolute;
-    z-index: $psv-tooltip-zindex;
+    z-index: psv.$tooltip-zindex;
     box-sizing: border-box;
-    max-width: $psv-tooltip-max-width;
-    background: $psv-tooltip-background;
-    border-radius: $psv-tooltip-radius;
+    max-width: psv.$tooltip-max-width;
+    background: psv.$tooltip-background;
+    border-radius: psv.$tooltip-radius;
     opacity: 0;
     transition-property: opacity, transform;
     transition-timing-function: ease-in-out;
-    transition-duration: $psv-tooltip-animate-delay;
+    transition-duration: psv.$tooltip-animate-delay;
     cursor: default;
 
     &-content {
-        color: $psv-tooltip-text-color;
-        font: $psv-tooltip-font;
-        text-shadow: $psv-tooltip-text-shadow;
-        padding: $psv-tooltip-padding;
+        color: psv.$tooltip-text-color;
+        font: psv.$tooltip-font;
+        text-shadow: psv.$tooltip-text-shadow;
+        padding: psv.$tooltip-padding;
     }
 
     &-arrow {
         position: absolute;
         height: 0;
         width: 0;
-        border: $psv-tooltip-arrow-size solid transparent;
+        border: psv.$tooltip-arrow-size solid transparent;
     }
 
     &--top-left,
     &--top-center,
     &--top-right {
-        transform: translate3d(0, $psv-tooltip-animate-offset, 0);
+        transform: translate3d(0, psv.$tooltip-animate-offset, 0);
 
         .psv-tooltip-arrow {
-            border-top-color: $psv-tooltip-background;
+            border-top-color: psv.$tooltip-background;
         }
     }
 
     &--bottom-left,
     &--bottom-center,
     &--bottom-right {
-        transform: translate3d(0, -$psv-tooltip-animate-offset, 0);
+        transform: translate3d(0, -#{psv.$tooltip-animate-offset}, 0);
 
         .psv-tooltip-arrow {
-            border-bottom-color: $psv-tooltip-background;
+            border-bottom-color: psv.$tooltip-background;
         }
     }
 
     &--left-top,
     &--center-left,
     &--left-bottom {
-        transform: translate3d($psv-tooltip-animate-offset, 0, 0);
+        transform: translate3d(psv.$tooltip-animate-offset, 0, 0);
 
         .psv-tooltip-arrow {
-            border-left-color: $psv-tooltip-background;
+            border-left-color: psv.$tooltip-background;
         }
     }
 
     &--right-top,
     &--center-right,
     &--right-bottom {
-        transform: translate3d(-$psv-tooltip-animate-offset, 0, 0);
+        transform: translate3d(-#{psv.$tooltip-animate-offset}, 0, 0);
 
         .psv-tooltip-arrow {
-            border-right-color: $psv-tooltip-background;
+            border-right-color: psv.$tooltip-background;
         }
     }
 
     &--left-top,
     &--top-left {
-        box-shadow: #{-$psv-tooltip-shadow-offset} #{-$psv-tooltip-shadow-offset} 0 $psv-tooltip-shadow-color;
+        box-shadow: -#{psv.$tooltip-shadow-offset} -#{psv.$tooltip-shadow-offset} 0 psv.$tooltip-shadow-color;
     }
 
     &--top-center {
-        box-shadow: 0 #{-$psv-tooltip-shadow-offset} 0 $psv-tooltip-shadow-color;
+        box-shadow: 0 -#{psv.$tooltip-shadow-offset} 0 psv.$tooltip-shadow-color;
     }
 
     &--right-top,
     &--top-right {
-        box-shadow: $psv-tooltip-shadow-offset #{-$psv-tooltip-shadow-offset} 0 $psv-tooltip-shadow-color;
+        box-shadow: psv.$tooltip-shadow-offset -#{psv.$tooltip-shadow-offset} 0 psv.$tooltip-shadow-color;
     }
 
     &--left-bottom,
     &--bottom-left {
-        box-shadow: #{-$psv-tooltip-shadow-offset} $psv-tooltip-shadow-offset 0 $psv-tooltip-shadow-color;
+        box-shadow: -#{psv.$tooltip-shadow-offset} psv.$tooltip-shadow-offset 0 psv.$tooltip-shadow-color;
     }
 
     &--bottom-center {
-        box-shadow: 0 $psv-tooltip-shadow-offset 0 $psv-tooltip-shadow-color;
+        box-shadow: 0 psv.$tooltip-shadow-offset 0 psv.$tooltip-shadow-color;
     }
 
     &--right-bottom,
     &--bottom-right {
-        box-shadow: $psv-tooltip-shadow-offset $psv-tooltip-shadow-offset 0 $psv-tooltip-shadow-color;
+        box-shadow: psv.$tooltip-shadow-offset psv.$tooltip-shadow-offset 0 psv.$tooltip-shadow-color;
     }
 
     &--center-left {
-        box-shadow: #{-$psv-tooltip-shadow-offset} 0 0 $psv-tooltip-shadow-color;
+        box-shadow: -#{psv.$tooltip-shadow-offset} 0 0 psv.$tooltip-shadow-color;
     }
 
     &--center-right {
-        box-shadow: $psv-tooltip-shadow-offset 0 0 $psv-tooltip-shadow-color;
+        box-shadow: psv.$tooltip-shadow-offset 0 0 psv.$tooltip-shadow-color;
     }
 
     &--visible {

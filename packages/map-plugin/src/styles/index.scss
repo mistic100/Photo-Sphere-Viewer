@@ -1,18 +1,6 @@
 @use 'sass:math';
-@import '../../shared/vars';
-
-$psv-map-margin: 10px !default;
-$psv-map-radius: 8px !default;
-$psv-map-shadow: 0 0 5px rgba(0, 0, 0, 0.7) !default;
-$psv-map-background: rgba(61, 61, 61, 0.7) !default;
-$psv-map-toolbar-font: 12px sans-serif !default;
-$psv-map-toolbar-background: #222 !default;
-$psv-map-toolbar-text-color: white !default;
-$psv-map-button-size: 34px !default;
-$psv-map-button-spacing: 3px !default;
-$psv-map-button-color: $psv-buttons-color !default;
-$psv-map-button-background: rgba(0, 0, 0, 0.5) !default;
-$psv-map-transition: ease-in-out 0.3s !default;
+@use '../../../core/src/styles/vars' as psv;
+@use 'vars' as map;
 
 @function round-to($value, $precision) {
     @return math.div(math.round($value * $precision), $precision);
@@ -24,9 +12,9 @@ $psv-map-transition: ease-in-out 0.3s !default;
 
 .psv-map {
     position: absolute;
-    margin: $psv-map-margin;
-    z-index: $psv-ui-zindex;
-    transition: all $psv-map-transition;
+    margin: map.$margin;
+    z-index: psv.$ui-zindex;
+    transition: all map.$transition;
 
     &__container {
         position: absolute;
@@ -35,9 +23,9 @@ $psv-map-transition: ease-in-out 0.3s !default;
         width: 100%;
         height: 100%;
         z-index: -1;
-        background: $psv-map-background;
+        background: map.$background;
         overflow: hidden;
-        transition: all $psv-map-transition;
+        transition: all map.$transition;
 
         svg,
         img,
@@ -49,12 +37,12 @@ $psv-map-transition: ease-in-out 0.3s !default;
 
     &--round &__container {
         border-radius: 50%;
-        box-shadow: $psv-map-shadow;
+        box-shadow: map.$shadow;
     }
 
     &--square {
-        border-radius: $psv-map-radius;
-        box-shadow: $psv-map-shadow;
+        border-radius: map.$radius;
+        box-shadow: map.$shadow;
         overflow: hidden;
     }
 
@@ -74,13 +62,13 @@ $psv-map-transition: ease-in-out 0.3s !default;
         display: flex;
         justify-content: center;
         align-items: center;
-        font: $psv-map-toolbar-font;
+        font: map.$toolbar-font;
         padding: 0.25em;
         border-radius: 1.5em;
-        background: $psv-map-toolbar-background;
-        color: $psv-map-toolbar-text-color;
+        background: map.$toolbar-background;
+        color: map.$toolbar-text-color;
         user-select: none;
-        transition: opacity $psv-map-transition;
+        transition: opacity map.$transition;
 
         svg {
             height: 1em;
@@ -95,17 +83,17 @@ $psv-map-transition: ease-in-out 0.3s !default;
 
     &__button {
         position: absolute;
-        width: $psv-map-button-size;
+        width: map.$button-size;
         aspect-ratio: 1;
         line-height: 0;
-        background: $psv-map-button-background;
+        background: map.$button-background;
         display: flex;
         justify-content: center;
         align-items: center;
         transform-origin: center;
-        color: $psv-map-button-color;
+        color: map.$button-color;
         cursor: pointer;
-        transition: all $psv-map-transition;
+        transition: all map.$transition;
 
         svg {
             width: 60%;
@@ -114,29 +102,29 @@ $psv-map-transition: ease-in-out 0.3s !default;
         &--top-left {
             left: 0;
             top: 0;
-            border-bottom-right-radius: $psv-map-radius;
-            transform: translate(-$psv-map-button-spacing, -$psv-map-button-spacing);
+            border-bottom-right-radius: map.$radius;
+            transform: translate(-#{map.$button-spacing}, -#{map.$button-spacing});
         }
 
         &--top-right {
             right: 0;
             top: 0;
-            border-bottom-left-radius: $psv-map-radius;
-            transform: translate($psv-map-button-spacing, -$psv-map-button-spacing);
+            border-bottom-left-radius: map.$radius;
+            transform: translate(map.$button-spacing, -#{map.$button-spacing});
         }
 
         &--bottom-left {
             left: 0;
             bottom: 0;
-            border-top-right-radius: $psv-map-radius;
-            transform: translate(-$psv-map-button-spacing, $psv-map-button-spacing);
+            border-top-right-radius: map.$radius;
+            transform: translate(-#{map.$button-spacing}, map.$button-spacing);
         }
 
         &--bottom-right {
             right: 0;
             bottom: 0;
-            border-top-left-radius: $psv-map-radius;
-            transform: translate($psv-map-button-spacing, $psv-map-button-spacing);
+            border-top-left-radius: map.$radius;
+            transform: translate(map.$button-spacing, map.$button-spacing);
         }
     }
 
@@ -154,7 +142,7 @@ $psv-map-transition: ease-in-out 0.3s !default;
         height: 100% !important;
 
         @at-root .psv--has-navbar & {
-            height: calc(100% - #{$psv-navbar-height}) !important;
+            height: calc(100% - #{psv.$navbar-height}) !important;
         }
     }
 
@@ -166,29 +154,29 @@ $psv-map-transition: ease-in-out 0.3s !default;
         outline: 2px solid currentcolor;
 
         &--top-left {
-            left: $psv-map-margin;
-            top: $psv-map-margin;
+            left: map.$margin;
+            top: map.$margin;
         }
 
         &--top-right {
-            right: $psv-map-margin;
-            top: $psv-map-margin;
+            right: map.$margin;
+            top: map.$margin;
         }
 
         &--bottom-left {
-            left: $psv-map-margin;
-            bottom: $psv-map-margin;
+            left: map.$margin;
+            bottom: map.$margin;
         }
 
         &--bottom-right {
-            right: $psv-map-margin;
-            bottom: $psv-map-margin;
+            right: map.$margin;
+            bottom: map.$margin;
         }
     }
 
     &--collapsed {
-        width: $psv-map-button-size !important;
-        height: $psv-map-button-size !important;
+        width: map.$button-size !important;
+        height: map.$button-size !important;
 
         & > * {
             opacity: 0;
@@ -216,7 +204,7 @@ $psv-map-transition: ease-in-out 0.3s !default;
         left: 0;
 
         @at-root .psv--has-navbar & {
-            bottom: #{$psv-navbar-height};
+            bottom: #{psv.$navbar-height};
         }
     }
 
@@ -225,7 +213,7 @@ $psv-map-transition: ease-in-out 0.3s !default;
         right: 0;
 
         @at-root .psv--has-navbar & {
-            bottom: #{$psv-navbar-height};
+            bottom: #{psv.$navbar-height};
         }
     }
 }

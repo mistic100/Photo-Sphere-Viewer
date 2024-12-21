@@ -1,0 +1,13 @@
+@use '../../../core/src/styles/vars' as psv;
+
+$margin: 10px !default;
+$font: psv.$caption-font !default;
+$item-height: psv.$panel-menu-item-height !default;
+$item-padding: psv.$panel-menu-item-padding !default;
+$background: psv.$panel-background !default;
+$shadow: 0 0 5px $background !default;
+$text-color: psv.$panel-text-color !default;
+$hover-background: psv.$panel-menu-hover-background !default;
+$badge-font: 10px / 0.9 monospace !default;
+$badge-background: #111 !default;
+$badge-text-color: white !default;

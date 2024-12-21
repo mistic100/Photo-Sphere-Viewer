@@ -5,4 +5,4 @@ export { VirtualTourPlugin } from './VirtualTourPlugin';
 export { events };
 
 /** @internal  */
-import './style.scss';
+import './styles/index.scss';

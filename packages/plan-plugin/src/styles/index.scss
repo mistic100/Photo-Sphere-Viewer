@@ -1,13 +1,6 @@
 @use 'sass:math';
-@import '../../shared/vars';
-
-$psv-plan-margin: 10px !default;
-$psv-plan-radius: 8px !default;
-$psv-plan-shadow: 0 0 5px rgba(0, 0, 0, 0.7) !default;
-$psv-plan-button-size: 34px !default;
-$psv-plan-button-background: rgba(0, 0, 0, 0.5) !default;
-$psv-plan-button-color: white !default;
-$psv-plan-transition: ease-in-out 0.3s !default;
+@use '../../../core/src/styles/vars' as psv;
+@use 'vars' as plan;
 
 .psv-container {
     --psv-plan-plugin-loaded: true;
@@ -15,17 +8,17 @@ $psv-plan-transition: ease-in-out 0.3s !default;
 
 .psv-plan {
     position: absolute;
-    margin: $psv-plan-margin;
-    z-index: $psv-ui-zindex;
+    margin: plan.$margin;
+    z-index: psv.$ui-zindex;
     overflow: hidden;
-    border-radius: $psv-plan-radius;
-    transition: all $psv-plan-transition;
-    box-shadow: $psv-plan-shadow;
-    max-width: calc(100% - #{$psv-plan-margin * 2});
-    max-height: calc(100% - #{$psv-plan-margin * 2});
+    border-radius: plan.$radius;
+    transition: all plan.$transition;
+    box-shadow: plan.$shadow;
+    max-width: calc(100% - #{plan.$margin * 2});
+    max-height: calc(100% - #{plan.$margin * 2});
 
     @at-root .psv--has-navbar & {
-        max-height: calc(100% - #{$psv-plan-margin * 2} - #{$psv-navbar-height});
+        max-height: calc(100% - #{plan.$margin * 2} - #{psv.$navbar-height});
     }
 
     &__container {
@@ -35,20 +28,20 @@ $psv-plan-transition: ease-in-out 0.3s !default;
         width: 100%;
         height: 100%;
         z-index: 0;
-        transition: opacity $psv-plan-transition;
+        transition: opacity plan.$transition;
     }
 
     &__button {
         position: absolute;
-        width: $psv-plan-button-size;
+        width: plan.$button-size;
         aspect-ratio: 1;
         line-height: 0;
-        background: $psv-plan-button-background;
+        background: plan.$button-background;
         display: flex;
         justify-content: center;
         align-items: center;
         transform-origin: center;
-        color: $psv-plan-button-color;
+        color: plan.$button-color;
         cursor: pointer;
 
         svg {
@@ -58,34 +51,34 @@ $psv-plan-transition: ease-in-out 0.3s !default;
         &--top-left {
             left: 0;
             top: 0;
-            border-bottom-right-radius: $psv-plan-radius;
+            border-bottom-right-radius: plan.$radius;
         }
 
         &--top-right {
             right: 0;
             top: 0;
-            border-bottom-left-radius: $psv-plan-radius;
+            border-bottom-left-radius: plan.$radius;
         }
 
         &--bottom-left {
             left: 0;
             bottom: 0;
-            border-top-right-radius: $psv-plan-radius;
+            border-top-right-radius: plan.$radius;
         }
 
         &--bottom-right {
             right: 0;
             bottom: 0;
-            border-top-left-radius: $psv-plan-radius;
+            border-top-left-radius: plan.$radius;
         }
     }
 
     &--maximized {
-        width: calc(100% - #{$psv-plan-margin * 2}) !important;
-        height: calc(100% - #{$psv-plan-margin * 2}) !important;
+        width: calc(100% - #{plan.$margin * 2}) !important;
+        height: calc(100% - #{plan.$margin * 2}) !important;
 
         @at-root .psv--has-navbar & {
-            height: calc(100% - #{$psv-navbar-height} - #{$psv-plan-margin * 2}) !important;
+            height: calc(100% - #{psv.$navbar-height} - #{plan.$margin * 2}) !important;
         }
 
         @container psv-container (max-width: 500px) {
@@ -97,15 +90,15 @@ $psv-plan-transition: ease-in-out 0.3s !default;
             border-radius: 0;
 
             @at-root .psv--has-navbar & {
-                height: calc(100% - #{$psv-navbar-height}) !important;
-                max-height: calc(100% - #{$psv-navbar-height});
+                height: calc(100% - #{psv.$navbar-height}) !important;
+                max-height: calc(100% - #{psv.$navbar-height});
             }
         }
     }
 
     &--collapsed {
-        width: $psv-plan-button-size !important;
-        height: $psv-plan-button-size !important;
+        width: plan.$button-size !important;
+        height: plan.$button-size !important;
 
         & > * {
             opacity: 0;
@@ -132,7 +125,7 @@ $psv-plan-transition: ease-in-out 0.3s !default;
         left: 0;
 
         @at-root .psv--has-navbar & {
-            bottom: #{$psv-navbar-height};
+            bottom: #{psv.$navbar-height};
         }
     }
 
@@ -141,7 +134,7 @@ $psv-plan-transition: ease-in-out 0.3s !default;
         right: 0;
 
         @at-root .psv--has-navbar & {
-            bottom: #{$psv-navbar-height};
+            bottom: #{psv.$navbar-height};
         }
     }
 

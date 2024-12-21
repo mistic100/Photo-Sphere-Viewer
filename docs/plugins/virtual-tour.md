@@ -543,3 +543,11 @@ virtualTourPlugin.addEventListener('node-changed', ({ node, data }) => {
 #### `enter-arrow(link, node)` | `leave-arrow(link, node)`
 
 Triggered when the user puts the cursor hover or away an arrow.
+
+## SCSS variables
+
+| variable           | default                                    | description                             |
+| ------------------ | ------------------------------------------ | --------------------------------------- |
+| $link-button-color | rgba(255, 255, 255, 0.8)                   | Color of the default arrow image        |
+| $link-button-ring  | rgb(97, 170, 242)                          | Color of the ring effect on mouse hover |
+| $link-shadow       | drop-shadow(0 10px 2px rgba(0, 0, 0, 0.7)) | Shadow applied to all arrows            |

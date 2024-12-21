@@ -39,9 +39,9 @@ export const packageJson = (pkg: any) => {
 
     if (pkg.psv.style) {
         content.style = 'index.css';
-        content.sass = 'index.scss';
+        content.sass = 'styles/index.scss';
         content.exports['./index.css'] = './index.css';
-        content.exports['./index.scss'] = './index.scss';
+        content.exports['./index.scss'] = './styles/index.scss';
     }
 
     if (pkg.name === '@photo-sphere-viewer/core') {

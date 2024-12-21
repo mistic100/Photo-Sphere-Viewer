@@ -1,3 +1,5 @@
+@use 'vars' as psv;
+
 .psv-loader-container {
     display: flex;
     align-items: center;
@@ -7,20 +9,20 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: $psv-loader-zindex;
+    z-index: psv.$loader-zindex;
 }
 
 .psv-loader {
-    --psv-loader-border: #{$psv-loader-border};
-    --psv-loader-tickness: #{$psv-loader-tickness};
+    --psv-loader-border: #{psv.$loader-border};
+    --psv-loader-tickness: #{psv.$loader-tickness};
 
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: $psv-loader-color;
-    width: $psv-loader-width;
-    height: $psv-loader-width;
+    color: psv.$loader-color;
+    width: psv.$loader-width;
+    height: psv.$loader-width;
 
     &-canvas {
         position: absolute;
@@ -28,12 +30,12 @@
         left: 0;
         width: 100%;
         height: 100%;
-        color: $psv-loader-bg-color;
+        color: psv.$loader-bg-color;
         z-index: -1;
     }
 
     &-text {
-        font: $psv-loader-font;
+        font: psv.$loader-font;
         text-align: center;
     }
 }

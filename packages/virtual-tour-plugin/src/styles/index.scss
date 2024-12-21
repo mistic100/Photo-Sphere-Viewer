@@ -1,9 +1,6 @@
 @use 'sass:list';
-@import '../../shared/vars';
-
-$psv-virtual-tour-link-button-color: rgba(255, 255, 255, 0.8) !default;
-$psv-virtual-tour-link-button-ring: rgb(97, 170, 242) !default;
-$psv-virtual-tour-link-shadow: drop-shadow(0 10px 2px rgba(0, 0, 0, 0.7)) !default;
+@use '../../../core/src/styles/vars' as psv;
+@use 'vars' as virtual-tour;
 
 .psv-container {
     --psv-virtual-tour-plugin-loaded: true;
@@ -16,25 +13,25 @@ $psv-virtual-tour-link-shadow: drop-shadow(0 10px 2px rgba(0, 0, 0, 0.7)) !defau
         line-height: normal;
 
         &:not(:last-child) {
-            margin-bottom: #{list.nth($psv-tooltip-padding, 1)};
+            margin-bottom: #{list.nth(psv.$tooltip-padding, 1)};
         }
     }
 
     img {
         display: block;
-        width: $psv-tooltip-max-width;
-        margin: 0 #{- list.nth($psv-tooltip-padding, 2)};
+        width: psv.$tooltip-max-width;
+        margin: 0 #{- list.nth(psv.$tooltip-padding, 2)};
 
         &:first-child {
-            border-radius: $psv-tooltip-radius $psv-tooltip-radius 0 0;
+            border-radius: psv.$tooltip-radius psv.$tooltip-radius 0 0;
         }
 
         &:last-child {
-            border-radius: 0 0 $psv-tooltip-radius $psv-tooltip-radius;
+            border-radius: 0 0 psv.$tooltip-radius psv.$tooltip-radius;
         }
 
         &:not(:last-child) {
-            margin-bottom: #{list.nth($psv-tooltip-padding, 1)};
+            margin-bottom: #{list.nth(psv.$tooltip-padding, 1)};
         }
     }
 
@@ -53,10 +50,10 @@ $psv-virtual-tour-link-shadow: drop-shadow(0 10px 2px rgba(0, 0, 0, 0.7)) !defau
 .psv-virtual-tour-arrows {
     position: absolute;
     overflow: visible !important;
-    z-index: $psv-hud-zindex + 1;
+    z-index: psv.$hud-zindex + 1;
     bottom: 0;
     left: 0;
-    filter: $psv-virtual-tour-link-shadow;
+    filter: virtual-tour.$link-shadow;
     pointer-events: none;
     transition: margin ease-in-out 0.3s;
 
@@ -75,7 +72,7 @@ $psv-virtual-tour-link-shadow: drop-shadow(0 10px 2px rgba(0, 0, 0, 0.7)) !defau
     padding: 0;
     border: none;
     background: none;
-    color: $psv-virtual-tour-link-button-color;
+    color: virtual-tour.$link-button-color;
     border-radius: 50%;
 
     &:hover {
@@ -130,14 +127,14 @@ $psv-virtual-tour-link-shadow: drop-shadow(0 10px 2px rgba(0, 0, 0, 0.7)) !defau
 
 @keyframes psv-virtual-tour-link-button-in {
     0% {
-        box-shadow: 0 0 0 0 rgba($psv-virtual-tour-link-button-ring, 0);
+        box-shadow: 0 0 0 0 rgba(virtual-tour.$link-button-ring, 0);
     }
 
     20% {
-        box-shadow: 0 0 0 5px rgba($psv-virtual-tour-link-button-ring, 1);
+        box-shadow: 0 0 0 5px rgba(virtual-tour.$link-button-ring, 1);
     }
 
     100% {
-        box-shadow: 0 0 0 20px rgba($psv-virtual-tour-link-button-ring, 0);
+        box-shadow: 0 0 0 20px rgba(virtual-tour.$link-button-ring, 0);
     }
 }
