@@ -38,7 +38,7 @@
     "@types/mocha": "^10.0.9",
     "@types/three": "^0.169.0",
     "alive-server": "^1.3.0",
-    "cypress": "^13.16.0",
+    "cypress": "^13.17.0",
     "cypress-mochawesome-reporter": "^3.8.2",
     "cypress-on-fix": "^1.0.3",
     "cypress-visual-regression": "^5.2.2",
@@ -60,7 +60,7 @@
     "turbo": "^2.3.0",
     "typedoc": "^0.27.3",
     "typescript": "^5.7.2",
-    "typescript-eslint": "^8.18.0"
+    "typescript-eslint": "^8.19.0"
   },
   "resolutions": {
     "yargs": "^17.7.2",
