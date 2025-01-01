@@ -8,7 +8,7 @@
     "lint": "eslint . --fix",
     "serve-doc": "vitepress dev"
   },
-  "dependencies": {
+  "devDependencies": {
     "lodash-es": "^4.17.21",
     "markdown-it-container": "^4.0.0",
     "vitepress": "^1.5.0",

@@ -21,6 +21,7 @@ import {
     VRow,
     VSelect,
     VSlider,
+    VSnackbar,
     VTab,
     VTabs,
     VTabsWindow,
@@ -39,6 +40,7 @@ import ApiButton from '../components/ApiButton.vue';
 import Badges from '../components/Badges.vue';
 import HomeBackground from '../components/HomeBackground.vue';
 import ThemeProvider from '../components/ThemeProvider.vue';
+import VersionBanner from '../components/VersionBanner.vue';
 import codeDemo from '../plugins/code-demo/enhanceApp';
 import dialog from '../plugins/dialog/enhanceApp';
 import gallery from '../plugins/gallery/enhanceApp';
@@ -64,10 +66,11 @@ const vuetify = createVuetify({
         VIcon,
         VMenu,
         VNumberInput,
-        VRow,
-        VSlider,
         VRangeSlider,
+        VRow,
         VSelect,
+        VSlider,
+        VSnackbar,
         VTab,
         VTabs,
         VTabsWindow,
@@ -140,6 +143,7 @@ export default {
         return h(ThemeProvider, h(DefaultTheme.Layout, null, {
             'home-hero-before': () => h(HomeBackground),
             'home-features-after': () => h(Announcements),
+            'layout-bottom': () => h(VersionBanner),
         }));
     },
     enhanceApp({ app }) {
