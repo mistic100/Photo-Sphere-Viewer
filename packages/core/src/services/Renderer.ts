@@ -306,7 +306,7 @@ export class Renderer extends AbstractService {
         }
 
         if (Viewer.useNewAnglesOrder) {
-            mesh.rotation.set(-cleanCorrection.tilt, -cleanCorrection.pan, -cleanCorrection.roll, 'YXZ');
+            mesh.rotation.set(cleanCorrection.tilt, cleanCorrection.pan, cleanCorrection.roll, 'YXZ');
         } else {
             mesh.rotation.set(-cleanCorrection.tilt, -cleanCorrection.pan, -cleanCorrection.roll, 'ZXY');
         }
