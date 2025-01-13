@@ -16,7 +16,6 @@ import {
     Raycaster,
     Scene,
     SphereGeometry,
-    Renderer as ThreeRenderer,
     Vector2,
     Vector3,
     WebGLRenderTarget,
@@ -53,7 +52,7 @@ const vector2 = new Vector2();
 const matrix4 = new Matrix4();
 const box3 = new Box3();
 
-export type CustomRenderer = Pick<ThreeRenderer, 'render'> & {
+export type CustomRenderer = Pick<WebGLRenderer, 'render'> & {
     getIntersections?(raycaster: Raycaster, vector: Vector2): Array<Intersection<Mesh>>;
 };
 
