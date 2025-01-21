@@ -11,7 +11,7 @@
   "devDependencies": {
     "lodash-es": "^4.17.21",
     "markdown-it-container": "^4.0.0",
-    "vitepress": "^1.5.0",
+    "vitepress": "^1.6.1",
     "vuetify": "^3.7.1",
     "yaml": "^2.7.0"
   }
