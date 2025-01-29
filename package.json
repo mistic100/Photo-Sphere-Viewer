@@ -44,7 +44,7 @@
     "cypress-visual-regression": "^5.2.2",
     "esbuild-sass-plugin": "^3.3.1",
     "eslint": "^9.19.0",
-    "glob": "^10.4.5",
+    "glob": "^11.0.1",
     "mocha": "^11.1.0",
     "mocha-junit-reporter": "^2.2.1",
     "nyc": "^17.1.0",
