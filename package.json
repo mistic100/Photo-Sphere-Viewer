@@ -60,7 +60,7 @@
     "turbo": "^2.3.0",
     "typedoc": "^0.27.3",
     "typescript": "^5.7.2",
-    "typescript-eslint": "^8.22.0"
+    "typescript-eslint": "^8.23.0"
   },
   "resolutions": {
     "yargs": "^17.7.2",
