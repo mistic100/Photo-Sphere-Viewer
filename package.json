@@ -33,7 +33,7 @@
     "@cypress/code-coverage": "^3.13.6",
     "@eslint/js": "^9.20.0",
     "@lcov-viewer/istanbul-report": "^1.4.0",
-    "@stylistic/eslint-plugin": "^3.0.1",
+    "@stylistic/eslint-plugin": "^4.0.1",
     "@stylistic/stylelint-plugin": "^3.1.1",
     "@types/mocha": "^10.0.9",
     "@types/three": "^0.173.0",
