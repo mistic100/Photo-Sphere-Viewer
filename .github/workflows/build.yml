@@ -100,6 +100,7 @@ jobs:
           reporter: mochawesome-json
 
       - name: coverage summary
+        if: ${{ !cancelled() }}
         run: node ./build/generate-coverage-summary.mjs >> $GITHUB_STEP_SUMMARY
 
       - name: report artifact
