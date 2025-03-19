@@ -51,7 +51,7 @@
     "postcss": "^8.5.1",
     "queue": "^7.0.0",
     "selfsigned": "^2.4.1",
-    "sort-package-json": "^2.15.1",
+    "sort-package-json": "^3.0.0",
     "stylelint": "^16.16.0",
     "stylelint-config-standard-scss": "^14.0.0",
     "ts-node": "^10.9.2",
