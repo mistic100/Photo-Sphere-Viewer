@@ -50,7 +50,7 @@ export class Queue {
     private runningTasks: Record<string, boolean> = {};
     private tasks: Record<string, Task> = {};
 
-    constructor(private readonly concurency = 4) {}
+    constructor(private readonly concurency = 8) {}
 
     enqueue(task: Task) {
         this.tasks[task.id] = task;
