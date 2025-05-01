@@ -12,7 +12,7 @@
     "lodash-es": "^4.17.21",
     "markdown-it-container": "^4.0.0",
     "vitepress": "^1.6.1",
-    "vuetify": "^3.7.1",
+    "vuetify": "^3.8.3",
     "yaml": "^2.7.0"
   }
 }
