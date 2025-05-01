@@ -17,6 +17,7 @@ import {
     VFileInput,
     VIcon,
     VMenu,
+    VNumberInput,
     VRangeSlider,
     VRow,
     VSelect,
@@ -32,7 +33,6 @@ import {
 } from 'vuetify/components';
 import { Tooltip } from 'vuetify/directives';
 import { aliases, mdi } from 'vuetify/iconsets/mdi';
-import { VNumberInput } from 'vuetify/labs/VNumberInput';
 import colors from 'vuetify/util/colors';
 
 import Announcements from '../components/Announcements.vue';

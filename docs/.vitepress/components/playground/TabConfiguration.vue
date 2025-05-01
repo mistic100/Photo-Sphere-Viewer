@@ -19,10 +19,10 @@
                     :ticks="[0, 20, 40, 60, 80, 100, 120, 140, 160, 180]" />
             </v-col>
             <v-col cols="4">
-                <v-number-input label="Move speed" v-model="config.moveSpeed" :min="0" :step="0.1" />
+                <v-number-input label="Move speed" v-model="config.moveSpeed" :min="0" :step="0.1" :precision="1" />
             </v-col>
             <v-col cols="4">
-                <v-number-input label="Zoom speed" v-model="config.zoomSpeed" :min="0" :step="0.1" />
+                <v-number-input label="Zoom speed" v-model="config.zoomSpeed" :min="0" :step="0.1" :precision="1" />
             </v-col>
             <v-col cols="4">
                 <v-checkbox label="Move inertia" v-model="config.moveInertia" />
