@@ -53,7 +53,6 @@ const getConfig = getConfigParser<EquirectangularAdapterConfig>(
 export class EquirectangularAdapter extends AbstractAdapter<string | EquirectangularPanorama, PanoData, Texture, EquirectangularMesh> {
     static override readonly id: string = 'equirectangular';
     static override readonly VERSION = PKG_VERSION;
-    static override readonly supportsDownload: boolean = true;
 
     private readonly config: EquirectangularAdapterConfig;
 
@@ -73,6 +72,10 @@ export class EquirectangularAdapter extends AbstractAdapter<string | Equirectang
 
         this.SPHERE_SEGMENTS = this.config.resolution;
         this.SPHERE_HORIZONTAL_SEGMENTS = this.SPHERE_SEGMENTS / 2;
+    }
+
+    override getDownloadUrl(panorama: string | EquirectangularPanorama) {
+        return typeof panorama === 'object' ? panorama.path : panorama;
     }
 
     override supportsTransition() {
@@ -230,7 +233,7 @@ export class EquirectangularAdapter extends AbstractAdapter<string | Equirectang
         return createTexture(img);
     }
 
-    createMesh(panoData: PanoData): EquirectangularMesh {
+    createMesh({ panoData }: Pick<EquirectangularTextureData, 'panoData'>): EquirectangularMesh {
         const hStart = (panoData.croppedX / panoData.fullWidth) * 2 * Math.PI;
         const hLength = (panoData.croppedWidth / panoData.fullWidth) * 2 * Math.PI;
         const vStart = (panoData.croppedY / panoData.fullHeight) * Math.PI;

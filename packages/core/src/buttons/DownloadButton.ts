@@ -1,4 +1,3 @@
-import { AbstractAdapter } from '../adapters/AbstractAdapter';
 import type { Navbar } from '../components/Navbar';
 import { ICONS } from '../data/constants';
 import { ConfigChangedEvent, PanoramaLoadedEvent } from '../events';
@@ -35,6 +34,7 @@ export class DownloadButton extends AbstractButton {
             e.containsOptions('downloadUrl') && this.checkSupported();
             e.containsOptions('downloadUrl', 'downloadName') && this.__update();
         } else if (e instanceof PanoramaLoadedEvent) {
+            this.checkSupported();
             this.__update();
         }
     }
@@ -44,8 +44,7 @@ export class DownloadButton extends AbstractButton {
     }
 
     override checkSupported() {
-        const adapter = this.viewer.adapter.constructor as typeof AbstractAdapter;
-        const supported = adapter.supportsDownload || this.viewer.config.downloadUrl;
+        const supported = this.viewer.config.downloadUrl || this.viewer.adapter.getDownloadUrl(this.viewer.config.panorama);
         if (supported) {
             this.show();
         } else {
@@ -55,7 +54,7 @@ export class DownloadButton extends AbstractButton {
 
     private __update() {
         const link = this.container as HTMLAnchorElement;
-        link.href = this.viewer.config.downloadUrl || this.viewer.config.panorama;
+        link.href = this.viewer.config.downloadUrl || this.viewer.adapter.getDownloadUrl(this.viewer.config.panorama);
         link.target = '_blank';
         if (link.href.startsWith('data:') && !this.viewer.config.downloadName) {
             link.download = 'panorama.' + link.href.substring(0, link.href.indexOf(';')).split('/').pop();

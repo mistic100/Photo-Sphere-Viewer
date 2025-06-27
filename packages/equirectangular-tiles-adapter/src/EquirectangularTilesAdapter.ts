@@ -96,7 +96,6 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
 > {
     static override readonly id = 'equirectangular-tiles';
     static override readonly VERSION = PKG_VERSION;
-    static override readonly supportsDownload = false;
 
     // @internal
     public readonly SPHERE_SEGMENTS: number;
@@ -256,9 +255,11 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
         }
     }
 
-    createMesh(panoData: EquirectangularTilesPanoData): Group {
+    createMesh({ panoData }: EquirectangularTilesTextureData): Group {
         // mesh for the base panorama
-        const baseMesh = this.adapter.createMesh(panoData.baseData ?? panoData);
+        const baseMesh = this.adapter.createMesh({
+            panoData: panoData.baseData ?? panoData,
+        });
 
         // mesh for the tiles
         const geometry = new SphereGeometry(
@@ -359,7 +360,10 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
             return;
         }
 
-        const panorama = this.viewer.config.panorama as EquirectangularTilesPanorama | EquirectangularMultiTilesPanorama;
+        // compat with MultiAdapter
+        const panorama: EquirectangularTilesPanorama | EquirectangularMultiTilesPanorama 
+            = this.viewer.config.panorama[EquirectangularTilesAdapter.id] ?? this.viewer.config.panorama;
+
         const zoomLevel = this.viewer.getZoomLevel();
         const tileConfig = getTileConfig(panorama, zoomLevel, this);
 

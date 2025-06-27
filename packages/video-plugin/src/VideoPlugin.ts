@@ -1,5 +1,5 @@
 import type { AutorotatePlugin } from '@photo-sphere-viewer/autorotate-plugin';
-import type { AbstractAdapter, PluginConstructor, Position, TextureData, Viewer } from '@photo-sphere-viewer/core';
+import type { AbstractAdapter, MultiAdapter, PluginConstructor, Position, TextureData, Viewer } from '@photo-sphere-viewer/core';
 import { AbstractConfigurablePlugin, CONSTANTS, events, PSVError, utils } from '@photo-sphere-viewer/core';
 import type { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 import { MathUtils, SplineCurve, Texture, Vector2 } from 'three';
@@ -51,10 +51,6 @@ export class VideoPlugin extends AbstractConfigurablePlugin<
     constructor(viewer: Viewer, config: VideoPluginConfig) {
         super(viewer, config);
 
-        if (!(this.viewer.adapter.constructor as typeof AbstractAdapter).id.includes('video')) {
-            throw new PSVError('VideoPlugin can only be used with a video adapter.');
-        }
-
         if (this.config.progressbar) {
             this.progressbar = new ProgressBar(this, viewer);
         }
@@ -69,6 +65,11 @@ export class VideoPlugin extends AbstractConfigurablePlugin<
      */
     override init() {
         super.init();
+
+        const adapterId = (this.viewer.adapter.constructor as typeof AbstractAdapter).id;
+        if (!adapterId.includes('video') && !(adapterId === 'multi' && (this.viewer.adapter as MultiAdapter).isVideo)) {
+            throw new PSVError('VideoPlugin can only be used with a video adapter.');
+        }
 
         utils.checkStylesheet(this.viewer.container, 'video-plugin');
 

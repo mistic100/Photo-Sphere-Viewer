@@ -22,6 +22,7 @@ export type { ViewerState } from './services/ViewerState';
 export { AbstractAdapter } from './adapters/AbstractAdapter';
 export { DualFisheyeAdapter } from './adapters/DualFisheyeAdapter';
 export { EquirectangularAdapter } from './adapters/EquirectangularAdapter';
+export { MultiAdapter } from './adapters/MultiAdapter';
 export { AbstractButton } from './buttons/AbstractButton';
 export { AbstractComponent } from './components/AbstractComponent';
 export { registerButton } from './components/Navbar';

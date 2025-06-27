@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer - cubemap demo</title>
+
+        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="/dist/gallery-plugin/index.css" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="photosphere"></div>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "/node_modules/three/build/three.module.js",
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/cubemap-adapter": "/dist/cubemap-adapter/index.module.js",
+                    "@photo-sphere-viewer/equirectangular-tiles-adapter": "/dist/equirectangular-tiles-adapter/index.module.js",
+                    "@photo-sphere-viewer/cubemap-tiles-adapter": "/dist/cubemap-tiles-adapter/index.module.js",
+                    "@photo-sphere-viewer/gallery-plugin": "/dist/gallery-plugin/index.module.js"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import { Viewer, DualFisheyeAdapter, EquirectangularAdapter, MultiAdapter } from '@photo-sphere-viewer/core';
+            import { CubemapAdapter } from '@photo-sphere-viewer/cubemap-adapter';
+            import { EquirectangularTilesAdapter } from '@photo-sphere-viewer/equirectangular-tiles-adapter';
+            import { CubemapTilesAdapter } from '@photo-sphere-viewer/cubemap-tiles-adapter';
+            import { GalleryPlugin } from '@photo-sphere-viewer/gallery-plugin';
+
+            const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+            const items = [
+                {
+                    id: EquirectangularAdapter.id,
+                    name: EquirectangularAdapter.id,
+                    panorama: {
+                        [EquirectangularAdapter.id]: baseUrl + 'sphere-night.jpg',
+                    },
+                },
+                {
+                    id: CubemapAdapter.id,
+                    name: CubemapAdapter.id,
+                    panorama: {
+                        [CubemapAdapter.id]: {
+                            left: baseUrl + 'cubemap/px.jpg',
+                            front: baseUrl + 'cubemap/nz.jpg',
+                            right: baseUrl + 'cubemap/nx.jpg',
+                            back: baseUrl + 'cubemap/pz.jpg',
+                            top: baseUrl + 'cubemap/py.jpg',
+                            bottom: baseUrl + 'cubemap/ny.jpg',
+                        },
+                    },
+                },
+                {
+                    id: DualFisheyeAdapter.id,
+                    name: DualFisheyeAdapter.id,
+                    panorama: {
+                        [DualFisheyeAdapter.id]: baseUrl + 'dualfisheye.jpg',
+                    },
+                },
+                {
+                    id: EquirectangularTilesAdapter.id,
+                    name: EquirectangularTilesAdapter.id,
+                    panorama: {
+                        [EquirectangularTilesAdapter.id]: {
+                            baseUrl: `${baseUrl}sphere-tiles-24k/base.jpg`,
+                            width: 6656,
+                            cols: 16,
+                            rows: 8,
+                            tileUrl: (col, row) => {
+                                return `${baseUrl}sphere-tiles-24k/tile_0_${col}_${row}.jpg`;
+                            },
+                        },
+                    },
+                },
+                {
+                    id: CubemapTilesAdapter.id,
+                    name: CubemapTilesAdapter.id,
+                    panorama: {
+                        [CubemapTilesAdapter.id]: {
+                            faceSize: 1500,
+                            nbTiles: 4,
+                            tileUrl: (face, col, row) => {
+                                const num = row * 4 + col;
+                                return `${baseUrl}cubemap-tiles/${face}_${('00' + num).slice(-2)}.jpg`;
+                            },
+                        },
+                    },
+                }
+            ];
+
+            const viewer = new Viewer({
+                container: 'photosphere',
+                adapter: MultiAdapter.withConfig({
+                    adapters: [
+                        EquirectangularAdapter,
+                        CubemapAdapter,
+                        DualFisheyeAdapter,
+                        EquirectangularTilesAdapter,
+                        CubemapTilesAdapter,
+                    ],
+                }),
+                panorama: items[0].panorama,
+                loadingImg: baseUrl + 'loader.gif',
+                plugins: [
+                    GalleryPlugin.withConfig({
+                        items: items,
+                        visibleOnLoad: true,
+                        hideOnClick: false,
+                        thumbnailSize: {
+                            width: 200,
+                            height: 35,
+                        }
+                    }),
+                ],
+            });
+
+            window.viewer = viewer;
+        </script>
+    </body>
+</html>

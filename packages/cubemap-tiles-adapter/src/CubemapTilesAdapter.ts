@@ -68,7 +68,6 @@ export class CubemapTilesAdapter extends AbstractAdapter<
 > {
     static override readonly id = 'cubemap-tiles';
     static override readonly VERSION = PKG_VERSION;
-    static override readonly supportsDownload = false;
 
     private readonly config: CubemapTilesAdapterConfig;
 
@@ -300,7 +299,10 @@ export class CubemapTilesAdapter extends AbstractAdapter<
             return;
         }
 
-        const panorama = this.viewer.config.panorama as CubemapTilesPanorama | CubemapMultiTilesPanorama;
+        // compat with MultiAdapter
+        const panorama: CubemapTilesPanorama | CubemapMultiTilesPanorama 
+            = this.viewer.config.panorama[CubemapTilesAdapter.id] ?? this.viewer.config.panorama;
+
         const zoomLevel = this.viewer.getZoomLevel();
         const tileConfig = getTileConfig(panorama, zoomLevel, { CUBE_SEGMENTS });
 

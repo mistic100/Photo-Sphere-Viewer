@@ -22,11 +22,6 @@ export abstract class AbstractAdapter<TPanorama, TData, TTexture, TMesh extends 
      */
     static readonly VERSION: string;
 
-    /**
-     * Indicates if the adapter supports panorama download natively
-     */
-    static readonly supportsDownload: boolean = false;
-
     constructor(protected readonly viewer: Viewer) {}
 
     /**
@@ -40,6 +35,15 @@ export abstract class AbstractAdapter<TPanorama, TData, TTexture, TMesh extends 
      */
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     destroy(): void {}
+
+    /**
+     * Indicates if the adapter supports panorama download natively
+     */
+    // @ts-ignore unused parameter
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    getDownloadUrl(panorama: TPanorama): string {
+        return null;
+    }
 
     /**
      * Indicates if the adapter supports transitions between panoramas
@@ -92,7 +96,7 @@ export abstract class AbstractAdapter<TPanorama, TData, TTexture, TMesh extends 
     /**
      * Creates the mesh
      */
-    abstract createMesh(panoData: TData): TMesh;
+    abstract createMesh(textureData: TextureData<TTexture, TPanorama, TData>): TMesh;
 
     /**
      * Applies the texture to the mesh

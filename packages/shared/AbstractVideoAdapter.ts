@@ -31,8 +31,6 @@ export abstract class AbstractVideoAdapter<
     TData,
     TMesh extends AbstractVideoMesh,
 > extends AbstractAdapter<TPanorama, TData, VideoTexture, TMesh> {
-    static override readonly supportsDownload = false;
-
     protected abstract readonly config: AbstractVideoAdapterConfig;
 
     private video: HTMLVideoElement;
@@ -51,14 +49,6 @@ export abstract class AbstractVideoAdapter<
         this.__removeVideo();
 
         super.destroy();
-    }
-
-    override supportsPreload(): boolean {
-        return false;
-    }
-
-    override supportsTransition(): boolean {
-        return false;
     }
 
     async loadTexture(panorama: AbstractVideoPanorama): Promise<AbstractVideoTextureData> {

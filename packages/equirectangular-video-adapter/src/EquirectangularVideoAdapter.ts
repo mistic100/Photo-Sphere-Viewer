@@ -78,8 +78,8 @@ export class EquirectangularVideoAdapter extends AbstractVideoAdapter<
         return { panorama, texture, panoData };
     }
 
-    createMesh(panoData: PanoData): EquirectangularVideoMesh {
-        return this.adapter.createMesh(panoData);
+    createMesh({ panoData }: EquirectangularVideoTextureData): EquirectangularVideoMesh {
+        return this.adapter.createMesh({ panoData });
     }
 
     setTexture(mesh: EquirectangularVideoMesh, { texture }: EquirectangularVideoTextureData) {

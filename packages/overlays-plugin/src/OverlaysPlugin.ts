@@ -179,7 +179,7 @@ export class OverlaysPlugin extends AbstractConfigurablePlugin<
 
         const textureData = await adapter.loadTexture(config.path, false, config.panoData, false);
 
-        const mesh = adapter.createMesh(textureData.panoData);
+        const mesh = adapter.createMesh(textureData);
         mesh.renderOrder = 100 + config.zIndex;
         mesh.userData[OVERLAY_DATA] = config.id;
 

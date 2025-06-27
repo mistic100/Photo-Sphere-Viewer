@@ -282,7 +282,7 @@ export class Renderer extends AbstractService {
             this.viewer.adapter.disposeMesh(this.mesh);
         }
 
-        this.mesh = this.viewer.adapter.createMesh(textureData.panoData);
+        this.mesh = this.viewer.adapter.createMesh(textureData);
         this.viewer.adapter.setTexture(this.mesh, textureData, false);
         this.meshContainer.add(this.mesh);
 
@@ -327,7 +327,7 @@ export class Renderer extends AbstractService {
         this.viewer.dispatchEvent(e);
 
         const tempContainer = new Group();
-        const newMesh = this.viewer.adapter.createMesh(textureData.panoData);
+        const newMesh = this.viewer.adapter.createMesh(textureData);
         this.viewer.adapter.setTexture(newMesh, textureData, true);
         this.viewer.adapter.setTextureOpacity(newMesh, 0);
         this.setPanoramaPose(textureData.panoData, newMesh);

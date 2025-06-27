@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer - cubemap demo</title>
+
+        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="/dist/gallery-plugin/index.css" />
+        <link rel="stylesheet" href="/dist/video-plugin/index.css" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="photosphere"></div>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "/node_modules/three/build/three.module.js",
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/equirectangular-video-adapter": "/dist/equirectangular-video-adapter/index.module.js",
+                    "@photo-sphere-viewer/cubemap-video-adapter": "/dist/cubemap-video-adapter/index.module.js",
+                    "@photo-sphere-viewer/video-plugin": "/dist/video-plugin/index.module.js",
+                    "@photo-sphere-viewer/gallery-plugin": "/dist/gallery-plugin/index.module.js"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import { Viewer, MultiAdapter } from '@photo-sphere-viewer/core';
+            import { EquirectangularVideoAdapter } from '@photo-sphere-viewer/equirectangular-video-adapter';
+            import { CubemapVideoAdapter } from '@photo-sphere-viewer/cubemap-video-adapter';
+            import { GalleryPlugin } from '@photo-sphere-viewer/gallery-plugin';
+            import { VideoPlugin } from '@photo-sphere-viewer/video-plugin';
+
+            const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+            const items = [
+                {
+                    id: EquirectangularVideoAdapter.id,
+                    name: EquirectangularVideoAdapter.id,
+                    panorama: {
+                        [EquirectangularVideoAdapter.id]: {
+                            source: baseUrl + 'equirectangular-video/Ayutthaya_FHD.mp4',
+                        },
+                    },
+                },
+                {
+                    id: CubemapVideoAdapter.id,
+                    name: CubemapVideoAdapter.id,
+                    panorama: {
+                        [CubemapVideoAdapter.id]: {
+                            source: baseUrl + 'cubemap-video/DreamOfDali_FHD.webm',
+                        },
+                    },
+                },
+            ];
+
+            const viewer = new Viewer({
+                container: 'photosphere',
+                adapter: MultiAdapter.withConfig({
+                    adapters: [
+                        EquirectangularVideoAdapter,
+                        CubemapVideoAdapter,
+                    ],
+                }),
+                panorama: items[0].panorama,
+                loadingImg: baseUrl + 'loader.gif',
+                plugins: [
+                    VideoPlugin,
+                    GalleryPlugin.withConfig({
+                        items: items,
+                        visibleOnLoad: true,
+                        hideOnClick: false,
+                        thumbnailSize: {
+                            width: 200,
+                            height: 35,
+                        }
+                    }),
+                ],
+            });
+
+            window.viewer = viewer;
+        </script>
+    </body>
+</html>
