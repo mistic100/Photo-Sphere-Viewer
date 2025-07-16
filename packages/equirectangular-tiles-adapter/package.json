@@ -19,6 +19,6 @@
   },
   "psv": {
     "title": "Photo Sphere Viewer / Equirectangular Tiles Adapter",
-    "budget": "30kb"
+    "budget": "25kb"
   }
 }

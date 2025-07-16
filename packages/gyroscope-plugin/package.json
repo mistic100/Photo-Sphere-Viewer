@@ -19,6 +19,6 @@
   },
   "psv": {
     "title": "Photo Sphere Viewer / Gyroscope Plugin",
-    "budget": "20kb"
+    "budget": "15kb"
   }
 }

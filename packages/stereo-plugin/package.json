@@ -20,6 +20,6 @@
   },
   "psv": {
     "title": "Photo Sphere Viewer / Stereo Plugin",
-    "budget": "20kb"
+    "budget": "15kb"
   }
 }

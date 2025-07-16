@@ -19,6 +19,6 @@
   },
   "psv": {
     "title": "Photo Sphere Viewer / Visible Range Plugin",
-    "budget": "20kb"
+    "budget": "10kb"
   }
 }
