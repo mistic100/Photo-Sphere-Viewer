@@ -20,6 +20,6 @@
   "psv": {
     "title": "Photo Sphere Viewer / Gallery Plugin",
     "style": true,
-    "budget": "30kb"
+    "budget": "25kb"
   }
 }

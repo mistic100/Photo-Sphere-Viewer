@@ -1,19 +1,17 @@
+import { FileLoader } from 'three';
 import { PSVError } from '../PSVError';
 import type { Viewer } from '../Viewer';
 import { Cache } from '../data/cache';
 import { LoadProgressEvent } from '../events';
-import { BlobLoader } from '../lib/BlobLoader';
-import { ImageLoader } from '../lib/ImageLoader';
+import { AbortableImageLoader } from '../lib/ImageLoader';
 import { AbstractService } from './AbstractService';
 
 /**
  * Image and texture loading system
  */
 export class TextureLoader extends AbstractService {
-    private readonly fileLoader: BlobLoader;
-    private readonly imageLoader: ImageLoader;
-
-    private abortCtrl: Record<string, AbortController> = {};
+    private readonly fileLoader: FileLoader;
+    private readonly imageLoader: AbortableImageLoader;
 
     /**
      * @internal
@@ -21,8 +19,9 @@ export class TextureLoader extends AbstractService {
     constructor(viewer: Viewer) {
         super(viewer);
 
-        this.fileLoader = new BlobLoader();
-        this.imageLoader = new ImageLoader();
+        this.fileLoader = new FileLoader();
+        this.fileLoader.setResponseType('blob');
+        this.imageLoader = new AbortableImageLoader();
     }
 
     /**
@@ -38,8 +37,8 @@ export class TextureLoader extends AbstractService {
      * @internal
      */
     abortLoading() {
-        Object.values(this.abortCtrl).forEach(ctrl => ctrl.abort());
-        this.abortCtrl = {};
+        this.fileLoader.abort?.();
+        this.imageLoader.abort();
     }
 
     /**
@@ -64,33 +63,27 @@ export class TextureLoader extends AbstractService {
 
         this.fileLoader.setWithCredentials(this.config.withCredentials(url));
 
-        return new Promise((resolve, reject) => {
-            let progress = 0;
-            onProgress?.(progress);
+        let progress = 0;
+        onProgress?.(progress);
 
-            this.fileLoader.load(
-                url,
-                (result) => {
-                    progress = 100;
-                    onProgress?.(progress);
-                    Cache.add(url, cacheKey, result);
-                    resolve(result);
-                },
-                (e) => {
-                    if (e.lengthComputable) {
-                        const newProgress = (e.loaded / e.total) * 100;
-                        if (newProgress > progress) {
-                            progress = newProgress;
-                            onProgress?.(progress);
-                        }
+        return this.fileLoader.loadAsync(
+            url,
+            (e) => {
+                if (e.lengthComputable) {
+                    const newProgress = (e.loaded / e.total) * 100;
+                    if (newProgress > progress) {
+                        progress = newProgress;
+                        onProgress?.(progress);
                     }
-                },
-                (err) => {
-                    reject(err);
-                },
-                this.__getAbortSignal(cacheKey),
-            );
-        });
+                }
+            },
+        )
+            .then((result) => {
+                progress = 100;
+                onProgress?.(progress);
+                Cache.add(url, cacheKey, result as any as Blob);
+                return result as any as Blob;
+            });
     }
 
     /**
@@ -112,19 +105,11 @@ export class TextureLoader extends AbstractService {
         if (!onProgress && !this.config.requestHeaders) {
             this.imageLoader.setWithCredentials(this.config.withCredentials(url));
 
-            return new Promise((resolve, reject) => {
-                this.imageLoader.load(
-                    url,
-                    (result) => {
-                        Cache.add(url, cacheKey, result);
-                        resolve(result);
-                    },
-                    (err) => {
-                        reject(err);
-                    },
-                    this.__getAbortSignal(cacheKey),
-                );
-            });
+            return this.imageLoader.loadAsync(url)
+                .then((result) => {
+                    Cache.add(url, cacheKey, result);
+                    return result;
+                });
         } else {
             return this.loadFile(url, onProgress, cacheKey).then(blob => this.blobToImage(blob));
         }
@@ -162,22 +147,5 @@ export class TextureLoader extends AbstractService {
     dispatchProgress(progress: number) {
         this.viewer.loader.setProgress(progress);
         this.viewer.dispatchEvent(new LoadProgressEvent(Math.round(progress)));
-    }
-
-    /**
-     * Get an abort signal
-     * the signal is shared accross all requests with the same cache key (for tiles adapters)
-     */
-    private __getAbortSignal(cacheKey: string): AbortSignal {
-        if (cacheKey) {
-            if (this.abortCtrl[cacheKey]?.signal.aborted) {
-                delete this.abortCtrl[cacheKey];
-            }
-            if (!this.abortCtrl[cacheKey]) {
-                this.abortCtrl[cacheKey] = new AbortController();
-            }
-            return this.abortCtrl[cacheKey].signal;
-        }
-        return null;
     }
 }

@@ -1,60 +1,57 @@
-import { Loader } from 'three';
+import { ImageLoader } from 'three';
 
 /**
- * Copy of ThreeJS ImageLoader with support of an AbortSignal
- * Also removing all unused features for PSV
+ * ThreeJS ImageLoader that can be aborted
  */
-export class ImageLoader extends Loader<HTMLImageElement, string> {
-    // @ts-ignore
-    load(
+export class AbortableImageLoader extends ImageLoader {
+    private _abortController = new AbortController();
+
+    override abort() {
+        this._abortController.abort();
+        this._abortController = new AbortController();
+        return this;
+    }
+
+    override load(
         url: string,
         onLoad: (data: HTMLImageElement) => void,
+        onProgress: (event: ProgressEvent) => void,
         onError: (err: unknown) => void,
-        abortSignal?: AbortSignal,
     ) {
-        const image = document.createElement('img');
+        const abortSignal = this._abortController.signal;
 
-        function onImageLoad(this: HTMLImageElement) {
-            removeEventListeners();
-            onLoad(this);
-        }
+        const image = super.load(
+            url,
+            (data) => {
+                removeEventListeners();
+                onLoad(data);
+            },
+            onProgress,
+            (error) => {
+                removeEventListeners();
 
-        function onImageError(event: ErrorEvent) {
-            removeEventListeners();
-
-            if (abortSignal?.aborted) {
-                // Simulate an error similar to the DOMException thrown by the Fetch API
-                // (DOMException is not instanciable)
-                const e = new Error();
-                e.name = 'AbortError';
-                e.message = 'The operation was aborted.';
-                onError(e);
-            } else {
-                onError(event);
-            }
-        }
+                if (abortSignal.aborted) {
+                    // Simulate an error similar to the DOMException thrown by the Fetch API
+                    // (DOMException is not instanciable)
+                    const e = new Error();
+                    e.name = 'AbortError';
+                    e.message = 'The operation was aborted.';
+                    onError(e);
+                } else {
+                    onError(error);
+                }
+            },
+        );
 
         function onAbortSignal() {
             image.src = '';
         }
 
         function removeEventListeners() {
-            image.removeEventListener('load', onImageLoad, false);
-            image.removeEventListener('error', onImageError, false);
-
-            abortSignal?.removeEventListener('abort', onAbortSignal, false);
+            abortSignal.removeEventListener('abort', onAbortSignal, false);
         }
 
-        image.addEventListener('load', onImageLoad, false);
-        image.addEventListener('error', onImageError, false);
-
-        abortSignal?.addEventListener('abort', onAbortSignal, false);
-
-        if (!url.startsWith('data:')) {
-            image.crossOrigin = this.withCredentials ? 'use-credentials' : 'anonymous';
-        }
-
-        image.src = url;
+        abortSignal.addEventListener('abort', onAbortSignal, false);
 
         return image;
     }

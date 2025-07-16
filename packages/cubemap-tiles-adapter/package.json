@@ -20,6 +20,6 @@
   },
   "psv": {
     "title": "Photo Sphere Viewer / Cubemap Tiles Adapter",
-    "budget": "30kb"
+    "budget": "20kb"
   }
 }

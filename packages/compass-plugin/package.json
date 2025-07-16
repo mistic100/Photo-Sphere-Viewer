@@ -20,6 +20,6 @@
   "psv": {
     "title": "Photo Sphere Viewer / Compass Plugin",
     "style": true,
-    "budget": "20kb"
+    "budget": "15kb"
   }
 }
