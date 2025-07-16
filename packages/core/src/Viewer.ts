@@ -361,6 +361,9 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
         this.config.caption = options.caption;
         this.config.description = options.description;
         this.config.sphereCorrection = options.sphereCorrection;
+        if (typeof this.config.panoData !== 'function' || typeof options.panoData === 'function') {
+            this.config.panoData = options.panoData; // keep the default panoData if defined as a function
+        }
 
         const done = (err?: Error) => {
             if (isAbortError(err)) {

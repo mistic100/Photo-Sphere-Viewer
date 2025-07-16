@@ -23,6 +23,6 @@
   },
   "psv": {
     "title": "Photo Sphere Viewer / Overlays Plugin",
-    "budget": "20kb"
+    "budget": "10kb"
   }
 }

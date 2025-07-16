@@ -26,6 +26,6 @@
   "psv": {
     "title": "Photo Sphere Viewer / Markers Plugin",
     "style": true,
-    "budget": "90kb"
+    "budget": "85kb"
   }
 }

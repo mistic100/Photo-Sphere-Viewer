@@ -377,11 +377,11 @@ export class Renderer extends AbstractService {
                         if (props.opacity < 0.5) {
                             this.renderer.toneMappingExposure = transition.effect === 'black'
                                 ? MathUtils.mapLinear(props.opacity, 0, 0.5, 1, 0)
-                                : MathUtils.mapLinear(props.opacity, 0, 0.5, 1, 4);
+                                : MathUtils.mapLinear(props.opacity, 0, 0.5, 1, 5);
                         } else {
                             this.renderer.toneMappingExposure = transition.effect === 'black'
                                 ? MathUtils.mapLinear(props.opacity, 0.5, 1, 0, 1)
-                                : MathUtils.mapLinear(props.opacity, 0.5, 1, 4, 1);
+                                : MathUtils.mapLinear(props.opacity, 0.5, 1, 5, 1);
 
                             this.mesh.visible = false;
                             this.viewer.adapter.setTextureOpacity(newMesh, 1);
