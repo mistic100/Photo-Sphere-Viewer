@@ -140,8 +140,8 @@ export class Marker3D extends Marker {
 
             const positions3D = positions.map(p => this.viewer.dataHelper.sphericalCoordsToVector3(p));
 
-            const centroid = getPolygonCenter(positions.map(({ yaw, pitch }) => [yaw, pitch]));
-            this.state.position = { yaw: centroid[0], pitch: centroid[1] };
+            const centroid = getPolygonCenter(positions3D);
+            this.state.position = this.viewer.dataHelper.vector3ToSphericalCoords(centroid);
 
             this.state.positions3D = positions3D;
 

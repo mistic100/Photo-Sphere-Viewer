@@ -49,11 +49,10 @@ function getPolygonCoherentPoints(points: Array<[number, number]>) {
  * @todo Get "visual center" (https://blog.mapbox.com/a-new-algorithm-for-finding-a-visual-center-of-a-polygon-7c77e6492fbc)
  * @internal
  */
-export function getPolygonCenter(polygon: Array<[number, number]>): [number, number] {
-    const points = getPolygonCoherentPoints(polygon);
-
-    const sum = points.reduce((intermediary, point) => [intermediary[0] + point[0], intermediary[1] + point[1]]);
-    return [utils.parseAngle(sum[0] / polygon.length), sum[1] / polygon.length];
+export function getPolygonCenter(polygon: Vector3[]): Vector3 {
+    return polygon
+        .reduce((sum, point) => sum.add(point), new Vector3())
+        .normalize();
 }
 
 /**

@@ -168,15 +168,20 @@ export class MarkerPolygon extends AbstractDomMarker {
             throw new PSVError(`invalid marker ${this.id} position`, e);
         }
 
-        const centroid = this.isPolygon ? getPolygonCenter(this.coords[0]) : getPolylineCenter(this.coords[0]);
-        this.state.position = { yaw: centroid[0], pitch: centroid[1] };
-
         // compute x/y/z positions
         this.positions3D = this.coords.map((coords) => {
             return coords.map((coord) => {
                 return this.viewer.dataHelper.sphericalCoordsToVector3({ yaw: coord[0], pitch: coord[1] });
             });
         });
+
+        if (this.isPolygon) {
+            const centroid = getPolygonCenter(this.positions3D[0]);
+            this.state.position = this.viewer.dataHelper.vector3ToSphericalCoords(centroid);
+        } else {
+            const centroid = getPolylineCenter(this.coords[0]);
+            this.state.position = { yaw: centroid[0], pitch: centroid[1] };
+        }
 
         this.state.positions3D = this.positions3D[0];
     }
