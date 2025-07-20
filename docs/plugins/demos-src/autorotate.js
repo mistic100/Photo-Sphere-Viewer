@@ -12,9 +12,9 @@ new Viewer({
     mousewheelCtrlKey: true,
 
     plugins: [
-        [AutorotatePlugin, {
+        AutorotatePlugin.withConfig({
             autostartDelay: 1000,
             autorotatePitch: '5deg',
-        }],
+        }),
     ],
 });

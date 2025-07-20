@@ -27,7 +27,7 @@ const viewer = new Viewer({
     navbar: 'zoom move caption fullscreen',
 
     plugins: [
-        [MarkersPlugin, {
+        MarkersPlugin.withConfig({
             markers: [
                 {
                     id: 'video',
@@ -50,7 +50,7 @@ const viewer = new Viewer({
                     ],
                 },
             ],
-        }],
+        }),
     ],
 });
 

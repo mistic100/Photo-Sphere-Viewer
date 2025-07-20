@@ -105,20 +105,9 @@ Path to the image.
 
 This option acts the same as the core [`panoData`](../guide/config.md#panodata) and allows to display partial panoramas.
 
-```js
-overlays.addOverlay({
-    id: 'my-overlay',
-    path: 'my-overlay.png',
-    opacity: 0.8,
-    panoData: {
-        fullWidth: 3000,
-        croppedX: 1250,
-        croppedY: 500,
-    },
-});
-```
-
 _Note:_ The `fullWidth` provided here is not necessarily the same of the base panorama, `croppedX/croppedY` will be scaled accordingly.
+
+<DemoButton href="/demos/overlays/partial-overlay.html"/>
 
 #### Cube overlays
 

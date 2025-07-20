@@ -35,6 +35,10 @@ Alternatively, if `usePanoData` is set to `true`, the visible range is limited t
 
 ## Example
 
+### Custom range
+
+This example is locked between -90° and 90° on the horizontal axis and between -60° and 60° on the vertical axis.
+
 ::: code-demo
 
 ```yaml
@@ -44,6 +48,22 @@ packages:
 ```
 
 <<< ./demos-src/visible-range.js
+
+:::
+
+### From `panoData`
+
+This example uses the actual size of a cropped panorama to define the visible ranges.
+
+::: code-demo
+
+```yaml
+title: PSV Visible Range Demo
+packages:
+    - name: visible-range-plugin
+```
+
+<<< ./demos-src/visible-range-panodata.js
 
 :::
 

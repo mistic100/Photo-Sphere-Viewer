@@ -12,9 +12,9 @@ const viewer = new Viewer({
     mousewheelCtrlKey: true,
 
     plugins: [
-        [GalleryPlugin, {
+        GalleryPlugin.withConfig({
             visibleOnLoad: true,
-        }],
+        }),
     ],
 });
 

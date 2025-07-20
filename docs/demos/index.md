@@ -21,6 +21,14 @@ Simple panorama with default options.
 :::
 
 ::: item
+[![](/images/demos/cropped-panorama.jpg)](./basic/cropped-panorama.md)
+
+### Cropped panorama
+
+Display cropped panorama.
+:::
+
+::: item
 [![](/images/demos/navbar.jpg)](./basic/custom-navbar.md)
 
 ### Custom navbar
@@ -37,19 +45,19 @@ Customize the navbar with default and custom buttons.
 :::
 
 ::: item
-[![](/images/demos/cropped-panorama.jpg)](./basic/cropped-panorama.md)
-
-### Cropped panorama
-
-Display cropped panorama.
-:::
-
-::: item
 [![](/images/demos/fisheye.jpg)](./basic/fisheye.md)
 
 ### Fisheye
 
 Display the panorama with a fisheye effect.
+:::
+
+::: item
+[![](/images/demos/transition.jpg)](./basic/transition.md)
+
+### Transition
+
+Customize the transition between panoramas.
 :::
 
 ::::
@@ -92,6 +100,34 @@ Download a screenshot of the visible panorama.
 
 ::::
 
+## Compass
+
+:::: gallery
+
+::: item
+[![](/images/demos/compass-markers.jpg)](./compass/markers.md)
+
+### Markers on compass
+
+Show markers on the compass.
+:::
+
+::::
+
+## Map
+
+:::: gallery
+
+::: item
+[![](/images/demos/map-markers.jpg)](./map/markers.md)
+
+### Markers on map
+
+Show markers on the map.
+:::
+
+::::
+
 ## Markers
 
 :::: gallery
@@ -102,14 +138,6 @@ Download a screenshot of the visible panorama.
 ### Chroma key markers
 
 Make video markers partially transparent.
-:::
-
-::: item
-[![](/images/demos/markers-compass.jpg)](./markers/compass.md)
-
-### Markers on compass
-
-Show markers on the compass.
 :::
 
 ::: item
@@ -158,6 +186,34 @@ Use custom SVG patterns as polygon `fill`.
 ### Youtube element
 
 `elementLayer` marker.
+:::
+
+::::
+
+## Overlays
+
+:::: gallery
+
+::: item
+[![](/images/demos/partial-overlay.jpg)](./overlays/partial-overlay.md)
+
+### Partial overlay
+
+Display smaller image above the panorama.
+:::
+
+::::
+
+## Plan
+
+:::: gallery
+
+::: item
+[![](/images/demos/plan-markers.jpg)](./plan/markers.md)
+
+### Markers on plan
+
+Show markers on the plan.
 :::
 
 ::::

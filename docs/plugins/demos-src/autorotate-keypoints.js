@@ -26,10 +26,10 @@ const viewer = new Viewer({
     ],
 
     plugins: [
-        [AutorotatePlugin, {
+        AutorotatePlugin.withConfig({
             autostartDelay: 1000,
             autorotateSpeed: '3rpm',
-        }],
+        }),
         MarkersPlugin,
     ],
 });

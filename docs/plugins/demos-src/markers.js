@@ -12,7 +12,7 @@ const viewer = new Viewer({
     mousewheelCtrlKey: true,
 
     plugins: [
-        [MarkersPlugin, {
+        MarkersPlugin.withConfig({
             // list of markers
             markers: [
                 {
@@ -94,7 +94,7 @@ const viewer = new Viewer({
                     tooltip: 'A circle marker',
                 },
             ],
-        }],
+        }),
     ],
 });
 

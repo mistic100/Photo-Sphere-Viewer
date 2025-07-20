@@ -9,9 +9,9 @@ const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
 
 new Viewer({
     container: 'viewer',
-    adapter: [EquirectangularVideoAdapter, {
+    adapter: EquirectangularVideoAdapter.withConfig({
         muted: true,
-    }],
+    }),
     caption: 'Ayutthaya <b>&copy; meetle</b>',
     loadingImg: baseUrl + 'loader.gif',
     touchmoveTwoFingers: true,
@@ -19,7 +19,7 @@ new Viewer({
     navbar: 'video autorotate caption settings fullscreen',
 
     plugins: [
-        [VideoPlugin, {
+        VideoPlugin.withConfig({
             keypoints: [
                 { time: 0, position: { yaw: 0, pitch: 0 } },
                 { time: 5, position: { yaw: -Math.PI / 4, pitch: Math.PI / 8 } },
@@ -30,10 +30,10 @@ new Viewer({
                 { time: 30, position: { yaw: (-3 * Math.PI) / 2, pitch: 0 } },
                 { time: 35, position: { yaw: (-7 * Math.PI) / 4, pitch: -Math.PI / 8 } },
             ],
-        }],
+        }),
         AutorotatePlugin,
         SettingsPlugin,
-        [ResolutionPlugin, {
+        ResolutionPlugin.withConfig({
             defaultResolution: 'HD',
             resolutions: [
                 {
@@ -57,6 +57,6 @@ new Viewer({
                     panorama: { source: baseUrl + 'equirectangular-video/Ayutthaya_SD.mp4' },
                 },
             ],
-        }],
+        }),
     ],
 });

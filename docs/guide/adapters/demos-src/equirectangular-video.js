@@ -8,9 +8,9 @@ const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
 
 new Viewer({
     container: 'viewer',
-    adapter: [EquirectangularVideoAdapter, {
+    adapter: EquirectangularVideoAdapter.withConfig({
         muted: true,
-    }],
+    }),
     caption: 'Ayutthaya <b>&copy; meetle</b>',
     loadingImg: baseUrl + 'loader.gif',
     touchmoveTwoFingers: true,
@@ -20,7 +20,7 @@ new Viewer({
     plugins: [
         VideoPlugin,
         SettingsPlugin,
-        [ResolutionPlugin, {
+        ResolutionPlugin.withConfig({
             defaultResolution: 'HD',
             resolutions: [
                 {
@@ -44,6 +44,6 @@ new Viewer({
                     panorama: { source: baseUrl + 'equirectangular-video/Ayutthaya_SD.mp4' },
                 },
             ],
-        }],
+        }),
     ],
 });

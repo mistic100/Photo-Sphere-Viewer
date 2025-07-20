@@ -40,8 +40,6 @@ title: PSV Map Demo
 packages:
     - name: map-plugin
       style: true
-    - name: markers-plugin
-      style: true
 ```
 
 <<< ./demos-src/map.js
@@ -155,6 +153,14 @@ Size of the cone of the compass.
 -   updatable: yes
 
 Small dots visible on the map. See below. You can also use `setHotspots()` method.
+
+::: tip
+[Markers](./markers.md) can be displayed on the map by defining their `map` data, which must be an hotspot object (minus `yaw` which is know from the marker position).
+
+The marker tooltip is reused if defined. The viewer will be moved to face the marker if clicked on the map.
+
+<DemoButton href="/demos/map/markers.html"/>
+:::
 
 #### `spotStyle`
 
@@ -317,33 +323,6 @@ Allow to override the default `spotStyle`.
 -   type: `string | { content: string, className: string }`
 -   default: `null`
 
-::: tip
-[Markers](./markers.md) can be displayed on the map by defining their `map` data, which must be an hotspot object (minus `yaw` which is know from the marker position).
-
-The marker tooltip is reused if defined. The viewer will be moved to face the marker if clicked on the map.
-
-```js{7,15}
-markers: [
-    {
-        id: 'marker-1',
-        image: 'pin.png',
-        position: { yaw: '15deg', pitch: 0 },
-        data: {
-            map: { distance: 120, image: 'pin.png' },
-        },
-    },
-    {
-        id: 'marker-2',
-        text: 'Warning',
-        position: { textureX: 4500, textureY: 2100 },
-        data: {
-            map: { x: 150, y: 310 },
-        },
-    },
-],
-```
-
-:::
 
 ## Methods
 

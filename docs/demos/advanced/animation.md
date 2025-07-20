@@ -48,11 +48,11 @@ const viewer = new Viewer({
         'fullscreen',
     ],
     plugins: [
-        [AutorotatePlugin, {
+        AutorotatePlugin.withConfig({
             autostartDelay: null,
             autostartOnIdle: false,
             autorotatePitch: 0,
-        }],
+        }),
     ],
 });
 

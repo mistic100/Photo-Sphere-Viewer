@@ -92,7 +92,7 @@ Small dots visible on the compass. Each spot consists of a position (either `yaw
 ::: tip
 [Markers](./markers.md) can be displayed on the compass by defining their `compass` data, which can be `true` or a specific color.
 
-<DemoButton href="/demos/markers/compass.html"></DemoButton>
+<DemoButton href="/demos/compass/markers.html"/>
 :::
 
 #### `backgroundSvg`

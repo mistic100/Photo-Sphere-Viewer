@@ -1,6 +1,5 @@
 import { Viewer } from '@photo-sphere-viewer/core';
 import { PlanPlugin } from '@photo-sphere-viewer/plan-plugin';
-import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 import { TileLayer } from 'leaflet';
 
 const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
@@ -14,7 +13,7 @@ new Viewer({
     mousewheelCtrlKey: true,
 
     plugins: [
-        [PlanPlugin, {
+        PlanPlugin.withConfig({
             defaultZoom: 14,
             coordinates: [6.78677, 44.58241],
             bearing: '120deg',
@@ -41,25 +40,6 @@ new Viewer({
                     color: 'green',
                 },
             ],
-        }],
-        [MarkersPlugin, {
-            markers: [
-                {
-                    id: 'mountain',
-                    tooltip: 'A mountain',
-                    position: { yaw: 0.11, pitch: 0.32 },
-                    image: baseUrl + 'pictos/pin-blue.png',
-                    size: { width: 32, height: 32 },
-                    anchor: 'bottom center',
-                    data: {
-                        plan: {
-                            coordinates: [6.79077, 44.58041],
-                            size: 25,
-                            image: baseUrl + 'pictos/pin-blue.png',
-                        },
-                    },
-                },
-            ],
-        }],
+        }),
     ],
 });

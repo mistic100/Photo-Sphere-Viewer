@@ -177,7 +177,7 @@ const viewer = new Viewer({
     caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
 
     plugins: [
-        [MarkersPlugin, {
+        MarkersPlugin.withConfig({
             markers: [{
                 id: 'element',
                 // get the custom element instance
@@ -186,7 +186,7 @@ const viewer = new Viewer({
                 position: { yaw: 0, pitch: -0.3 },
                 zIndex: 10,
             }],
-        }],
+        }),
     ],
 });
 ```

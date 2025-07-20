@@ -104,7 +104,7 @@ There is two ways to position `imageLayer` and `videoLayer` markers:
 
 (`elementLayer` can only be positionned with `position` + `rotation`)
 
-<DemoButton href="/demos/markers/layers.html"></DemoButton>
+<DemoButton href="/demos/markers/layers.html"/>
 :::
 
 ```js{3}
@@ -186,7 +186,7 @@ If your component has an `updateMarker()` method it will be called by the plugin
 -   `zoomLevel`: current zoom level
 -   `viewerSize`: size of the viewport
 
-<DemoButton href="/demos/markers/custom-element.html"></DemoButton>
+<DemoButton href="/demos/markers/custom-element.html"/>
 :::
 
 #### `elementLayer`
@@ -204,7 +204,7 @@ Existing DOM element.
 }
 ```
 
-<DemoButton href="/demos/markers/youtube-element.html"></DemoButton>
+<DemoButton href="/demos/markers/youtube-element.html"/>
 
 #### `polygon`
 
@@ -463,7 +463,7 @@ scale: {
 -   type: `boolean | number | { amount?: number, duration?: number, easing?: string }`
 -   default: `null`
 
-Overrides the [global `defaultHoverScale`](#defaulthoverscale). The configuration is merged with the default configuration of x2 scaling in 100ms with a linear easing. Defining `hoverScale: false` allows to disable the scaling for this marker. [See demo](../demos/markers/hover-scale.md).
+Overrides the [global `defaultHoverScale`](#defaulthoverscale). The configuration is merged with the default configuration of x2 scaling in 100ms with a linear easing. Defining `hoverScale: false` allows to disable the scaling for this marker.
 
 _(This option is ignored for polygons, polylines and layers)._
 
@@ -540,7 +540,9 @@ svgStyle: {
 ```
 
 ::: tip Image and pattern background
-You can define complex SVG backgrounds such as images by using a pattern definition. [See demo](../demos/markers/polygon-pattern.md).
+You can define complex SVG backgrounds such as images by using a pattern definition.
+
+<DemoButton href="/demos/markers/polygon-pattern.html"/>
 :::
 
 #### `chromaKey`
@@ -548,7 +550,11 @@ You can define complex SVG backgrounds such as images by using a pattern definit
 -   type: `object`
 -   default: `{ enabled: false }`
 
-Will make a color of the image/video transparent. [See demo](../demos/markers/chroma-key.md).
+Will make a color of the image/video transparent.
+
+_(This option is only applicable to `imagerLayer` and `videoLayer`)._
+
+<DemoButton href="/demos/markers/chroma-key.html"/>
 
 ::: dialog "See details" "Marker chroma key"
 
@@ -574,8 +580,6 @@ chromaKey: {
 ```
 
 :::
-
-_(This option is only applicable to `imagerLayer` and `videoLayer`)._
 
 #### `anchor`
 
@@ -625,6 +629,12 @@ tooltip: { // tooltip with a custom class shown on click
 }
 ```
 
+::: tip Advanced tooltips
+With the use of HTML and CSS you make fairly complex tooltips.
+
+<DemoButton href="/demos/markers/custom-tooltip.html"/>
+:::
+
 #### `content`
 
 -   type: `string`
@@ -672,6 +682,8 @@ Initial list of markers.
 -   default: `null`
 
 Default mouse hover scaling applied to all markers, can be overriden with each marker [`hoverScale` parameter](#hoverscale). Defining `defaultHoverScale: true` will use the default configuration of x2 scaling in 100ms with a linear easing.
+
+<DemoButton href="/demos/markers/hover-scale.html"/>
 
 #### `gotoMarkerSpeed`
 

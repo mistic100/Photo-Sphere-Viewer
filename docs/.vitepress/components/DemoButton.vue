@@ -11,8 +11,9 @@ const { href } = defineProps<{
 }>();
 </script>
 
-<style>
+<style scoped>
 a.v-btn {
     text-decoration: none;
+    margin-right: 1em;
 }
 </style>

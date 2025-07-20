@@ -13,7 +13,7 @@ new Viewer({
 
     plugins: [
         SettingsPlugin,
-        [ResolutionPlugin, {
+        ResolutionPlugin.withConfig({
             defaultResolution: 'SD',
             resolutions: [
                 {
@@ -27,6 +27,6 @@ new Viewer({
                     panorama: baseUrl + 'sphere.jpg',
                 },
             ],
-        }],
+        }),
     ],
 });

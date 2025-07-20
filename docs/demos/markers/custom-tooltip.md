@@ -24,7 +24,7 @@ const viewer = new Viewer({
     caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
 
     plugins: [
-        [MarkersPlugin, {
+        MarkersPlugin.withConfig({
             markers: [{
                 id: 'custom-tooltip',
                 tooltip: {
@@ -38,7 +38,7 @@ const viewer = new Viewer({
                 size: { width: 32, height: 32 },
                 anchor: 'bottom center',
             }],
-        }],
+        }),
     ],
 });
 

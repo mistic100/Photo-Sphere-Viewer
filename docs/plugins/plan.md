@@ -38,8 +38,6 @@ title: PSV Plan Demo
 packages:
     - name: plan-plugin
       style: true
-    - name: markers-plugin
-      style: true
     - name: leaflet
       external: true
       version: 1
@@ -151,6 +149,14 @@ Size of the central pin.
 -   updatable: yes
 
 Markers visible on the map. See below. You can also use `setHotspots()` method.
+
+::: tip
+[Markers](./markers.md) can be displayed on the map by defining their `plan` data, which must be an hotspot object.
+
+The marker tooltip is reused if defined. The viewer will be moved to face the marker if clicked on the map.
+
+<DemoButton href="/demos/plan/markers.html"/>
+:::
 
 #### `spotStyle`
 
@@ -293,25 +299,6 @@ Allow to override the default `spotStyle`.
 -   type: `string | { content: string, className: string }`
 -   default: `null`
 
-::: tip
-[Markers](./markers.md) can be displayed on the map by defining their `plan` data, which must be an hotspot object.
-
-The marker tooltip is reused if defined. The viewer will be moved to face the marker if clicked on the map.
-
-```js{7,15}
-markers: [
-    {
-        id: 'marker-1',
-        image: 'pin.png',
-        position: { yaw: '15deg', pitch: 0 },
-        data: {
-            plan: { coordinates: [6.79077, 44.58041], image: 'pin.png' },
-        },
-    },
-],
-```
-
-:::
 
 ## Methods
 

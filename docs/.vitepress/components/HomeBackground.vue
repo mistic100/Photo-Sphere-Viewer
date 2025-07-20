@@ -48,7 +48,7 @@ onMounted(async () => {
 
     viewer = new Viewer({
         container: container.value!,
-        adapter: [EquirectangularTilesAdapter, { baseBlur: false }],
+        adapter: EquirectangularTilesAdapter.withConfig({ baseBlur: false }),
         loadingTxt: '',
         defaultPitch: 0.2,
         mousewheel: false,

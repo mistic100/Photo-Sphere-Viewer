@@ -35,7 +35,7 @@ const viewer = new Viewer({
     navbar: 'zoom move caption fullscreen',
 
     plugins: [
-        [MarkersPlugin, {
+        MarkersPlugin.withConfig({
             markers: [
                 {
                     id: 'youtube',
@@ -44,7 +44,7 @@ const viewer = new Viewer({
                     rotation: { yaw: -0.2 },
                 },
             ],
-        }],
+        }),
     ],
 });
 ```

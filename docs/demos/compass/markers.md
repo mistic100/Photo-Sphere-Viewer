@@ -1,6 +1,6 @@
-# Show markers on compass
+# Show markers on the compass
 
-Configure markers to be displayed on the [compass](../../plugins/compass.md).
+Configure [markers](../../plugins/markers.md) to be displayed on the [compass](../../plugins/compass.md).
 
 ::: code-demo
 

@@ -100,14 +100,14 @@ new Viewer({
 
     plugins: [
         MarkersPlugin,
-        [GalleryPlugin, {
+        GalleryPlugin.withConfig({
             thumbnailSize: { width: 100, height: 100 },
-        }],
-        [VirtualTourPlugin, {
+        }),
+        VirtualTourPlugin.withConfig({
             positionMode: 'gps',
             renderMode: '3d',
             nodes: nodes,
             startNodeId: '2',
-        }],
+        }),
     ],
 });

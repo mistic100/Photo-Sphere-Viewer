@@ -76,9 +76,9 @@ export class DataHelper extends AbstractService {
         targetPosition: Position,
         targetZoom: number,
     ): {
-            duration: number;
-            properties: AnimationOptions<{ yaw: any; pitch: any; zoom: any }>['properties'];
-        } {
+        duration: number;
+        properties: AnimationOptions<{ yaw: any; pitch: any; zoom: any }>['properties'];
+    } {
         const positionProvided = !isNil(targetPosition);
         const zoomProvided = !isNil(targetZoom);
 

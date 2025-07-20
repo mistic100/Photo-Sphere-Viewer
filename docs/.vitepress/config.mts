@@ -171,6 +171,7 @@ export default defineConfig({
                 {
                     text: 'Demos',
                     base: '/demos',
+                    link: '/',
                     items: (() => {
                         const demoFiles: Record<string, string[]> = getFiles('demos')
                             .map(f => f.split('/'))

@@ -8,9 +8,9 @@ const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
 
 new Viewer({
     container: 'viewer',
-    adapter: [CubemapVideoAdapter, {
+    adapter: CubemapVideoAdapter.withConfig({
         muted: true,
-    }],
+    }),
     caption: 'Dreams of Dalí <b>&copy; The Dalí Museum</b>',
     loadingImg: baseUrl + 'loader.gif',
     touchmoveTwoFingers: true,
@@ -20,7 +20,7 @@ new Viewer({
     plugins: [
         VideoPlugin,
         SettingsPlugin,
-        [ResolutionPlugin, {
+        ResolutionPlugin.withConfig({
             defaultResolution: 'HD',
             resolutions: [
                 {
@@ -39,6 +39,6 @@ new Viewer({
                     panorama: { source: baseUrl + 'cubemap-video/DreamOfDali_HD.webm' },
                 },
             ],
-        }],
+        }),
     ],
 });

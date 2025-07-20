@@ -1,25 +1,20 @@
 import { Viewer } from '@photo-sphere-viewer/core';
-import { OverlaysPlugin } from '@photo-sphere-viewer/overlays-plugin';
+import { VisibleRangePlugin } from '@photo-sphere-viewer/visible-range-plugin';
 
 const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
 
 new Viewer({
     container: 'viewer',
-    panorama: baseUrl + 'sphere.jpg',
+    panorama: baseUrl + 'sphere-cropped.jpg',
     caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
     loadingImg: baseUrl + 'loader.gif',
     touchmoveTwoFingers: true,
     mousewheelCtrlKey: true,
+    defaultZoomLvl: 30,
 
     plugins: [
-        OverlaysPlugin.withConfig({
-            overlays: [
-                {
-                    id: 'xray',
-                    path: baseUrl + 'sphere-overlay.png',
-                    opacity: 0.8,
-                },
-            ],
+        VisibleRangePlugin.withConfig({
+            usePanoData: true,
         }),
     ],
 });

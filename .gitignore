@@ -8,5 +8,6 @@ docs/.vitepress/.temp
 docs/.vitepress/cache
 node_modules
 public
+!docs/public
 reports
 yarn-error.log
