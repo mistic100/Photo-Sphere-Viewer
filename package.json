@@ -53,7 +53,7 @@
     "nyc": "^17.1.0",
     "postcss": "^8.5.1",
     "queue": "^7.0.0",
-    "selfsigned": "^2.4.1",
+    "selfsigned": "^3.0.0",
     "stylelint": "^16.21.1",
     "stylelint-config-standard-scss": "^15.0.1",
     "ts-node": "^10.9.2",
