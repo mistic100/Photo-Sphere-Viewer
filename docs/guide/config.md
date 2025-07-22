@@ -253,7 +253,8 @@ Configures the default transition between panoramas. All parameters can be chang
 Possible `effect` are `fade, black, white`.  
 The `speed` is either a duration in milliseconds or a string containing the speed in revolutions per minute (`2rpm`).
 
-[Check the demo](../demos/basic/transition.md)
+
+<DemoButton href="/demos/basic/transition.html"></DemoButton>
 
 #### `moveSpeed`
 

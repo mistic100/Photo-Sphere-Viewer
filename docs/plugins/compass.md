@@ -37,8 +37,6 @@ title: PSV Compass Demo
 packages:
     - name: compass-plugin
       style: true
-    - name: markers-plugin
-      style: true
 ```
 
 <<< ./demos-src/compass.js
@@ -94,23 +92,7 @@ Small dots visible on the compass. Each spot consists of a position (either `yaw
 ::: tip
 [Markers](./markers.md) can be displayed on the compass by defining their `compass` data, which can be `true` or a specific color.
 
-```js{6,12}
-markers: [
-    {
-        id: 'marker-1',
-        image: 'pin.png',
-        position: { yaw: '15deg', pitch: 0 },
-        data: { compass: true },
-    },
-    {
-        id: 'marker-2',
-        text: 'Warning',
-        position: { yaw: '-45deg', pitch: 0 },
-        data: { compass: 'orange' },
-    },
-];
-```
-
+<DemoButton href="/demos/markers/compass.html"></DemoButton>
 :::
 
 #### `backgroundSvg`

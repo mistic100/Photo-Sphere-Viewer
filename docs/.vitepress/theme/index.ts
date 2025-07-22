@@ -40,6 +40,7 @@ import ApiButton from '../components/ApiButton.vue';
 import Badges from '../components/Badges.vue';
 import HomeBackground from '../components/HomeBackground.vue';
 import HomeVersion from '../components/HomeVersion.vue';
+import DemoButton from '../components/DemoButton.vue';
 import ThemeProvider from '../components/ThemeProvider.vue';
 import VersionBanner from '../components/VersionBanner.vue';
 import codeDemo from '../plugins/code-demo/enhanceApp';
@@ -153,6 +154,7 @@ export default {
         app.use(vuetify);
         app.component('Badges', Badges);
         app.component('ApiButton', ApiButton);
+        app.component('DemoButton', DemoButton);
         codeDemo(app);
         dialog(app);
         gallery(app);

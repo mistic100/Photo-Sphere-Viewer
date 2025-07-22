@@ -104,7 +104,7 @@ There is two ways to position `imageLayer` and `videoLayer` markers:
 
 (`elementLayer` can only be positionned with `position` + `rotation`)
 
-[Check the demo](../demos/markers/layers.md)
+<DemoButton href="/demos/markers/layers.html"></DemoButton>
 :::
 
 ```js{3}
@@ -186,7 +186,7 @@ If your component has an `updateMarker()` method it will be called by the plugin
 -   `zoomLevel`: current zoom level
 -   `viewerSize`: size of the viewport
 
-[Check the demo](../demos/markers/custom-element.md)
+<DemoButton href="/demos/markers/custom-element.html"></DemoButton>
 :::
 
 #### `elementLayer`
@@ -204,7 +204,7 @@ Existing DOM element.
 }
 ```
 
-[Check the demo](../demos/markers/youtube-element.md)
+<DemoButton href="/demos/markers/youtube-element.html"></DemoButton>
 
 #### `polygon`
 

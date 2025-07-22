@@ -105,11 +105,19 @@ Make video markers partially transparent.
 :::
 
 ::: item
+[![](/images/demos/markers-compass.jpg)](./markers/compass.md)
+
+### Markers on compass
+
+Show markers on the compass.
+:::
+
+::: item
 [![](/images/demos/marker-element.jpg)](./markers/custom-element.md)
 
 ### Custom element
 
-Use a custom element as marker.
+Use a custom WebComponent as marker.
 :::
 
 ::: item
