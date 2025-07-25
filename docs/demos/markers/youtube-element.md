@@ -12,7 +12,7 @@ packages:
       style: true
 ```
 
-```js{6,7,26}
+```js:line-numbers{6,7,26}
 import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 
@@ -32,7 +32,6 @@ const viewer = new Viewer({
     defaultYaw: -0.5,
     defaultPitch: 0.2,
     defaultZoomLvl: 70,
-    navbar: 'zoom move caption fullscreen',
 
     plugins: [
         MarkersPlugin.withConfig({

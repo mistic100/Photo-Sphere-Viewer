@@ -13,7 +13,7 @@ This plugin is available in the [@photo-sphere-viewer/gyroscope-plugin](https://
 
 Once enabled the plugin will add a new "Gyroscope" button only shown when the gyroscope API is available.
 
-```js
+```js:line-numbers
 import { GyroscopePlugin } from '@photo-sphere-viewer/gyroscope-plugin';
 
 const viewer = new Viewer({

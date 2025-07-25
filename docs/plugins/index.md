@@ -12,7 +12,7 @@ Official plugins (listed on the left menu) are available in various `@photo-sphe
 
 :::: tab Import from a CDN
 
-```html
+```html:line-numbers
 <head>
     <!-- stylesheets of PSV core -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/markers-plugin/index.min.css" />
@@ -43,7 +43,7 @@ Official plugins (listed on the left menu) are available in various `@photo-sphe
 
 :::: tab Install with NPM and a build tool
 
-```js
+```js:line-numbers
 import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 
@@ -66,7 +66,7 @@ Import `@photo-sphere-viewer/markers-plugin/index.css` with the prefered way dep
 
 All plugins consists of a JavaScript class which must be provided to the `plugins` array. Some plugins will also take a configuration object provided with the static method `withConfig`.
 
-```js
+```js:line-numbers
 const viewer = new Viewer({
     plugins: [
         PluginA,
@@ -82,7 +82,7 @@ const viewer = new Viewer({
 
 After initialization the plugin instance can be obtained with the `getPlugin` method, allowing to call methods on the plugin and subscribe to events.
 
-```js
+```js:line-numbers
 const markersPlugin = viewer.getPlugin(MarkersPlugin);
 
 markersPlugin.addMarker(/* ... */);
@@ -96,7 +96,7 @@ markersPlugin.addEventListener('select-marker', () => {
 
 Some plugins allow their configuration to be modified after init with the `setOption()` and `setOptions()` methods. The updatable configuration properties are documented on each plugin page.
 
-```js
+```js:line-numbers
 markersPlugin.setOption('gotoMarkerSpeed', '3rpm');
 
 markersPlugin.setOptions({

@@ -123,7 +123,7 @@ Initial vertical angle, between -π/2 and π/2.
 -   type: `object`
 -   default:
 
-```js
+```js:line-numbers
 lang: {
   zoom: 'Zoom',
   zoomOut: 'Zoom out',
@@ -219,7 +219,7 @@ Allows to fix the panorama orientation.
 Overrides XMP data found in the panorama file.
 All parameters are optional.
 
-```js
+```js:line-numbers
 panoData: {
   fullWidth: 6000,
   fullHeight: 3000, // optional
@@ -232,7 +232,7 @@ panoData: {
 
 It can also be a function to dynamically compute the cropping config depending on the loaded image (note that a [default setting](./adapters/equirectangular.md#default-parameters) is already applied when no data is found).
 
-```js
+```js:line-numbers
 panoData: (image, xmpData) => ({
     fullWidth: image.width,
     fullHeight: Math.round(image.width / 2),
@@ -315,7 +315,7 @@ withCredentials: (url) => !url.includes('amazonaws');
 -   type: `object`
 -   default:
 
-```js
+```js:line-numbers
 keyboardActions: {
   'ArrowUp': 'ROTATE_UP',
   'ArrowDown': 'ROTATE_DOWN',
@@ -332,7 +332,7 @@ Configure keyboard actions. It is a map defining key code->action. (all the avai
 
 You can also configure an arbitrary callback to any key, it receives the viewer itself and the original keyboard event as parameters.
 
-```js
+```js:line-numbers
 import { DEFAULTS } from '@photo-sphere-viewer/core';
 
 keyboardActions: {

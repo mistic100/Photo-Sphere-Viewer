@@ -12,7 +12,7 @@ packages:
       style: true
 ```
 
-```js{19-23}
+```js:line-numbers{18-22,30-34}
 import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 
@@ -24,7 +24,6 @@ const viewer = new Viewer({
     caption: 'Artist Workshop <b>&copy; Oliksiy Yakovlyev (HDRI Haven)</b> & Rick Astley',
     defaultYaw: 2.5,
     defaultPitch: 0.1,
-    navbar: 'zoom move caption fullscreen',
 
     plugins: [
         MarkersPlugin.withConfig({

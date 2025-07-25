@@ -9,16 +9,20 @@ Display HTML content on a sidebar on the right of the viewer.
 
 This example adds a custom button to toggle a panel.
 
-::: code-demo
+:::: code-demo
 
 ```yaml
 title: PSV Panel Demo
 ```
 
-<<< ./demos-src/panel.js
-<<< ./demos-src/panel.html
+::: code-group
+
+<<< ./demos-src/panel.js{js:line-numbers}
+<<< ./demos-src/panel.html [template.html]
 
 :::
+
+::::
 
 ## Methods
 

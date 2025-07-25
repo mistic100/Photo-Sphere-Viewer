@@ -14,7 +14,7 @@ This plugin is available in the [@photo-sphere-viewer/overlays-plugin](https://w
 Overlays are images "glued" to the panorama. Contrary to [markers](./markers.md) they are part of the 3D scene and not drawn on top of the viewer.
 Both equirectangular (full or cropped) and cubemaps are supported.
 
-```js
+```js:line-numbers
 import { OverlaysPlugin } from '@photo-sphere-viewer/overlays-plugin';
 
 const viewer = new Viewer({
@@ -41,7 +41,7 @@ packages:
     - name: overlays-plugin
 ```
 
-<<< ./demos-src/overlays.js
+<<< ./demos-src/overlays.js{js:line-numbers}
 
 :::
 
@@ -137,7 +137,7 @@ Removes all overlays.
 
 Triggered when an overlay is clicked.
 
-```js
+```js:line-numbers
 overlaysPlugin.addEventListener('overlay-click', ({ overlayId }) => {
     console.log(`Clicked on overlay ${overlayId}`);
 });

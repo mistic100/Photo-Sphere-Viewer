@@ -13,7 +13,7 @@ This plugin is available in the [@photo-sphere-viewer/compass-plugin](https://ww
 
 The plugin can be configured with a list of `hotspots` which are small dots on the compass. It can also display markers positions.
 
-```js
+```js:line-numbers
 import { CompassPlugin } from '@photo-sphere-viewer/compass-plugin';
 
 const viewer = new Viewer({
@@ -39,7 +39,7 @@ packages:
       style: true
 ```
 
-<<< ./demos-src/compass.js
+<<< ./demos-src/compass.js{js:line-numbers}
 
 :::
 

@@ -2,7 +2,7 @@
 
 Use custom SVG patterns as polygon `fill`.
 
-::: code-demo
+:::: code-demo
 
 ```yaml
 autoload: true
@@ -12,7 +12,9 @@ packages:
       style: true
 ```
 
-```js{22,34}
+::: code-group
+
+```js:line-numbers{22,34} [viewer.js]
 import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 
@@ -55,7 +57,7 @@ const viewer = new Viewer({
 });
 ```
 
-```html
+```html [template.html]
 <svg id="patterns" style="position: absolute; top: -1000px">
     <defs>
         <pattern id="dots" x="10" y="10" width="30" height="30" patternUnits="userSpaceOnUse">
@@ -73,3 +75,5 @@ const viewer = new Viewer({
 ```
 
 :::
+
+::::

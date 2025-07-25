@@ -12,7 +12,7 @@ packages:
       style: true
 ```
 
-```js{20-24}
+```js:line-numbers{19-23}
 import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 
@@ -22,7 +22,6 @@ const viewer = new Viewer({
     container: 'viewer',
     panorama: baseUrl + 'sphere.jpg',
     caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
-    navbar: 'zoom move caption fullscreen',
 
     plugins: [
         MarkersPlugin.withConfig({

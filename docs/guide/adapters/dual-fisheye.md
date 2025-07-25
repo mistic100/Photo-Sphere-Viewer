@@ -25,7 +25,7 @@ packages:
     - name: core
 ```
 
-<<< ./demos-src/dual-fisheye.js
+<<< ./demos-src/dual-fisheye.js{js:line-numbers}
 
 :::
 

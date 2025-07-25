@@ -17,7 +17,7 @@ ResolutionPlugin is not compatible with GalleryPlugin.
 
 Once enabled the plugin will add a new setting the user can use to change the resolution of the panorama.
 
-```js
+```js:line-numbers
 import { SettingsPlugin } from '@photo-sphere-viewer/settings-plugin';
 import { ResolutionPlugin } from '@photo-sphere-viewer/resolution-plugin';
 
@@ -57,7 +57,7 @@ packages:
     - name: resolution-plugin
 ```
 
-<<< ./demos-src/resolution.js
+<<< ./demos-src/resolution.js{js:line-numbers}
 
 :::
 
@@ -114,7 +114,7 @@ Changes the available resolutions.
 
 Triggered when the resolution is changed.
 
-```js
+```js:line-numbers
 resolutionPlugin.addEventListener('resolution-changed', ({ resolutionId }) => {
     console.log(`Current resolution: ${resolutionId}`);
 });

@@ -8,7 +8,7 @@
 There is no need to declare the equirectangular adapter as it is the default one, unless you want to change its configuration.
 :::
 
-```js
+```js:line-numbers
 import { EquirectangularAdapter } from '@photo-sphere-viewer/core';
 
 const viewer = new Viewer({
@@ -80,7 +80,7 @@ If you created your panorama with a mobile phone or dedicated 360° camera, it s
 
 The XMP payload is as follow:
 
-```xml
+```xml:line-numbers
 <?xpacket begin="﻿" id="W5M0MpCehiHzreSzNTczkc9d"?>
 <x:xmpmeta xmlns:x="adobe:ns:meta/">
   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
@@ -117,7 +117,7 @@ exiftool -tagsfromfile data.xmp -all:all panorama.jpg
 
 You can also directly pass the values to Photo Sphere Viewer with the `panoData` parameter.
 
-```js
+```js:line-numbers
 const viewer = new Viewer({
     container: 'viewer',
     panorama: 'path/to/panorama.jpg',
@@ -150,7 +150,7 @@ const viewer = new Viewer({
 
 If the image does not have a 2:1 ratio and no XMP data are found and no `panoData` is provided, a best effort is done to display the image without distortion. The exact algorithm is as follow:
 
-```js
+```js:line-numbers
 const fullWidth = Math.max(img.width, img.height * 2);
 const fullHeight = Math.round(fullWidth / 2);
 const croppedX = Math.round((fullWidth - img.width) / 2);

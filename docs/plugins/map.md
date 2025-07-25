@@ -17,7 +17,7 @@ Looking for geographic map ? (OpenStreetMap, Google, etc) try the [Plan plugin](
 
 The minimal configuration of this plugin contains `imageUrl` and `center` (the position of the panorama on the map, in pixels). The map rotation can be ajusted with `rotation`.
 
-```js
+```js:line-numbers
 import { MapPlugin } from '@photo-sphere-viewer/map-plugin';
 
 const viewer = new Viewer({
@@ -42,7 +42,7 @@ packages:
       style: true
 ```
 
-<<< ./demos-src/map.js
+<<< ./demos-src/map.js{js:line-numbers}
 
 :::
 
@@ -173,7 +173,7 @@ Style of hotspots.
 
 The hotspots are represented by a circle with configurable size and color, but can also be an image.
 
-```ts
+```ts:line-numbers
 {
     /**
      * Size of the hotspot

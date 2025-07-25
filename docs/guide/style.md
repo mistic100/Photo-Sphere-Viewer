@@ -4,7 +4,7 @@ Photo Sphere Viewer comes with a default darkish theme. You can customize it by 
 
 The source files use SASS modules and must be imported with `@use` in order to override variables.
 
-```scss
+```scss:line-numbers
 // main stylesheet
 @use '@photo-sphere-viewer/core/index.scss' as psv with (
     $loader-color: rgba(0, 0, 0, .5),

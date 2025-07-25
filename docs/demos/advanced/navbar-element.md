@@ -2,18 +2,16 @@
 
 Use a custom WebComponent in the navbar. This example implements a custom zoom control.
 
-::: code-demo
+:::: code-demo
 
 ```yaml
 autoload: true
 title: PSV Navbar element Demo
 ```
 
-```js
-import { Viewer } from '@photo-sphere-viewer/core';
+::: code-group
 
-const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
-
+```js:line-numbers [CustomNavbarButton.js]
 // declare the custom element
 class CustomNavbarButton extends HTMLElement {
     constructor() {
@@ -77,6 +75,12 @@ input {
 
 // register the custom element
 customElements.define('custom-navbar-button', CustomNavbarButton);
+```
+
+```js:line-numbers [viewer.js]
+import { Viewer } from '@photo-sphere-viewer/core';
+
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
 
 new Viewer({
     container: 'viewer',
@@ -94,3 +98,5 @@ new Viewer({
 ```
 
 :::
+
+::::

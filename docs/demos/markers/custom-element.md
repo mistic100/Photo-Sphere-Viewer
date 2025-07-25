@@ -2,7 +2,7 @@
 
 Use a custom WebComponent as marker.
 
-::: code-demo
+:::: code-demo
 
 ```yaml
 autoload: true
@@ -12,12 +12,9 @@ packages:
       style: true
 ```
 
-```js{15-20}
-import { Viewer } from '@photo-sphere-viewer/core';
-import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
+::: code-group
 
-const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
-
+``` js:line-numbers [CustomMarkerElement.js]
 // declare the custom element
 class CustomMarkerElement extends HTMLElement {
     constructor() {
@@ -170,6 +167,13 @@ viewerSize: ${viewerSize.width}px x ${viewerSize.height}px
 
 // register the custom element
 customElements.define('custom-marker', CustomMarkerElement);
+```
+
+```js:line-numbers{15-16} [viewer.js]
+import { Viewer } from '@photo-sphere-viewer/core';
+import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
+
+const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
 
 const viewer = new Viewer({
     container: 'viewer',
@@ -191,7 +195,7 @@ const viewer = new Viewer({
 });
 ```
 
-```html
+```html [template.html]
 <custom-marker id="custom-marker-element" style="display: none">
     <img src="https://photo-sphere-viewer-data.netlify.app/assets/sphere-small.jpg" />
     <h2>Custom element</h2>
@@ -200,3 +204,5 @@ const viewer = new Viewer({
 ```
 
 :::
+
+::::

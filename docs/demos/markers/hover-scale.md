@@ -12,7 +12,7 @@ packages:
       style: true
 ```
 
-```js{13,30,39}
+```js:line-numbers{13,30,39}
 import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 

@@ -1,6 +1,6 @@
 # Intro animation
 
-Use the `Animation` helper and `AutorotatePlugin` to create a cool intro.
+Use the `Animation` helper and [autorotate plugin](../../plugins/autorotate.md) to create a cool intro.
 
 ::: code-demo
 
@@ -11,7 +11,7 @@ packages:
     - name: autorotate-plugin
 ```
 
-```js
+```js:line-numbers
 import { Viewer, utils } from '@photo-sphere-viewer/core';
 import { AutorotatePlugin } from '@photo-sphere-viewer/autorotate-plugin';
 

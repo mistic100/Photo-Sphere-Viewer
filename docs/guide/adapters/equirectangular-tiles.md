@@ -8,7 +8,7 @@ Reduce the initial loading time and used bandwidth by slicing big equirectangula
 This adapter is available in the [@photo-sphere-viewer/equirectangular-tiles-adapter](https://www.npmjs.com/package/@photo-sphere-viewer/equirectangular-tiles-adapter) package.
 :::
 
-```js
+```js:line-numbers
 import { EquirectangularTilesAdapter } from '@photo-sphere-viewer/equirectangular-tiles-adapter';
 
 const viewer = new Viewer({
@@ -35,7 +35,7 @@ packages:
     - name: equirectangular-tiles-adapter
 ```
 
-<<< ./demos-src/equirectangular-tiles.js
+<<< ./demos-src/equirectangular-tiles.js{js:line-numbers}
 
 :::
 
@@ -127,7 +127,7 @@ Panorama configuration associated to low resolution first image, following the s
 
 Array of available tiles configurations. Each element is an object with `width`, `cols` and `rows` (see "Single level") as well as `zoomRange`, an array containing the minimum and the maximum zoom level. **The levels must be ordered and cover the whole 0-100 zoom range.**
 
-```js
+```js:line-numbers
 levels: [
     {
         width: 6144,

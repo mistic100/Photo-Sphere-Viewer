@@ -12,12 +12,12 @@ Read more about [reusable components](./components/).
 
 It is good practice to wait for the `ready` event before calling any method.
 
-```js
+```js:line-numbers
 viewer.addEventListener('ready', () => {
-  viewer.rotate({
-    textureX: 1500,
-    textureY: 1000,
-  });
+    viewer.rotate({
+        textureX: 1500,
+        textureY: 1000,
+    });
 }, { once: true });
 ```
 
@@ -41,14 +41,14 @@ The `speed` option is either a duration in milliseconds or a string containing t
 
 The method returns a `Animation` object which is a standard Promise with an additional `cancel` method.
 
-```js
+```js:line-numbers
 viewer.animate({
-  yaw: Math.PI / 2,
-  pitch: '20deg',
-  zoom: 50,
-  speed: '2rpm',
+    yaw: Math.PI / 2,
+    pitch: '20deg',
+    zoom: 50,
+    speed: '2rpm',
 })
-  .then(() => /* animation complete */);
+    .then(() => /* animation complete */);
 ```
 
 ### `destroy()`
@@ -71,7 +71,7 @@ Return the current zoom level between 0 and 100.
 
 Immediately rotate the view without animation.
 
-```js
+```js:line-numbers
 // you can also use yaw and pitch
 viewer.rotate({
     textureX: 1500,
@@ -83,7 +83,7 @@ viewer.rotate({
 
 Update an option of the viewer. Some options cannot be changed : `panorama`, `panoData`, `container`, `adapter` and `plugins`.
 
-```js
+```js:line-numbers
 viewer.setOption('fisheye', true);
 ```
 
@@ -91,7 +91,7 @@ viewer.setOption('fisheye', true);
 
 Update multiple options at once.
 
-```js
+```js:line-numbers
 viewer.setOptions({
     fisheye: true,
 });
@@ -105,20 +105,20 @@ Change the panorama image with an optional transition animation (enabled by defa
 
 The method returns a Promise resolved when the new panorama has finished loading.
 
-```js
+```js:line-numbers
 viewer.setPanorama('image.jpg')
   .then(() => /* update complete */);
 
 viewer.setPanorama('image.jpg', { transition: false });
 
 viewer.setPanorama('image.jpg', {
-  caption: 'The new caption',
-  position: { yaw: 0, pitch: 0 },
-  transition: {
-    rotation: false,
-    effect: 'black',
-  },
-  // more options in the API doc
+    caption: 'The new caption',
+    position: { yaw: 0, pitch: 0 },
+    transition: {
+        rotation: false,
+        effect: 'black',
+    },
+    // more options in the API doc
 });
 ```
 

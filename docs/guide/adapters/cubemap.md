@@ -8,7 +8,7 @@
 This adapter is available in the [@photo-sphere-viewer/cubemap-adapter](https://www.npmjs.com/package/@photo-sphere-viewer/cubemap-adapter) package.
 :::
 
-```js
+```js:line-numbers
 import {  CubemapAdapter } from '@photo-sphere-viewer/cubemap-adapter';
 
 const viewer = new Viewer({
@@ -34,7 +34,7 @@ packages:
     - name: cubemap-adapter
 ```
 
-<<< ./demos-src/cubemap.js
+<<< ./demos-src/cubemap.js{js:line-numbers}
 
 :::
 
@@ -50,8 +50,9 @@ When using this adapter, the `panorama` option and the `setPanorama()` method ac
 
 Each face is in a separate file, all files will be loaded before showing the panorama.
 
-```js
-// With an array (order is important)
+::: code-group
+```js:line-numbers [array]
+// order is important
 panorama: [
   'path/to/left.jpg',
   'path/to/front.jpg',
@@ -60,8 +61,8 @@ panorama: [
   'path/to/top.jpg',
   'path/to/bottom.jpg',
 ]
-
-// With an object
+```
+```js:line-numbers [object]
 panorama: {
   left:   'path/to/left.jpg',
   front:  'path/to/front.jpg',
@@ -70,8 +71,8 @@ panorama: {
   top:    'path/to/top.jpg',
   bottom: 'path/to/bottom.jpg',
 }
-
-// Alternatively
+```
+```js:line-numbers [object (alt)]
 panorama: {
   type: 'separate',
   paths: /* array or object */,
@@ -79,6 +80,7 @@ panorama: {
   flipTopBottom: false,
 }
 ```
+:::
 
 ::: tip Partial cubemap
 It is possible to skip the loading of one or more faces by providing a `null` URL.
@@ -90,7 +92,7 @@ All faces are in a single file arranged in an horizontal stripe. The default str
 
 ![](/images/cubemap-stripe.png)
 
-```js
+```js:line-numbers
 panorama: {
   type: 'stripe',
   path: 'path/to/panorama.jpg',
@@ -107,7 +109,7 @@ All faces are in a single file arranged in an horizontal "T" unfolded cube.
 
 ![](/images/cubemap-net.png)
 
-```js
+```js:line-numbers
 panorama: {
   type: 'net',
   path: 'path/to/panorama.jpg',

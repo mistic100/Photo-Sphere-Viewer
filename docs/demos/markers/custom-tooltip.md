@@ -2,7 +2,7 @@
 
 Advanced styling of a marker's tooltip.
 
-::: code-demo
+:::: code-demo
 
 ```yaml
 autoload: true
@@ -12,7 +12,9 @@ packages:
       style: true
 ```
 
-```js{15-20}
+::: code-group
+
+```js:line-numbers{15-20} [viewer.js]
 import { Viewer } from '@photo-sphere-viewer/core';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 
@@ -57,7 +59,7 @@ viewer.addEventListener('ready', () => {
 }, { once: true });
 ```
 
-```css
+```css:line-numbers [style.css]
 .custom-tooltip {
     max-width: none;
     width: 300px;
@@ -80,7 +82,7 @@ viewer.addEventListener('ready', () => {
 }
 ```
 
-```html
+```html [template.html]
 <script type="text/template" id="tooltip-content">
     <img src="https://photo-sphere-viewer-data.netlify.app/assets/sphere-small.jpg">
     <article>
@@ -95,3 +97,5 @@ viewer.addEventListener('ready', () => {
 ```
 
 :::
+
+::::

@@ -9,7 +9,9 @@ autoload: true
 title: PSV Description Demo
 ```
 
-```js{9}
+::: code-group
+
+```js:line-numbers{9} [viewer.js]
 import { Viewer } from '@photo-sphere-viewer/core';
 
 const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
@@ -23,7 +25,7 @@ new Viewer({
 });
 ```
 
-```html
+```html [template.html]
 <script type="text/template" id="description">
     <p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis egestas.
       Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam
@@ -38,5 +40,7 @@ new Viewer({
     </iframe>
 </script>
 ```
+
+:::
 
 :::

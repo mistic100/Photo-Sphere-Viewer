@@ -22,7 +22,7 @@ Official adapters are available in various `@photo-sphere-viewer/***-adapter` pa
 
 ::: tab Import from a CDN
 
-```html
+```html:line-numbers
 <script type="importmap">
     {
         "imports": {
@@ -51,7 +51,7 @@ Official adapters are available in various `@photo-sphere-viewer/***-adapter` pa
 
 ::: tab Install with NPM and a build tool
 
-```js
+```js:line-numbers
 import { Viewer } from '@photo-sphere-viewer/core';
 import { CubemapAdapter } from '@photo-sphere-viewer/cubemap-adapter';
 
@@ -64,18 +64,3 @@ new Viewer({
 :::
 
 ::::
-
-::: tip
-When using Typescript you can also type-check the panorama object :
-
-```ts
-import { CubemapAdapter, CubemapPanorama } from '@photo-sphere-viewer/cubemap-adapter';
-
-const viewer = new Viewer({
-    adapter: CubemapAdapter,
-    panorama: {
-        ...,
-    } satisfies CubemapPanorama,
-});
-```
-:::

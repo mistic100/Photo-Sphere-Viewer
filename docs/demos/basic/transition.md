@@ -6,6 +6,7 @@ This interactive demo shows the various possibilities of the [`defaultTransition
 
 ```yaml
 autoload: true
+hideHeader: true
 title: PSV Transition Demo
 packages:
     - name: lil-gui

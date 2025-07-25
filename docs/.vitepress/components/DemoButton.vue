@@ -1,5 +1,5 @@
 <template>
-    <v-btn :href="href">
+    <v-btn :href="href" color="primary">
         <v-icon icon="mdi-play" start/>
         Check the demo
     </v-btn>

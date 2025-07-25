@@ -1,6 +1,6 @@
 <template>
     <v-card>
-        <v-tabs v-model="currentTab" bg-color="primary">
+        <v-tabs v-if="!hideHeader" v-model="currentTab" bg-color="primary">
             <v-tab value="result">Result</v-tab>
             <v-tab value="source">Source</v-tab>
 
@@ -43,6 +43,7 @@ import { getFullPackages, getIframeContent, openService } from './utils';
 
 const props = defineProps<{
     autoload: string;
+    hideHeader: string;
     title: string;
     version: string;
     rawHtml: string;
@@ -51,6 +52,7 @@ const props = defineProps<{
     rawPackages: string;
 }>();
 
+const hideHeader = props.hideHeader === 'true';
 const show = ref(props.autoload === 'true');
 const currentTab = ref('result');
 

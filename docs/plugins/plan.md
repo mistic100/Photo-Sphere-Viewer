@@ -13,7 +13,7 @@ This plugin is available in the [@photo-sphere-viewer/plan-plugin](https://www.n
 
 The minimal configuration of this plugin contains `coordinates` (the GPS position of the panorama).
 
-```js
+```js:line-numbers
 import { PlanPlugin } from '@photo-sphere-viewer/plan-plugin';
 
 const viewer = new Viewer({
@@ -46,7 +46,7 @@ packages:
       css: dist/leaflet.css
 ```
 
-<<< ./demos-src/plan.js
+<<< ./demos-src/plan.js{js:line-numbers}
 
 :::
 
@@ -77,7 +77,7 @@ List of available base layers, if more than one is defined, a button will allow 
 
 Each element is an object containing `urlTemplate` (for standard raster tiles) **OR** `layer`  (for any custom Leaflet layers), as well as `name` and `attribution`.
 
-```js
+```js:line-numbers
 layers: [
     {
         name: 'OpenStreetMap',
@@ -104,7 +104,7 @@ _Note: this option is ignored if `configureLeaflet` is used._
 
 Allows to configure Leaftlet yourself. This will disable the default layer.
 
-```js
+```js:line-numbers
 configureLeaflet(map) {
     // https://leafletjs.com/reference.html
 },
@@ -169,7 +169,7 @@ Style of hotspots.
 
 The hotspots are represented by a circle with configurable size and color, but can also be an image.
 
-```ts
+```ts:line-numbers
 {
     /**
      * Size of the hotspot
@@ -306,7 +306,7 @@ Allow to override the default `spotStyle`.
 
 Changes the hotspots.
 
-```js
+```js:line-numbers
 mapPlugin.setHotspots([
     { id: '1', coordinates: [6.79077, 44.58041], tooltip: 'Hotspot one' },
     { id: '2', coordinates: [6.79077, 44.58041], image: 'blue-dot.png' },
@@ -321,7 +321,7 @@ Removes all hotspots.
 
 Changes the position of the panorama on the map.
 
-```js
+```js:line-numbers
 mapPlugin.setCoordinates([6.79077, 44.58041]);
 ```
 
@@ -347,7 +347,7 @@ Changes the current zoom level.
 
 Triggered when the user clicks on a hotspot.
 
-```js
+```js:line-numbers
 planPlugin.addEventListener('select-hotspot', ({ hotspotId }) => {
     console.log(`Clicked on hotspot ${hotspotId}`);
 });

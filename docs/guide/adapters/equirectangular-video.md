@@ -6,7 +6,7 @@
 This adapter is available in the [@photo-sphere-viewer/equirectangular-video-adapter](https://www.npmjs.com/package/@photo-sphere-viewer/equirectangular-video-adapter) package.
 :::
 
-```js
+```js:line-numbers
 import { EquirectangularVideoAdapter } from '@photo-sphere-viewer/equirectangular-video-adapter';
 
 const viewer = new Viewer({
@@ -37,7 +37,7 @@ packages:
     - name: resolution-plugin
 ```
 
-<<< ./demos-src/equirectangular-video.js
+<<< ./demos-src/equirectangular-video.js{js:line-numbers}
 
 :::
 
@@ -73,7 +73,7 @@ Path of the video file. The video must not be larger than 4096 pixels or it won'
 
 It can also be an existing `MediaStream`, for example to display the feed of an USB 360° camera, or a pre-existing `HTMLVideoElement` for more control over video playback.
 
-```js
+```js:line-numbers
 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 
 const viewer = new Viewer({
@@ -94,14 +94,14 @@ const viewer = new Viewer({
 
 Can by used to define cropping information if the video does not cover a full sphere.
 
-```js
+```js:line-numbers
 panorama: {
-  source: 'path/video.mp4',
-  data: {
-    fullWidth: 6000,
-    // "fullHeight" optional, always "fullWidth / 2"
-    croppedX: 1000,
-    croppedY: 500,
-  },
+    source: 'path/video.mp4',
+    data: {
+        fullWidth: 6000,
+        // "fullHeight" optional, always "fullWidth / 2"
+        croppedX: 1000,
+        croppedY: 500,
+    },
 }
 ```

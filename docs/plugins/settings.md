@@ -13,7 +13,7 @@ This plugin is available in the [@photo-sphere-viewer/settings-plugin](https://w
 
 Once enabled the plugin will add a new "Settings" button which can be populated by other plugins.
 
-```js
+```js:line-numbers
 import { SettingsPlugin } from '@photo-sphere-viewer/settings-plugin';
 
 const viewer = new Viewer({
@@ -36,7 +36,7 @@ packages:
       style: true
 ```
 
-<<< ./demos-src/settings.js
+<<< ./demos-src/settings.js{js:line-numbers}
 
 :::
 
@@ -48,7 +48,7 @@ Registering a new setting is done by calling the `addSetting` on the plugin. The
 
 This a setting which has only two values : `true` and `false`. It is required to provide the `active(): boolean` and `toggle(): void` functions.
 
-```js
+```js:line-numbers
 let enabled = false;
 
 settings.addSetting({
@@ -64,7 +64,7 @@ settings.addSetting({
 
 This is a setting which has multiple available values (or options). It is required to provide the `current(): string`, `options(): Options[]` and `apply(option: string): void` functions.
 
-```js
+```js:line-numbers
 let currentOption = 'A';
 
 settings.addSetting({
@@ -86,7 +86,7 @@ For translation purposes, both `label` can be a key in the main [`lang`](../guid
 
 A setting can also have a `badge` function, which return value will be used as a badge on the settings button itself. **Only one setting can declare a badge.**
 
-```js
+```js:line-numbers
 settings.addSetting({
   ...,
   badge: () => currentOption,
@@ -107,7 +107,7 @@ Should the settings be persisted. The persistence storage can be configured.
 
 -   type:
 
-```ts
+```ts:line-numbers
 {
   get(settingId: string): boolean | string | Promise<boolean | string>;
   set(settingId: string, value: boolean | string);
@@ -138,7 +138,7 @@ _Note: this option is not part of the plugin but is merged with the main [`lang`
 
 Triggered when the resolution is changed.
 
-```js
+```js:line-numbers
 settingsPlugin.addEventListener('setting-changed', ({ settingId, settingValue }) => {
     console.log(`${settingId}: ${settingValue}`);
 });

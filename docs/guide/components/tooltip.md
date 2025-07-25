@@ -17,7 +17,7 @@ This example adds a persistent tooltip following the cursor.
 title: PSV Tooltip Demo
 ```
 
-<<< ./demos-src/tooltip.js
+<<< ./demos-src/tooltip.js{js:line-numbers}
 
 :::
 

@@ -14,7 +14,7 @@ packages:
       style: true
 ```
 
-```js
+```js:line-numbers
 import { Viewer } from '@photo-sphere-viewer/core';
 import { CompassPlugin } from '@photo-sphere-viewer/compass-plugin';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';

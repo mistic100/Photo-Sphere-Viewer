@@ -6,7 +6,7 @@
 This adapter is available in the [@photo-sphere-viewer/cubemap-video-adapter](https://www.npmjs.com/package/@photo-sphere-viewer/cubemap-video-adapter) package.
 :::
 
-```js
+```js:line-numbers
 import { CubemapVideoAdapter } from '@photo-sphere-viewer/cubemap-video-adapter';
 
 const viewer = new Viewer({
@@ -37,7 +37,7 @@ packages:
     - name: resolution-plugin
 ```
 
-<<< ./demos-src/cubemap-video.js
+<<< ./demos-src/cubemap-video.js{js:line-numbers}
 
 :::
 

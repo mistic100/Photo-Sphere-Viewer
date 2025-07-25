@@ -20,7 +20,7 @@ In the plugin you have access to `this.viewer` which is the instance of the view
 
 Your plugin is also an `EventTarget` with `addEventListener`, `removeEventListener` and `dispatchEvent` methods.
 
-```js
+```js:line-numbers
 import { AbstractPlugin } from '@photo-sphere-viewer/core';
 
 export class CustomPlugin extends AbstractPlugin {
@@ -51,7 +51,7 @@ Beside this main class, you can use any number of ES modules to split your code.
 
 When developping in TypeScript it is handy to be able to strongly type each event you emit. That's why `AbstractPlugin` takes an optional template type representing the list of dispatchable events. All events must extends `TypedEvent` which is also a templated class to be able to type the `target` property.
 
-```ts
+```ts:line-numbers
 /**
  * Declare the events classes
  */
@@ -95,7 +95,7 @@ viewer.getPlugin(CustomPlugin)
 
 The simplest way to package your plugin is by using [rollup.js](https://rollupjs.org) with the following configuration:
 
-```js
+```js:line-numbers
 export default {
     input: 'src/index.js',
     output: [
@@ -151,7 +151,7 @@ Photo Sphere Viewer buttons **must** extend `AbstractButton`, check the [API Ref
     -   `collapsable` : indicates the button can be collapsed in the menu on small screens (defaults `false`)
     -   `tabbable` : indicates the button can be activated with the keyboard (defaults `true`)
 
-```js
+```js:line-numbers
 import { AbstractButton } from '@photo-sphere-viewer/core';
 
 export class CustomButton extends AbstractButton {
@@ -225,7 +225,7 @@ If you intend to publish your plugin on npmjs.org please respect the following n
 
 Your `package.json` must be properly configured to allow application bundlers to get the right file, and `@photo-sphere-viewer/core` must be declared as dependency.
 
-```json
+```json:line-numbers
 {
     "name": "photo-sphere-viewer-custom-plugin",
     "version": "1.0.0",

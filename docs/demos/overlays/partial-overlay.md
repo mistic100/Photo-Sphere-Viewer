@@ -11,7 +11,7 @@ packages:
     - name: overlays-plugin
 ```
 
-```js{18-22}
+```js:line-numbers{17-21}
 import { Viewer } from '@photo-sphere-viewer/core';
 import { OverlaysPlugin } from '@photo-sphere-viewer/overlays-plugin';
 
@@ -28,7 +28,6 @@ const viewer = new Viewer({
                 {
                     id: 'paper',
                     path: baseUrl + 'sphere-paper-overlay.png',
-                    opacity: 0.8,
                     panoData: {
                         fullWidth: 3000,
                         croppedX: 1250,

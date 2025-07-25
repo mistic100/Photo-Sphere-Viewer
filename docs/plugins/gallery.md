@@ -17,7 +17,7 @@ GalleryPlugin is not compatible with ResolutionPlugin.
 
 The plugin has a list of `items`, each configuring the corresponding panorama, a name and a thumbnail.
 
-```js
+```js:line-numbers
 import { GalleryPlugin } from '@photo-sphere-viewer/gallery-plugin';
 
 const viewer = new Viewer({
@@ -53,7 +53,7 @@ packages:
       style: true
 ```
 
-<<< ./demos-src/gallery.js
+<<< ./demos-src/gallery.js{js:line-numbers}
 
 :::
 

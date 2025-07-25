@@ -23,7 +23,7 @@ There are four types of markers :
 
 Markers can be added at startup with the `markers` option or after load with the various methods.
 
-```js
+```js:line-numbers
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';
 
 const viewer = new Viewer({
@@ -55,7 +55,7 @@ markersPlugin.addEventListener('select-marker', ({ marker }) => {
 
 The following example contains all types of markers. Click anywhere on the panorama to add a red marker, right-click to change it's color and double-click to remove it.
 
-::: code-demo
+:::: code-demo
 
 ```yaml
 title: PSV Markers Demo
@@ -64,10 +64,14 @@ packages:
       style: true
 ```
 
-<<< ./demos-src/markers.js
-<<< ./demos-src/markers.html
+::: code-group
+
+<<< ./demos-src/markers.js{js:line-numbers}
+<<< ./demos-src/markers.html [template.html]
 
 :::
+
+::::
 
 ## Markers
 
@@ -81,7 +85,7 @@ One, and only one, of these options is required for each marker.
 
 Path to an image file. Requires `size` to be defined.
 
-```js{3}
+```js:line-numbers{3}
 {
     id: 'marker-1',
     image: 'pin-red.png',
@@ -107,7 +111,7 @@ There is two ways to position `imageLayer` and `videoLayer` markers:
 <DemoButton href="/demos/markers/layers.html"/>
 :::
 
-```js{3}
+```js:line-numbers{3}
 {
     id: 'marker-1',
     imageLayer: 'pin-red.png',
@@ -138,7 +142,7 @@ And `image` marker is rendered flat above the viewer but and `imageLayer` is ren
 
 Path to a video file. It is positionned exactly like `imageLayer`. It can be used with the [`chromaKey`](#chromakey) option.
 
-```js{3}
+```js:line-numbers{3}
 {
     id: 'marker-1',
     videoLayer: 'intro.mp4',
@@ -153,7 +157,7 @@ Path to a video file. It is positionned exactly like `imageLayer`. It can be use
 
 HTML content of the marker. It is recommended to define th `size`.
 
-```js{3}
+```js:line-numbers{3}
 {
     id: 'marker-1',
     html: '<string>Click here</strong>',
@@ -168,7 +172,7 @@ HTML content of the marker. It is recommended to define th `size`.
 
 Existing DOM element.
 
-```js{3}
+```js:line-numbers{3}
 {
     id: 'marker-1',
     element: document.querySelector('#my-marker'),
@@ -195,7 +199,7 @@ If your component has an `updateMarker()` method it will be called by the plugin
 
 Existing DOM element.
 
-```js{3}
+```js:line-numbers{3}
 {
     id: 'marker-1',
     elementLayer: getYoutubeIframe(videoId),
@@ -213,7 +217,7 @@ Existing DOM element.
 Array of points defining the polygon in spherical coordinates (degrees or radians).  
 The polygon can have one or more holes by defined them in a nested array (the syntax is [similar to GeoJSON](https://geojson.readthedocs.io/en/latest/#polygon)).
 
-```js{3,8-11}
+```js:line-numbers{3,8-11}
 {
     id: 'marker-1',
     polygon: [[0.2, 0.4], [0.9, 1.1], [1.5, 0.7]];
@@ -236,7 +240,7 @@ Same as `polygon` but in pixel coordinates on the panorama image.
 The object syntax can be used to define the panorama face when using a cubemap.  
 Holes are also supported (see above).
 
-```js{3,9-11}
+```js:line-numbers{3,9-11}
 {
     id: 'marker-1',
     polygonPixels: [[100, 200], [150, 300], [300, 200]],
@@ -258,7 +262,7 @@ Holes are also supported (see above).
 
 Same as `polygon` but generates a polyline.
 
-```js{3}
+```js:line-numbers{3}
 {
     id: 'marker-1',
     polyline: [[0.2, 0.4], [0.9, 1.1]],
@@ -271,7 +275,7 @@ Same as `polygon` but generates a polyline.
 
 Same as `polygonPixels` but generates a polyline.
 
-```js{3}
+```js:line-numbers{3}
 {
     id: 'marker-1',
     polylinePixels: [[100, 200], [150, 300]],
@@ -284,7 +288,7 @@ Same as `polygonPixels` but generates a polyline.
 
 Size of the square. 
 
-```js{3}
+```js:line-numbers{3}
 {
     id: 'marker-1',
     square: 10,
@@ -298,7 +302,7 @@ Size of the square.
 
 Size of the rectangle. 
 
-```js{3,9}
+```js:line-numbers{3,9}
 {
     id: 'marker-1',
     rect: [10, 5],
@@ -318,7 +322,7 @@ Size of the rectangle.
 
 Radius of the circle.
 
-```js{3}
+```js:line-numbers{3}
 {
     id: 'marker-1',
     circle: 10,
@@ -332,7 +336,7 @@ Radius of the circle.
 
 Radiuses of the ellipse.
 
-```js{3,9}
+```js:line-numbers{3,9}
 {
     id: 'marker-1',
     ellipse: [10, 5],
@@ -352,7 +356,7 @@ Radiuses of the ellipse.
 
 Definition of the path (0,0 will be placed at the defined `position`).
 
-```js{3}
+```js:line-numbers{3}
 {
     id: 'marker-1',
     path: 'M0,0 L60,60 L60,0 L0,60 L0,0',
@@ -467,7 +471,7 @@ Overrides the [global `defaultHoverScale`](#defaulthoverscale). The configuratio
 
 _(This option is ignored for polygons, polylines and layers)._
 
-```js
+```js:line-numbers
 {
     defaultHoverScale: { amount: 1.5, duration: 150 },
     markers: [
@@ -517,7 +521,7 @@ CSS properties to set on the marker (background, border, etc.).
 
 _(For `imageLayer` and `videoLayer` markers only `cursor` can be configured)._
 
-```js
+```js:line-numbers
 style: {
   backgroundColor: 'rgba(0, 0, 0, 0.5)',
   cursor         : 'help'
@@ -531,7 +535,7 @@ style: {
 SVG properties to set on the marker (fill, stroke, etc.).
 _(Only for polygons, polylines and svg markers)._
 
-```js
+```js:line-numbers
 svgStyle: {
   fill       : 'rgba(0, 0, 0, 0.5)',
   stroke     : '#ff0000',
@@ -560,7 +564,7 @@ _(This option is only applicable to `imagerLayer` and `videoLayer`)._
 
 The `chromaKey` marker option allows to define a color which will be transparent (green screen/blue screen).
 
-```ts
+```ts:line-numbers
 chromaKey: {
     /**
      * Enable the option
@@ -614,7 +618,7 @@ Accepted positions are combinations of `top`, `center`, `bottom` and `left`, `ce
 
 Possible triggers are `hover` and `click`.
 
-```js
+```js:line-numbers
 tooltip: 'This is a marker' // tooltip with default position and style
 
 tooltip: { // tooltip with custom position
@@ -721,7 +725,7 @@ _Note: this option is not part of the plugin but is merged with the main [`lang`
 
 Adds a new marker to the viewer.
 
-```js
+```js:line-numbers
 markersPlugin.addMarker({
     id: 'new-marker',
     position: { yaw: '45deg', pitch: '0deg' },
@@ -741,7 +745,7 @@ Returns the last marker clicked by the user.
 
 Moves the view to face a specific marker. Default speed is `8rpm`, set it to `0` for an immediate rotation.
 
-```js
+```js:line-numbers
 markersPlugin.gotoMarker('marker-1', '4rpm')
   .then(() => /* animation complete */);
 ```
@@ -762,7 +766,7 @@ Replaces all markers by new ones.
 
 Updates a marker with new properties. The type of the marker cannot be changed.
 
-```js
+```js:line-numbers
 markersPlugin.updateMarker({
     id: 'existing-marker',
     image: 'assets/pin-blue.png',
@@ -783,7 +787,7 @@ Allows to always display all tooltips.
 
 Triggered when the user clicks on a marker.
 
-```js
+```js:line-numbers
 markersPlugin.addEventListener('select-marker', ({ marker }) => {
     console.log(`Clicked on marker ${marker.id}`);
 });
@@ -797,7 +801,7 @@ Triggered when a marker was selected and the user clicks elsewhere.
 
 Triggered when the visibility of a marker changes.
 
-```js
+```js:line-numbers
 markersPlugin.addEventListener('marker-visibility', ({ marker, visible }) => {
     console.log(`Marker ${marker.id} is ${visible ? 'visible' : 'not visible'}`);
 });

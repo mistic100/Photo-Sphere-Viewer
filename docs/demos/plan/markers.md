@@ -20,7 +20,7 @@ packages:
       css: dist/leaflet.css
 ```
 
-```js
+```js:line-numbers
 import { Viewer } from '@photo-sphere-viewer/core';
 import { PlanPlugin } from '@photo-sphere-viewer/plan-plugin';
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin';

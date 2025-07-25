@@ -11,7 +11,7 @@ This plugin is available in the [@photo-sphere-viewer/virtual-tour-plugin](https
 
 ## Usage
 
-```js
+```js:line-numbers
 import { VirtualTourPlugin } from '@photo-sphere-viewer/virtual-tour-plugin';
 
 const viewer = new Viewer({
@@ -35,7 +35,7 @@ The nodes can be provided all at once or asynchronously as the user navigates.
 ::: tab Client mode
 In client mode you must provide all the `nodes` at once, you can also change the nodes with the `setNodes` method.
 
-```js
+```js:line-numbers
 nodes: [
     { id: 'node-1', panorama: '001.jpg', links: [{ nodeId: 'node-2', position: { textureX: 1500, textureY: 780 } }] },
     { id: 'node-2', panorama: '002.jpg', links: [{ nodeId: 'node-1', position: { textureX: 3000, textureY: 780 } }] },
@@ -47,7 +47,7 @@ nodes: [
 ::: tab Server mode
 In server mode you provide the `getNode` function which returns a Promise to load the data of a node.
 
-```js
+```js:line-numbers
 startNodeId: 'node-1',
 getNode: async (nodeId) => {
     const res = await fetch(`/api/nodes/${nodeId}`);
@@ -66,7 +66,7 @@ There are two different ways to define the position of the links : the manual mo
 ::: tab Manual mode
 In manual mode each link must have `yaw`/`pitch` or `textureX`/`textureY` coordinates to be placed at the correct location on the panorama. This works exactly like the placement of markers.
 
-```js
+```js:line-numbers
 const node = {
     id: 'node-1',
     panorama: '001.jpg',
@@ -84,7 +84,7 @@ const node = {
 ::: tab GPS mode
 In GPS mode each node has positionning coordinates and the links are placed automatically.
 
-```js
+```js:line-numbers
 const node = {
     id: 'node-1',
     panorama: '001.jpg',
@@ -121,7 +121,7 @@ packages:
       style: true
 ```
 
-<<< ./demos-src/virtual-tour.js
+<<< ./demos-src/virtual-tour.js{js:line-numbers}
 
 :::
 
@@ -313,7 +313,7 @@ The default behaviour is to rotate the view to face the direction of the link an
 
 **If defined as an object, the type is:**
 
-```ts
+```ts:line-numbers
 {
     /**
      * Show the loader while loading the new panorama
@@ -340,7 +340,7 @@ The default behaviour is to rotate the view to face the direction of the link an
 
 **If defined as a function, the signature is:**
 
-```ts
+```ts:line-numbers
 (toNode: Node, fromNode?: Node, fromLink?: NodeLink) => ({
     showLoader?: boolean;
     effect?: 'none' | 'fade' | 'black' | 'white';
@@ -406,9 +406,9 @@ This configuration is **required** if `positionMode=manual` but can also be used
 To define the position of the node on the map you have to configure its `map` property with `x` and `y`.  
 You can also configure other things like `color`, `image` and `size`. Please refer to the [Hotspots section](map.md#hotspots-1) of the Map plugin.
 
-```js{10}
+```js:line-numbers{10}
 plugins: [
-    [VirtualTourPlugin, {
+    VirtualTourPlugin.withConfig({
         map: {
             imageUrl: 'map.jpg',
         },
@@ -419,7 +419,7 @@ plugins: [
                 map: { x: 500, y: 815, color: 'red' },
             },
         ],
-    }],
+    }),
 ],
 ```
 
@@ -431,9 +431,9 @@ This configuration can **only** be used if `positionMode=gps`.
 
 You have to provide additional metadata about the map for the automatic positionning to work : its `size` in pixels and its `extent` (GPS bounds).
 
-```js{5-6,13}
+```js:line-numbers{5-6,13}
 plugins: [
-    [VirtualTourPlugin, {
+    VirtualTourPlugin.withConfig({
         map: {
             imageUrl: 'map.jpg',
             size: { width: 1600, height: 1200 },
@@ -447,7 +447,7 @@ plugins: [
                 map: { color: 'red' },
             },
         ],
-    }],
+    }),
 ],
 ```
 
@@ -468,7 +468,7 @@ Style of the arrow used to display links.
 
 Default value is:
 
-```js
+```js:line-numbers
 {
   element: // a circular button with a ripple effect
   size   : { width: 80, height: 80 },
@@ -484,7 +484,7 @@ You can also use `image` (path to an image file) and add custom CSS with `style`
 
 Default value is:
 
-```js
+```js:line-numbers
 {
     /* (3D mode) Minimal vertical view angle */
     minPitch: 0.3,
@@ -507,7 +507,7 @@ Changes the nodes and display the first one (or the one designated by `startNode
 
 Updates a single node. If it is the current node, the viewer will be updated accordingly. All attributes or optionnal but `id`.
 
-```js
+```js:line-numbers
 virtualTourPlugin.updateNode({
     id: 'node-1',
     caption: 'New caption',
@@ -523,7 +523,7 @@ Changes the current node. `options` allows to override the default `transitionOp
 
 Moves the view to face a specific link. Default speed is `8rpm`, set it to `0` for an immediate rotation.
 
-```js
+```js:line-numbers
 virtualTourPlugin.gotoLink('2', '4rpm')
   .then(() => /* animation complete */);
 ```
@@ -542,7 +542,7 @@ Returns the position of a link in the viewer.
 
 Triggered when the current node is changed.
 
-```js
+```js:line-numbers
 virtualTourPlugin.addEventListener('node-changed', ({ node, data }) => {
     console.log(`Current node is ${node.id}`);
     if (data.fromNode) {

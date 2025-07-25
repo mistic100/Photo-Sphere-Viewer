@@ -8,7 +8,7 @@ Reduce the initial loading time and used bandwidth by slicing big cubemap panora
 This adapter is available in the [@photo-sphere-viewer/cubemap-tiles-adapter](https://www.npmjs.com/package/@photo-sphere-viewer/cubemap-tiles-adapter) package.
 :::
 
-```js
+```js:line-numbers
 import { CubemapTilesAdapter } from '@photo-sphere-viewer/cubemap-tiles-adapter';
 
 const viewer = new Viewer({
@@ -42,7 +42,7 @@ packages:
     - name: cubemap-tiles-adapter
 ```
 
-<<< ./demos-src/cubemap-tiles.js
+<<< ./demos-src/cubemap-tiles.js{js:line-numbers}
 
 :::
 
@@ -122,7 +122,7 @@ URL of a low resolution complete panorama image to display while the tiles are l
 
 Array of available tiles configurations. Each element is an object with `faceSize` and `nbTiles` (see "Single level") as well as `zoomRange`, an array containing the minimum and the maximum zoom level. **The levels must be ordered and cover the whole 0-100 zoom range.**
 
-```js
+```js:line-numbers
 levels: [
     {
         faceSize: 3000,

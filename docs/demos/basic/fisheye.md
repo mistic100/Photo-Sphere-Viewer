@@ -9,7 +9,7 @@ autoload: true
 title: PSV Fisheye Demo
 ```
 
-```js{11}
+```js:line-numbers{11}
 import { Viewer } from '@photo-sphere-viewer/core';
 
 const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';

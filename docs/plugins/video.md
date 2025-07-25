@@ -23,7 +23,7 @@ Once enabled it will add various elements to the viewer:
 
 It also supports advanced autorotate with timed `keypoints`.
 
-```js
+```js:line-numbers
 import { VideoPlugin } from '@photo-sphere-viewer/video-plugin';
 
 const viewer = new Viewer({
@@ -54,7 +54,7 @@ packages:
     - name: resolution-plugin
 ```
 
-<<< ./demos-src/video.js
+<<< ./demos-src/video.js{js:line-numbers}
 
 :::
 
@@ -67,7 +67,7 @@ packages:
 
 Defines timed keypoints that will be used by the autorotate button.
 
-```js
+```js:line-numbers
 keypoints: [
     { time: 0, position: { yaw: 0, pitch: 0 } },
     { time: 5.5, position: { yaw: 0.25, pitch: 0 } },
@@ -113,7 +113,7 @@ _Note: this option is not part of the plugin but is merged with the main [`lang`
 
 You can offer multiple resolutions of your video with the [ResolutionPlugin](./resolution.md).
 
-```js
+```js:line-numbers
 const viewer = new Viewer({
     adapter: EquirectangularVideoAdapter,
     plugins: [

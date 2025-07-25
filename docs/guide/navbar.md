@@ -89,7 +89,7 @@ viewer.navbar.getButton('my-button').show();
 
 This example uses some core buttons, the caption and a custom button.
 
-```js
+```js:line-numbers
 new Viewer({
     navbar: [
         'zoom',

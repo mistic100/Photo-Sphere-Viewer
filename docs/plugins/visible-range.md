@@ -13,7 +13,7 @@ This plugin is available in the [@photo-sphere-viewer/visible-range-plugin](http
 
 The plugin allows to define `horizontalRange` and `verticalRange` to lock to viewable zone. It affects manual moves and automatic rotation.
 
-```js
+```js:line-numbers
 import { VisibleRangePlugin } from '@photo-sphere-viewer/visible-range-plugin';
 
 const viewer = new Viewer({
@@ -47,7 +47,7 @@ packages:
     - name: visible-range-plugin
 ```
 
-<<< ./demos-src/visible-range.js
+<<< ./demos-src/visible-range.js{js:line-numbers}
 
 :::
 
@@ -63,7 +63,7 @@ packages:
     - name: visible-range-plugin
 ```
 
-<<< ./demos-src/visible-range-panodata.js
+<<< ./demos-src/visible-range-panodata.js{js:line-numbers}
 
 :::
 

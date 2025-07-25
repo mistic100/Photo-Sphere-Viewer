@@ -9,7 +9,7 @@ autoload: true
 title: PSV Cropped Demo
 ```
 
-```js
+```js:line-numbers{9}
 import { Viewer } from '@photo-sphere-viewer/core';
 
 const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';

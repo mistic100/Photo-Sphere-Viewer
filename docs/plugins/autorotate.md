@@ -17,7 +17,7 @@ This plugin is available in the [@photo-sphere-viewer/autorotate-plugin](https:/
 
 In standard mode the panorama will simply rotate around, you can configure the `autorotatePitch` and `autorotateZoomLvl`.
 
-```js
+```js:line-numbers
 import { AutorotatePlugin } from '@photo-sphere-viewer/autorotate-plugin';
 
 const viewer = new Viewer({
@@ -37,7 +37,7 @@ In keypoints mode the plugin is configured with a list of `keypoints` which can 
 
 It is also possible to configure each keypoint with a pause time and a tooltip.
 
-```js
+```js:line-numbers
 const viewer = new Viewer({
     plugins: [
         AutorotatePlugin.withConfig({
@@ -78,7 +78,7 @@ packages:
     - name: autorotate-plugin
 ```
 
-<<< ./demos-src/autorotate.js
+<<< ./demos-src/autorotate.js{js:line-numbers}
 
 :::
 
@@ -96,7 +96,7 @@ packages:
       style: true
 ```
 
-<<< ./demos-src/autorotate-keypoints.js
+<<< ./demos-src/autorotate-keypoints.js{js:line-numbers}
 
 :::
 
@@ -171,6 +171,7 @@ lang: {
 ```
 
 _Note: this option is not part of the plugin but is merged with the main [`lang`](../guide/config.md#lang) object._
+
 
 ## Methods
 

@@ -15,7 +15,7 @@ This example displays an overlay at startup.
 title: PSV Overlay Demo
 ```
 
-<<< ./demos-src/overlay.js
+<<< ./demos-src/overlay.js{js:line-numbers}
 
 :::
 

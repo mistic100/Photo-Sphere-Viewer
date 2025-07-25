@@ -15,7 +15,7 @@ This example consistently displays new notifications.
 title: PSV Notification Demo
 ```
 
-<<< ./demos-src/notification.js
+<<< ./demos-src/notification.js{js:line-numbers}
 
 :::
 

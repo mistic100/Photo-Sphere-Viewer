@@ -9,7 +9,7 @@ autoload: true
 title: PSV Double click zoom Demo
 ```
 
-```js
+```js:line-numbers
 import { Viewer } from '@photo-sphere-viewer/core';
 
 const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';

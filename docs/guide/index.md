@@ -38,7 +38,7 @@ Include all JS & CSS files in your page manually or with your favorite bundler a
 
 Importing the library from a CDN (or static files) requires the use of an [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap) and declare your script tag with `type="module"`.
 
-```html
+```html:line-numbers
 <head>
     <!-- for optimal display on high DPI devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -74,7 +74,7 @@ Importing the library from a CDN (or static files) requires the use of an [impor
 
 We will not detail more this section as it is highly dependent on which build tool you use.
 
-```html
+```html:line-numbers
 <head>
     <!-- for optimal display on high DPI devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -84,7 +84,7 @@ We will not detail more this section as it is highly dependent on which build to
 <div id="viewer" style="width: 100vw; height: 100vh;"></div>
 ```
 
-```js
+```js:line-numbers
 import { Viewer } from '@photo-sphere-viewer/core';
 
 const viewer = new Viewer({
@@ -110,7 +110,7 @@ autoload: true
 title: PSV Basic Demo
 ```
 
-```js
+```js:line-numbers
 import { Viewer } from '@photo-sphere-viewer/core';
 
 const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
@@ -119,9 +119,6 @@ new Viewer({
     container: 'viewer',
     panorama: baseUrl + 'sphere.jpg',
     caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
-    loadingImg: baseUrl + 'loader.gif',
-    touchmoveTwoFingers: true,
-    mousewheelCtrlKey: true,
 });
 ```
 
