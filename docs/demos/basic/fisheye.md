@@ -1,6 +1,6 @@
 # Fisheye
 
-Display the panorama with a fisheye effect.
+Display the panorama with a [fisheye](../../guide/config.md#fisheye) effect.
 
 ::: code-demo
 

@@ -1,6 +1,6 @@
 # Chroma key video markers
 
-Example usage of a transparent `videoLayer` marker using `chromaKey`.
+Example usage of a transparent `videoLayer` marker using [`chromaKey`](../../plugins/markers.md#chromakey).
 
 ::: code-demo
 

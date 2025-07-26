@@ -1,6 +1,6 @@
 # Navbar element
 
-Use a custom WebComponent in the navbar. This example implements a custom zoom control.
+Use a custom WebComponent in the [navbar](../../guide/navbar.md). This example implements a custom zoom control.
 
 :::: code-demo
 

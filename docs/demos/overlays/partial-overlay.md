@@ -1,6 +1,6 @@
 # Partial overlay
 
-By using `panoData` on an [overlay](../../plugins/overlays.md) you can display smaller image above the panorama. The logic to define the data is the same as for [cropped panoramas](../../guide/adapters/equirectangular.md#cropped-panorama).
+By using [`panoData`](../../plugins/overlays.md#panodata) on an overlay you can display smaller image above the panorama. The logic to define the data is the same as for [cropped panoramas](../../guide/adapters/equirectangular.md#cropped-panorama).
 
 ::: code-demo
 

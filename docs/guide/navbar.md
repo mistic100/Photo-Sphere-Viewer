@@ -1,5 +1,7 @@
 # Navbar customization
 
+<DemoButton href="/demos/basic/custom-navbar.html"/>
+
 ## Core buttons
 
 The `navbar` option is an array which can contain the following elements:
@@ -28,7 +30,7 @@ You can also add as many custom buttons you want. A custom button is an object w
 
 #### `content` (required)
 
--   type : `string | HTMLElement`
+-   type : `string | HTMLElement` & [`NavbarButtonElement`](/api/interfaces/Core.NavbarButtonElement.html){target=_blank}
 
 Content of the button. Preferably a square image or SVG icon.
 
@@ -83,27 +85,4 @@ The API allows to change the visibility of the button at any time:
 
 ```js
 viewer.navbar.getButton('my-button').show();
-```
-
-## Example
-
-This example uses some core buttons, the caption and a custom button.
-
-```js:line-numbers
-new Viewer({
-    navbar: [
-        'zoom',
-        {
-            id: 'my-button',
-            content: '<svg...>',
-            title: 'Hello world',
-            className: 'custom-button',
-            onClick(viewer) {
-                alert('Hello from custom button');
-            },
-        },
-        'caption',
-        'fullscreen',
-    ],
-});
 ```

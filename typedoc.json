@@ -22,6 +22,9 @@
   },
   "favicon": "docs/public/favicon.png",
   "customCss": "docs/.typedoc/style.css",
+  "plugin": [
+    "typedoc-plugin-no-inherit"
+  ],
   "externalSymbolLinkMappings": {
     "typescript": {
       "Error": "https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error",

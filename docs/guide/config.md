@@ -100,6 +100,8 @@ Initial zoom level, between 0 (for `maxFov`) and 100 (for `minfov`).
 
 Enable fisheye effect with `true` or specify the effect strength (`true` = `1.0`).
 
+<DemoButton href="/demos/basic/fisheye.html"/>
+
 ::: warning
 This mode can have side-effects on markers rendering and some adapters.
 :::
@@ -338,22 +340,12 @@ import { DEFAULTS } from '@photo-sphere-viewer/core';
 keyboardActions: {
   ...DEFAULTS.keyboardActions,
   'h': (viewer, evt) => {
-      if (viewer.panel.isVisible('help')) {
-          viewer.panel.hide();
-      } else {
-          viewer.panel.show({
-              id: 'help',
-              content: 'Help content',
-          });
-      }
-  },
-  'f': (viewer, evt) => {
-    if (!evt.ctrlKey && !evt.altKey) {
-      viewer.toggleFullscreen(),
-    }
+      // do something when H is pressed
   },
 },
 ```
+
+<DemoButton href="/demos/advanced/keyboard-actions.html"/>
 
 ::: warning
 Keyboard actions will only be available in fullscreen by default, this can be changed with the [`keyboard` option](#keyboard).

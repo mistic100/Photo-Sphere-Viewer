@@ -83,6 +83,14 @@ Zoom to the cursor position on double-click.
 :::
 
 ::: item
+[![](/images/demos/keyboard.jpg)](./advanced/keyboard-actions.md)
+
+### Keyboard actions
+
+Custom actions on keypress.
+:::
+
+::: item
 [![](/images/demos/navbar-element.jpg)](./advanced/navbar-element.md)
 
 ### Navbar element

@@ -151,6 +151,30 @@ Zoom level at which the automatic rotation is performed. If `null` the current z
 
 Initial keypoints, does the same thing as calling `setKeypoints()` just after initialisation.
 
+::: dialog "See details" "Keypoints configuration"
+
+Keypoints are defined either by a `position` or a `markerId` (requires the [markers plugin](./markers.md)).
+
+```ts:line-numbers
+{
+    position?: ExtendedPosition;
+    /**
+     * use the position and tooltip of a marker
+     */
+    markerId?: string;
+    /**
+     * pause the animation when reaching this point, will display the tooltip if available
+     */
+    pause?: number;
+    /**
+     * optional tooltip
+     */
+    tooltip?: string | { content: string; position?: string };
+}
+```
+
+:::
+
 #### `startFromClosest`
 
 -   type: `boolean`

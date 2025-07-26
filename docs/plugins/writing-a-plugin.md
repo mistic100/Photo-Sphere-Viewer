@@ -237,3 +237,5 @@ Your `package.json` must be properly configured to allow application bundlers to
     }
 }
 ```
+
+You can now make a PR to add it to the list of [3rd party plugins](./third-party.md).

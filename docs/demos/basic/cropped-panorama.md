@@ -1,6 +1,6 @@
 # Cropped panorama
 
-Display cropped panorama by reading its XMP metadata or compute the position on the fly.
+Display [cropped panorama](../../guide/adapters/equirectangular.md#cropped-panorama) by reading its XMP metadata or compute the position on the fly.
 
 ::: code-demo
 

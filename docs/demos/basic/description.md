@@ -1,6 +1,6 @@
 # Description
 
-&laquo; i &raquo; button will display the `description` in the side panel.
+&laquo; i &raquo; button will display the [`description`](../../guide/config.md#description) in the side panel.
 
 ::: code-demo
 

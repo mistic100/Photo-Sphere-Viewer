@@ -4,6 +4,7 @@ import type { Marker } from './markers/Marker';
 
 /**
  * Custom Web Component interface for `element` markers
+ * @noInheritDoc
  */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface MarkerElement extends HTMLElement {

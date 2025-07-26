@@ -13,7 +13,7 @@ This plugin is available in the [@photo-sphere-viewer/markers-plugin](https://ww
 
 The plugin provides a powerful markers system allowing to define points of interest on the panorama with optional tooltip and description. Markers can be dynamically added/removed and you can react to user click/tap.
 
-There are four types of markers :
+There are five types of markers:
 
 -   **HTML** defined with the `html`/`element`/`elementLayer` attribute
 -   **Images** defined with the `image`/`imageLayer` attribute
@@ -53,7 +53,7 @@ markersPlugin.addEventListener('select-marker', ({ marker }) => {
 
 ## Example
 
-The following example contains all types of markers. Click anywhere on the panorama to add a red marker, right-click to change it's color and double-click to remove it.
+The following example contains most types of markers. Click anywhere on the panorama to add a red marker, right-click to change it's color and double-click to remove it.
 
 :::: code-demo
 
@@ -133,7 +133,7 @@ There is two ways to position `imageLayer` and `videoLayer` markers:
 
 ::: tip What is the difference between "image" and "imageLayer" ?
 Both allows to display an image but the difference is in the rendering technique.
-And `image` marker is rendered flat above the viewer but and `imageLayer` is rendered inside the panorama itself, this allows for more natural movements and scaling.
+An `image` marker is rendered flat above the viewer but and `imageLayer` is rendered inside the panorama itself, this allows for more natural movements and scaling.
 :::
 
 #### `videoLayer`
@@ -168,7 +168,7 @@ HTML content of the marker. It is recommended to define th `size`.
 
 #### `element`
 
--   type: `HTMLElement`
+-   type: `HTMLElement` & [`MarkerElement`](/api/interfaces/MarkersPlugin.MarkerElement.html){target=_blank}
 
 Existing DOM element.
 
@@ -195,9 +195,9 @@ If your component has an `updateMarker()` method it will be called by the plugin
 
 #### `elementLayer`
 
--   type: `HTMLElement`
+-   type: `HTMLElement` & [`MarkerElement`](/api/interfaces/MarkersPlugin.MarkerElement.html){target=_blank}
 
-Existing DOM element.
+Existing DOM element. Unlike `element`, it is rendered "inside" the scene and has more natural movements and scaling.
 
 ```js:line-numbers{3}
 {
@@ -402,17 +402,6 @@ Rotation applied to the marker, in degrees or radians.
 
 _(This option is ignored for polygons and polylines)._
 
-#### `orientation`
-
-::: warning Deprecated
-The same effect can be achieved by using the `rotation` option.
-
-- front → no rotation
-- horizontal → `rotation.pitch: (+/-) Math.PI / 2` (the sign depends on the marker `position.pitch`)
-- vertical-left → `rotation.yaw: 1.25`
-- vertical-right → `rotation.yaw: -1.25`
-:::
-
 #### `scale`
 
 -   type: `double[] | { zoom: double[], yaw: [] }`
@@ -467,23 +456,12 @@ scale: {
 -   type: `boolean | number | { amount?: number, duration?: number, easing?: string }`
 -   default: `null`
 
-Overrides the [global `defaultHoverScale`](#defaulthoverscale). The configuration is merged with the default configuration of x2 scaling in 100ms with a linear easing. Defining `hoverScale: false` allows to disable the scaling for this marker.
+Overrides the [global `defaultHoverScale`](#defaulthoverscale). It is merged with the default configuration.  
+Defining `hoverScale: false` allows to disable the scaling for this marker.
 
 _(This option is ignored for polygons, polylines and layers)._
 
-```js:line-numbers
-{
-    defaultHoverScale: { amount: 1.5, duration: 150 },
-    markers: [
-        {
-            ...,
-            hoverScale: { amount: 3 },
-            hoverScale: 3,
-            hoverScale: false,
-        },
-    ],
-}
-```
+<DemoButton href="/demos/markers/hover-scale.html"/>
 
 #### `opacity`
 
@@ -498,8 +476,6 @@ Opacity of the marker.
 -   default: `1`
 
 Ordering of the marker.
-
-_(This option is ignored for polygons and polylines markers)._
 
 ::: warning
 `imageLayer` and `videoLayer` are always renderer first, then `polygon` and `polyline`, then standard markers.
@@ -686,8 +662,6 @@ Initial list of markers.
 -   default: `null`
 
 Default mouse hover scaling applied to all markers, can be overriden with each marker [`hoverScale` parameter](#hoverscale). Defining `defaultHoverScale: true` will use the default configuration of x2 scaling in 100ms with a linear easing.
-
-<DemoButton href="/demos/markers/hover-scale.html"/>
 
 #### `gotoMarkerSpeed`
 

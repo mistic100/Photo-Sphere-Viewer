@@ -262,6 +262,7 @@ export type ClickData = {
 
 /**
  * Custom Web Component interface for navbar buttons
+ * @noInheritDoc
  */
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface NavbarButtonElement extends HTMLElement {

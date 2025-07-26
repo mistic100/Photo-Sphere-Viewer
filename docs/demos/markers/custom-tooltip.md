@@ -1,6 +1,6 @@
 # Custom tooltip
 
-Advanced styling of a marker's tooltip.
+Advanced styling of a marker's [tooltip](../../plugins/markers.md#tooltip).
 
 :::: code-demo
 

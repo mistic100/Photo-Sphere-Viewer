@@ -1,6 +1,6 @@
 # Custom navbar
 
-Customize the navbar with default and custom buttons.
+[Customize the navbar](../../guide/navbar.md) with default and custom buttons.
 
 :::: code-demo
 

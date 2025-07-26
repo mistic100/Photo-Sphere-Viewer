@@ -1,6 +1,6 @@
 # Mouse hover scaling
 
-Enable global mouse hover scaling and customize for each marker.
+Enable global [mouse hover scaling](../../plugins/markers.md#defaulthoverscale) and customize for each marker.
 
 ::: code-demo
 
