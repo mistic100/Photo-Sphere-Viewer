@@ -261,7 +261,7 @@ export class Panel extends AbstractComponent {
     }
 
     private __onKeyPress(evt: KeypressEvent) {
-        if (this.isVisible() && evt.key === KEY_CODES.Escape) {
+        if (this.isVisible() && evt.matches(KEY_CODES.Escape)) {
             this.hide();
             evt.preventDefault();
         }

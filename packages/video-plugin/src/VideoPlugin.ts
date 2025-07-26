@@ -123,7 +123,7 @@ export class VideoPlugin extends AbstractConfigurablePlugin<
                 this.progressbar?.show();
                 break;
             case events.KeypressEvent.type:
-                this.__onKeyPress((e as events.KeypressEvent).originalEvent);
+                this.__onKeyPress(e as events.KeypressEvent);
                 break;
             case 'play':
                 if (this.state.waiting) {
@@ -180,8 +180,8 @@ export class VideoPlugin extends AbstractConfigurablePlugin<
         this.video.addEventListener('waiting', this);
     }
 
-    private __onKeyPress(e: KeyboardEvent) {
-        if (e.key === CONSTANTS.KEY_CODES.Space && !e.ctrlKey && !e.altKey && !e.shiftKey && !e.metaKey) {
+    private __onKeyPress(e: events.KeypressEvent) {
+        if (e.matches(CONSTANTS.KEY_CODES.Space)) {
             this.playPause();
             e.preventDefault();
         }

@@ -93,7 +93,7 @@ export class Overlay extends AbstractComponent {
                 e.stopPropagation();
             }
         } else if (e instanceof KeypressEvent) {
-            if (this.isVisible() && this.state.dismissible && e.key === KEY_CODES.Escape) {
+            if (this.isVisible() && this.state.dismissible && e.matches(KEY_CODES.Escape)) {
                 this.hide();
                 e.preventDefault();
             }

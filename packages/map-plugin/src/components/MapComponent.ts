@@ -180,7 +180,7 @@ export class MapComponent extends AbstractComponent {
         switch (e.type) {
             case events.KeypressEvent.type:
                 if (this.state.maximized) {
-                    this.__onKeyPress((e as events.KeypressEvent).key);
+                    this.__onKeyPress(e as events.KeypressEvent);
                     e.preventDefault();
                 }
                 break;
@@ -821,8 +821,8 @@ export class MapComponent extends AbstractComponent {
         return this.state.images[url].value;
     }
 
-    private __onKeyPress(key: string) {
-        if (key === CONSTANTS.KEY_CODES.Escape) {
+    private __onKeyPress(e: events.KeypressEvent) {
+        if (e.matches(CONSTANTS.KEY_CODES.Escape)) {
             this.toggleMaximized();
             return;
         }
@@ -835,16 +835,14 @@ export class MapComponent extends AbstractComponent {
         let y = 0;
         let z = 0;
 
-        switch (key) {
-            case CONSTANTS.KEY_CODES.ArrowUp: y = 1; break;
-            case CONSTANTS.KEY_CODES.ArrowDown: y = -1; break;
-            case CONSTANTS.KEY_CODES.ArrowLeft: x = 1; break;
-            case CONSTANTS.KEY_CODES.ArrowRight: x = -1; break;
-            case CONSTANTS.KEY_CODES.Plus: z = 1; break;
-            case CONSTANTS.KEY_CODES.Minus: z = -1; break;
-            case CONSTANTS.KEY_CODES.PageUp: z = 1; break;
-            case CONSTANTS.KEY_CODES.PageDown: z = -1; break;
-        }
+        if (e.matches(CONSTANTS.KEY_CODES.ArrowUp)) y = 1;
+        if (e.matches(CONSTANTS.KEY_CODES.ArrowDown)) y = -1;
+        if (e.matches(CONSTANTS.KEY_CODES.ArrowLeft)) x = 1;
+        if (e.matches(CONSTANTS.KEY_CODES.ArrowRight)) x = -1;
+        if (e.matches(CONSTANTS.KEY_CODES.Plus)) z = 1;
+        if (e.matches(CONSTANTS.KEY_CODES.Minus)) z = -1;
+        if (e.matches(CONSTANTS.KEY_CODES.PageUp)) z = 1;
+        if (e.matches(CONSTANTS.KEY_CODES.PageDown)) z = -1;
 
         if (x || y) {
             this.state.mouseX = 0;

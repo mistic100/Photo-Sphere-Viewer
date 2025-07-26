@@ -3,6 +3,7 @@ import { Tooltip, TooltipConfig } from './components/Tooltip';
 import { TypedEvent } from './lib/TypedEventTarget';
 import { ClickData, Point, Position, Size, TextureData, ViewerConfig } from './model';
 import type { Viewer } from './Viewer';
+import { keyPressMatch } from './utils';
 
 /**
  * Base class for all events dispatched by {@link Viewer}
@@ -185,6 +186,13 @@ export class KeypressEvent extends ViewerEvent {
     /** @internal */
     constructor(public readonly key: string, public readonly originalEvent: KeyboardEvent) {
         super(KeypressEvent.type, true);
+    }
+
+    /**
+     * Checks if the key events matches the given pattern
+     */
+    matches(pattern: string): boolean {
+        return keyPressMatch(this.originalEvent, pattern);
     }
 }
 

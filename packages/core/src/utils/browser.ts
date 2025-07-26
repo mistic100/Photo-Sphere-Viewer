@@ -189,3 +189,50 @@ export function exitFullscreen(isIphone = false) {
         document.exitFullscreen();
     }
 }
+
+/**
+ * Simple keystroke matcher with modifiers support
+ */
+export function keyPressMatch(e: KeyboardEvent, pattern: string) {
+    let key: string;
+    let shift = false;
+    let ctrl = false;
+    let alt = false;
+    let meta = false;
+
+    if (pattern === '+') {
+        key = pattern;
+    } else {
+        pattern.split('+').forEach((p) => {
+            switch (p) {
+                case 'Shift':
+                    shift = true;
+                    break;
+                case 'Ctrl':
+                    ctrl = true;
+                    break;
+                case 'Alt':
+                    alt = true;
+                    break;
+                case 'Meta':
+                    meta = true;
+                    break;
+                case 'Plus':
+                    key = '+';
+                    break;
+                case 'Minus':
+                    key = '-';
+                    break;
+                default:
+                    key = p;
+                    break;
+            }
+        });
+    }
+
+    return shift === e.shiftKey
+        && ctrl === e.ctrlKey
+        && alt === e.altKey
+        && meta === e.metaKey
+        && key === e.key;
+}

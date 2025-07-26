@@ -148,7 +148,7 @@ export class PlanComponent extends AbstractComponent {
         switch (e.type) {
             case events.KeypressEvent.type:
                 if (this.state.maximized) {
-                    this.__onKeyPress((e as events.KeypressEvent).key);
+                    this.__onKeyPress(e as events.KeypressEvent);
                     e.preventDefault();
                 }
                 break;
@@ -509,8 +509,8 @@ export class PlanComponent extends AbstractComponent {
         }
     }
 
-    private __onKeyPress(key: string) {
-        if (key === CONSTANTS.KEY_CODES.Escape) {
+    private __onKeyPress(e: events.KeypressEvent) {
+        if (e.matches(CONSTANTS.KEY_CODES.Escape)) {
             this.toggleMaximized();
             return;
         }

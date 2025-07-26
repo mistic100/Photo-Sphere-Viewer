@@ -332,16 +332,19 @@ keyboardActions: {
 
 Configure keyboard actions. It is a map defining key code->action. (all the available actions are listed above)
 
-You can also configure an arbitrary callback to any key, it receives the viewer itself and the original keyboard event as parameters.
+You can also configure an arbitrary callback to any key (including modifiers `Ctrl`,`Shift`,`Alt`,`Meta`), it receives the viewer itself and the original keyboard event as parameters.
 
 ```js:line-numbers
 import { DEFAULTS } from '@photo-sphere-viewer/core';
 
 keyboardActions: {
-  ...DEFAULTS.keyboardActions,
-  'h': (viewer, evt) => {
-      // do something when H is pressed
-  },
+    ...DEFAULTS.keyboardActions,
+    'h': (viewer, evt) => {
+        // do something when H is pressed
+    },
+    'Ctrl+1': (viewer) => {
+        // do something when Ctrl + 1 is pressed
+    },
 },
 ```
 

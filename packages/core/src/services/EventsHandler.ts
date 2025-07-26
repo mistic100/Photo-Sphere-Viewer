@@ -34,6 +34,7 @@ import {
     getPosition,
     getTouchData,
     isEmpty,
+    keyPressMatch,
     throttle,
 } from '../utils';
 import { PressHandler } from '../utils/PressHandler';
@@ -188,38 +189,34 @@ export class EventsHandler extends AbstractService {
             return;
         }
 
-        if (!this.state.keyboardEnabled) {
+        if (!this.state.keyboardEnabled || !this.config.keyboardActions || this.keyHandler.pending) {
             return;
         }
 
-        const action = this.config.keyboardActions?.[e.key];
+        for (const [pattern, action] of Object.entries(this.config.keyboardActions)) {
+            if (keyPressMatch(e, pattern)) {
+                if (typeof action === 'function') {
+                    action(this.viewer, e);
+                } else {
+                    if (action !== ACTIONS.ZOOM_IN && action !== ACTIONS.ZOOM_OUT) {
+                        this.viewer.stopAll();
+                    }
 
-        if (typeof action === 'function') {
-            action(this.viewer, e);
-            e.preventDefault();
-            return;
-        }
+                    switch (action) {
+                        case ACTIONS.ROTATE_UP: this.viewer.dynamics.position.roll({ pitch: false }); break;
+                        case ACTIONS.ROTATE_DOWN: this.viewer.dynamics.position.roll({ pitch: true }); break;
+                        case ACTIONS.ROTATE_RIGHT: this.viewer.dynamics.position.roll({ yaw: false }); break;
+                        case ACTIONS.ROTATE_LEFT: this.viewer.dynamics.position.roll({ yaw: true }); break;
+                        case ACTIONS.ZOOM_IN: this.viewer.dynamics.zoom.roll(false); break;
+                        case ACTIONS.ZOOM_OUT: this.viewer.dynamics.zoom.roll(true); break;
+                    }
 
-        if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
-            return;
-        }
+                    this.keyHandler.down(action);
+                }
 
-        if (action && !this.keyHandler.pending) {
-            if (action !== ACTIONS.ZOOM_IN && action !== ACTIONS.ZOOM_OUT) {
-                this.viewer.stopAll();
+                e.preventDefault();
+                return;
             }
-
-            switch (action) {
-                case ACTIONS.ROTATE_UP: this.viewer.dynamics.position.roll({ pitch: false }); break;
-                case ACTIONS.ROTATE_DOWN: this.viewer.dynamics.position.roll({ pitch: true }); break;
-                case ACTIONS.ROTATE_RIGHT: this.viewer.dynamics.position.roll({ yaw: false }); break;
-                case ACTIONS.ROTATE_LEFT: this.viewer.dynamics.position.roll({ yaw: true }); break;
-                case ACTIONS.ZOOM_IN: this.viewer.dynamics.zoom.roll(false); break;
-                case ACTIONS.ZOOM_OUT: this.viewer.dynamics.zoom.roll(true); break;
-            }
-
-            this.keyHandler.down(action);
-            e.preventDefault();
         }
     }
 

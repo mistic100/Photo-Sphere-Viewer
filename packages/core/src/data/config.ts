@@ -168,12 +168,6 @@ export const CONFIG_PARSERS: ConfigParsers<ViewerConfig, ParsedViewerConfig> = {
             ...lang,
         };
     },
-    keyboardActions: (keyboardActions, { rawConfig }) => {
-        if (rawConfig.keyboard && typeof rawConfig.keyboard === 'object') {
-            return rawConfig.keyboard;
-        }
-        return keyboardActions;
-    },
     fisheye: (fisheye) => {
         // translate boolean fisheye to amount
         if (fisheye === true) {

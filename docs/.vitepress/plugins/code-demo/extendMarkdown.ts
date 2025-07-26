@@ -39,7 +39,6 @@ export default function extendMarkdown(md: MarkdownIt) {
                     }
                 }
 
-
                 return `<ClientOnly>
                     <CodeDemo
                         autoload="${config.autoload}"
