@@ -7,6 +7,28 @@ updates:
     assignees:
       - mistic100
     ignore:
+      - dependency-name: '*eslint*'
+      - dependency-name: '*stylelint*'
+      - dependency-name: '*'
+        update-types: ['version-update:semver-patch']
+    commit-message:
+      prefix: 'chore'
+      include: 'scope'
+    groups:
+      dev-dependencies:
+        applies-to: version-updates
+        dependency-type: development
+        update-types: ['minor']
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: monthly
+    assignees:
+      - mistic100
+    allow:
+      - dependency-name: '*eslint*'
+      - dependency-name: '*stylelint*'
+    ignore:
       - dependency-name: '*'
         update-types: ['version-update:semver-patch']
     commit-message:
