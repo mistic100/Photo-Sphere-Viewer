@@ -45,7 +45,7 @@ async function fetchReleases(): Promise<any[]> {
     const cache = localStorage.releasesCache;
     const cacheDate = localStorage.releasesCacheDate;
 
-    if (cache && cacheDate && (new Date().getTime() - new Date(cacheDate).getTime() < 1000 * 3600)) {
+    if (cache && cacheDate && (Date.now() - new Date(cacheDate).getTime() < 1000 * 3600)) {
         return JSON.parse(cache);
     } else {
         const response = await fetch('/.netlify/functions/releases');

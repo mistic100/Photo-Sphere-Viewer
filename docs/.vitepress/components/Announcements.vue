@@ -37,7 +37,7 @@ async function fetchAnnouncements(): Promise<any[]> {
     const cache = localStorage.announcementsCache;
     const cacheDate = localStorage.announcementsCacheDate;
 
-    if (cache && cacheDate && (new Date().getTime() - new Date(cacheDate).getTime() < 1000 * 3600)) {
+    if (cache && cacheDate && (Date.now() - new Date(cacheDate).getTime() < 1000 * 3600)) {
         return JSON.parse(cache);
     } else {
         const response = await fetch('/.netlify/functions/announcements');

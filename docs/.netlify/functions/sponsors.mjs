@@ -1,3 +1,5 @@
+const CACHE_TTL = 10 * 60 * 1000;
+
 let lastTime = 0;
 let lastResult = null;
 
@@ -6,8 +8,8 @@ export default async (request) => {
         return new Response('Method Not Allowed', { status: 405 });
     }
 
-    if (Date.now() - lastTime < 10 * 60 * 1000) {
-        console.log('hit cache');
+    if (Date.now() - lastTime < CACHE_TTL) {
+        console.log('Cache hit');
         return Response.json(lastResult);
     }
 
@@ -34,6 +36,7 @@ query {
           timestamp
           sponsorsTier {
             isOneTime
+            monthlyPriceInDollars
           }
           sponsor {
             ... on Actor {
@@ -57,7 +60,11 @@ query {
 
     const result = await response.json();
 
-    const sponsorsActivities = result.data.user.sponsorsActivities.nodes;
+    const sponsorsActivities = result.data?.user?.sponsorsActivities?.nodes;
+
+    if (!sponsorsActivities) {
+        return new Response('Failed to fetch sponsors', { status: 500 });
+    }
 
     const sponsors = {};
 
@@ -66,6 +73,10 @@ query {
             delete sponsors[sponsor.login];
         }
         if (action === 'NEW_SPONSORSHIP') {
+            if (sponsorsTier.isOneTime && sponsorsTier.monthlyPriceInDollars < 10) {
+                return;
+            }
+
             const niceSponsor = {
                 timestamp,
                 isOneTime: sponsorsTier.isOneTime,
@@ -87,11 +98,18 @@ query {
     });
 
     const sponsorsSorted = Object.values(sponsors)
-        .sort((a, b) => b.timestamp.localeCompare(a.timestamp));
-
-    sponsorsSorted.forEach(sponsor => {
-        delete sponsor.timestamp;
-    });
+        .sort((a, b) => {
+            if (a.isOneTime === b.isOneTime) {
+                return b.timestamp.localeCompare(a.timestamp);
+            } else {
+                return a.isOneTime ? 1 : -1;
+            }
+        })
+        .map(sponsor => {
+            delete sponsor.timestamp;
+            delete sponsor.isOneTime;
+            return sponsor;
+        });
 
     lastTime = Date.now();
     lastResult = sponsorsSorted;

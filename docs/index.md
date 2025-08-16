@@ -38,83 +38,10 @@ I forked the original Photo Sphere Viewer [by Jérémy Heleine](http://jeremyhel
 ## Sponsors
 
 <script setup>
-import { VPTeamMembers } from 'vitepress/theme';
-
-const sponsors = [
-  // monthly
-  {
-    avatar: 'https://avatars.githubusercontent.com/u/8026440?s=200',
-    name: 'Katapult',
-    links: [
-      { icon: 'github', link: 'https://github.com/KatapultDevelopment' },
-      { icon: 'googlehome', link: 'https://www.katapultengineering.com' },
-    ],
-  },
-  {
-    avatar: 'https://avatars.githubusercontent.com/u/3709747?s=200',
-    name: 'Kevin M. Vuilleumier',
-    links: [
-      { icon: 'github', link: 'https://github.com/vekin03' },
-      { icon: 'googlehome', link: 'https://kevinvuilleumier.net' },
-    ],
-  },
-  {
-    avatar: 'https://avatars.githubusercontent.com/u/6279770?s=200',
-    name: 'Sachin Sancheti',
-    links: [
-      { icon: 'github', link: 'https://github.com/sachinsancheti1' },
-      { icon: 'googlehome', link: 'https://www.sachin.ninja' },
-    ],
-  },
-  {
-    avatar: 'https://avatars.githubusercontent.com/u/115240595?s=200',
-    name: 'Seweryn Pietrucha',
-    links: [
-      { icon: 'github', link: 'https://github.com/seweryn1502' },
-      { icon: 'googlehome', link: 'https://3dtrip.pl/en' },
-    ],
-  },
-  // one time
-  {
-    avatar: 'https://avatars.githubusercontent.com/u/171242208?s=200',
-    name: 'JaniPonkko',
-    links: [
-      { icon: 'github', link: 'https://github.com/JaniPonkko' },
-    ],
-  },
-  {
-    avatar: 'https://avatars.githubusercontent.com/u/17426654?s=200',
-    name: 'ntrwansui',
-    links: [
-      { icon: 'github', link: 'https://github.com/ntrwansuiBC' },
-    ],
-  },
-  {
-    avatar: 'https://avatars.githubusercontent.com/u/115947370?s=200',
-    name: 'roaz82',
-    links: [
-      { icon: 'github', link: 'https://github.com/roaz82' },
-    ],
-  },
-  {
-    avatar: 'https://avatars.githubusercontent.com/u/24359?s=200',
-    name: 'Jeffrey Warren',
-    links: [
-      { icon: 'github', link: 'https://github.com/jywarren' },
-      { icon: 'googlehome', link: 'https://unterbahn.com' },
-    ],
-  },
-  {
-    avatar: 'https://avatars.githubusercontent.com/u/2023869?s=200',
-    name: 'Rai-Rai',
-    links: [
-      { icon: 'github', link: 'https://github.com/Rai-Rai' },
-    ],
-  },
-];
+import Sponsors from '.vitepress/components/Sponsors.vue';
 </script>
 
-<VPTeamMembers size="small" :members="sponsors" />
+<Sponsors/>
 
 <div class="sponsors">
 
