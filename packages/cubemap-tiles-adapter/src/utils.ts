@@ -1,6 +1,5 @@
-import { PSVError } from '@photo-sphere-viewer/core';
+import { PSVError, Size, utils } from '@photo-sphere-viewer/core';
 import { MathUtils } from 'three';
-import { checkTilesLevels, getTileIndexByZoomLevel } from '../../shared/tiles-utils';
 import { CubemapMultiTilesPanorama, CubemapTileLevel, CubemapTilesPanorama } from './model';
 
 export type CubemapTileConfig = CubemapTileLevel & {
@@ -26,19 +25,28 @@ function computeTileConfig(tile: CubemapTileLevel, level: number, data: { CUBE_S
 
 export function getTileConfig(
     panorama: CubemapTilesPanorama | CubemapMultiTilesPanorama,
-    zoomLevel: number,
+    hFov: number, vFov: number,
+    viewerSize: Size,
     data: { CUBE_SEGMENTS: number },
 ): CubemapTileConfig {
     let tile: CubemapTileLevel;
     let level: number;
     if (!isMultiTiles(panorama)) {
         level = 0;
-        tile = {
-            ...panorama,
-            zoomRange: [0, 100],
-        };
+        tile = { ...panorama };
     } else {
-        level = getTileIndexByZoomLevel(panorama.levels, zoomLevel);
+        if (viewerSize) {
+            level = panorama.levels.findIndex((pLevel) => {
+                const hResolution = pLevel.faceSize * 4 / 360 * hFov;
+                const vResolution = pLevel.faceSize * 2 / 180 * vFov;
+                return hResolution >= viewerSize.width && vResolution >= viewerSize.height;
+            });
+            if (level === -1) {
+                level = panorama.levels.length - 1;
+            }
+        } else {
+            level = 0;
+        }
         tile = panorama.levels[level];
     }
     return computeTileConfig(tile, level, data);
@@ -64,8 +72,13 @@ export function checkPanoramaConfig(
         throw new PSVError('Invalid panorama configuration, are you using the right adapter?');
     }
     if (isMultiTiles(panorama)) {
-        panorama.levels.forEach(level => checkTile(level, data));
-        checkTilesLevels(panorama.levels);
+        panorama.levels.forEach((level) => {
+            checkTile(level, data);
+            if ('zoomRange' in level) {
+                utils.logWarn('CubemapTilesAdapter: "zoomRange" property is deprecated and must be removed');
+            }
+        });
+        panorama.levels.sort((a, b) => a.faceSize - b.faceSize);
     } else {
         checkTile(panorama, data);
     }

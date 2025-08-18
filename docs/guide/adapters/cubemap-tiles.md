@@ -120,24 +120,21 @@ URL of a low resolution complete panorama image to display while the tiles are l
 
 -   type: `array`
 
-Array of available tiles configurations. Each element is an object with `faceSize` and `nbTiles` (see "Single level") as well as `zoomRange`, an array containing the minimum and the maximum zoom level. **The levels must be ordered and cover the whole 0-100 zoom range.**
+Array of available tiles configurations. Each element is an object with `faceSize` and `nbTiles` (see "Single level"). The best size will be choosen depending on the current zoom level and viewer size.
 
 ```js:line-numbers
 levels: [
     {
         faceSize: 3000,
         nbTiles: 4,
-        zoomRange: [0, 30],
     },
     {
         faceSize: 6000,
         nbTiles: 8,
-        zoomRange: [30, 70],
     },
     {
         faceSize: 12000,
         nbTiles: 16,
-        zoomRange: [70, 100],
     },
 ]
 ```

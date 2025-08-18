@@ -178,7 +178,7 @@ export class CubemapTilesAdapter extends AbstractAdapter<
     ): Promise<CubemapTilesTextureData> {
         checkPanoramaConfig(panorama, { CUBE_SEGMENTS });
 
-        const firstTile = getTileConfig(panorama, 0, { CUBE_SEGMENTS });
+        const firstTile = getTileConfig(panorama, 0, 0, null, { CUBE_SEGMENTS });
         const panoData: CubemapData = {
             isCubemap: true,
             flipTopBottom: panorama.flipTopBottom ?? false,
@@ -301,8 +301,7 @@ export class CubemapTilesAdapter extends AbstractAdapter<
         }
 
         const panorama = this.viewer.config.panorama as CubemapTilesPanorama | CubemapMultiTilesPanorama;
-        const zoomLevel = this.viewer.getZoomLevel();
-        const tileConfig = getTileConfig(panorama, zoomLevel, { CUBE_SEGMENTS });
+        const tileConfig = getTileConfig(panorama, this.viewer.state.hFov, this.viewer.state.vFov, this.viewer.state.size, { CUBE_SEGMENTS });
 
         const verticesPosition = this.state.geom.getAttribute(ATTR_POSITION) as BufferAttribute;
         const tilesToLoad: Record<string, CubemapTile> = {};

@@ -32,9 +32,9 @@ export type EquirectangularTilesPanorama = {
 
 export type EquirectangularTileLevel = {
     /**
-     * Lower and upper zoom levels (0-100)
+     * @deprecated Not used anymore
      */
-    zoomRange: [number, number];
+    zoomRange?: never;
     /**
      * complete panorama width (height is always width/2)
      */

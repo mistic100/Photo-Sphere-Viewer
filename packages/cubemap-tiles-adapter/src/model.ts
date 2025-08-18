@@ -29,9 +29,9 @@ export type CubemapTilesPanorama = {
 
 export type CubemapTileLevel = {
     /**
-     * Lower and upper zoom levels (0-100)
+     * @deprecated Not used anymore
      */
-    zoomRange: [number, number];
+    zoomRange?: never;
     /**
      * size of a face in pixels
      */

@@ -125,7 +125,7 @@ Panorama configuration associated to low resolution first image, following the s
 
 -   type: `array`
 
-Array of available tiles configurations. Each element is an object with `width`, `cols` and `rows` (see "Single level") as well as `zoomRange`, an array containing the minimum and the maximum zoom level. **The levels must be ordered and cover the whole 0-100 zoom range.**
+Array of available tiles configurations. Each element is an object with `width`, `cols` and `rows` (see "Single level"). The best size will be choosen depending on the current zoom level and viewer size.
 
 ```js:line-numbers
 levels: [
@@ -133,19 +133,16 @@ levels: [
         width: 6144,
         cols: 16,
         rows: 8,
-        zoomRange: [0, 30],
     },
     {
         width: 12288,
         cols: 32,
         rows: 16,
-        zoomRange: [30, 70],
     },
     {
         width: 24576,
         cols: 64,
         rows: 32,
-        zoomRange: [70, 100],
     },
 ]
 ```

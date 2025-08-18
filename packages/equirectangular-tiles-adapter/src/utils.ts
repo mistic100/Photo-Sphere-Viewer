@@ -1,6 +1,5 @@
-import { PSVError } from '@photo-sphere-viewer/core';
+import { PSVError, Size, utils } from '@photo-sphere-viewer/core';
 import { MathUtils } from 'three';
-import { checkTilesLevels, getTileIndexByZoomLevel } from '../../shared/tiles-utils';
 import { EquirectangularMultiTilesPanorama, EquirectangularTileLevel, EquirectangularTilesPanorama } from './model';
 
 export type EquirectangularTileConfig = EquirectangularTileLevel & {
@@ -34,19 +33,28 @@ function computeTileConfig(
 
 export function getTileConfig(
     panorama: EquirectangularTilesPanorama | EquirectangularMultiTilesPanorama,
-    zoomLevel: number,
+    hFov: number, vFov: number,
+    viewerSize: Size,
     data: { SPHERE_SEGMENTS: number; SPHERE_HORIZONTAL_SEGMENTS: number },
 ): EquirectangularTileConfig {
     let tile: EquirectangularTileLevel;
     let level: number;
     if (!isMultiTiles(panorama)) {
         level = 0;
-        tile = {
-            ...panorama,
-            zoomRange: [0, 100],
-        };
+        tile = { ...panorama };
     } else {
-        level = getTileIndexByZoomLevel(panorama.levels, zoomLevel);
+        if (viewerSize) {
+            level = panorama.levels.findIndex((pLevel) => {
+                const hResolution = pLevel.width / 360 * hFov;
+                const vResolution = pLevel.width / 2 / 180 * vFov;
+                return hResolution >= viewerSize.width && vResolution >= viewerSize.height;
+            });
+            if (level === -1) {
+                level = panorama.levels.length - 1;
+            }
+        } else {
+            level = 0;
+        }
         tile = panorama.levels[level];
     }
     return computeTileConfig(tile, level, data);
@@ -72,8 +80,13 @@ export function checkPanoramaConfig(
         throw new PSVError('Invalid panorama configuration, are you using the right adapter?');
     }
     if (isMultiTiles(panorama)) {
-        panorama.levels.forEach(level => checkTile(level, data));
-        checkTilesLevels(panorama.levels);
+        panorama.levels.forEach((level) => {
+            checkTile(level, data);
+            if ('zoomRange' in level) {
+                utils.logWarn('EquirectangularTilesAdapter: "zoomRange" property is deprecated and must be removed');
+            }
+        });
+        panorama.levels.sort((a, b) => a.width - b.width);
     } else {
         checkTile(panorama, data);
     }

@@ -217,7 +217,7 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
     ): Promise<EquirectangularTilesTextureData> {
         checkPanoramaConfig(panorama, this);
 
-        const firstTile = getTileConfig(panorama, 0, this);
+        const firstTile = getTileConfig(panorama, 0, 0, null, this);
         const panoData: PanoData = {
             isEquirectangular: true,
             fullWidth: firstTile.width,
@@ -360,8 +360,7 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
         }
 
         const panorama = this.viewer.config.panorama as EquirectangularTilesPanorama | EquirectangularMultiTilesPanorama;
-        const zoomLevel = this.viewer.getZoomLevel();
-        const tileConfig = getTileConfig(panorama, zoomLevel, this);
+        const tileConfig = getTileConfig(panorama, this.viewer.state.hFov, this.viewer.state.vFov, this.viewer.state.size, this);
 
         const verticesPosition = this.state.geom.getAttribute(ATTR_POSITION) as BufferAttribute;
         const tilesToLoad: Record<string, EquirectangularTile> = {};

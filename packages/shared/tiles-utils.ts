@@ -1,34 +1,5 @@
-import { PSVError, utils } from '@photo-sphere-viewer/core';
+import { utils } from '@photo-sphere-viewer/core';
 import { BufferGeometry, LineSegments, Material, MeshBasicMaterial, Object3D, WireframeGeometry } from 'three';
-
-/**
- * Checks if the zoomRange properties are coherent
- * @internal
- */
-export function checkTilesLevels(levels: Array<{ zoomRange: [number, number] }>) {
-    let previous = 0;
-    levels.forEach((level, i) => {
-        if (!level.zoomRange || level.zoomRange.length !== 2) {
-            throw new PSVError(`Tiles level ${i} is missing "zoomRange" property`);
-        }
-        if (level.zoomRange[0] >= level.zoomRange[1]
-            || level.zoomRange[0] !== previous
-            || (i === 0 && level.zoomRange[0] !== 0)
-            || (i === levels.length - 1 && level.zoomRange[1] !== 100)) {
-            throw new PSVError(`Tiles levels' "zoomRange" are not orderer or are not covering the whole 0-100 range`);
-        }
-        previous = level.zoomRange[1];
-    });
-}
-
-export function getTileIndexByZoomLevel<T extends { zoomRange: [number, number] }>(
-    levels: T[],
-    zoomLevel: number,
-): number {
-    return levels.findIndex((level) => {
-        return zoomLevel >= level.zoomRange[0] && zoomLevel <= level.zoomRange[1];
-    });
-}
 
 /**
  * Generates an material for errored tiles
