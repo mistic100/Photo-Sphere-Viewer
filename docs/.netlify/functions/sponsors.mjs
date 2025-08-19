@@ -89,7 +89,7 @@ query {
 
             if (sponsor.websiteUrl) {
                 niceSponsor.links.push(
-                    { icon: 'googlehome', link: sponsor.websiteUrl }
+                    { icon: 'googlehome', link: sponsor.websiteUrl },
                 );
             }
 
@@ -105,7 +105,7 @@ query {
                 return a.isOneTime ? 1 : -1;
             }
         })
-        .map(sponsor => {
+        .map((sponsor) => {
             delete sponsor.timestamp;
             delete sponsor.isOneTime;
             return sponsor;

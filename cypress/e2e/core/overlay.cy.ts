@@ -1,5 +1,5 @@
 import { type Overlay } from '@photo-sphere-viewer/core';
-import { callViewer, checkEventHandler, listenViewerEvent, waitViewerReady } from '../../utils';
+import { callViewer, checkEventHandler, listenViewerEvent, triggerWindowKeydown, waitViewerReady } from '../../utils';
 import { NO_LOG, VIEWPORT_MOBILE } from '../../utils/constants';
 
 describe('core: overlay', () => {
@@ -34,7 +34,7 @@ describe('core: overlay', () => {
         callOverlay('show overlay').then(overlay => overlay.show('title'));
         cy.get('.psv-overlay').should('be.visible');
 
-        cy.window().trigger('keydown', { key: 'Escape' });
+        triggerWindowKeydown('Escape');
         cy.get('.psv-overlay').should('not.be.visible');
     });
 
@@ -47,7 +47,7 @@ describe('core: overlay', () => {
         cy.get('.psv-overlay').click();
         cy.get('.psv-overlay').should('be.visible');
 
-        cy.window().trigger('keydown', { key: 'Escape' });
+        triggerWindowKeydown('Escape');
         cy.get('.psv-overlay').should('be.visible');
     });
 

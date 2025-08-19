@@ -1,5 +1,5 @@
 import { type Panel } from '@photo-sphere-viewer/core';
-import { callViewer, checkEventHandler, listenViewerEvent, waitViewerReady } from '../../utils';
+import { callViewer, checkEventHandler, listenViewerEvent, triggerWindowKeydown, waitViewerReady } from '../../utils';
 import { NO_LOG, VIEWPORT_MOBILE } from '../../utils/constants';
 
 describe('core: panel', () => {
@@ -40,7 +40,7 @@ describe('core: panel', () => {
         callPanel('show panel').then(panel => panel.show('content'));
         cy.get('.psv-panel').should('be.visible');
 
-        cy.window().trigger('keydown', { key: 'Escape' });
+        triggerWindowKeydown('Escape');
         cy.get('.psv-panel').should('not.be.visible');
     });
 

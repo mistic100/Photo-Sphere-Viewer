@@ -71,3 +71,7 @@ export function createBaseSnapshot() {
         throw new Error(`Unauthorized call to createBaseSnapshot`);
     }
 }
+
+export function triggerWindowKeydown(key: string) {
+    cy.window().trigger('keydown', { key, altKey: false, shiftKey: false, ctrlKey: false, metaKey: false });
+}
