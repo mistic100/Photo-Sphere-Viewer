@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/stale@v9
+      - uses: actions/stale@v10
         with:
           any-of-labels: 'awaiting answer,missing demo'
           days-before-stale: 7
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/stale@v9
+      - uses: actions/stale@v10
         with:
           any-of-labels: 'help wanted'
           days-before-stale: 30
