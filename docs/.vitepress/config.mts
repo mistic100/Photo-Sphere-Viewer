@@ -1,5 +1,6 @@
 import { startCase, capitalize } from 'lodash-es';
 import fs from 'node:fs';
+import { resolve } from 'node:path';
 import path from 'node:path';
 import { defineConfig } from 'vitepress';
 
@@ -35,7 +36,6 @@ const externals = {
     'marked': 'https://cdn.jsdelivr.net/npm/marked@14/lib/marked.esm.min.js',
     '@photo-sphere-viewer/core': 'https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core@5/index.module.min.js',
     '@photo-sphere-viewer/equirectangular-tiles-adapter': 'https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/equirectangular-tiles-adapter@5/index.module.min.js',
-    '@photo-sphere-viewer/markers-plugin': 'https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/markers-plugin@5/index.module.min.js',
 };
 
 const importmap = `<script type="importmap">${JSON.stringify({ imports: externals })}</script>`;
@@ -224,7 +224,10 @@ export default defineConfig({
         },
 
         resolve: {
-            alias: externals,
+            alias: {
+                ...externals,
+                '@components': resolve(import.meta.dirname, './components'),
+            },
         },
 
         // for dev

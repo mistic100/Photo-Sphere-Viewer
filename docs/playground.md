@@ -6,7 +6,7 @@ aside: false
 # Playground
 
 <script setup>
-import Playground from './.vitepress/components/Playground.vue';
+import Playground from '@components/Playground.vue';
 </script>
 
 <ClientOnly>

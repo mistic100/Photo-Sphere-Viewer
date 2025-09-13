@@ -7,9 +7,9 @@ export type PsvDocData = {
 export const DataSymbol = Symbol();
 
 export function usePsvDocData(): PsvDocData {
-    const router = inject(DataSymbol);
-    if (!router) {
+    const data = inject(DataSymbol);
+    if (!data) {
         throw new Error('usePsvDocData() is called without provider.');
     }
-    return router as PsvDocData;
+    return data as PsvDocData;
 }

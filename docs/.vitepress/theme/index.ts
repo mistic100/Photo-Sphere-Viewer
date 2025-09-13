@@ -163,12 +163,14 @@ export default {
         const latestVersion = ref<string>('');
         app.provide(DataSymbol, { latestVersion } satisfies PsvDocData);
 
-        (async () => {
-            const response = await fetch('https://registry.npmjs.org/@photo-sphere-viewer%2Fcore');
-            if (response.ok) {
-                const data = await response.json();
-                latestVersion.value = data['dist-tags']['latest'];
-            }
-        })();
+        if (!import.meta.env.SSR) {
+            (async () => {
+                const response = await fetch('https://registry.npmjs.org/@photo-sphere-viewer%2Fcore');
+                if (response.ok) {
+                    const data = await response.json();
+                    latestVersion.value = data['dist-tags']['latest'];
+                }
+            })();
+        }
     },
 } satisfies Theme;

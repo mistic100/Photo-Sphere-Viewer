@@ -1,7 +1,7 @@
 # Changelog
 
 <script setup>
-import Changelog from '../.vitepress/components/Changelog.vue';
+import Changelog from '@components/Changelog.vue';
 </script>
 
 <Changelog/>

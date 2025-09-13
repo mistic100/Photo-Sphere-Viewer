@@ -171,7 +171,7 @@ panoData = {
 Use this demo to find the best values for your image.
 
 <script setup>
-import CropPlayground from '../../.vitepress/components/CropPlayground.vue';
+import CropPlayground from '@components/CropPlayground.vue';
 </script>
 
 <ClientOnly>

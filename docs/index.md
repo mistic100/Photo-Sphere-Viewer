@@ -38,7 +38,7 @@ I forked the original Photo Sphere Viewer [by Jérémy Heleine](http://jeremyhel
 ## Sponsors
 
 <script setup>
-import Sponsors from '.vitepress/components/Sponsors.vue';
+import Sponsors from '@components/Sponsors.vue';
 </script>
 
 <Sponsors/>
