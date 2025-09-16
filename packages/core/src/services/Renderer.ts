@@ -297,7 +297,7 @@ export class Renderer extends AbstractService {
      */
     setPanoramaPose(panoData: PanoData, mesh: Object3D = this.mesh) {
         const cleanCorrection = this.viewer.dataHelper.cleanPanoramaPose(panoData);
-        mesh.rotation.set(cleanCorrection.tilt, cleanCorrection.pan, cleanCorrection.roll, 'YXZ');
+        mesh.rotation.set(-cleanCorrection.tilt, cleanCorrection.pan, cleanCorrection.roll, 'YXZ');
     }
 
     /**
