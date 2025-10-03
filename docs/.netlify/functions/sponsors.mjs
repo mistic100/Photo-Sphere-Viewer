@@ -27,7 +27,6 @@ query {
         first: 100,
         actions: [NEW_SPONSORSHIP, CANCELLED_SPONSORSHIP],
         includePrivate: false,
-        includeAsSponsor: true,
         period: ALL,
         orderBy: { direction: ASC, field: TIMESTAMP }
       ) {
