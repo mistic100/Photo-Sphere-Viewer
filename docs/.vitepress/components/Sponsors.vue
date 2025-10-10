@@ -8,9 +8,24 @@ import { onMounted, ref } from 'vue';
 
 const sponsors = ref<any[]>([]);
 
+const props = defineProps<{
+    data?: any[],
+}>();
+
 onMounted(async () => {
+    const newSponsor = {
+        name: 'Add your logo and link',
+        org: 'become a sponsor',
+        orgLink: 'https://github.com/sponsors/mistic100',
+        avatar: 'images/plus-circle.svg',
+    };
+
+    if (props.data) {
+        sponsors.value = [...props.data, newSponsor];
+    }
+
     const result = await fetchSponsors();
-    sponsors.value = result;
+    sponsors.value = [...result, newSponsor];
 });
 
 async function fetchSponsors(): Promise<any[]> {

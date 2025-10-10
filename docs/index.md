@@ -39,9 +39,11 @@ I forked the original Photo Sphere Viewer [by Jérémy Heleine](http://jeremyhel
 
 <script setup>
 import Sponsors from '@components/Sponsors.vue';
+
+const data = [{"name":"Seweryn Pietrucha","avatar":"https://avatars.githubusercontent.com/u/115240595?s=200&v=4","links":[{"icon":"github","link":"https://github.com/seweryn1502"},{"icon":"googlehome","link":"https://3dtrip.pl/en"}]},{"name":"Katapult","avatar":"https://avatars.githubusercontent.com/u/8026440?s=200&v=4","links":[{"icon":"github","link":"https://github.com/KatapultDevelopment"},{"icon":"googlehome","link":"https://www.katapultengineering.com/"}]},{"name":"Sachin Sancheti","avatar":"https://avatars.githubusercontent.com/u/6279770?s=200&v=4","links":[{"icon":"github","link":"https://github.com/sachinsancheti1"},{"icon":"googlehome","link":"https://sachin.ninja/"}]},{"name":"Kevin M. Vuilleumier","avatar":"https://avatars.githubusercontent.com/u/3709747?s=200&v=4","links":[{"icon":"github","link":"https://github.com/vekin03"},{"icon":"googlehome","link":"https://kevinvuilleumier.net"}]},{"name":"JaniPonkko","avatar":"https://avatars.githubusercontent.com/u/171242208?s=200&u=d3e415c37a7bbafd43603c5d0a7aa860da73f0bc&v=4","links":[{"icon":"github","link":"https://github.com/JaniPonkko"}]},{"name":"ntrwansui","avatar":"https://avatars.githubusercontent.com/u/17426654?s=200&u=5301d827e8402b531ef41b187fad64e860fe989d&v=4","links":[{"icon":"github","link":"https://github.com/ntrwansuiBC"}]},{"name":"roaz82","avatar":"https://avatars.githubusercontent.com/u/115947370?s=200&v=4","links":[{"icon":"github","link":"https://github.com/roaz82"}]},{"name":"Rai-Rai","avatar":"https://avatars.githubusercontent.com/u/2023869?s=200&u=13470d584ade7da01a3cefbfc0c2f18c0fb7a2ad&v=4","links":[{"icon":"github","link":"https://github.com/Rai-Rai"}]},{"name":"Jeffrey Warren","avatar":"https://avatars.githubusercontent.com/u/24359?s=200&u=5b24289f87bbe7d9254ec56049d1c63bf7f34869&v=4","links":[{"icon":"github","link":"https://github.com/jywarren"},{"icon":"googlehome","link":"https://unterbahn.com"}]}];
 </script>
 
-<Sponsors/>
+<Sponsors :data="data"/>
 
 <div class="sponsors">
 
