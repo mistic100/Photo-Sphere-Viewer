@@ -1,8 +1,9 @@
 import { AbstractComponent } from '../components/AbstractComponent';
-import type { Navbar } from '../components/Navbar';
+import type { NavbarGroup } from '../components/Navbar';
+import { AttachedTooltip } from '../components/Tooltip';
 import { KEY_CODES } from '../data/constants';
 import { ResolvableBoolean } from '../model';
-import { addClasses, getConfigParser, resolveBoolean, toggleClass } from '../utils';
+import { getConfigParser, getStyleProperty, resolveBoolean, toggleClass } from '../utils';
 
 /**
  * Configuration for {@link AbstractButton}
@@ -12,11 +13,6 @@ export type ButtonConfig = {
     tagName?: string;
     className?: string;
     title?: string;
-    /**
-     * if the button has an mouse hover effect
-     * @default false
-     */
-    hoverScale?: boolean;
     /**
      * if the button can be moved to menu when the navbar is too small
      * @default false
@@ -42,7 +38,6 @@ const getConfig = getConfigParser<ButtonConfig>({
     tagName: null,
     className: null,
     title: null,
-    hoverScale: false,
     collapsable: false,
     tabbable: true,
     icon: null,
@@ -73,6 +68,8 @@ export abstract class AbstractButton extends AbstractComponent {
         collapsed: false,
         active: false,
         width: 0,
+        title: '',
+        tooltip: null as AttachedTooltip,
     };
 
     protected readonly config: ButtonConfig;
@@ -82,7 +79,7 @@ export abstract class AbstractButton extends AbstractComponent {
     }
 
     get title(): string {
-        return this.container.title;
+        return this.state.title;
     }
 
     get content(): string {
@@ -97,10 +94,14 @@ export abstract class AbstractButton extends AbstractComponent {
         return this.config.collapsable;
     }
 
-    constructor(navbar: Navbar, config: ButtonConfig) {
-        super(navbar, {
+    get collapsed(): boolean {
+        return this.state.collapsed;
+    }
+
+    constructor(parent: NavbarGroup, config: ButtonConfig) {
+        super(parent, {
             tagName: config.tagName,
-            className: `psv-button ${config.hoverScale ? 'psv-button--hover-scale' : ''} ${config.className || ''}`,
+            className: `psv-button ${config.className || ''}`,
         });
 
         this.config = getConfig(config);
@@ -112,12 +113,19 @@ export abstract class AbstractButton extends AbstractComponent {
             this.__setIcon(config.icon);
         }
 
-        this.state.width = this.container.offsetWidth;
+        const style = window.getComputedStyle(this.container);
+        this.state.width = this.container.offsetWidth + parseFloat(style.marginLeft) + parseFloat(style.marginRight);
 
-        if (this.config.title) {
-            this.container.title = this.viewer.config.lang[this.config.title] ?? this.config.title;
-        } else if (this.id && this.id in this.viewer.config.lang) {
-            this.container.title = (this.viewer.config.lang as any)[this.id];
+        this.state.title = this.viewer.config.lang[this.config.title] ?? this.config.title ?? this.viewer.config.lang[this.id];
+        if (this.state.title) {
+            this.container.setAttribute('aria-label', this.state.title);
+            this.state.tooltip = this.viewer.attachTooltip({
+                position: 'top',
+                content: this.state.title,
+                style: {
+                    zIndex: 1 + getStyleProperty(this.viewer.navbar.container, 'z-index'),
+                },
+            }, this.container);
         }
 
         if (config.tabbable) {
@@ -144,12 +152,18 @@ export abstract class AbstractButton extends AbstractComponent {
      */
     abstract onClick(): void;
 
+    override destroy(): void {
+        this.state.tooltip?.destroy();
+        super.destroy();
+    }
+
     override show(refresh = true) {
         if (!this.isVisible()) {
             this.state.visible = true;
             if (!this.state.collapsed) {
                 this.container.style.display = '';
             }
+            (this.parent as NavbarGroup).autoHide();
             if (refresh) {
                 this.viewer.navbar.autoSize();
             }
@@ -160,6 +174,7 @@ export abstract class AbstractButton extends AbstractComponent {
         if (this.isVisible()) {
             this.state.visible = false;
             this.container.style.display = 'none';
+            (this.parent as NavbarGroup).autoHide();
             if (refresh) {
                 this.viewer.navbar.autoSize();
             }
@@ -185,14 +200,6 @@ export abstract class AbstractButton extends AbstractComponent {
     }
 
     /**
-     * Perform action when the navbar size/content changes
-     * @internal
-     */
-    autoSize() {
-        // nothing
-    }
-
-    /**
      * Checks if the button can be displayed
      */
     isSupported(): boolean | ResolvableBoolean {
@@ -209,6 +216,12 @@ export abstract class AbstractButton extends AbstractComponent {
 
             if (this.config.iconActive) {
                 this.__setIcon(this.state.active ? this.config.iconActive : this.config.icon);
+            }
+
+            if (this.state.active) {
+                this.state.tooltip?.disable();
+            } else {
+                this.state.tooltip?.enable();
             }
         }
     }
@@ -249,8 +262,7 @@ export abstract class AbstractButton extends AbstractComponent {
 
     private __setIcon(icon: string) {
         this.container.innerHTML = icon;
-        addClasses(this.container.querySelector('svg'), 'psv-button-svg');
     }
 }
 
-export type ButtonConstructor = (new (navbar: Navbar) => AbstractButton) & typeof AbstractButton;
+export type ButtonConstructor = (new (parent: NavbarGroup) => AbstractButton) & typeof AbstractButton;

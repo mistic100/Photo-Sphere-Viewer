@@ -5,6 +5,7 @@ import {
     CTRLZOOM_TIMEOUT,
     DBLCLICK_DELAY,
     IDS,
+    IS_FULLSCREEN_CLASS,
     KEY_CODES,
     LONGTOUCH_DELAY,
     MOVE_THRESHOLD,
@@ -36,6 +37,7 @@ import {
     isEmpty,
     keyPressMatch,
     throttle,
+    toggleClass,
 } from '../utils';
 import { PressHandler } from '../utils/PressHandler';
 import type { Viewer } from '../Viewer';
@@ -419,6 +421,8 @@ export class EventsHandler extends AbstractService {
                 this.viewer.stopKeyboardControl();
             }
         }
+
+        toggleClass(this.viewer.container, IS_FULLSCREEN_CLASS, fullscreen);
 
         this.viewer.dispatchEvent(new FullscreenEvent(fullscreen));
     }

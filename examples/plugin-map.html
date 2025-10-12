@@ -40,7 +40,6 @@
                 container: 'photosphere',
                 panorama: baseUrl + 'sphere.jpg',
                 caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
-                loadingImg: baseUrl + 'loader.gif',
                 defaultYaw: '-10deg',
                 keyboard: 'always',
                 plugins: [
@@ -111,14 +110,14 @@
                     }),
                 ],
                 navbar: [
-                    'zoom',
-                    'move',
+                    'map',
+                    [
+                        'zoom',
+                        'move',
+                    ],
                     {
                         content: 'Change map',
-                        className: 'custom-button',
-                        onClick: () => {
-                            changeMap();
-                        },
+                        onClick: changeMap,
                     },
                     'caption',
                     'fullscreen',

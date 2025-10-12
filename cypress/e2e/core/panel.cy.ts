@@ -4,9 +4,15 @@ import { NO_LOG, VIEWPORT_MOBILE } from '../../utils/constants';
 
 describe('core: panel', () => {
     beforeEach(() => {
+        localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/core/base.html');
         waitViewerReady();
-        // createBaseSnapshot();
+    });
+
+    it('should show panel with title and content', () => {
+        callPanel('show panel').then(panel => panel.show({ title: 'My panel', content: 'content' }));
+
+        cy.get('.psv-panel').compareScreenshots('base');
     });
 
     it('should show/hide the panel', () => {
@@ -126,7 +132,7 @@ describe('core: panel', () => {
 
         cy.get('.psv-panel').should((panel) => {
             const { x, y, width, height } = panel[0].getBoundingClientRect();
-            expect({ x, y, width, height }).to.deep.eq({ x: 0, y: 0, width: 400, height: 760 });
+            expect({ x, y, width, height }).to.deep.eq({ x: 0, y: 0, width: 400, height: 800 });
         });
 
         cy.get('.psv-panel-resizer').should('not.be.visible');

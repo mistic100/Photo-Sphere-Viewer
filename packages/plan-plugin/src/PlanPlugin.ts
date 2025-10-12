@@ -124,7 +124,9 @@ export class PlanPlugin extends AbstractConfigurablePlugin<
     handleEvent(e: Event) {
         switch (e.type) {
             case events.ReadyEvent.type:
-                this.component.show();
+                if (this.config.visibleOnLoad) {
+                    this.component.show();
+                }
                 break;
             case events.PositionUpdatedEvent.type:
                 this.component.updateBearing((e as events.PositionUpdatedEvent).position);
@@ -178,24 +180,6 @@ export class PlanPlugin extends AbstractConfigurablePlugin<
      */
     setZoom(level: number) {
         this.component.zoom(level);
-    }
-
-    /**
-     * Closes the map
-     */
-    close() {
-        if (!this.component.collapsed) {
-            this.component.toggleCollapse();
-        }
-    }
-
-    /**
-     * Open the map
-     */
-    open() {
-        if (this.component.collapsed) {
-            this.component.toggleCollapse();
-        }
     }
 
     /**

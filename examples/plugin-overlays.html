@@ -35,7 +35,6 @@
                 container: 'photosphere',
                 panorama: baseUrl + 'sphere.jpg',
                 caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
-                loadingImg: baseUrl + 'loader.gif',
                 plugins: [
                     OverlaysPlugin.withConfig({
                         cubemapAdapter: CubemapAdapter,
@@ -51,7 +50,6 @@
                 ],
                 navbar: [
                     {
-                        className: 'custom-button',
                         content: 'Sphere overlay',
                         onClick: () => {
                             overlays.clearOverlays();
@@ -59,7 +57,6 @@
                         },
                     },
                     {
-                        className: 'custom-button',
                         content: 'Partial overlay',
                         onClick: () => {
                             overlays.clearOverlays();
@@ -76,7 +73,6 @@
                         },
                     },
                     {
-                        className: 'custom-button',
                         content: 'Cubemap overlay',
                         onClick: () => {
                             overlays.clearOverlays();

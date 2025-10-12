@@ -1,5 +1,5 @@
 import { AbstractAdapter } from '../adapters/AbstractAdapter';
-import type { Navbar } from '../components/Navbar';
+import type { NavbarGroup } from '../components/Navbar';
 import { ICONS } from '../data/constants';
 import { ConfigChangedEvent, PanoramaLoadedEvent } from '../events';
 import { AbstractButton } from './AbstractButton';
@@ -9,11 +9,10 @@ export class DownloadButton extends AbstractButton {
 
     readonly link: HTMLAnchorElement;
 
-    constructor(navbar: Navbar) {
-        super(navbar, {
+    constructor(parent: NavbarGroup) {
+        super(parent, {
             tagName: 'a',
             className: 'psv-download-button',
-            hoverScale: true,
             collapsable: true,
             tabbable: true,
             icon: ICONS.download,

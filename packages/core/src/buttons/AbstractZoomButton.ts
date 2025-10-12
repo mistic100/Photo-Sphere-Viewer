@@ -1,4 +1,4 @@
-import type { Navbar } from '../components/Navbar';
+import type { NavbarGroup } from '../components/Navbar';
 import { KEY_CODES } from '../data/constants';
 import { SYSTEM } from '../data/system';
 import { invertResolvableBoolean } from '../utils';
@@ -16,13 +16,12 @@ export class AbstractZoomButton extends AbstractButton {
     private readonly handler = new PressHandler();
 
     constructor(
-        navbar: Navbar,
+        parent: NavbarGroup,
         icon: string,
         private direction: ZoomButtonDirection,
     ) {
-        super(navbar, {
+        super(parent, {
             className: 'psv-zoom-button',
-            hoverScale: true,
             collapsable: false,
             tabbable: true,
             icon: icon,

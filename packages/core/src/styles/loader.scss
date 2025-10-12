@@ -5,42 +5,56 @@
     align-items: center;
     justify-content: center;
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     z-index: psv.$loader-zindex;
+    opacity: 0;
+    transition: opacity psv.$loader-transition;
+
+    &--visible {
+        opacity: 1;
+    }
 }
 
 .psv-loader {
-    --psv-loader-border: #{psv.$loader-border};
+    --psv-loader-color: #{psv.$loader-color};
+    --psv-loader-spacing: #{psv.$loader-spacing};
     --psv-loader-tickness: #{psv.$loader-tickness};
 
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: psv.$loader-color;
     width: psv.$loader-width;
     height: psv.$loader-width;
+    background-color: psv.$loader-bg-color;
+    backdrop-filter: psv.$loader-filter;
+    outline: psv.$loader-border;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform psv.$loader-transition;
+
+    @at-root .psv-loader-container--visible & {
+        transform: scale(1);
+    }
 
     &-canvas {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        color: psv.$loader-bg-color;
+        inset: 0;
         z-index: -1;
     }
 
     &-text {
+        color: psv.$loader-text-color;
         font: psv.$loader-font;
-        text-align: center;
     }
 
-    &--undefined &-canvas {
+    &--undefined path {
+        transform-origin: center;
         animation: psv-loader 2s cubic-bezier(0.75, 0.25, 0.25, 0.75) infinite;
+    }
+
+    &--undefined &-text {
+        display: none;
     }
 }
 

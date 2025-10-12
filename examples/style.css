@@ -6,13 +6,9 @@ body,
     margin: 0;
 }
 
-* {
-    font-family: "Helvetica", "Arial", sans-serif !important;
-}
-
 .psv-button.custom-button {
-    font-size: 22px;
-    line-height: 20px;
+    font-size: 20px;
+    width: 20px;
 }
 
 .lil-gui.autoPlace {

@@ -160,18 +160,5 @@ If you use a [custom navbar](../guide/navbar.md) you will need to manually add t
 
 ## SCSS variables
 
-| variable            | default                       | description                                                  |
-| ------------------- | ----------------------------- | ------------------------------------------------------------ |
-| $breakpoint         | 500px                         | Screen size below which the gallery is displayed full-height |
-| $padding            | 15px                          | Padding of the container                                     |
-| $border             | 1px solid core.$buttons-color | Border between the gallery and the navbar                    |
-| $background         | core.$navbar-background       | Background of the gallery                                    |
-| $item-radius        | 5px                           | Corner radius of gallery items                               |
-| $item-active-border | 3px solid white               | Border of active gallery item                                |
-| $title-font         | core.$caption-font            | Font of the gallery item title                               |
-| $title-color        | core.$caption-text-color      | Color of the gallery item title                              |
-| $title-background   | rgba(0, 0, 0, .6)             | Background of the gallery item title                         |
-| $thumb-hover-scale  | 1.2                           | Scale factor of thumbnails on mouse hover                    |
-| $arrow-color        | rgba(255, 255, 255, 0.6)      | Color of the navigation arrows                               |
-| $arrow-background   | rgba(0, 0, 0, 0.6)            | Color of the gradient behind navigation arrows               |
-| $scrollbar-color    | $arrow-color                  | Color of the scrollbar (browser support needed)              |
+Check the main [style](../guide/style.md) documentation if you want to customize the gallery style.
+The full list of SCSS variables can be found [in the source code](https://github.com/mistic100/Photo-Sphere-Viewer/blob/main/packages/gallery-plugin/src/styles/_vars.scss).

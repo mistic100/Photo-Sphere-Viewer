@@ -1,4 +1,4 @@
-import type { Navbar } from '@photo-sphere-viewer/core';
+import type { NavbarGroup } from '@photo-sphere-viewer/core';
 import { AbstractButton, events } from '@photo-sphere-viewer/core';
 import { ProgressEvent } from '../events';
 import { formatTime } from '../utils';
@@ -10,19 +10,12 @@ export class TimeCaption extends AbstractButton {
 
     private plugin?: VideoPlugin;
 
-    private readonly contentElt: HTMLElement;
-
-    constructor(navbar: Navbar) {
-        super(navbar, {
-            className: 'psv-caption psv-video-time',
-            hoverScale: false,
+    constructor(parent: NavbarGroup) {
+        super(parent, {
+            className: 'psv-video-time',
             collapsable: false,
             tabbable: false,
         });
-
-        this.contentElt = document.createElement('div');
-        this.contentElt.className = 'psv-caption-content';
-        this.container.appendChild(this.contentElt);
 
         this.plugin = this.viewer.getPlugin('video');
 
@@ -49,9 +42,9 @@ export class TimeCaption extends AbstractButton {
             case ProgressEvent.type: {
                 let caption = `<strong>${formatTime(this.plugin.getTime())}</strong>`;
                 if (isFinite(this.plugin.getDuration())) {
-                    caption += ` / ${formatTime(this.plugin.getDuration())}`;
+                    caption += `/<span>${formatTime(this.plugin.getDuration())}</span>`;
                 }
-                this.contentElt.innerHTML = caption;
+                this.container.innerHTML = caption;
                 break;
             }
         }

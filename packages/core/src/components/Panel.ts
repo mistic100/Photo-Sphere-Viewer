@@ -7,7 +7,8 @@ import { AbstractComponent } from './AbstractComponent';
 
 const PANEL_MIN_WIDTH = 200;
 
-const PANEL_CLASS_NO_INTERACTION = 'psv-panel-content--no-interaction';
+const PANEL_CLASS_VISIBLE = 'psv-panel--open';
+const PANEL_CLASS_RESIZING = 'psv-panel-content--resizing';
 
 /**
  * Configuration for {@link Panel.show}
@@ -17,6 +18,10 @@ export type PanelConfig = {
      * unique identifier to use with {@link Panel.hide} and {@link Panel.isVisible} and to store the width
      */
     id?: string;
+    /**
+     * HTML content of the panel title
+     */
+    title?: string;
     /**
      * HTML content of the panel
      */
@@ -54,6 +59,7 @@ export class Panel extends AbstractComponent {
         width: {} as Record<string, string>,
     };
 
+    private readonly title: HTMLElement;
     private readonly content: HTMLElement;
 
     /**
@@ -68,11 +74,18 @@ export class Panel extends AbstractComponent {
         resizer.className = 'psv-panel-resizer';
         this.container.appendChild(resizer);
 
+        const header = document.createElement('div');
+        header.className = 'psv-panel-header';
+        this.container.appendChild(header);
+
+        this.title = document.createElement('h1');
+        header.appendChild(this.title);
+
         const closeBtn = document.createElement('div');
         closeBtn.className = 'psv-panel-close-button';
         closeBtn.innerHTML = ICONS.close;
-        closeBtn.title = viewer.config.lang.close;
-        this.container.appendChild(closeBtn);
+        closeBtn.setAttribute('aria-label', viewer.config.lang.close);
+        header.appendChild(closeBtn);
 
         this.content = document.createElement('div');
         this.content.className = 'psv-panel-content';
@@ -162,9 +175,10 @@ export class Panel extends AbstractComponent {
             this.container.style.width = null;
         }
 
+        this.title.innerHTML = config.title ?? '';
         this.content.innerHTML = config.content;
         this.content.scrollTop = 0;
-        this.container.classList.add('psv-panel--open');
+        this.container.classList.add(PANEL_CLASS_VISIBLE);
 
         toggleClass(this.content, 'psv-panel-content--no-margin', config.noMargin === true);
 
@@ -202,7 +216,7 @@ export class Panel extends AbstractComponent {
             this.state.contentId = null;
 
             this.content.innerHTML = null;
-            this.container.classList.remove('psv-panel--open');
+            this.container.classList.remove(PANEL_CLASS_VISIBLE);
 
             if (this.state.clickHandler) {
                 this.content.removeEventListener('click', this.state.clickHandler);
@@ -232,7 +246,7 @@ export class Panel extends AbstractComponent {
         if (this.state.mousedown) {
             evt.stopPropagation();
             this.state.mousedown = false;
-            this.content.classList.remove(PANEL_CLASS_NO_INTERACTION);
+            this.content.classList.remove(PANEL_CLASS_RESIZING);
         }
     }
 
@@ -241,7 +255,7 @@ export class Panel extends AbstractComponent {
             evt.stopPropagation();
             if (evt.touches.length === 0) {
                 this.state.mousedown = false;
-                this.content.classList.remove(PANEL_CLASS_NO_INTERACTION);
+                this.content.classList.remove(PANEL_CLASS_RESIZING);
             }
         }
     }
@@ -271,7 +285,7 @@ export class Panel extends AbstractComponent {
         this.state.mouseX = clientX;
         this.state.mouseY = clientY;
         this.state.mousedown = true;
-        this.content.classList.add(PANEL_CLASS_NO_INTERACTION);
+        this.content.classList.add(PANEL_CLASS_RESIZING);
     }
 
     private __resize(clientX: number, clientY: number) {

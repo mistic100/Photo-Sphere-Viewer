@@ -49,7 +49,6 @@ onMounted(async () => {
 
     viewer = new Viewer({
         container: 'viewer',
-        loadingImg: baseUrl + 'loader.gif',
     });
 
     setPanorama(null);

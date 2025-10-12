@@ -175,19 +175,5 @@ If you use a [custom navbar](../guide/navbar.md) you will need to manually add t
 
 ## SCSS variables
 
-| variable                    | default                              | description                                                      |
-| --------------------------- | ------------------------------------ | ---------------------------------------------------------------- |
-| $progressbar-height         | 3px                                  | Height of the progress bar                                       |
-| $progressbar-height-active  | 5px                                  | Height of the progress bar on mouse hover                        |
-| $progressbar-progress-color | core.$buttons-color                  | Color of the playing progress bar                                |
-| $progressbar-buffer-color   | core.$buttons-active-background      | Color of the buffer progress bar                                 |
-| $progressbar-handle-size    | 9px                                  | Size of the seek handle                                          |
-| $progressbar-handle-color   | white                                | Color of the seek handle                                         |
-| $volume-height              | 80px                                 | Height of the volume control                                     |
-| $volume-width               | $progressbar-height-active           | Width of the volume control                                      |
-| $volume-bar-color           | $progressbar-progress-color          | Color of the volume controle                                     |
-| $volume-track-color         | $progressbar-buffer-color            | Background color of the volume control                           |
-| $volume-handle-size         | $progressbar-handle-size             | Size of the volume handle                                        |
-| $volume-handle-color        | $progressbar-handle-color            | Color of the volume handle                                       |
-| $bigbutton-color            | core.$buttons-color                  | Color of the central play button                                 |
-| $bigbutton-size             | (portrait: 20vw,<br>landscape: 10vw) | Size if the central play button, depending on screen orientation |
+Check the main [style](../guide/style.md) documentation if you want to customize the video player style.
+The full list of SCSS variables can be found [in the source code](https://github.com/mistic100/Photo-Sphere-Viewer/blob/main/packages/video-plugin/src/styles/_vars.scss).

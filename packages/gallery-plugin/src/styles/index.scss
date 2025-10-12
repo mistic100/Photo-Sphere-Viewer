@@ -1,4 +1,5 @@
 @forward 'vars';
+@use 'sass:math';
 @use '../../../core/src/styles/vars' as psv;
 @use 'vars' as gallery;
 
@@ -14,16 +15,15 @@
     bottom: 0;
     width: 100%;
     background: gallery.$background;
-    border-bottom: gallery.$border;
+    backdrop-filter: gallery.$filter;
     overflow: hidden;
-    transition: transform ease-in-out 0.1s;
+    transition: transform gallery.$transition;
     transform: translateY(100%);
     z-index: psv.$ui-zindex + 1; // above map/plan
     cursor: default;
 
-    @at-root .psv--has-navbar & {
-        bottom: psv.$navbar-height;
-        transform: translateY(calc(100% + #{psv.$navbar-height}));
+    @include psv.has-navbar {
+        padding-bottom: calc(#{psv.$navbar-height} + #{psv.$navbar-margin * 2});
     }
 
     &--open {
@@ -66,7 +66,7 @@
             line-height: 1.2em;
             color: gallery.$title-color;
             z-index: 2;
-            transition: height ease-in-out 0.2s;
+            transition: height gallery.$thumb-transition;
 
             span {
                 white-space: nowrap;
@@ -85,7 +85,7 @@
             background-position: center center;
             background-size: cover;
             transform: scale3d(1, 1, 1);
-            transition: transform ease-in-out 0.2s;
+            transition: transform gallery.$thumb-transition;
             z-index: 1;
         }
 
@@ -126,13 +126,12 @@
         padding: gallery.$padding;
         z-index: 9; // bellow close button
         cursor: pointer;
-        transition: opacity .3s ease-in-out;
+        transition: opacity gallery.$thumb-transition;
 
-        /* stylelint-disable no-descending-specificity */
         svg {
             color: gallery.$arrow-color;
-            filter: drop-shadow(5px 5px 2px black);
-            transition: translate .3s ease-in-out;
+            filter: drop-shadow(gallery.$arrow-shadow);
+            transition: translate gallery.$thumb-transition;
         }
 
         &--left, &--right {
@@ -142,6 +141,10 @@
             svg {
                 height: 60%;
                 max-height: 60px;
+            }
+
+            @include psv.has-navbar {
+                padding-bottom: calc(#{psv.$navbar-height} + #{psv.$navbar-margin * 2});
             }
         }
 
@@ -204,17 +207,25 @@
                 translate: 0 10px;
             }
         }
-        /* stylelint-enable no-descending-specificity */
+    }
+
+    .psv-panel-close-button {
+        position: absolute;
+        display: none;
+        z-index: 10;
     }
 
     @container psv-container (max-width: #{gallery.$breakpoint}) {
         top: 0;
+        padding: 0 !important;
+        background: psv.$panel-background;
+        backdrop-filter: psv.$panel-filter;
 
         &-container {
             flex-wrap: wrap;
-            height: calc(100% - #{psv.$panel-close-button-size});
-            margin-top: psv.$panel-close-button-size;
-            padding: 0 0 0 gallery.$padding;
+            height: 100%;
+            box-sizing: border-box;
+            padding: #{math.div(psv.$panel-close-button-size, 8) * 10} 0 0 gallery.$padding;
             overflow: hidden auto;
         }
 
@@ -225,7 +236,12 @@
 
         .psv-panel-close-button {
             display: block;
-            z-index: 10;
+        }
+
+        @include psv.has-navbar {
+            &-container, &-arrow--bottom {
+                padding-bottom: calc(#{psv.$navbar-height} + #{psv.$navbar-margin});
+            }
         }
     }
 }

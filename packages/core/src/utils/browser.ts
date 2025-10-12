@@ -49,7 +49,7 @@ export function hasParent(el: HTMLElement, parent: Element): boolean {
         if (test === parent) {
             return true;
         }
-        test = test.parentElement;
+        test = test?.parentElement;
     } while (test);
 
     return false;

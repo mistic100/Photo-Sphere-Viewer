@@ -12,7 +12,7 @@ const ROTATION: Record<string, number> = {
 
 export class PlanMaximizeButton extends AbstractPlanButton {
     constructor(plan: PlanComponent) {
-        super(plan, ButtonPosition.DIAGONAL);
+        super(plan, 'mapMaximize', ButtonPosition.DIAGONAL);
 
         this.container.addEventListener('click', (e) => {
             plan.toggleMaximized();
@@ -20,11 +20,11 @@ export class PlanMaximizeButton extends AbstractPlanButton {
         });
     }
 
-    override update() {
+    override applyConfig(): void {
+        this.langKey = this.plan.maximized ? 'mapMinimize' : 'mapMaximize';
+        super.applyConfig();
+
         this.container.innerHTML = this.plan.maximized ? minimize : maximize;
         this.container.querySelector('svg').style.transform = `rotate3d(0, 0, 1, ${ROTATION[this.plan.config.position.join('-')]}deg)`;
-        this.container.title = this.plan.maximized
-            ? this.viewer.config.lang['mapMinimize']
-            : this.viewer.config.lang['mapMaximize'];
     }
 }

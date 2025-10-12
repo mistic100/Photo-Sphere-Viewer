@@ -275,24 +275,29 @@ export interface NavbarButtonElement extends HTMLElement {
 }
 
 /**
- * Definition of a custom navbar button
+ * Definition of a custom navbar element
  */
-export type NavbarCustomButton = {
+export type NavbarCustomElement = {
     /**
-     * Unique identifier of the button, usefull when using the {@link Navbar.getButton} method
+     * Type of the element, buttons are square and clickable
+     * @default 'button' if `content` is a string, 'element' otherwise
+     */
+    type?: 'button' | 'element';
+    /**
+     * Unique identifier of the element, usefull when using the {@link Navbar.getButton} method
      */
     id?: string;
     /**
-     * Tooltip displayed when the mouse is over the button
+     * Tooltip displayed when the mouse is over the element
      * If can be a key in the global `lang` config
      */
     title?: string;
     /**
-     * Content of the button. Preferably a square image or SVG icon
+     * Content of the element. Must be a square image or SVG icon for buttons
      */
     content: string | NavbarButtonElement;
     /**
-     * CSS class added to the button
+     * CSS class added to the element
      */
     className?: string;
     /**
@@ -305,18 +310,18 @@ export type NavbarCustomButton = {
      */
     disabled?: boolean;
     /**
-     * initial visibility of the button
+     * initial visibility of the element
      * @default true
      */
     visible?: boolean;
     /**
      * if the button can be moved to menu when the navbar is too small
-     * @default true
+     * @default true if `type` = 'button', ignored else
      */
     collapsable?: boolean;
     /**
      * if the button is accessible with the keyboard
-     * @default true
+     * @default true if `type` = 'button', ignored else
      */
     tabbable?: boolean;
 };
@@ -339,10 +344,6 @@ export type ViewerConfig = {
     downloadUrl?: string;
     /** @default null */
     downloadName?: string;
-    /** @default null */
-    loadingImg?: string;
-    /** @default 'Loading...' */
-    loadingTxt?: string;
     /** @default `container` size */
     size?: CssSize;
     /** @default false */
@@ -385,8 +386,8 @@ export type ViewerConfig = {
     rendererParameters?: WebGLRendererParameters;
     /** @default false */
     withCredentials?: boolean | ((url: string) => boolean);
-    /** @default 'zoom move download description caption fullscreen' */
-    navbar?: boolean | string | Array<string | NavbarCustomButton>;
+    /** @default '[zoom, move], [download, description], caption, [fullscreen, menu]' */
+    navbar?: boolean | string | Array<string | NavbarCustomElement | Array<string | NavbarCustomElement>>;
     lang?: Record<string, string>;
     /** @default 'fullscreen' */
     keyboard?: boolean | 'always' | 'fullscreen';
@@ -416,7 +417,7 @@ export type ParsedViewerConfig = Omit<
     fisheye?: number;
     requestHeaders?: (url: string) => Record<string, string>;
     withCredentials?: (url: string) => boolean;
-    navbar?: Array<string | NavbarCustomButton>;
+    navbar?: Array<Array<string | NavbarCustomElement>>;
 };
 
 /**

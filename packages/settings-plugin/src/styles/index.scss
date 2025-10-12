@@ -9,15 +9,19 @@
 
 .psv-settings {
     position: absolute;
-    bottom: psv.$navbar-height;
+    bottom: calc(#{psv.$navbar-height} + #{psv.$navbar-margin});
+    margin: settings.$margin;
     background: settings.$background;
+    backdrop-filter: settings.$filter;
     box-shadow: settings.$shadow;
+    border: settings.$border;
+    border-radius: settings.$radius;
     font: settings.$font;
     color: settings.$text-color;
     z-index: psv.$navbar-zindex;
     opacity: 0;
-    transition: opacity 0.1s linear;
-    margin: settings.$margin;
+    overflow: hidden;
+    transition: opacity settings.$transition;
 
     &--open {
         opacity: 1;
@@ -40,6 +44,7 @@
 
     &:hover {
         background: settings.$hover-background;
+        color: settings.$hover-color;
     }
 
     &:focus-visible {
@@ -58,6 +63,7 @@
 
     &-value {
         flex: none;
+        display: flex;
     }
 
     &-icon {
@@ -83,10 +89,10 @@
 
 .psv-settings-badge {
     position: absolute;
-    top: 10%;
-    right: 10%;
+    top: 0;
+    right: 0;
     border-radius: 0.2em;
-    padding: 0.2em;
+    padding: 0.2em 0.3em;
     background: settings.$badge-background;
     color: settings.$badge-text-color;
     font: settings.$badge-font;

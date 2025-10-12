@@ -18,7 +18,7 @@ export class PlanComponent extends AbstractComponent {
     protected override readonly state = {
         visible: false,
         maximized: false,
-        collapsed: false,
+        wasMaximized: false,
         galleryWasVisible: false,
 
         layers: {} as Record<string, Layer>,
@@ -51,10 +51,6 @@ export class PlanComponent extends AbstractComponent {
         return this.state.maximized;
     }
 
-    get collapsed() {
-        return this.state.collapsed;
-    }
-
     constructor(
         viewer: Viewer,
         private plugin: PlanPlugin,
@@ -77,8 +73,8 @@ export class PlanComponent extends AbstractComponent {
 
         this.container.appendChild(mapContainer);
 
-        this.container.addEventListener('transitionstart', this);
-        this.container.addEventListener('transitionend', this);
+        this.container.addEventListener('transitionstart', utils.throttle(e => this.handleEvent(e), 50));
+        this.container.addEventListener('transitionend', utils.throttle(e => this.handleEvent(e), 50));
 
         // sub-components
         this.layersButton = new PlanLayersButton(this);
@@ -104,10 +100,6 @@ export class PlanComponent extends AbstractComponent {
 
         this.applyConfig();
         this.hide();
-
-        if (!this.config.visibleOnLoad) {
-            this.toggleCollapse();
-        }
 
         if (this.config.configureLeaflet) {
             this.config.configureLeaflet(this.map);
@@ -154,10 +146,10 @@ export class PlanComponent extends AbstractComponent {
                 break;
             case events.ConfigChangedEvent.type:
                 if ((e as events.ConfigChangedEvent).containsOptions('lang')) {
-                    this.resetButton?.update();
-                    this.closeButton?.update();
-                    this.layersButton?.update();
-                    this.maximizeButton?.update();
+                    this.resetButton?.applyConfig();
+                    this.closeButton?.applyConfig();
+                    this.layersButton?.applyConfig();
+                    this.maximizeButton?.applyConfig();
                 }
                 break;
             case 'transitionstart':
@@ -252,18 +244,34 @@ export class PlanComponent extends AbstractComponent {
         this.setMarkers(Object.values(this.state.hotspots).filter(({ isMarker }) => isMarker).map(({ hotspot }) => hotspot));
     }
 
-    override isVisible(): boolean {
-        return this.state.visible && !this.state.collapsed;
-    }
-
     override show() {
-        super.show();
+        this.state.visible = true;
+
+        this.container.classList.remove('psv-plan--collapsed');
+
+        this.reset();
+
+        if (this.state.wasMaximized) {
+            this.maximize();
+        } else {
+            this.plugin.dispatchEvent(new ViewChanged('normal'));
+        }
+
         this.state.needsUpdate = true;
     }
 
     override hide() {
-        super.hide();
-        this.state.forceRender = false;
+        this.state.wasMaximized = this.maximized;
+
+        if (this.maximized) {
+            this.minimize(false);
+        }
+
+        this.state.visible = false;
+
+        this.container.classList.add('psv-plan--collapsed');
+
+        this.plugin.dispatchEvent(new ViewChanged('closed'));
     }
 
     /**
@@ -323,57 +331,51 @@ export class PlanComponent extends AbstractComponent {
     }
 
     /**
-     * Switch collapsed mode
+     * Switch maximized mode
      */
-    toggleCollapse() {
-        if (this.state.maximized) {
-            this.toggleMaximized(false);
-        }
-
-        this.state.collapsed = !this.state.collapsed;
-
-        utils.toggleClass(this.container, 'psv-plan--collapsed', this.state.collapsed);
-
-        if (!this.state.collapsed) {
-            this.reset();
-            this.plugin.dispatchEvent(new ViewChanged('normal'));
+    toggleMaximized() {
+        if (this.maximized) {
+            this.minimize();
         } else {
-            this.plugin.dispatchEvent(new ViewChanged('closed'));
+            this.maximize();
         }
-
-        this.closeButton?.update();
     }
 
     /**
-     * Switch maximized mode
+     * Maximize the map
      */
-    toggleMaximized(dispatchMinimizeEvent = true) {
-        if (this.state.collapsed) {
-            return;
+    maximize() {
+        this.state.maximized = true;
+
+        this.container.classList.add('psv-plan--maximized');
+
+        this.state.galleryWasVisible = this.gallery?.isVisible();
+        this.gallery?.hide();
+
+        this.map.getContainer().focus();
+        this.plugin.dispatchEvent(new ViewChanged('maximized'));
+
+        this.maximizeButton?.applyConfig();
+    }
+
+    /**
+     * Minimize the map
+     */
+    minimize(dispatchEvent = true) {
+        this.state.maximized = false;
+
+        this.container.classList.remove('psv-plan--maximized');
+
+        this.map.getContainer().blur();
+
+        if (this.state.galleryWasVisible) {
+            this.gallery.show();
+        }
+        if (dispatchEvent) {
+            this.plugin.dispatchEvent(new ViewChanged('normal'));
         }
 
-        this.state.maximized = !this.state.maximized;
-
-        utils.toggleClass(this.container, 'psv-plan--maximized', this.state.maximized);
-
-        if (this.state.maximized) {
-            this.state.galleryWasVisible = this.gallery?.isVisible();
-            this.gallery?.hide();
-
-            this.map.getContainer().focus();
-            this.plugin.dispatchEvent(new ViewChanged('maximized'));
-        } else {
-            this.map.getContainer().blur();
-
-            if (this.state.galleryWasVisible) {
-                this.gallery.show();
-            }
-            if (dispatchMinimizeEvent) {
-                this.plugin.dispatchEvent(new ViewChanged('normal'));
-            }
-        }
-
-        this.maximizeButton?.update();
+        this.maximizeButton?.applyConfig();
     }
 
     /**

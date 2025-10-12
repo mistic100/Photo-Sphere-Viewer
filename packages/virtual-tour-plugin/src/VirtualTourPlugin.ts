@@ -1,5 +1,5 @@
 import type { CompassPlugin } from '@photo-sphere-viewer/compass-plugin';
-import type { PluginConstructor, Point, Position, Tooltip, Viewer } from '@photo-sphere-viewer/core';
+import type { AttachedTooltip, PluginConstructor, Point, Position, Viewer } from '@photo-sphere-viewer/core';
 import { AbstractConfigurablePlugin, PSVError, events, utils } from '@photo-sphere-viewer/core';
 import type { GalleryPlugin } from '@photo-sphere-viewer/gallery-plugin';
 import type { MapPlugin, events as mapEvents } from '@photo-sphere-viewer/map-plugin';
@@ -108,7 +108,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
     private readonly state = {
         currentNode: null as VirtualTourNode,
-        currentTooltip: null as Tooltip,
+        tooltips: {} as Record<string, { loaded: boolean; ctrl: AttachedTooltip }>,
         loadingNode: null as string,
         preload: {} as Record<string, boolean | Promise<any>>,
     };
@@ -251,7 +251,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
             throw new PSVError('Cannot set nodes in server side mode');
         }
 
-        this.__hideTooltip();
+        this.__removeTooltips();
         this.state.currentNode = null;
 
         (this.datasource as ClientSideDatasource).setNodes(nodes);
@@ -328,7 +328,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
                 this.viewer.panel.hide('description');
 
-                this.__hideTooltip();
+                this.__removeTooltips();
 
                 this.arrowsRenderer.clear();
 
@@ -490,8 +490,6 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
         }
 
         if (this.state.currentNode?.id === node.id) {
-            this.__hideTooltip();
-
             if (newNode.panorama || newNode.panoData || newNode.sphereCorrection) {
                 this.setCurrentNode(node.id, { forceUpdate: true });
                 return;
@@ -598,7 +596,14 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
 
             positions.push(position);
 
-            this.arrowsRenderer.addLinkArrow(link, position, link.linkOffset?.depth);
+            const element = this.arrowsRenderer.addLinkArrow(link, position, link.linkOffset?.depth);
+
+            if (this.config.showLinkTooltip) {
+                this.state.tooltips[link.nodeId] = {
+                    loaded: false,
+                    ctrl: this.viewer.attachTooltip({ ...LOADING_TOOLTIP }, element),
+                };
+            }
         });
 
         this.arrowsRenderer.render();
@@ -646,32 +651,12 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
     }
 
     /** @internal */
-    __onEnterArrow(link: VirtualTourLink, evt: MouseEvent) {
-        const viewerPos = utils.getPosition(this.viewer.container);
-
-        const viewerPoint: Point = {
-            x: evt.clientX - viewerPos.x,
-            y: evt.clientY - viewerPos.y,
-        };
-
-        if (this.config.showLinkTooltip) {
-            this.state.currentTooltip = this.viewer.createTooltip({
-                ...LOADING_TOOLTIP,
-                left: viewerPoint.x,
-                top: viewerPoint.y,
-                box: {
-                    // separate the tooltip from the cursor
-                    width: 20,
-                    height: 20,
-                },
-            });
-
+    __onEnterArrow(link: VirtualTourLink) {
+        const tooltip = this.state.tooltips[link.nodeId];
+        if (tooltip && !tooltip.loaded) {
+            tooltip.loaded = true;
             this.__getTooltipContent(link).then((content) => {
-                if (content) {
-                    this.state.currentTooltip.update(content);
-                } else {
-                    this.__hideTooltip();
-                }
+                tooltip.ctrl.update(content);
             });
         }
 
@@ -682,24 +667,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
     }
 
     /** @internal */
-    __onHoverArrow(evt: MouseEvent) {
-        const viewerPos = utils.getPosition(this.viewer.container);
-
-        const viewerPoint: Point = {
-            x: evt.clientX - viewerPos.x,
-            y: evt.clientY - viewerPos.y,
-        };
-
-        this.state.currentTooltip?.move({
-            left: viewerPoint.x,
-            top: viewerPoint.y,
-        });
-    }
-
-    /** @internal */
     __onLeaveArrow(link: VirtualTourLink) {
-        this.__hideTooltip();
-
         this.map?.setActiveHotspot(null);
         this.plan?.setActiveHotspot(null);
 
@@ -707,11 +675,13 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
     }
 
     /**
-     * Hides the tooltip
+     * Remove all tooltips
      */
-    private __hideTooltip() {
-        this.state.currentTooltip?.hide();
-        this.state.currentTooltip = null;
+    private __removeTooltips() {
+        Object.values(this.state.tooltips).forEach((tooltip) => {
+            tooltip.ctrl.destroy();
+        });
+        this.state.tooltips = {};
     }
 
     /**

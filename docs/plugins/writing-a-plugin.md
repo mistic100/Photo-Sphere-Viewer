@@ -139,7 +139,7 @@ Photo Sphere Viewer buttons **must** extend `AbstractButton`, check the [API Ref
 
 **Requirements:**
 
--   The button class **must** take a `Navbar` object as first parameter and pass it to the `super` constructor.
+-   The button class **must** take a `NavbarGroup` object as first parameter and pass it to the `super` constructor.
 -   It **must** have a `static id` property.
 -   It **must** implement the `destroy` method which is used to cleanup the button when the viewer is unloaded.
 -   It **must** implement the `onClick` method to perform an action.
@@ -157,8 +157,8 @@ import { AbstractButton } from '@photo-sphere-viewer/core';
 export class CustomButton extends AbstractButton {
     static id = 'custom-button';
 
-    constructor(navbar) {
-        super(navbar, {
+    constructor(group) {
+        super(group, {
             className: 'custom-button-class',
             icon: '<svg>...</svg>',
             collapsable: true,

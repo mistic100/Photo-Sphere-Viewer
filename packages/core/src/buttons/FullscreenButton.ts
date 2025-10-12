@@ -1,15 +1,14 @@
-import type { Navbar } from '../components/Navbar';
+import type { NavbarGroup } from '../components/Navbar';
+import { ICONS } from '../data/constants';
 import { FullscreenEvent } from '../events';
 import { AbstractButton } from './AbstractButton';
-import { ICONS } from '../data/constants';
 
 export class FullscreenButton extends AbstractButton {
     static override readonly id = 'fullscreen';
 
-    constructor(navbar: Navbar) {
-        super(navbar, {
+    constructor(parent: NavbarGroup) {
+        super(parent, {
             className: 'psv-fullscreen-button',
-            hoverScale: true,
             collapsable: false,
             tabbable: true,
             icon: ICONS.fullscreenIn,

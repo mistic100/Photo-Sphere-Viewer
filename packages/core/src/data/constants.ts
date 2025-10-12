@@ -54,6 +54,16 @@ export const VIEWER_DATA = 'photoSphereViewer';
 export const CAPTURE_EVENTS_CLASS = 'psv--capture-event';
 
 /**
+ * CSS class applied to the viewer in fullscreen
+ */
+export const IS_FULLSCREEN_CLASS = 'psv--is-fullscreen';
+
+/**
+ * CSS class applied to the viewer when the navbar is visible
+ */
+export const HAS_NAVBAR_CLASS = 'psv--has-navbar';
+
+/**
  * Actions available for {@link ViewerConfig['keyboardActions']} configuration
  */
 export enum ACTIONS {

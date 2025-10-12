@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="/dist/core/index.css" />
         <link rel="stylesheet" href="/dist/settings-plugin/index.css" />
         <link rel="stylesheet" href="/style.css" />
+        <link rel="stylesheet" href="/e2e/style.css" />
 
         <style>
             /* inconsistent behavior in Cypress */
@@ -41,7 +42,6 @@
                 container: 'photosphere',
                 panorama: baseUrl + 'sphere-small.jpg',
                 caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
-                loadingImg: baseUrl + 'loader.gif',
                 plugins: [
                     SettingsPlugin.withConfig({
                         persist: urlParams.get('persist') === 'true',

@@ -12,7 +12,6 @@ new Viewer({
         muted: true,
     }),
     caption: 'Ayutthaya <b>&copy; meetle</b>',
-    loadingImg: baseUrl + 'loader.gif',
     touchmoveTwoFingers: true,
     mousewheelCtrlKey: true,
     navbar: 'video caption settings fullscreen',

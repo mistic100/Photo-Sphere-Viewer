@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { PanoData } from '../model';
-import { cleanCssPosition, getConfigParser, getXMPValue, isExtendedPosition, mergePanoData, parseAngle, parsePoint, parseSpeed, speedToDuration } from './psv';
+import { cleanCssPosition, getConfigParser, getXMPValue, isExtendedPosition, mergePanoData, parseAngle, parseNavbar, parsePoint, parseSpeed, speedToDuration } from './psv';
 
 describe('utils:psv:isExtendedPosition', () => {
     it('should pass', () => {
@@ -712,6 +712,26 @@ describe('utils:psv:getConfigParser', () => {
             field2: 150,
             field3: true,
         });
+    });
+});
+
+describe('utils:psv:parseNavbar', () => {
+    it('should parse basic navbar config', () => {
+        assert.deepStrictEqual(parseNavbar('A B C'), ['A', 'B', 'C']);
+        assert.deepStrictEqual(parseNavbar('A,B,C'), ['A', 'B', 'C']);
+        assert.deepStrictEqual(parseNavbar('A, B, C'), ['A', 'B', 'C']);
+    });
+
+    it('should parse navbar config with groups', () => {
+        assert.deepStrictEqual(parseNavbar('[A B] [C D]'), [['A', 'B'], ['C', 'D']]);
+        assert.deepStrictEqual(parseNavbar('[A B] [C] D'), [['A', 'B'], ['C'], 'D']);
+        assert.deepStrictEqual(parseNavbar('[A, B], [C], D'), [['A', 'B'], ['C'], 'D']);
+    });
+
+    it('should reject invalid navbar config', () => {
+        assert.throws(() => parseNavbar('[A [B]]'), /Invalid navbar configuration/);
+        assert.throws(() => parseNavbar('A] [B]'), /Invalid navbar configuration/);
+        assert.throws(() => parseNavbar('[A] [B'), /Invalid navbar configuration/);
     });
 });
 

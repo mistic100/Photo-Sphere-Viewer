@@ -7,6 +7,7 @@
 
         <link rel="stylesheet" href="/dist/core/index.css" />
         <link rel="stylesheet" href="/style.css" />
+        <link rel="stylesheet" href="/e2e/style.css" />
     </head>
     <body>
         <div id="photosphere"></div>
@@ -59,28 +60,36 @@
                     myButton: 'Click me',
                 },
                 navbar: [
-                    'zoom',
-                    'move',
-                    'download',
-                    {
-                        title: 'myButton',
-                        className: 'custom-button',
-                        content: '<svg viewBox="0 0 10 10"><circle cx=5 cy=5 r=5 fill=black/></svg>',
-                        onClick(viewer) {
-                            alert('Custom button clicked');
-                        }
-                    },
-                    {
-                        title: 'Other button',
-                        className: 'custom-button',
-                        content: '<svg viewBox="0 0 10 10"><rect x=0 y=0 width=10 height=10 fill=black/></svg',
-                        collapsable: false,
-                        onClick(viewer) {
-                            alert('Custom button 2 clicked');
-                        }
-                    },
+                    [
+                        'zoom',
+                        'move',
+                    ],
+                    [
+                        'download',
+                        {
+                            title: 'myButton',
+                            className: 'custom-button',
+                            content: '<svg viewBox="0 0 10 10"><circle cx=5 cy=5 r=5 fill=black/></svg>',
+                            onClick(viewer) {
+                                alert('Custom button clicked');
+                            }
+                        },
+                        {
+                            title: 'Other button',
+                            className: 'custom-button',
+                            content: '<svg viewBox="0 0 10 10"><rect x=0 y=0 width=10 height=10 fill=black/></svg',
+                            collapsable: false,
+                            onClick(viewer) {
+                                alert('Custom button 2 clicked');
+                            }
+                        },
+                        'description',
+                    ],
                     'caption',
-                    'fullscreen',
+                    [
+                        'fullscreen',
+                        'menu',
+                    ],
                 ],
             });
 

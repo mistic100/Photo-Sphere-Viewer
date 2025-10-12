@@ -4,11 +4,8 @@ import { readFile, writeFile } from 'fs/promises';
 import os from 'os';
 import path from 'path';
 import selfsigned from 'selfsigned';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const rootDir = path.resolve(__dirname, '..');
+const rootDir = path.resolve(import.meta.dirname, '..');
 
 const EXAMPLES_DIR = 'examples';
 const CYPRESS_DIR = 'cypress/pages';

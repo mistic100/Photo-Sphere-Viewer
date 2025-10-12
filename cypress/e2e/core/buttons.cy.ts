@@ -1,12 +1,11 @@
 import { callViewer, checkPosition, checkZoom, waitViewerReady } from '../../utils';
-import { BASE_URL, NO_LOG } from '../../utils/constants';
+import { BASE_URL } from '../../utils/constants';
 
 describe('core: buttons', () => {
     beforeEach(() => {
         localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/core/navbar.html');
         waitViewerReady();
-        // createBaseSnapshot();
     });
 
     // does not work in headless mode
@@ -24,59 +23,33 @@ describe('core: buttons', () => {
     it('should zoom with buttons', () => {
         checkZoom(50);
 
-        cy.get('[title="Zoom in"]').click();
+        cy.get('[aria-label="Zoom in"]').click();
         cy.wait(500);
 
         callViewer('check zoom >50')
             .then(viewer => expect(viewer.getZoomLevel()).gt(50));
 
-        cy.get('[title="Zoom out"]').trigger('mousedown');
+        cy.get('[aria-label="Zoom out"]').trigger('mousedown');
         cy.wait(1000);
-        cy.get('[title="Zoom out"]').trigger('mouseup');
+        cy.get('[aria-label="Zoom out"]').trigger('mouseup');
 
         callViewer('check zoom <50')
             .then(viewer => expect(viewer.getZoomLevel()).lt(50));
-    });
-
-    it('should zoom with slider', () => {
-        withZoomHandlePosition(({ element, x, y, width, height }) => {
-            const clickPoint = { clientX: x + width * 0.5, clientY: y + height * 0.5 };
-            const movePoint = { clientX: clickPoint.clientX + 20, clientY: clickPoint.clientY };
-
-            element
-                .trigger('mousedown', clickPoint)
-                .trigger('mousemove', movePoint)
-                .trigger('mouseup', movePoint);
-        });
-
-        checkZoom(75);
-
-        withZoomHandlePosition(({ element, x, y, width, height }) => {
-            const clickPoint = { clientX: x + width * 0.5, clientY: y + height * 0.5 };
-            const movePoint = { clientX: 0, clientY: clickPoint.clientY };
-
-            element
-                .trigger('mousedown', clickPoint)
-                .trigger('mousemove', movePoint)
-                .trigger('mouseup', movePoint);
-        });
-
-        checkZoom(0);
     });
 
     it('should move left/right with buttons', () => {
         callViewer('set yaw =PI')
             .then(viewer => viewer.rotate({ yaw: Math.PI, pitch: 0 }));
 
-        cy.get('[title="Move right"]').click();
+        cy.get('[aria-label="Move right"]').click();
         cy.wait(500);
 
         callViewer('check yaw >PI')
             .then(viewer => expect(viewer.getPosition().yaw).gt(Math.PI));
 
-        cy.get('[title="Move left"]').trigger('mousedown');
+        cy.get('[aria-label="Move left"]').trigger('mousedown');
         cy.wait(1000);
-        cy.get('[title="Move left"]').trigger('mouseup');
+        cy.get('[aria-label="Move left"]').trigger('mouseup');
 
         callViewer('check zoom <Math.PI')
             .then(viewer => expect(viewer.getPosition().yaw).lt(Math.PI));
@@ -85,15 +58,15 @@ describe('core: buttons', () => {
     it('should move up/down with buttons', () => {
         checkPosition({ yaw: 0, pitch: 0 });
 
-        cy.get('[title="Move up"]').click();
+        cy.get('[aria-label="Move up"]').click();
         cy.wait(500);
 
         callViewer('check pitch >0')
             .then(viewer => expect(viewer.getPosition().pitch).gt(0));
 
-        cy.get('[title="Move down"]').trigger('mousedown');
+        cy.get('[aria-label="Move down"]').trigger('mousedown');
         cy.wait(1000);
-        cy.get('[title="Move down"]').trigger('mouseup');
+        cy.get('[aria-label="Move down"]').trigger('mouseup');
 
         callViewer('check pitch <0')
             .then(viewer => expect(viewer.getPosition().pitch).lt(0));
@@ -123,21 +96,4 @@ describe('core: buttons', () => {
             .should('have.attr', 'href', png64)
             .should('have.attr', 'download', 'panorama.png');
     });
-
-    function withZoomHandlePosition(cb: (res: {
-        element: Cypress.Chainable<JQuery<HTMLElement>>;
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-    }) => void) {
-        cy.get('.psv-zoom-range-handle').then((element) => {
-            const { x, y, width, height } = element[0].getBoundingClientRect();
-
-            cb({
-                element: cy.wrap(element, NO_LOG),
-                x, y, width, height,
-            });
-        });
-    }
 });

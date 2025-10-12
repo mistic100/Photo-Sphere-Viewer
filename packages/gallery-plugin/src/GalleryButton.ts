@@ -1,21 +1,17 @@
+import type { NavbarGroup } from '@photo-sphere-viewer/core';
 import { AbstractButton } from '@photo-sphere-viewer/core';
-import type { Navbar } from '@photo-sphere-viewer/core';
+import { HideGalleryEvent, ShowGalleryEvent } from './events';
 import type { GalleryPlugin } from './GalleryPlugin';
 import gallery from './icons/gallery.svg';
-import { HideGalleryEvent, ShowGalleryEvent } from './events';
 
 export class GalleryButton extends AbstractButton {
     static override readonly id = 'gallery';
 
     private readonly plugin: GalleryPlugin;
 
-    /**
-     * @param {PSV.components.Navbar} navbar
-     */
-    constructor(navbar: Navbar) {
-        super(navbar, {
+    constructor(parent: NavbarGroup) {
+        super(parent, {
             className: 'psv-gallery-button',
-            hoverScale: true,
             collapsable: true,
             tabbable: true,
             icon: gallery,
