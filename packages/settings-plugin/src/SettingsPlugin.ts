@@ -1,5 +1,5 @@
 import type { PluginConstructor, Viewer } from '@photo-sphere-viewer/core';
-import { AbstractPlugin, events, PSVError, utils } from '@photo-sphere-viewer/core';
+import { AbstractPlugin, CONSTANTS, events, PSVError, utils } from '@photo-sphere-viewer/core';
 import { LOCAL_STORAGE_KEY } from './constants';
 import { SettingChangedEvent, SettingsPluginEvents } from './events';
 import { OptionsSetting, Setting, SettingsPluginConfig, ToggleSetting } from './model';
@@ -62,6 +62,7 @@ export class SettingsPlugin extends AbstractPlugin<SettingsPluginEvents> {
 
         this.viewer.addEventListener(events.ClickEvent.type, this);
         this.viewer.addEventListener(events.ShowPanelEvent.type, this);
+        this.viewer.addEventListener(events.KeypressEvent.type, this);
 
         // buttons are initialized just after plugins
         setTimeout(() => this.updateButton());
@@ -73,6 +74,7 @@ export class SettingsPlugin extends AbstractPlugin<SettingsPluginEvents> {
     override destroy() {
         this.viewer.removeEventListener(events.ClickEvent.type, this);
         this.viewer.removeEventListener(events.ShowPanelEvent.type, this);
+        this.viewer.removeEventListener(events.KeypressEvent.type, this);
 
         this.component.destroy();
         this.settings.length = 0;
@@ -86,6 +88,10 @@ export class SettingsPlugin extends AbstractPlugin<SettingsPluginEvents> {
     handleEvent(e: Event) {
         if (e instanceof events.ClickEvent || e instanceof events.ShowPanelEvent) {
             if (this.component.isVisible()) {
+                this.hideSettings();
+            }
+        } else if (e instanceof events.KeypressEvent) {
+            if (e.matches(CONSTANTS.KEY_CODES.Escape) && this.component.isVisible()) {
                 this.hideSettings();
             }
         }

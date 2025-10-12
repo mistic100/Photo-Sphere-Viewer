@@ -68,11 +68,6 @@ export class Notification extends AbstractComponent {
 
     /**
      * Displays a notification on the viewer
-     *
-     * @example
-     * viewer.showNotification({ content: 'Hello world', timeout: 5000 })
-     * @example
-     * viewer.showNotification('Hello world')
      */
     override show(config: string | NotificationConfig) {
         if (this.state.timeout) {

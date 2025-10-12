@@ -214,7 +214,7 @@ export type VirtualTourPluginConfig = {
         | ((
             toNode: VirtualTourNode,
             fromNode?: VirtualTourNode,
-            fromLink?: VirtualTourLink
+            fromLink?: VirtualTourLink,
         ) => VirtualTourTransitionOptions);
     /**
      * if the Compass plugin is enabled, displays the links on the compass

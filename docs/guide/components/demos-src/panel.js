@@ -8,7 +8,6 @@ const viewer = new Viewer({
     container: 'viewer',
     panorama: baseUrl + 'sphere.jpg',
     caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
-    loadingImg: baseUrl + 'loader.gif',
     touchmoveTwoFingers: true,
     mousewheelCtrlKey: true,
     navbar: [
@@ -45,6 +44,7 @@ function togglePanel() {
         viewer.panel.show({
             id: PANEL_ID,
             width: '60%',
+            title: 'HTML Ipsum Presents',
             content: document.querySelector('#panel-content').innerHTML,
         });
     }

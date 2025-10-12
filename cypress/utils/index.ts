@@ -1,6 +1,8 @@
 import type { AbstractPlugin, SphericalPosition, Viewer } from '@photo-sphere-viewer/core';
 import { BASE_URL, NO_LOG } from './constants';
 
+export * from './waitForResources';
+
 export function waitViewerReady() {
     callViewer('wait ready').then((viewer) => {
         if (!viewer.state.ready) {
@@ -62,14 +64,6 @@ export function listenViewerEvent(name: Parameters<Viewer['addEventListener']>[0
 export function checkEventHandler(handler: Cypress.Agent<sinon.SinonStub>, params: any) {
     cy.wrap(handler, NO_LOG)
         .should('have.been.calledWithMatch', params);
-}
-
-export function createBaseSnapshot() {
-    if (Cypress.config('isInteractive')) {
-        Cypress.env('visualRegressionType', 'base');
-    } else {
-        throw new Error(`Unauthorized call to createBaseSnapshot`);
-    }
 }
 
 export function triggerWindowKeydown(key: string) {

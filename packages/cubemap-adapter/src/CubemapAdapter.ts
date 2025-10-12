@@ -6,7 +6,6 @@ import {
     CubemapAdapterConfig,
     CubemapData,
     CubemapFaces,
-    CubemapNet,
     CubemapPanorama,
     CubemapSeparate,
     CubemapStripe,
@@ -48,6 +47,10 @@ export class CubemapAdapter extends AbstractAdapter<CubemapPanorama, CubemapData
     }
 
     override supportsPreload() {
+        return true;
+    }
+
+    override supportsLoadingProgress() {
         return true;
     }
 
@@ -152,7 +155,7 @@ export class CubemapAdapter extends AbstractAdapter<CubemapPanorama, CubemapData
             utils.logWarn('fisheye effect with cubemap texture can generate distorsion');
         }
 
-        let cleanPanorama: CubemapSeparate | CubemapStripe | CubemapNet;
+        let cleanPanorama: CubemapSeparate | CubemapStripe;
         if (Array.isArray(panorama) || isCubemap(panorama)) {
             cleanPanorama = {
                 type: 'separate',
@@ -170,10 +173,6 @@ export class CubemapAdapter extends AbstractAdapter<CubemapPanorama, CubemapData
 
             case 'stripe':
                 result = await this.loadTexturesStripe(cleanPanorama, loader);
-                break;
-
-            case 'net':
-                result = await this.loadTexturesNet(cleanPanorama, loader);
                 break;
 
             default:
@@ -303,59 +302,6 @@ export class CubemapAdapter extends AbstractAdapter<CubemapPanorama, CubemapData
             textures: cleanCubemap(textures),
             cacheKey,
             flipTopBottom: panorama.flipTopBottom ?? false,
-        };
-    }
-
-    private async loadTexturesNet(panorama: CubemapNet, loader: boolean) {
-        const cacheKey = panorama.path;
-        const img = await this.viewer.textureLoader.loadImage(
-            panorama.path,
-            loader ? p => this.viewer.textureLoader.dispatchProgress(p) : null,
-            cacheKey,
-        );
-
-        if (img.width / 4 !== img.height / 3) {
-            utils.logWarn('Invalid cubemap image, the width should be 4/3rd of the height');
-        }
-
-        const ratio = Math.min(1, SYSTEM.maxCanvasWidth / (img.width / 4));
-        const tileWidth = Math.floor((img.width / 4) * ratio);
-
-        const pts = [
-            [0, 1 / 3], // left
-            [1 / 2, 1 / 3], // right
-            [1 / 4, 0], // top
-            [1 / 4, 2 / 3], // bottom
-            [3 / 4, 1 / 3], // back
-            [1 / 4, 1 / 3], // front
-        ];
-
-        const textures: Texture[] = [];
-
-        for (let i = 0; i < 6; i++) {
-            const buffer = new OffscreenCanvas(tileWidth, tileWidth);
-
-            const ctx = buffer.getContext('2d');
-
-            if (this.config.blur) {
-                ctx.filter = `blur(${buffer.width / 512}px)`;
-            }
-
-            ctx.drawImage(
-                img,
-                img.width * pts[i][0], img.height * pts[i][1],
-                img.width / 4, img.height / 3,
-                0, 0,
-                tileWidth, tileWidth,
-            );
-
-            textures[i] = utils.createTexture(buffer);
-        }
-
-        return {
-            textures,
-            cacheKey,
-            flipTopBottom: true,
         };
     }
 

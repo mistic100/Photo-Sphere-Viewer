@@ -10,119 +10,129 @@
 .psv-video {
     &-progressbar {
         position: absolute;
-        left: 0;
+        left: video.$progress-margin;
         bottom: 0;
-        width: 100%;
+        width: calc(100% - #{video.$progress-margin * 2});
         height: video.$progressbar-container;
         cursor: pointer;
-        z-index: psv.$navbar-zindex - 1;
+        z-index: psv.$tooltip-zindex + 1;
 
-        @at-root .psv--has-navbar & {
-            bottom: psv.$navbar-height;
+        @include psv.has-navbar {
+            bottom: calc(#{psv.$navbar-height} + #{psv.$navbar-margin});
         }
 
         & > * {
             position: absolute;
             left: 0;
-            bottom: 0;
+            bottom: video.$progress-margin;
             width: 100%;
             height: video.$progressbar-height;
-            transition: height 0.2s linear;
+            border-radius: 100vmax;
+            transition: none video.$progressbar-transition;
+            transition-property: height, border-radius;
+
+            @include psv.has-navbar {
+                bottom: psv.$navbar-margin;
+            }
         }
 
         &:hover > * {
             height: video.$progressbar-height-active;
         }
 
+        &__track {
+            background: video.$progressbar-track-color;
+        }
+
         &__progress {
-            background-color: video.$progressbar-progress-color;
+            background: video.$progressbar-progress-color;
         }
 
         &__buffer {
-            background-color: video.$progressbar-buffer-color;
+            background: video.$progressbar-buffer-color;
         }
 
         &__handle {
             display: none;
             height: video.$progressbar-handle-size !important;
             width: video.$progressbar-handle-size;
-            border-radius: 50%;
+            border-radius: 50% !important;
             margin-bottom: #{- (video.$progressbar-handle-size - video.$progressbar-height-active) * 0.5};
             margin-left: #{- video.$progressbar-handle-size * 0.5};
             background: video.$progressbar-handle-color;
         }
-    }
 
-    &-time {
-        flex: 0 0 auto;
+        &__tooltip {
+            border-radius: 100vmax;
+            font: video.$time-font;
+            color: video.$time-text-color;
+            text-shadow: video.$time-text-shadow;
 
-        .psv-caption-content {
-            min-width: 6em;
-            text-align: center;
-        }
-    }
-
-    &-volume {
-        &__container {
-            position: absolute;
-            left: 0;
-            bottom: psv.$navbar-height;
-            padding: psv.$buttons-height 0;
-            width: psv.$navbar-height;
-            height: 0;
-            opacity: 0;
-            background: psv.$navbar-background;
-            transition:
-                opacity 0.2s linear,
-                height 0.3s step-end;
-
-            @at-root .psv--is-touch & {
+            &::after {
                 display: none;
             }
         }
+    }
 
-        &__range {
-            position: relative;
-            height: video.$volume-height;
+    &-time {
+        width: auto;
+        gap: 0.5ex;
+        font: video.$time-font;
+        color: video.$time-text-color;
+        text-shadow: video.$time-text-shadow;
+    }
+
+    &-volume {
+        position: relative;
+        width: 0;
+        height: psv.$buttons-size;
+        margin-left: 0;
+        opacity: 0;
+        border-radius: psv.$navbar-radius;
+        transition: none video.$volume-transition;
+        transition-property: opacity, width, margin-left;
+
+        @include psv.is-touch {
+            display: none;
         }
 
         &__progress,
         &__track {
             position: absolute;
-            bottom: 0;
-            left: #{(psv.$navbar-height - video.$volume-width) * 0.5};
-            width: video.$volume-width;
+            left: 0;
+            top: #{(psv.$buttons-size - video.$volume-height) * 0.5};
+            height: video.$volume-height;
             background: video.$volume-bar-color;
+            border-radius: 100vmax;
         }
 
         &__track {
-            height: 100%;
+            width: 100%;
             background: video.$volume-track-color;
         }
 
         &__handle {
             position: absolute;
-            left: #{(psv.$navbar-height - video.$volume-width) * 0.5};
+            top: #{(psv.$buttons-size - video.$volume-height) * 0.5};
             height: video.$volume-handle-size;
             width: video.$volume-handle-size;
             border-radius: 50%;
-            margin-left: #{- (video.$volume-handle-size - video.$volume-width) * 0.5};
-            margin-bottom: #{- video.$volume-handle-size * 0.5};
+            margin-top: #{- (video.$volume-handle-size - video.$volume-height) * 0.5};
+            margin-left: #{- video.$volume-handle-size * 0.5};
             background: video.$volume-handle-color;
         }
     }
 
     &-volume-button {
-        position: relative;
+        width: auto;
 
-        &:hover .psv-video-volume__container {
-            height: video.$volume-height;
+        &:hover .psv-video-volume {
+            width: video.$volume-width;
+            margin-left: #{psv.$buttons-padding + video.$volume-handle-size * 0.5};
             opacity: 1;
-            transition-timing-function: linear, step-start;
-            transition-delay: 0.2s;
         }
 
-        &--0 .psv-button-svg {
+        &--0 svg {
             #lvl1,
             #lvl2,
             #lvl3 {
@@ -130,7 +140,7 @@
             }
         }
 
-        &--1 .psv-button-svg {
+        &--1 svg {
             #lvl0,
             #lvl2,
             #lvl3 {
@@ -138,14 +148,14 @@
             }
         }
 
-        &--2 .psv-button-svg {
+        &--2 svg {
             #lvl0,
             #lvl3 {
                 fill: none;
             }
         }
 
-        &--3 .psv-button-svg {
+        &--3 svg {
             #lvl0 {
                 fill: none;
             }
@@ -180,13 +190,9 @@
             width 0.3s step-end;
 
         &--pause {
-            width: map.get(video.$bigbutton-size, portrait);
+            width: video.$bigbutton-size;
             opacity: 1;
             transition-timing-function: linear, step-start;
-
-            @container psv-container (orientation: landscape) {
-                width: map.get(video.$bigbutton-size, landscape);
-            }
         }
 
         svg {

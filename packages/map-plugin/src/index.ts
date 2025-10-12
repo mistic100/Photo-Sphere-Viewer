@@ -1,4 +1,5 @@
-import { DEFAULTS } from '@photo-sphere-viewer/core';
+import { DEFAULTS, registerButton } from '@photo-sphere-viewer/core';
+import { MapButton } from './components/MapButton';
 import * as events from './events';
 
 DEFAULTS.lang['map'] = 'Map';
@@ -6,6 +7,7 @@ DEFAULTS.lang['mapMaximize'] = 'Maximize';
 DEFAULTS.lang['mapMinimize'] = 'Minimize';
 DEFAULTS.lang['mapNorth'] = 'Go to north';
 DEFAULTS.lang['mapReset'] = 'Reset';
+registerButton(MapButton, 'plan:left', 'start');
 
 export { MapPlugin } from './MapPlugin';
 export * from './model';

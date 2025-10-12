@@ -83,6 +83,10 @@ export class EquirectangularAdapter extends AbstractAdapter<string | Equirectang
         return true;
     }
 
+    override supportsLoadingProgress() {
+        return true;
+    }
+
     override textureCoordsToSphericalCoords(point: PanoramaPosition, data: PanoData): Position {
         if (isNil(point.textureX) || isNil(point.textureY)) {
             throw new PSVError(`Texture position is missing 'textureX' or 'textureY'`);

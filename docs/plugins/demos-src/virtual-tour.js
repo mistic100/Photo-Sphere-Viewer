@@ -92,7 +92,6 @@ const nodes = [
 
 new Viewer({
     container: 'viewer',
-    loadingImg: baseUrl + 'loader.gif',
     touchmoveTwoFingers: true,
     mousewheelCtrlKey: true,
     defaultYaw: '130deg',

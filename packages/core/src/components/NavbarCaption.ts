@@ -1,9 +1,9 @@
-import { AbstractButton } from '../buttons/AbstractButton';
 import { DescriptionButton } from '../buttons/DescriptionButton';
+import { AbstractComponent } from './AbstractComponent';
 import type { Navbar } from './Navbar';
 
-export class NavbarCaption extends AbstractButton {
-    static override readonly id = 'caption';
+export class NavbarCaption extends AbstractComponent {
+    static readonly id = 'caption';
 
     private contentWidth = 0;
 
@@ -12,15 +12,10 @@ export class NavbarCaption extends AbstractButton {
     constructor(navbar: Navbar) {
         super(navbar, {
             className: 'psv-caption',
-            hoverScale: false,
-            collapsable: false,
-            tabbable: true,
         });
 
-        this.state.width = 0;
-
         this.contentElt = document.createElement('div');
-        this.contentElt.className = 'psv-caption-content';
+        this.contentElt.className = 'psv-caption-content psv-navbar-group';
         this.container.appendChild(this.contentElt);
 
         this.setCaption(this.viewer.config.caption);
@@ -34,10 +29,6 @@ export class NavbarCaption extends AbstractButton {
     override show() {
         this.contentElt.style.display = '';
         this.state.visible = true;
-    }
-
-    onClick(): void {
-        // nothing
     }
 
     /**
@@ -58,13 +49,20 @@ export class NavbarCaption extends AbstractButton {
 
     /**
      * Toggles content and icon depending on available space
+     * @internal
      */
-    override autoSize() {
+    autoSize(atStart?: boolean, atEnd?: boolean) {
         this.toggle(this.container.offsetWidth >= this.contentWidth);
-        this.__refreshButton();
-    }
+        (this.viewer.navbar.getButton(DescriptionButton.id, false) as DescriptionButton).autoHide();
 
-    private __refreshButton() {
-        (this.viewer.navbar.getButton(DescriptionButton.id, false) as DescriptionButton)?.autoSize(true);
+        if (atStart !== undefined && atEnd !== undefined) {
+            if (atStart && !atEnd) {
+                this.container.style.justifyContent = 'flex-start';
+            } else if (!atStart && atEnd) {
+                this.container.style.justifyContent = 'flex-end';
+            } else {
+                this.container.style.justifyContent = 'center';
+            }
+        }
     }
 }

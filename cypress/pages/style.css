@@ -1,0 +1,14 @@
+:root {
+    --psv-font-family: "Helvetica", "Arial", sans-serif !important;
+}
+
+.psv-container {
+    background: white !important;
+}
+
+*,
+*::before,
+*::after {
+    transition: none !important;
+    animation: none !important;
+}

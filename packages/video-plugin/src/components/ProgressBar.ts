@@ -25,6 +25,10 @@ export class ProgressBar extends AbstractComponent {
             className: 'psv-video-progressbar',
         });
 
+        const trackElt = document.createElement('div');
+        trackElt.className = 'psv-video-progressbar__track';
+        this.container.appendChild(trackElt);
+
         this.bufferElt = document.createElement('div');
         this.bufferElt.className = 'psv-video-progressbar__buffer';
         this.container.appendChild(this.bufferElt);
@@ -92,16 +96,20 @@ export class ProgressBar extends AbstractComponent {
 
             const time = formatTime(this.plugin.getDuration() * data.value);
 
+            const viewerPos = utils.getPosition(this.viewer.container);
+            const handlePos = utils.getPosition(this.handleElt);
+
             if (!this.state.tooltip) {
                 this.state.tooltip = this.viewer.createTooltip({
-                    top: data.cursor.clientY,
-                    left: data.cursor.clientX,
+                    x: data.cursor.clientX - viewerPos.x,
+                    y: handlePos.y - viewerPos.y,
                     content: time,
+                    className: 'psv-video-progressbar__tooltip',
                 });
             } else {
                 this.state.tooltip.update(time, {
-                    top: data.cursor.clientY,
-                    left: data.cursor.clientX,
+                    x: data.cursor.clientX - viewerPos.x,
+                    y: handlePos.y - viewerPos.y,
                 });
             }
         } else {

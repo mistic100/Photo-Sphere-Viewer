@@ -1,4 +1,4 @@
-import type { Navbar } from '@photo-sphere-viewer/core';
+import type { NavbarGroup } from '@photo-sphere-viewer/core';
 import { AbstractButton } from '@photo-sphere-viewer/core';
 import icon from './icons/settings.svg';
 import type { SettingsPlugin } from './SettingsPlugin';
@@ -9,11 +9,10 @@ export class SettingsButton extends AbstractButton {
     private readonly plugin: SettingsPlugin;
     private readonly badge: HTMLElement;
 
-    constructor(navbar: Navbar) {
-        super(navbar, {
+    constructor(parent: NavbarGroup) {
+        super(parent, {
             className: 'psv-settings-button',
             icon: icon,
-            hoverScale: true,
             collapsable: false,
             tabbable: true,
         });

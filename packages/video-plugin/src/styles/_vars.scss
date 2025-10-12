@@ -1,22 +1,27 @@
 @use '../../../core/src/styles/vars' as psv;
 
-$progressbar-height: 3px !default;
-$progressbar-height-active: 5px !default;
+$progress-margin: 10px !default;
+$progressbar-height: 4px !default;
+$progressbar-height-active: 8px !default;
 $progressbar-container: 20px !default;
-$progressbar-progress-color: psv.$buttons-color !default;
-$progressbar-buffer-color: psv.$buttons-active-background !default;
-$progressbar-handle-size: 9px !default;
-$progressbar-handle-color: white !default;
+$progressbar-track-color: rgb(var(--psv-bg-color), 0.4) !default;
+$progressbar-progress-color: rgb(var(--psv-text-color), 0.8) !default;
+$progressbar-buffer-color: rgb(var(--psv-text-color), 0.3) !default;
+$progressbar-handle-size: 16px !default;
+$progressbar-handle-color: rgb(var(--psv-text-color)) !default;
+$progressbar-transition: 200ms ease-in-out !default;
 
-$volume-height: 80px !default;
-$volume-width: $progressbar-height-active !default;
+$time-font: 14px var(--psv-font-family) !default;
+$time-text-color: psv.$caption-text-color !default;
+$time-text-shadow: psv.$caption-text-shadow !default;
+
+$volume-width: 50px !default;
+$volume-height: 5px !default;
 $volume-bar-color: $progressbar-progress-color !default;
-$volume-track-color: $progressbar-buffer-color !default;
-$volume-handle-size: $progressbar-handle-size !default;
+$volume-track-color: $progressbar-track-color !default;
+$volume-handle-size: 11px !default;
 $volume-handle-color: $progressbar-handle-color !default;
+$volume-transition: 200ms ease-in-out !default;
 
-$bigbutton-size: (
-    portrait: 20vw,
-    landscape: 10vw,
-) !default;
-$bigbutton-color: psv.$buttons-color !default;
+$bigbutton-size: psv.$loader-width !default;
+$bigbutton-color: rgb(var(--psv-text-color), 0.9) !default;

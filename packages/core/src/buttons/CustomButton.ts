@@ -1,17 +1,16 @@
-import type { Navbar } from '../components/Navbar';
-import { NavbarCustomButton } from '../model';
+import type { NavbarGroup } from '../components/Navbar';
+import { NavbarCustomElement } from '../model';
 import { AbstractButton } from './AbstractButton';
 
 export class CustomButton extends AbstractButton {
-    private readonly customOnClick: NavbarCustomButton['onClick'];
+    private readonly customOnClick: NavbarCustomElement['onClick'];
 
-    constructor(navbar: Navbar, config: NavbarCustomButton) {
-        super(navbar, {
+    constructor(parent: NavbarGroup, config: NavbarCustomElement) {
+        super(parent, {
             id: config.id ?? `psvButton-${Math.random().toString(36).substring(2)}`,
-            className: `psv-custom-button ${config.className || ''}`,
-            hoverScale: false,
-            collapsable: config.collapsable !== false,
-            tabbable: config.tabbable !== false,
+            className: `psv-custom-${config.type} ${config.className || ''}`,
+            collapsable: config.type === 'button' && config.collapsable !== false,
+            tabbable: config.type === 'button' && config.tabbable !== false,
             title: config.title,
         });
 
@@ -21,14 +20,13 @@ export class CustomButton extends AbstractButton {
             if (typeof config.content === 'string') {
                 this.container.innerHTML = config.content;
             } else {
-                this.container.classList.add('psv-custom-button--no-padding');
-                config.content.style.height = '100%';
                 config.content.attachViewer?.(this.viewer);
                 this.container.appendChild(config.content);
             }
         }
 
-        this.state.width = this.container.offsetWidth;
+        const style = window.getComputedStyle(this.container);
+        this.state.width = this.container.offsetWidth + parseFloat(style.marginLeft) + parseFloat(style.marginRight);
 
         if (config.disabled) {
             this.disable();

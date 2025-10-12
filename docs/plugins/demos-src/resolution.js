@@ -7,7 +7,6 @@ const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
 new Viewer({
     container: 'viewer',
     caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
-    loadingImg: baseUrl + 'loader.gif',
     touchmoveTwoFingers: true,
     mousewheelCtrlKey: true,
 

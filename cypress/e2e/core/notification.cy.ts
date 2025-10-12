@@ -4,9 +4,9 @@ import { NO_LOG } from '../../utils/constants';
 
 describe('core: notification', () => {
     beforeEach(() => {
+        localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/core/base.html');
         waitViewerReady();
-        // createBaseSnapshot();
     });
 
     it('should show/hide the notification', () => {

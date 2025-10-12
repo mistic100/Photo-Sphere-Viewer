@@ -31,7 +31,7 @@ export class MapComponent extends AbstractComponent {
     protected override readonly state = {
         visible: false,
         maximized: false,
-        collapsed: false,
+        wasMaximized: false,
         galleryWasVisible: false,
 
         imgScale: 1,
@@ -74,10 +74,6 @@ export class MapComponent extends AbstractComponent {
         return this.state.maximized;
     }
 
-    get collapsed() {
-        return this.state.collapsed;
-    }
-
     constructor(
         viewer: Viewer,
         private plugin: MapPlugin,
@@ -112,8 +108,8 @@ export class MapComponent extends AbstractComponent {
 
         this.container.appendChild(canvasContainer);
 
-        this.container.addEventListener('transitionstart', this);
-        this.container.addEventListener('transitionend', this);
+        this.container.addEventListener('transitionstart', utils.throttle(e => this.handleEvent(e), 50));
+        this.container.addEventListener('transitionend', utils.throttle(e => this.handleEvent(e), 50));
 
         // sub-components
         if (this.config.buttons.reset) {
@@ -142,10 +138,6 @@ export class MapComponent extends AbstractComponent {
 
         this.applyConfig();
         this.hide();
-
-        if (!this.config.visibleOnLoad) {
-            this.toggleCollapse();
-        }
     }
 
     init() {
@@ -186,10 +178,10 @@ export class MapComponent extends AbstractComponent {
                 break;
             case events.ConfigChangedEvent.type:
                 if ((e as events.ConfigChangedEvent).containsOptions('lang')) {
-                    this.resetButton?.update();
-                    this.closeButton?.update();
-                    this.compassButton?.update();
-                    this.maximizeButton?.update();
+                    this.resetButton?.applyConfig();
+                    this.closeButton?.applyConfig();
+                    this.compassButton?.applyConfig();
+                    this.maximizeButton?.applyConfig();
                 }
                 break;
             case 'mousedown': {
@@ -329,21 +321,32 @@ export class MapComponent extends AbstractComponent {
         this.update();
     }
 
-    override isVisible(): boolean {
-        return this.state.visible && !this.state.collapsed;
-    }
-
     override show() {
-        super.show();
-        this.update();
-        if (!this.state.maximized) {
-            this.overlay.style.display = '';
+        this.state.visible = true;
+
+        this.container.classList.remove('psv-map--collapsed');
+
+        this.reset();
+
+        if (this.state.wasMaximized) {
+            this.maximize();
+        } else {
+            this.plugin.dispatchEvent(new ViewChanged('normal'));
         }
     }
 
     override hide() {
-        super.hide();
-        this.state.forceRender = false;
+        this.state.wasMaximized = this.maximized;
+
+        if (this.maximized) {
+            this.minimize(false);
+        }
+
+        this.state.visible = false;
+
+        this.container.classList.add('psv-map--collapsed');
+
+        this.plugin.dispatchEvent(new ViewChanged('closed'));
     }
 
     /**
@@ -397,55 +400,49 @@ export class MapComponent extends AbstractComponent {
     }
 
     /**
-     * Switch collapsed mode
+     * Switch maximized mode
      */
-    toggleCollapse() {
-        if (this.state.maximized) {
-            this.toggleMaximized(false);
-        }
-
-        this.state.collapsed = !this.state.collapsed;
-
-        utils.toggleClass(this.container, 'psv-map--collapsed', this.state.collapsed);
-
-        if (!this.state.collapsed) {
-            this.reset();
-            this.plugin.dispatchEvent(new ViewChanged('normal'));
+    toggleMaximized() {
+        if (this.maximized) {
+            this.minimize();
         } else {
-            this.plugin.dispatchEvent(new ViewChanged('closed'));
+            this.maximize();
         }
-
-        this.closeButton?.update();
     }
 
     /**
-     * Switch maximized mode
+     * Maximize the map
      */
-    toggleMaximized(dispatchMinimizeEvent = true) {
-        if (this.state.collapsed) {
-            return;
+    maximize() {
+        this.state.maximized = true;
+
+        this.container.classList.add('psv-map--maximized');
+
+        this.state.galleryWasVisible = this.gallery?.isVisible();
+        this.gallery?.hide();
+
+        this.overlay.style.display = 'none';
+        this.plugin.dispatchEvent(new ViewChanged('maximized'));
+
+        this.maximizeButton?.applyConfig();
+    }
+
+    /**
+     * Minimize the map
+     */
+    minimize(dispatchEvent = true) {
+        this.state.maximized = false;
+
+        this.container.classList.remove('psv-map--maximized');
+
+        if (this.state.galleryWasVisible) {
+            this.gallery.show();
+        }
+        if (dispatchEvent) {
+            this.plugin.dispatchEvent(new ViewChanged('normal'));
         }
 
-        this.state.maximized = !this.state.maximized;
-
-        utils.toggleClass(this.container, 'psv-map--maximized', this.state.maximized);
-
-        if (this.state.maximized) {
-            this.state.galleryWasVisible = this.gallery?.isVisible();
-            this.gallery?.hide();
-
-            this.overlay.style.display = 'none';
-            this.plugin.dispatchEvent(new ViewChanged('maximized'));
-        } else {
-            if (this.state.galleryWasVisible) {
-                this.gallery.show();
-            }
-            if (dispatchMinimizeEvent) {
-                this.plugin.dispatchEvent(new ViewChanged('normal'));
-            }
-        }
-
-        this.maximizeButton?.update();
+        this.maximizeButton?.applyConfig();
     }
 
     /**
@@ -736,11 +733,11 @@ export class MapComponent extends AbstractComponent {
                     this.state.hotspotTooltip = this.viewer.createTooltip({
                         content: tooltip.content,
                         className: tooltip.className,
-                        left: hotspotPos.x - viewerPos.x,
-                        top: hotspotPos.y - viewerPos.y,
-                        box: {
-                            width: hotspotPos.s,
-                            height: hotspotPos.s,
+                        x: hotspotPos.x - viewerPos.x,
+                        y: hotspotPos.y - viewerPos.y,
+                        offset: {
+                            x: hotspotPos.s / 2,
+                            y: hotspotPos.s / 2,
                         },
                     });
                 }
@@ -815,7 +812,7 @@ export class MapComponent extends AbstractComponent {
                 if (autoRefresh) {
                     this.update(false);
                 }
-                if (isInit) {
+                if (isInit && this.config.visibleOnLoad) {
                     this.show();
                 }
             };

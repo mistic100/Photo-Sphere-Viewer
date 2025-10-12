@@ -184,6 +184,7 @@ export class VideoPlugin extends AbstractConfigurablePlugin<
         if (e.matches(CONSTANTS.KEY_CODES.Space)) {
             this.playPause();
             e.preventDefault();
+            e.stopPropagation();
         }
     }
 

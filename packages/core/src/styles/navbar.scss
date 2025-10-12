@@ -5,34 +5,57 @@
     display: flex;
     position: absolute;
     z-index: psv.$navbar-zindex;
-    bottom: -#{psv.$navbar-height};
+    bottom: calc(-#{psv.$navbar-height} - #{psv.$navbar-margin});
     left: 0;
     width: 100%;
     height: psv.$navbar-height;
-    background: psv.$navbar-background;
-    transition: bottom ease-in-out 0.1s;
-    font: psv.$caption-font;
+    transition: none ease-in-out 0.1s;
+    transition-property: bottom, opacity;
     cursor: default;
 
     &--open {
-        bottom: 0;
+        bottom: psv.$navbar-margin;
     }
 
-    &,
-    & * {
-        box-sizing: content-box;
+    &-group {
+        flex: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: calc(100% - #{psv.$navbar-padding * 2});
+        background: psv.$navbar-background;
+        backdrop-filter: psv.$navbar-filter;
+        outline: psv.$navbar-border;
+        border-radius: psv.$navbar-radius;
+        margin: 0 psv.$navbar-margin;
+        padding: psv.$navbar-padding;
+    }
+
+    @at-root .psv--is-fullscreen & {
+        opacity: psv.$navbar-fullscreen-opacity;
+
+        &:hover {
+            opacity: unset;
+        }
     }
 }
 
 .psv-button {
-    flex: 0 0 auto;
+    flex: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: psv.$buttons-padding;
     position: relative;
     cursor: pointer;
-    height: psv.$buttons-height;
-    width: psv.$buttons-height;
+    height: psv.$buttons-size;
+    width: psv.$buttons-size;
+    min-width: psv.$buttons-size;
+    line-height: psv.$buttons-size;
     background: psv.$buttons-background;
+    border-radius: #{psv.$navbar-radius - psv.$navbar-padding * .5};
     color: psv.$buttons-color;
+    transition: all psv.$buttons-transition;
 
     &--active {
         background: psv.$buttons-active-background;
@@ -43,27 +66,23 @@
         opacity: psv.$buttons-disabled-opacity;
     }
 
-    &-svg {
-        width: 100%;
-        transform: scale(1);
-        transition: transform psv.$buttons-hover-scale-delay ease;
-        vertical-align: initial;
+    svg, img {
+        height: 100%;
+    }
+
+    &:not(#{&}--disabled):not(.psv-custom-element):focus-visible {
+        outline: psv.$element-focus-outline;
+    }
+
+    @include psv.is-not-touch {
+        &:not(#{&}--disabled):not(.psv-custom-element):hover {
+            background: psv.$buttons-hover-background;
+            color: psv.$buttons-hover-color;
+        }
     }
 }
 
-.psv-button:not(.psv-button--disabled):focus-visible {
-    outline: psv.$element-focus-outline;
-    outline-offset: -#{list.nth(psv.$element-focus-outline, 1)};
-}
-
-.psv-container:not(.psv--is-touch) .psv-button--hover-scale:not(.psv-button--disabled):hover .psv-button-svg {
-    transform: scale(psv.$buttons-hover-scale);
-}
-
-.psv-move-button + .psv-move-button {
-    margin-left: -#{psv.$buttons-padding};
-}
-
+// link style override
 .psv-download-button {
     color: psv.$buttons-color !important;
     text-decoration: none !important;
@@ -75,27 +94,34 @@
 
 .psv-custom-button {
     width: auto;
-    min-width: psv.$buttons-height;
+    min-width: psv.$buttons-size;
+}
 
-    &--no-padding {
-        padding: 0;
-        height: 100%;
-    }
+.psv-custom-element {
+    width: auto;
+    height: 100%;
+    padding: unset;
+    margin: unset;
+    background: unset;
+    border-radius: unset;
 }
 
 .psv-caption {
     flex: 1 1 100%;
-    color: psv.$caption-text-color;
-    overflow: hidden;
-    text-align: center;
-    cursor: unset;
-    padding: unset;
-    height: unset;
-    width: unset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     &-content {
-        display: inline-block;
-        padding: psv.$buttons-padding;
-        white-space: nowrap;
+        font: psv.$caption-font;
+        color: psv.$caption-text-color;
+        text-shadow: psv.$caption-text-shadow;
+        padding-left: 1em;
+        padding-right: 1em;
+        gap: 1ex;
+
+        &:empty {
+            display: none;
+        }
     }
 }

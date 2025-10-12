@@ -23,7 +23,8 @@
             .custom-tooltip {
                 max-width: none;
                 width: 300px;
-                box-shadow: 0 0 0 3px white;
+                padding: 0;
+                outline: solid 3px white;
             }
             .custom-tooltip .psv-tooltip-content {
                 padding: 0;
@@ -131,20 +132,25 @@
                 container: 'photosphere',
                 panorama: baseUrl + 'sphere.jpg',
                 caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
-                loadingImg: baseUrl + 'loader.gif',
                 navbar: [
-                    'zoom',
-                    'move',
-                    'markers',
-                    'markersList',
-                    {
-                        content: '💬',
-                        title: 'Show all tooltips',
-                        className: 'custom-button',
-                        onClick: () => {
-                            markers.toggleAllTooltips();
+                    [
+                        'zoom',
+                        'move',
+                    ],
+                    [
+                        'download',
+                        'markers',
+                        'markersList',
+                        {
+                            content: '💬',
+                            title: 'Show all tooltips',
+                            className: 'custom-button',
+                            onClick: () => {
+                                markers.toggleAllTooltips();
+                            },
                         },
-                    },
+                        'description',
+                    ],
                     'caption',
                     'fullscreen',
                 ],

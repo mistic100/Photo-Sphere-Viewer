@@ -5,6 +5,7 @@
     "color-function-notation": "legacy",
     "alpha-value-notation": "number",
     "selector-class-pattern": null,
+    "no-descending-specificity": null,
 
     "scss/dollar-variable-empty-line-before": null,
 

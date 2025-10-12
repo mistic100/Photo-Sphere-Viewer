@@ -1,4 +1,4 @@
-import type { Navbar } from '@photo-sphere-viewer/core';
+import type { NavbarGroup } from '@photo-sphere-viewer/core';
 import { AbstractButton } from '@photo-sphere-viewer/core';
 import compass from './compass.svg';
 import { GyroscopeUpdatedEvent } from './events';
@@ -9,14 +9,10 @@ export class GyroscopeButton extends AbstractButton {
 
     private readonly plugin: GyroscopePlugin;
 
-    /**
-     * @param {PSV.components.Navbar} navbar
-     */
-    constructor(navbar: Navbar) {
-        super(navbar, {
+    constructor(parent: NavbarGroup) {
+        super(parent, {
             className: 'psv-gyroscope-button',
             icon: compass,
-            hoverScale: true,
             collapsable: true,
             tabbable: true,
         });

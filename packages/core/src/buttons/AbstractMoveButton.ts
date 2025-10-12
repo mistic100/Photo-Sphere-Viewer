@@ -1,4 +1,4 @@
-import type { Navbar } from '../components/Navbar';
+import type { NavbarGroup } from '../components/Navbar';
 import { ICONS, KEY_CODES } from '../data/constants';
 import { SYSTEM } from '../data/system';
 import { invertResolvableBoolean } from '../utils';
@@ -30,12 +30,11 @@ export abstract class AbstractMoveButton extends AbstractButton {
     private readonly handler = new PressHandler();
 
     constructor(
-        navbar: Navbar,
+        parent: NavbarGroup,
         private direction: MoveButtonDirection,
     ) {
-        super(navbar, {
+        super(parent, {
             className: 'psv-move-button',
-            hoverScale: true,
             collapsable: false,
             tabbable: true,
             icon: getIcon(direction),

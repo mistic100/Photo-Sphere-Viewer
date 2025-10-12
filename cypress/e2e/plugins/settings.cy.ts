@@ -13,7 +13,6 @@ describe('plugin: settings', () => {
         localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/plugins/settings.html');
         waitViewerReady();
-        // createBaseSnapshot();
 
         toggleSetting = withToggleSetting();
         optionSetting = withOptionsSetting();
@@ -60,7 +59,7 @@ describe('plugin: settings', () => {
         [
             ['caption settings', 'right', '0px'],
             ['settings caption', 'left', '0px'],
-            ['zoom move settings caption', 'left', '290px'],
+            ['move move settings caption', 'left', '270px'],
             ['download settings caption', 'left', '0px'],
             ['caption settings fullscreen', 'right', '0px'],
         ].forEach(([navbar, prop, value]) => {

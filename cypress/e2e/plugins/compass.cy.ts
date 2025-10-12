@@ -6,9 +6,9 @@ import { BASE_URL, NO_LOG } from '../../utils/constants';
 
 describe('plugin: compass', () => {
     beforeEach(() => {
+        localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/plugins/compass.html');
         waitViewerReady();
-        // createBaseSnapshot();
     });
 
     it('should destroy', () => {
@@ -34,13 +34,13 @@ describe('plugin: compass', () => {
     it('should pan & zoom', () => {
         callViewer('rotate 90deg')
             .then(viewer => viewer.rotate({ pitch: 0, yaw: '90deg' }))
-            .wait(200);
+            .wait(500);
 
         cy.get('.psv-compass').compareScreenshots('rotate');
 
         callViewer('zoom 100%')
             .then(viewer => viewer.zoom(100))
-            .wait(200);
+            .wait(500);
 
         cy.get('.psv-compass').compareScreenshots('zoom');
     });
@@ -158,9 +158,9 @@ describe('plugin: compass', () => {
             ['left center', { x: margin, y: vh / 2 - size / 2 }],
             ['center center', { x: vw / 2 - size / 2, y: vh / 2 - size / 2 }],
             ['right center', { x: vw - size - margin, y: vh / 2 - size / 2 }],
-            ['bottom left', { x: margin, y: vh - nav - margin - size }],
-            ['bottom center', { x: vw / 2 - size / 2, y: vh - nav - margin - size }],
-            ['bottom right', { x: vw - size - margin, y: vh - nav - margin - size }],
+            ['bottom left', { x: margin, y: vh - nav - margin - size - 5 }],
+            ['bottom center', { x: vw / 2 - size / 2, y: vh - nav - margin - size - 5 }],
+            ['bottom right', { x: vw - size - margin, y: vh - nav - margin - size - 5 }],
         ].forEach(([position, coords]: [string, Point]) => {
             callCompass(`set position ${position}`).then(compass => compass.setOption('position', position));
 

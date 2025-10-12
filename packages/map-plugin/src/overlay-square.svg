@@ -1,20 +1,4 @@
 <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-        <linearGradient id="gradient">
-            <stop offset="5%" stop-color="rgba(255, 255, 255, .5)"/>
-            <stop offset="10%" stop-color="rgba(255, 255, 255, 0)"/>
-            <stop offset="90%" stop-color="rgba(255, 255, 255, 0)"/>
-            <stop offset="95%" stop-color="rgba(255, 255, 255, .5)"/>
-        </linearGradient>
-        <linearGradient id="gradient2" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="5%" stop-color="rgba(255, 255, 255, .5)"/>
-            <stop offset="10%" stop-color="rgba(255, 255, 255, 0)"/>
-            <stop offset="90%" stop-color="rgba(255, 255, 255, 0)"/>
-            <stop offset="95%" stop-color="rgba(255, 255, 255, .5)"/>
-        </linearGradient>
-    </defs>=
-    <rect x="0" y="0" width="500" height="500" fill="url(#gradient)"/>
-    <rect x="0" y="0" width="500" height="500" fill="url(#gradient2)"/>
     <rect x="5" y="5" width="490" height="490" fill="none" stroke="rgba(255, 255, 255, 0.8)" stroke-width="10"/>
     <g fill="#222">
         <rect x="1" y="248" width="18" height="4"/>

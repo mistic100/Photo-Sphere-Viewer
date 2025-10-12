@@ -1,21 +1,22 @@
 import { PSVError } from '../PSVError';
 import type { Viewer } from '../Viewer';
 import { HideTooltipEvent, ShowTooltipEvent } from '../events';
-import { addClasses, cleanCssPosition, cssPositionIsOrdered, getStyleProperty } from '../utils';
+import { Point } from '../model';
+import { addClasses, cleanCssPosition, cssPositionIsOrdered, getStyleProperty, hasParent, logWarn } from '../utils';
 import { AbstractComponent } from './AbstractComponent';
 
 /**
  * Object defining the tooltip position
  */
-export type TooltipPosition = {
+export type TooltipPosition = Point & {
     /**
-     * Position of the tip of the arrow of the tooltip, in pixels
+     * @deprecated use `y` instead
      */
-    top: number;
+    top?: number;
     /**
-     * Position of the tip of the arrow of the tooltip, in pixels
+     * @deprecated use `x` instead
      */
-    left: number;
+    left?: number;
     /**
      * Tooltip position toward it's arrow tip.
      * Accepted values are combinations of `top`, `center`, `bottom` and `left`, `center`, `right`.
@@ -24,7 +25,7 @@ export type TooltipPosition = {
     /**
      * @internal
      */
-    box?: { width: number; height: number };
+    offset?: { x: number; y: number };
 };
 
 /**
@@ -76,8 +77,8 @@ export class Tooltip extends AbstractComponent {
      */
     protected override readonly state = {
         visible: true,
-        arrow: 0,
-        border: 0,
+        arrowSize: 0,
+        borderRadius: 0,
         state: TooltipState.NONE,
         width: 0,
         height: 0,
@@ -87,9 +88,6 @@ export class Tooltip extends AbstractComponent {
         hideTimeout: null as ReturnType<typeof setTimeout>,
     };
 
-    private readonly content: HTMLElement;
-    private readonly arrow: HTMLElement;
-
     /**
      * @internal
      */
@@ -97,14 +95,6 @@ export class Tooltip extends AbstractComponent {
         super(viewer, {
             className: 'psv-tooltip',
         });
-
-        this.content = document.createElement('div');
-        this.content.className = 'psv-tooltip-content';
-        this.container.appendChild(this.content);
-
-        this.arrow = document.createElement('div');
-        this.arrow.className = 'psv-tooltip-arrow';
-        this.container.appendChild(this.arrow);
 
         this.container.addEventListener('transitionend', this);
 
@@ -177,13 +167,13 @@ export class Tooltip extends AbstractComponent {
      * @throws {@link PSVError} if the configuration is invalid
      */
     update(content: string, config?: TooltipPosition) {
-        this.content.innerHTML = content;
+        this.container.innerHTML = content;
 
         const rect = this.container.getBoundingClientRect();
         this.state.width = rect.right - rect.left;
         this.state.height = rect.bottom - rect.top;
-        this.state.arrow = parseInt(getStyleProperty(this.arrow, 'border-top-width'), 10);
-        this.state.border = parseInt(getStyleProperty(this.container, 'border-top-left-radius'), 10);
+        this.state.arrowSize = parseInt(getStyleProperty(this.container, '--psv-tooltip-arrow-size'), 10);
+        this.state.borderRadius = parseInt(getStyleProperty(this.container, 'border-top-left-radius'), 10);
 
         this.move(config ?? this.state.config);
         this.__waitImages();
@@ -198,11 +188,7 @@ export class Tooltip extends AbstractComponent {
             throw new PSVError('Uninitialized tooltip cannot be moved');
         }
 
-        config.box = config.box ?? this.state.config?.box ?? { width: 0, height: 0 };
         this.state.config = config;
-
-        const t = this.container;
-        const a = this.arrow;
 
         // compute size
         const style: TooltipStyle = {
@@ -243,18 +229,17 @@ export class Tooltip extends AbstractComponent {
         }
 
         // apply position
-        t.style.top = style.top + 'px';
-        t.style.left = style.left + 'px';
-
-        a.style.top = style.arrowTop + 'px';
-        a.style.left = style.arrowLeft + 'px';
+        this.container.style.top = style.top + 'px';
+        this.container.style.left = style.left + 'px';
+        this.container.style.setProperty('--psv-tooltip-arrow-top', style.arrowTop + 'px');
+        this.container.style.setProperty('--psv-tooltip-arrow-left', style.arrowLeft + 'px');
 
         const newPos = style.posClass.join('-');
         if (newPos !== this.state.pos) {
-            t.classList.remove(`psv-tooltip--${this.state.pos}`);
+            this.container.classList.remove(`psv-tooltip--${this.state.pos}`);
 
             this.state.pos = newPos;
-            t.classList.add(`psv-tooltip--${this.state.pos}`);
+            this.container.classList.add(`psv-tooltip--${this.state.pos}`);
         }
     }
 
@@ -271,7 +256,7 @@ export class Tooltip extends AbstractComponent {
         const duration = parseFloat(getStyleProperty(this.container, 'transition-duration'));
         this.state.hideTimeout = setTimeout(() => {
             this.destroy();
-        }, duration * 2);
+        }, duration * 2000);
     }
 
     /**
@@ -300,89 +285,92 @@ export class Tooltip extends AbstractComponent {
      * Computes the position of the tooltip and its arrow
      */
     private __computeTooltipPosition(style: TooltipStyle, config: TooltipPosition) {
-        const arrow = this.state.arrow;
-        const top = config.top;
-        const height = style.height;
-        const left = config.left;
+        if (config.left || config.top) {
+            logWarn('left/top properties are deprecated for tooltips, use x/y instead');
+        }
+
+        const arrowSize = this.state.arrowSize;
+        const borderRadius = this.state.borderRadius;
+        const x = config.x ?? config.left;
+        const y = config.y ?? config.top;
         const width = style.width;
-        const offsetSide = arrow + this.state.border;
-        const offsetX = config.box.width / 2 + arrow * 2;
-        const offsetY = config.box.height / 2 + arrow * 2;
+        const height = style.height;
+        const offsetX = (config.offset?.x ?? 0);
+        const offsetY = (config.offset?.y ?? 0);
 
         switch (style.posClass.join('-')) {
             case 'top-left':
-                style.top = top - offsetY - height;
-                style.left = left + offsetSide - width;
+                style.top = y - arrowSize - height - offsetY;
+                style.left = x + arrowSize + borderRadius - width;
                 style.arrowTop = height;
-                style.arrowLeft = width - offsetSide - arrow;
+                style.arrowLeft = width - arrowSize * 2 - borderRadius;
                 break;
             case 'top-center':
-                style.top = top - offsetY - height;
-                style.left = left - width / 2;
+                style.top = y - arrowSize - height - offsetY;
+                style.left = x - width / 2;
                 style.arrowTop = height;
-                style.arrowLeft = width / 2 - arrow;
+                style.arrowLeft = width / 2 - arrowSize;
                 break;
             case 'top-right':
-                style.top = top - offsetY - height;
-                style.left = left - offsetSide;
+                style.top = y - arrowSize - height - offsetY;
+                style.left = x - arrowSize - borderRadius;
                 style.arrowTop = height;
-                style.arrowLeft = arrow;
+                style.arrowLeft = borderRadius;
                 break;
             case 'bottom-left':
-                style.top = top + offsetY;
-                style.left = left + offsetSide - width;
-                style.arrowTop = -arrow * 2;
-                style.arrowLeft = width - offsetSide - arrow;
+                style.top = y + arrowSize + offsetY;
+                style.left = x + arrowSize + borderRadius - width;
+                style.arrowTop = -arrowSize * 2;
+                style.arrowLeft = width - arrowSize * 2 - borderRadius;
                 break;
             case 'bottom-center':
-                style.top = top + offsetY;
-                style.left = left - width / 2;
-                style.arrowTop = -arrow * 2;
-                style.arrowLeft = width / 2 - arrow;
+                style.top = y + arrowSize + offsetY;
+                style.left = x - width / 2;
+                style.arrowTop = -arrowSize * 2;
+                style.arrowLeft = width / 2 - arrowSize;
                 break;
             case 'bottom-right':
-                style.top = top + offsetY;
-                style.left = left - offsetSide;
-                style.arrowTop = -arrow * 2;
-                style.arrowLeft = arrow;
+                style.top = y + arrowSize + offsetY;
+                style.left = x - arrowSize - borderRadius;
+                style.arrowTop = -arrowSize * 2;
+                style.arrowLeft = borderRadius;
                 break;
             case 'left-top':
-                style.top = top + offsetSide - height;
-                style.left = left - offsetX - width;
-                style.arrowTop = height - offsetSide - arrow;
+                style.top = y + arrowSize + borderRadius - height;
+                style.left = x - arrowSize - width - offsetX;
+                style.arrowTop = height - arrowSize * 2 - borderRadius;
                 style.arrowLeft = width;
                 break;
             case 'center-left':
-                style.top = top - height / 2;
-                style.left = left - offsetX - width;
-                style.arrowTop = height / 2 - arrow;
+                style.top = y - height / 2;
+                style.left = x - arrowSize - width - offsetX;
+                style.arrowTop = height / 2 - arrowSize;
                 style.arrowLeft = width;
                 break;
             case 'left-bottom':
-                style.top = top - offsetSide;
-                style.left = left - offsetX - width;
-                style.arrowTop = arrow;
+                style.top = y - arrowSize - borderRadius;
+                style.left = x - arrowSize - width - offsetX;
+                style.arrowTop = borderRadius;
                 style.arrowLeft = width;
                 break;
             case 'right-top':
-                style.top = top + offsetSide - height;
-                style.left = left + offsetX;
-                style.arrowTop = height - offsetSide - arrow;
-                style.arrowLeft = -arrow * 2;
+                style.top = y + arrowSize + borderRadius - height;
+                style.left = x + arrowSize + offsetX;
+                style.arrowTop = height - arrowSize * 2 - borderRadius;
+                style.arrowLeft = -arrowSize * 2;
                 break;
             case 'center-right':
-                style.top = top - height / 2;
-                style.left = left + offsetX;
-                style.arrowTop = height / 2 - arrow;
-                style.arrowLeft = -arrow * 2;
+                style.top = y - height / 2;
+                style.left = x + arrowSize + offsetX;
+                style.arrowTop = height / 2 - arrowSize;
+                style.arrowLeft = -arrowSize * 2;
                 break;
             case 'right-bottom':
-                style.top = top - offsetSide;
-                style.left = left + offsetX;
-                style.arrowTop = arrow;
-                style.arrowLeft = -arrow * 2;
+                style.top = y - arrowSize - borderRadius;
+                style.left = x + arrowSize + offsetX;
+                style.arrowTop = borderRadius;
+                style.arrowLeft = -arrowSize * 2;
                 break;
-
             // no default
         }
     }
@@ -391,7 +379,7 @@ export class Tooltip extends AbstractComponent {
      * If the tooltip contains images, recompute its size once they are loaded
      */
     private __waitImages() {
-        const images = this.content.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
+        const images = this.container.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
 
         if (images.length > 0) {
             const promises: Array<Promise<any>> = [];
@@ -417,6 +405,115 @@ export class Tooltip extends AbstractComponent {
                     }
                 });
             }
+        }
+    }
+}
+
+/**
+ * Helper to display a tooltip on mouseover for an element
+ */
+export class AttachedTooltip {
+    private tooltip: Tooltip;
+
+    private enabled = true;
+
+    /**
+     * @internal
+     */
+    constructor(
+        private viewer: Viewer,
+        private config: Omit<TooltipConfig, 'x' | 'y' | 'offset'>,
+        private element: HTMLElement,
+    ) {
+        element.addEventListener('mouseenter', this);
+        element.addEventListener('mouseleave', this);
+    }
+
+    /**
+     * @internal
+     */
+    handleEvent(e: MouseEvent) {
+        switch (e.type) {
+            case 'mouseenter':
+                this.__onMouseEnter();
+                break;
+
+            case 'mouseleave':
+                this.__onMouseLeave(e);
+                break;
+        }
+    }
+
+    /**
+     * Unattaches the tooltip
+     */
+    destroy() {
+        this.element.removeEventListener('mouseenter', this);
+        this.element.removeEventListener('mouseleave', this);
+        this.tooltip?.destroy();
+
+        delete this.element;
+        delete this.tooltip;
+    }
+
+    /**
+     * Updates the tooltip content
+     */
+    update(content: string) {
+        this.tooltip?.update(content);
+        this.config.content = content;
+    }
+
+    /**
+     * Temporarily disables the tooltip
+     */
+    disable() {
+        this.tooltip?.hide();
+        this.tooltip = null;
+
+        this.enabled = false;
+    }
+
+    /**
+     * Re-enable the tooltip
+     */
+    enable() {
+        this.enabled = true;
+    }
+
+    private __onMouseEnter() {
+        // do not recreate the tooltip
+        if (this.tooltip || !this.enabled) {
+            return;
+        }
+
+        const box = this.element.getBoundingClientRect();
+        this.tooltip = this.viewer.createTooltip({
+            ...this.config,
+            x: box.x + box.width / 2,
+            y: box.y + box.height / 2,
+            offset: {
+                x: box.width / 2,
+                y: box.height / 2,
+            },
+        });
+
+        // hide the tooltip when the cursor leaves the tooltip
+        // only if no going to the src element
+        this.tooltip.container.addEventListener('mouseleave', (e: MouseEvent) => {
+            if (this.tooltip && !hasParent(e.relatedTarget as HTMLElement, this.element)) {
+                this.tooltip.hide();
+                this.tooltip = null;
+            }
+        });
+    }
+
+    private __onMouseLeave(e: MouseEvent) {
+        // hide the tooltip when the cursor leaves the src element
+        // only if no going to the tooltip
+        if (this.tooltip && !hasParent(e.relatedTarget as HTMLElement, this.tooltip.container)) {
+            this.tooltip.hide();
+            this.tooltip = null;
         }
     }
 }

@@ -1,7 +1,12 @@
+@use '../../../core/src/styles/vars' as psv;
+
 $margin: 10px !default;
-$radius: 8px !default;
-$shadow: 0 0 5px rgb(0, 0, 0, 0.7) !default;
-$button-size: 34px !default;
-$button-background: rgb(0, 0, 0, 0.5) !default;
-$button-color: white !default;
-$transition: ease-in-out 0.3s !default;
+$radius: 10px !default;
+$shadow: 0 0 5px rgb(var(--psv-shadow-color)) !default;
+$button-size: 20px !default;
+$button-padding: 7px !default;
+$button-color: psv.$buttons-color !default;
+$button-background: psv.$navbar-background !default;
+$button-filter: psv.$navbar-filter !default;
+$button-border: psv.$navbar-border !default;
+$transition: 300ms ease-in-out !default;

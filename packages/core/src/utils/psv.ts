@@ -51,6 +51,13 @@ export function logWarn(message: string) {
 }
 
 /**
+ * Displays a error in the console with "PhotoSphereViewer" prefix
+ */
+export function logError(message: string) {
+    console.error(`PhotoSphereViewer: ${message}`);
+}
+
+/**
  * Checks if an object is a ExtendedPosition, ie has textureX/textureY or yaw/pitch
  */
 export function isExtendedPosition(object: any): object is ExtendedPosition {
@@ -434,7 +441,7 @@ export function getConfigParser<T extends Record<string, any>, U extends T = T>(
  */
 export function checkStylesheet(element: HTMLElement, name: string) {
     if (getStyleProperty(element, `--psv-${name}-loaded`) !== 'true') {
-        console.error(`PhotoSphereViewer: stylesheet "@photo-sphere-viewer/${name}/index.css" is not loaded`);
+        logError(`stylesheet "@photo-sphere-viewer/${name}/index.css" is not loaded`);
     }
 }
 
@@ -443,7 +450,7 @@ export function checkStylesheet(element: HTMLElement, name: string) {
  */
 export function checkVersion(name: string, version: string, coreVersion: string) {
     if (version && version !== coreVersion) {
-        console.error(`PhotoSphereViewer: @photo-sphere-viewer/${name} is in version ${version} but @photo-sphere-viewer/core is in version ${coreVersion}`);
+        logError(`@photo-sphere-viewer/${name} is in version ${version} but @photo-sphere-viewer/core is in version ${coreVersion}`);
     }
 }
 
@@ -453,7 +460,7 @@ export function checkVersion(name: string, version: string, coreVersion: string)
 export function checkClosedShadowDom(el: Node) {
     do {
         if (el instanceof ShadowRoot && el.mode === 'closed') {
-            console.error(`PhotoSphereViewer: closed shadow DOM detected, the viewer might not work as expected`);
+            logError(`closed shadow DOM detected, the viewer might not work as expected`);
             return;
         }
         el = el.parentNode;
@@ -538,4 +545,41 @@ export function mergePanoData(width: number, height: number, newPanoData?: PanoD
     }
 
     return panoData;
+}
+
+/**
+ * Parse a string representation of navbar buttons
+ */
+export function parseNavbar(str: string): Array<string | string[]> {
+    const navbar: Array<string | string[]> = [];
+    let group: string[] = null;
+
+    str.split(/[ ,]/)
+        .filter(item => !!item)
+        .forEach((item) => {
+            if (item.startsWith('[')) {
+                if (group) {
+                    throw new PSVError(`Invalid navbar configuration`);
+                }
+                if (item.endsWith(']')) {
+                    navbar.push([item.slice(1, -1)]);
+                } else {
+                    group = [item.slice(1)];
+                }
+            } else if (item.endsWith(']')) {
+                if (!group) {
+                    throw new PSVError(`Invalid navbar configuration`);
+                }
+                navbar.push([...group, item.slice(0, -1)]);
+                group = null;
+            } else {
+                (group ?? navbar).push(item);
+            }
+        });
+
+    if (group) {
+        throw new PSVError(`Invalid navbar configuration`);
+    }
+
+    return navbar;
 }

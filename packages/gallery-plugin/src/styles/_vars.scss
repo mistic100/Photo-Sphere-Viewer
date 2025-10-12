@@ -1,15 +1,18 @@
 @use '../../../core/src/styles/vars' as psv;
 
 $padding: 15px !default;
-$border: 1px solid psv.$buttons-color !default;
 $background: psv.$navbar-background !default;
-$item-radius: 5px !default;
+$filter: psv.$navbar-filter !default;
+$item-radius: 8px !default;
 $item-active-border: 3px solid white !default;
-$title-font: psv.$caption-font !default;
-$title-color: psv.$caption-text-color !default;
-$title-background: rgb(0, 0, 0, 0.6) !default;
+$title-font: 16px var(--psv-font-family) !default;
+$title-color: rgb(var(--psv-text-color)) !default;
+$title-background: rgb(var(--psv-bg-color), 0.6) !default;
 $thumb-hover-scale: 1.2 !default;
 $breakpoint: 500px !default;
-$arrow-color: rgb(255, 255, 255, 0.6) !default;
-$arrow-background: rgb(0, 0, 0, 0.6) !default;
-$scrollbar-color: $arrow-color !default;
+$arrow-color: rgb(var(--psv-text-color), 0.7) !default;
+$arrow-shadow: 5px 5px 2px rgb(var(--psv-shadow-color)) !default;
+$arrow-background: rgb(var(--psv-shadow-color), 0.6) !default;
+$scrollbar-color: rgb(var(--psv-text-color), 0.6) !default;
+$transition: 100ms ease-in-out !default;
+$thumb-transition: 200ms ease-in-out !default;

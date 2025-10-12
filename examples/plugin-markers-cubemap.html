@@ -42,21 +42,6 @@
                     bottom: baseUrl + 'cubemap/ny.jpg',
                 },
                 caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
-                loadingImg: baseUrl + 'loader.gif',
-                navbar: [
-                    'markers',
-                    'markersList',
-                    {
-                        content: '💬',
-                        title: 'Show all tooltips',
-                        className: 'custom-button',
-                        onClick: () => {
-                            markers.toggleAllTooltips();
-                        },
-                    },
-                    'caption',
-                    'fullscreen',
-                ],
                 plugins: [
                     MarkersPlugin.withConfig({
                         markers: (() => {

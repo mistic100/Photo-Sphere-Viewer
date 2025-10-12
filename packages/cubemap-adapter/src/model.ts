@@ -43,17 +43,9 @@ export type CubemapStripe = {
 };
 
 /**
- * Object defining a cubemap as a single net file (cross arrangement)
- */
-export type CubemapNet = {
-    type: 'net';
-    path: string;
-};
-
-/**
  * Configuration of a cubemap
  */
-export type CubemapPanorama = Cubemap | CubemapArray | CubemapSeparate | CubemapStripe | CubemapNet;
+export type CubemapPanorama = Cubemap | CubemapArray | CubemapSeparate | CubemapStripe;
 
 /**
  * Size information of a cubemap panorama

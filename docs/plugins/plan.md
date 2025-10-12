@@ -357,13 +357,15 @@ planPlugin.addEventListener('select-hotspot', ({ hotspotId }) => {
 
 Triggered when the map is maximized (`view=maximized`), minimized or opened (`view=normal`) or closed (`view=closed`).
 
+## Buttons
+
+This plugin adds buttons to the default navbar:
+
+-   `plan` allows to toggle the map widget
+
+If you use a [custom navbar](../guide/navbar.md) you will need to manually add the button to the list.
+
 ## SCSS variables
 
-| variable           | default                   | description                  |
-| ------------------ | ------------------------- | ---------------------------- |
-| $radius            | 8px                       | Corner radius of the widget  |
-| $shadow            | 0 0 5px rgba(0, 0, 0, .7) | Shadow applied to the widget |
-| $button-size       | 34px                      | Size of buttons              |
-| $button-background | rgba(0, 0, 0, .5)         | Background color of buttons  |
-| $button-color      | white                     | Icon color if buttons        |
-| $transition        | ease-in-out .3s           | Transition                   |
+Check the main [style](../guide/style.md) documentation if you want to customize the plan style.
+The full list of SCSS variables can be found [in the source code](https://github.com/mistic100/Photo-Sphere-Viewer/blob/main/packages/plan-plugin/src/styles/_vars.scss).

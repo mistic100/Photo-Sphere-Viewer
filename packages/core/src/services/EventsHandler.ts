@@ -36,6 +36,7 @@ import {
     isEmpty,
     keyPressMatch,
     throttle,
+    toggleClass,
 } from '../utils';
 import { PressHandler } from '../utils/PressHandler';
 import type { Viewer } from '../Viewer';
@@ -419,6 +420,8 @@ export class EventsHandler extends AbstractService {
                 this.viewer.stopKeyboardControl();
             }
         }
+
+        toggleClass(this.viewer.container, 'psv--is-fullscreen', fullscreen);
 
         this.viewer.dispatchEvent(new FullscreenEvent(fullscreen));
     }

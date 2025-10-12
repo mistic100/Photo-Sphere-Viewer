@@ -6,7 +6,7 @@ export class PlanLayersButton extends AbstractPlanButton {
     private select: HTMLSelectElement;
 
     constructor(plan: PlanComponent) {
-        super(plan, ButtonPosition.VERTICAL);
+        super(plan, 'mapLayers', ButtonPosition.VERTICAL);
 
         this.container.innerHTML = layersIcon;
 
@@ -27,12 +27,10 @@ export class PlanLayersButton extends AbstractPlanButton {
         this.hide();
     }
 
-    override update() {
-        const title = this.viewer.config.lang['mapLayers'];
+    override applyConfig(): void {
+        super.applyConfig();
 
-        this.container.title = title;
-        this.select.setAttribute('aria-label', title);
-        this.select.querySelector('option').innerText = title;
+        this.select.querySelector('option').innerText = this.viewer.config.lang[this.langKey];
     }
 
     setLayers(layers: string[]) {

@@ -64,7 +64,8 @@ export class SettingsComponent extends AbstractComponent {
             const buttonLeft = buttonPosition.left - viewerRect.left;
             const buttonRight = viewerRect.right - buttonPosition.right;
             const buttonWidth = buttonPosition.width;
-            const menuWidth = this.container.offsetWidth;
+            const style = window.getComputedStyle(this.container);
+            const menuWidth = this.container.offsetWidth + parseFloat(style.marginLeft) + parseFloat(style.marginRight);
 
             if (menuWidth >= buttonLeft + buttonWidth) {
                 // if the button is close to the left, stick the menu to the left side
@@ -74,10 +75,10 @@ export class SettingsComponent extends AbstractComponent {
                 this.container.style.right = '0px';
             } else if (buttonLeft + menuWidth < viewerRect.width) {
                 // if there is enough space on the right of the button, stick the menu to the left of the button
-                this.container.style.left = `${buttonLeft}px`;
+                this.container.style.left = `${buttonLeft - parseFloat(style.marginLeft)}px`;
             } else {
                 // else stick to the right of the button
-                this.container.style.right = `${buttonRight}px`;
+                this.container.style.right = `${buttonRight - parseFloat(style.marginRight)}px`;
             }
         } else {
             this.container.style.right = '0px';
@@ -133,8 +134,8 @@ export class SettingsComponent extends AbstractComponent {
             default:
                 switch (setting.type) {
                     case 'options':
-                        this.hide();
                         this.plugin.applySettingOption(setting as OptionsSetting, optionId);
+                        this.plugin.hideSettings();
                         break;
 
                     default:

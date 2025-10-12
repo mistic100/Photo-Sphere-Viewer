@@ -33,13 +33,11 @@
                 container: 'photosphere',
                 panorama: baseUrl + 'sphere-cropped.jpg', // this file has XMP data
                 caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
-                loadingImg: baseUrl + 'loader.gif',
                 defaultZoomLvl: 30,
                 navbar: [
                     'autorotate',
                     {
                         content: 'Clear range',
-                        className: 'custom-button',
                         onClick: () => {
                             visibleRange.setHorizontalRange(null);
                             visibleRange.setVerticalRange(null);
@@ -47,7 +45,6 @@
                     },
                     {
                         content: 'Set custom range',
-                        className: 'custom-button',
                         onClick: () => {
                             visibleRange.setHorizontalRange([-Math.PI / 2, Math.PI / 2]);
                             visibleRange.setVerticalRange([-Math.PI / 3, Math.PI / 3]);
@@ -55,7 +52,6 @@
                     },
                     {
                         content: 'Set range from panoData',
-                        className: 'custom-button',
                         onClick: () => {
                             visibleRange.setRangesFromPanoData();
                         },

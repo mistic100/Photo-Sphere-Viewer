@@ -4,10 +4,10 @@ import type { MapComponent } from './MapComponent';
 
 export class MapCompassButton extends AbstractMapButton {
     constructor(map: MapComponent) {
-        super(map, ButtonPosition.VERTICAL);
+        super(map, 'mapNorth', ButtonPosition.VERTICAL);
 
         this.container.innerHTML = icon;
-        this.container.querySelector('svg').style.width = '80%';
+        this.container.querySelector('svg').style.scale = '1.2';
 
         this.container.addEventListener('click', (e) => {
             this.viewer.dynamics.position.goto({ yaw: -map.config.rotation }, 2);
@@ -17,9 +17,5 @@ export class MapCompassButton extends AbstractMapButton {
 
     rotate(angle: number) {
         this.container.querySelector('svg').style.transform = `rotate3d(0, 0, 1, ${-angle}rad)`;
-    }
-
-    override update() {
-        this.container.title = this.viewer.config.lang['mapNorth'];
     }
 }

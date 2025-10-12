@@ -36,20 +36,23 @@
                 container: 'photosphere',
                 panorama: baseUrl + 'sphere.jpg',
                 caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
-                loadingImg: baseUrl + 'loader.gif',
                 keyboard: 'always',
                 navbar: [
-                    'autorotate',
-                    {
-                        content: 'Set keypoints',
-                        className: 'custom-button',
-                        onClick: randomPoints,
-                    },
-                    {
-                        content: 'Clear keypoints',
-                        className: 'custom-button',
-                        onClick: clearPoints,
-                    },
+                    [
+                        'autorotate',
+                        'zoom',
+                        'move',
+                    ],
+                    [
+                        {
+                            content: 'Set keypoints',
+                            onClick: randomPoints,
+                        },
+                        {
+                            content: 'Clear keypoints',
+                            onClick: clearPoints,
+                        },
+                    ],
                     'caption',
                     'fullscreen',
                 ],

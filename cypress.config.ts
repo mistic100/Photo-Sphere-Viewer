@@ -60,15 +60,15 @@ export default defineConfig({
                 fs.mkdirSync(`${ROOT_DIR}html/coverage`, { recursive: true });
                 fs.copyFileSync(`${ROOT_DIR}lcov-viewer/report-data.js`, `${ROOT_DIR}html/coverage/report-data.js`);
 
-                let content = fs.readFileSync(`${ROOT_DIR}lcov-viewer/index.html`, 'utf-8')
+                const lcovIndex = fs.readFileSync(`${ROOT_DIR}lcov-viewer/index.html`, 'utf-8')
                     .replace('src="app.js"', 'src="https://cdn.jsdelivr.net/npm/@lcov-viewer/istanbul-report@1/lib/assets/app.js"')
                     .replace(/<title>.*<\/title>/, '<title>Photo Sphere Viewer - E2E coverage</title>');
 
-                fs.writeFileSync(`${ROOT_DIR}html/coverage/index.html`, content, 'utf-8');
+                fs.writeFileSync(`${ROOT_DIR}html/coverage/index.html`, lcovIndex, 'utf-8');
 
                 console.log(`Add link to coverage in ${ROOT_DIR}html/index.html`);
 
-                content = fs.readFileSync(`${ROOT_DIR}html/index.html`, 'utf-8')
+                const cypressIndex = fs.readFileSync(`${ROOT_DIR}html/index.html`, 'utf-8')
                     .replace('</body>', `<script>
 const list = document.querySelector('[class^="quick-summary--list"]');
 const item = list.firstChild.cloneNode(true);
@@ -77,7 +77,7 @@ item.querySelector('span').innerHTML = '<a href="coverage" style="color:white;te
 list.prepend(item);
 </script></body>`);
 
-                fs.writeFileSync(`${ROOT_DIR}html/index.html`, content, 'utf-8');
+                fs.writeFileSync(`${ROOT_DIR}html/index.html`, cypressIndex, 'utf-8');
             });
 
             return config;

@@ -1,5 +1,4 @@
 import { MathUtils } from 'three';
-import { ConfigChangedEvent } from '../events';
 import { getStyleProperty } from '../utils';
 import type { Viewer } from '../Viewer';
 import { AbstractComponent } from './AbstractComponent';
@@ -8,14 +7,21 @@ import { AbstractComponent } from './AbstractComponent';
  * Loader component
  */
 export class Loader extends AbstractComponent {
+    /**
+     * @internal
+     */
+    protected override readonly state = {
+        visible: true,
+        hideTimeout: null as ReturnType<typeof setTimeout>,
+    };
+
     private readonly loader: HTMLElement;
-    private readonly canvas: SVGElement;
+    private readonly text: HTMLElement;
+    private readonly path: SVGElement;
 
     private readonly size: number;
-    private readonly border: number;
+    private readonly spacing: number;
     private readonly thickness: number;
-    private readonly color: string;
-    private readonly textColor: string;
 
     /**
      * @internal
@@ -28,45 +34,55 @@ export class Loader extends AbstractComponent {
         this.container.appendChild(this.loader);
 
         this.size = this.loader.offsetWidth;
-
-        this.canvas = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        this.canvas.setAttribute('class', 'psv-loader-canvas');
-        this.canvas.setAttribute('viewBox', `0 0 ${this.size} ${this.size}`);
-        this.loader.appendChild(this.canvas);
-
-        this.textColor = getStyleProperty(this.loader, 'color');
-        this.color = getStyleProperty(this.canvas, 'color');
-        this.border = parseInt(getStyleProperty(this.loader, '--psv-loader-border'), 10);
+        this.spacing = parseInt(getStyleProperty(this.loader, '--psv-loader-spacing'), 10);
         this.thickness = parseInt(getStyleProperty(this.loader, '--psv-loader-tickness'), 10);
 
-        const halfSize = this.size / 2;
-        this.canvas.innerHTML = `
-            <circle cx="${halfSize}" cy="${halfSize}" r="${halfSize}" fill="${this.color}"/>
-            <path d="" fill="none" stroke="${this.textColor}" stroke-width="${this.thickness}" stroke-linecap="round"/>
-        `;
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('class', 'psv-loader-canvas');
+        svg.setAttribute('viewBox', `0 0 ${this.size} ${this.size}`);
+        this.loader.appendChild(svg);
 
-        this.viewer.addEventListener(ConfigChangedEvent.type, this);
+        this.text = document.createElement('div');
+        this.text.className = 'psv-loader-text';
+        this.loader.appendChild(this.text);
 
-        this.__updateContent();
-        this.hide();
+        svg.innerHTML = `
+        <mask id="psv-loader-mask">
+            <path d="" fill="none" stroke="white"  stroke-width="${this.thickness}" stroke-linecap="round"/>
+        </mask>
+        <foreignObject x="0" y="0" width="${this.size}" height="${this.size}" mask="url(#psv-loader-mask)">
+            <div style="width: 100%; height: 100%; background: var(--psv-loader-color)" xmlns="http://www.w3.org/1999/xhtml"/>
+        </foreignObject>`;
+
+        this.path = svg.querySelector('path');
+
+        super.hide();
+
+        this.container.addEventListener('transitionend', (e) => {
+            if (e.propertyName === 'opacity' && !this.isVisible()) {
+                clearTimeout(this.state.hideTimeout);
+                super.hide();
+            }
+        });
     }
 
-    /**
-     * @internal
-     */
-    override destroy(): void {
-        this.viewer.removeEventListener(ConfigChangedEvent.type, this);
+    override hide(): void {
+        this.state.visible = false;
+        this.container.classList.remove('psv-loader--undefined');
+        this.container.classList.remove('psv-loader-container--visible');
 
-        super.destroy();
+        // watchdog in case the "transitionend" event is not received
+        const duration = parseFloat(getStyleProperty(this.container, 'transition-duration'));
+        this.state.hideTimeout = setTimeout(() => {
+            super.hide();
+        }, duration * 2000);
     }
 
-    /**
-     * @internal
-     */
-    handleEvent(e: Event) {
-        if (e instanceof ConfigChangedEvent) {
-            e.containsOptions('loadingImg', 'loadingTxt', 'lang') && this.__updateContent();
-        }
+    override show(): void {
+        super.show();
+        setTimeout(() => {
+            this.container.classList.add('psv-loader-container--visible');
+        }, 10);
     }
 
     /**
@@ -78,15 +94,17 @@ export class Loader extends AbstractComponent {
         const angle = (MathUtils.clamp(value, 0, 99.999) / 100) * Math.PI * 2;
         const halfSize = this.size / 2;
         const startX = halfSize;
-        const startY = this.thickness / 2 + this.border;
-        const radius = (this.size - this.thickness) / 2 - this.border;
+        const startY = this.thickness / 2 + this.spacing;
+        const radius = (this.size - this.thickness) / 2 - this.spacing;
         const endX = Math.sin(angle) * radius + halfSize;
         const endY = -Math.cos(angle) * radius + halfSize;
         const largeArc = value > 50 ? '1' : '0';
 
-        this.canvas.querySelector('path').setAttributeNS(null, 'd',
+        this.path.setAttributeNS(null, 'd',
             `M ${startX} ${startY} A ${radius} ${radius} 0 ${largeArc} 1 ${endX} ${endY}`,
         );
+
+        this.text.innerText = `${Math.round(MathUtils.clamp(value, 0, 100))}%`;
     }
 
     /**
@@ -96,29 +114,5 @@ export class Loader extends AbstractComponent {
         this.show();
         this.setProgress(25);
         this.container.classList.add('psv-loader--undefined');
-    }
-
-    private __updateContent() {
-        const current = this.loader.querySelector('.psv-loader-image, .psv-loader-text');
-        if (current) {
-            this.loader.removeChild(current);
-        }
-
-        let inner;
-        if (this.viewer.config.loadingImg) {
-            inner = document.createElement('img');
-            inner.className = 'psv-loader-image';
-            inner.src = this.viewer.config.loadingImg;
-        } else if (this.viewer.config.loadingTxt !== null) {
-            inner = document.createElement('div');
-            inner.className = 'psv-loader-text';
-            inner.innerHTML = this.viewer.config.loadingTxt || this.viewer.config.lang.loading;
-        }
-        if (inner) {
-            const size = Math.round(Math.sqrt(2 * Math.pow(this.size / 2 - this.thickness / 2 - this.border, 2)));
-            inner.style.maxWidth = size + 'px';
-            inner.style.maxHeight = size + 'px';
-            this.loader.appendChild(inner);
-        }
     }
 }

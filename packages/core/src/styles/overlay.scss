@@ -9,21 +9,27 @@
     position: absolute;
     z-index: psv.$overlay-zindex;
     inset: 0;
-    background: psv.$main-background;
-    opacity: psv.$overlay-opacity;
+    background: psv.$overlay-background;
+    backdrop-filter: psv.$overlay-filter;
+    opacity: 0;
+    transition: opacity psv.$overlay-transition;
     cursor: default;
 
+    &--visible {
+        opacity: 1;
+    }
+
     &-image {
-        width: 100%;
         text-align: center;
         color: psv.$overlay-icon-color;
+        width: map.get(psv.$overlay-image-size, portrait);
+
+        @container psv-container (orientation: landscape) {
+            width: map.get(psv.$overlay-image-size, landscape);
+        }
 
         svg {
-            width: map.get(psv.$overlay-image-size, portrait);
-
-            @container psv-container (orientation: landscape) {
-                width: map.get(psv.$overlay-image-size, landscape);
-            }
+            width: 100%;
         }
     }
 
@@ -31,13 +37,14 @@
         color: psv.$overlay-title-color;
         margin-top: 1em;
         font: psv.$overlay-title-font;
-        text-align: center;
     }
 
     &-text {
         color: psv.$overlay-text-color;
         font: psv.$overlay-text-font;
-        opacity: 0.8;
-        text-align: center;
+    }
+
+    & > * {
+        filter: psv.$overlay-shadow;
     }
 }

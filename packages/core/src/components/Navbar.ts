@@ -10,7 +10,6 @@ import { MoveRightButton } from '../buttons/MoveRightButton';
 import { MoveUpButton } from '../buttons/MoveUpButton';
 import { ZoomInButton } from '../buttons/ZoomInButton';
 import { ZoomOutButton } from '../buttons/ZoomOutButton';
-import { ZoomRangeButton } from '../buttons/ZoomRangeButton';
 import { DEFAULTS } from '../data/config';
 import { CAPTURE_EVENTS_CLASS } from '../data/constants';
 import { ParsedViewerConfig } from '../model';
@@ -37,11 +36,13 @@ const AVAILABLE_GROUPS: Record<string, ButtonConstructor[]> = {};
  * Possible values are :
  *    - `start`
  *    - `end`
- *    - `[id]:left`
- *    - `[id]:right`
+ *    - `[id]:left` (same group)
+ *    - `[id]:right` (same group)
+ *    - `[id]:after` (new group)
+ *    - `[id]:before` (new group)
  * @throws {@link PSVError} if the button constructor has no "id"
  */
-export function registerButton(button: ButtonConstructor, defaultPosition?: string) {
+export function registerButton(button: ButtonConstructor, ...defaultPositions: string[]) {
     if (!button.id) {
         throw new PSVError('Button id is required');
     }
@@ -52,40 +53,136 @@ export function registerButton(button: ButtonConstructor, defaultPosition?: stri
         (AVAILABLE_GROUPS[button.groupId] = AVAILABLE_GROUPS[button.groupId] || []).push(button);
     }
 
-    if (defaultPosition) {
-        const navbar = DEFAULTS.navbar as string[];
+    const navbar = DEFAULTS.navbar as string[][];
+    defaultPositions.some((defaultPosition) => {
         switch (defaultPosition) {
             case 'start':
-                navbar.unshift(button.id);
-                break;
+                navbar.unshift([button.id]);
+                return true;
             case 'end':
-                navbar.push(button.id);
-                break;
+                navbar.push([button.id]);
+                return true;
             default: {
                 const [id, pos] = defaultPosition.split(':');
-                const idx = navbar.indexOf(id);
-                if (!id || !pos || idx === -1) {
-                    throw new PSVError(`Invalid defaultPosition ${defaultPosition}`);
-                }
-                navbar.splice(idx + (pos === 'right' ? 1 : 0), 0, button.id);
+                return navbar.some((group, i) => {
+                    const idx = group.indexOf(id);
+                    if (idx !== -1) {
+                        switch (pos) {
+                            case 'left':
+                                group.splice(idx, 0, button.id);
+                                return true;
+                            case 'right':
+                                group.splice(idx + 1, 0, button.id);
+                                return true;
+                            case 'before':
+                                navbar.splice(i, 0, [button.id]);
+                                return true;
+                            case 'after':
+                                navbar.splice(i + 1, 0, [button.id]);
+                                return true;
+                        }
+                    }
+                    return false;
+                });
             }
         }
-    }
+    });
 }
 
 [
     ZoomOutButton,
-    ZoomRangeButton,
     ZoomInButton,
     DescriptionButton,
-    NavbarCaption,
     DownloadButton,
     FullscreenButton,
     MoveLeftButton,
     MoveRightButton,
     MoveUpButton,
     MoveDownButton,
+    MenuButton,
 ].forEach(btn => registerButton(btn));
+
+/**
+ * Group of buttons in the the navbar
+ */
+export class NavbarGroup extends AbstractComponent {
+    protected override readonly state = {
+        visible: true,
+        margins: 0,
+    };
+
+    constructor(navbar: Navbar) {
+        super(navbar, {
+            className: 'psv-navbar-group',
+        });
+
+        const style = window.getComputedStyle(this.container);
+        this.state.margins = parseFloat(style.marginLeft) + parseFloat(style.marginRight)
+            + parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+    }
+
+    override toggle() {
+        // noop
+    }
+
+    /**
+     * Returns the width of all visible items (including collapsed ones) + margins
+     */
+    getWidth(): number {
+        return this.children.reduce((total, child) => {
+            if (child instanceof AbstractButton && child.isVisible()) {
+                return total + child.width;
+            } else {
+                return total;
+            }
+        }, this.state.margins);
+    }
+
+    /**
+     * Collapses all collapsable items
+     */
+    collapse(): AbstractButton[] {
+        const collapsed: AbstractButton[] = [];
+        this.children.forEach((child) => {
+            if (child instanceof AbstractButton && child.collapsable) {
+                child.collapse();
+                collapsed.push(child);
+            }
+        });
+        this.autoHide();
+        return collapsed;
+    }
+
+    /**
+     * Uncollapse all items
+     */
+    uncollapse() {
+        this.children.forEach((child) => {
+            if (child instanceof AbstractButton && child.collapsable) {
+                child.uncollapse();
+            }
+        });
+        this.autoHide();
+    }
+
+    /**
+     * Automatically hides the container if no items are visible
+     */
+    autoHide() {
+        const hasVisibleItems = this.children.some((child) => {
+            if (child instanceof AbstractButton) {
+                return child.isVisible() && !child.collapsed;
+            } else {
+                return true;
+            }
+        });
+        if (hasVisibleItems) {
+            this.show();
+        } else {
+            this.hide();
+        }
+    }
+}
 
 /**
  * Navigation bar component
@@ -95,6 +192,28 @@ export class Navbar extends AbstractComponent {
      * @internal
      */
     collapsed: AbstractButton[] = [];
+
+    /**
+     * @internal
+     */
+    caption?: NavbarCaption;
+
+    /**
+     * @internal
+     */
+    get groups(): NavbarGroup[] {
+        return this.children
+            .filter(child => child instanceof NavbarGroup);
+    }
+
+    /**
+     * @internal
+     */
+    get buttons(): AbstractButton[] {
+        return this.children
+            .flatMap(child => child.children)
+            .filter(child => child instanceof AbstractButton);
+    }
 
     /**
      * @internal
@@ -128,37 +247,57 @@ export class Navbar extends AbstractComponent {
     /**
      * Change the buttons visible on the navbar
      */
-    setButtons(buttons: ParsedViewerConfig['navbar']) {
+    setButtons(groups: ParsedViewerConfig['navbar']) {
         this.children.slice().forEach(item => item.destroy());
         this.children.length = 0;
+        this.caption = null;
 
-        // force description button if caption is present (used on narrow screens)
-        if (buttons.indexOf(NavbarCaption.id) !== -1 && buttons.indexOf(DescriptionButton.id) === -1) {
-            buttons.splice(buttons.indexOf(NavbarCaption.id), 0, DescriptionButton.id);
-        }
+        const hasDescriptionButton = groups.flat().includes(DescriptionButton.id);
+        const hasMenuButton = groups.flat().includes(MenuButton.id);
 
-        buttons.forEach((button) => {
-            if (typeof button === 'object') {
-                new CustomButton(this, button);
-            } else if (AVAILABLE_BUTTONS[button]) {
-                // @ts-ignore
-                new AVAILABLE_BUTTONS[button](this);
-            } else if (AVAILABLE_GROUPS[button]) {
-                AVAILABLE_GROUPS[button].forEach((buttonCtor) => {
-                    // @ts-ignore
-                    new buttonCtor(this);
-                });
-            } else {
-                logWarn(`Unknown button ${button}`);
+        let group: NavbarGroup = null;
+        const getGroup = () => {
+            if (!group) {
+                group = new NavbarGroup(this);
             }
+            return group;
+        };
+        const getLastGroup = () => {
+            return this.groups.reverse()[0] ?? getGroup();
+        };
+
+        groups.forEach((buttons) => {
+            buttons.forEach((button) => {
+                if (typeof button === 'object') {
+                    new CustomButton(getGroup(), button);
+                } else if (AVAILABLE_BUTTONS[button]) {
+                    // @ts-ignore
+                    new AVAILABLE_BUTTONS[button](getGroup());
+                } else if (AVAILABLE_GROUPS[button]) {
+                    AVAILABLE_GROUPS[button].forEach((buttonCtor) => {
+                        // @ts-ignore
+                        new buttonCtor(getGroup());
+                    });
+                } else if (button === NavbarCaption.id) {
+                    if (!hasDescriptionButton) {
+                        new DescriptionButton(getLastGroup());
+                    }
+                    this.caption = new NavbarCaption(this);
+                    group = null;
+                } else {
+                    logWarn(`Unknown button ${button}`);
+                }
+            });
+
+            group = null;
         });
 
-        new MenuButton(this);
+        if (!hasMenuButton) {
+            new MenuButton(getLastGroup());
+        }
 
-        this.children.forEach((item) => {
-            if (item instanceof AbstractButton) {
-                item.checkSupported();
-            }
+        this.buttons.forEach((item) => {
+            item.checkSupported();
         });
 
         this.autoSize();
@@ -168,23 +307,14 @@ export class Navbar extends AbstractComponent {
      * Changes the navbar caption
      */
     setCaption(html: string | null) {
-        this.children.some((item) => {
-            if (item instanceof NavbarCaption) {
-                item.setCaption(html);
-                return true;
-            } else {
-                return false;
-            }
-        });
+        this.caption?.setCaption(html);
     }
 
     /**
      * Returns a button by its identifier
      */
     getButton(id: string, warnNotFound = true): AbstractButton {
-        const button = this.children.find((item) => {
-            return item instanceof AbstractButton && item.id === id;
-        });
+        const button = this.buttons.find(item => item.id === id);
 
         if (!button && warnNotFound) {
             logWarn(`button "${id}" not found in the navbar`);
@@ -198,51 +328,57 @@ export class Navbar extends AbstractComponent {
      */
     focusButton(id: string) {
         if (this.isVisible()) {
-            (this.getButton(id, false)?.container || this.container.firstElementChild as HTMLElement)?.focus();
+            (this.getButton(id, false)?.container || this.groups[0]?.container.firstElementChild as HTMLElement)?.focus();
         }
     }
 
     /**
-     * Automatically collapses buttons
+     * Automatically collapses buttons and adapt the caption
      * @internal
      */
     autoSize() {
-        this.children.forEach((child) => {
-            if (child instanceof AbstractButton) {
-                child.autoSize();
-            }
-        });
-
         const availableWidth = this.container.offsetWidth;
 
-        let totalWidth = 0;
-        const collapsableButtons: AbstractButton[] = [];
-
-        this.children.forEach((item) => {
-            if (item.isVisible() && item instanceof AbstractButton) {
-                totalWidth += item.width;
-                if (item.collapsable) {
-                    collapsableButtons.push(item);
-                }
+        const totalWidth = this.groups.reduce((total, group) => {
+            if (group.isVisible()) {
+                return total + group.getWidth();
+            } else {
+                return total;
             }
-        });
+        }, 0);
 
-        if (totalWidth === 0) {
-            return;
-        }
+        if (availableWidth < totalWidth) {
+            this.collapsed = this.groups.flatMap(group => group.collapse());
 
-        if (availableWidth < totalWidth && collapsableButtons.length > 0) {
-            collapsableButtons.forEach(item => item.collapse());
-            this.collapsed = collapsableButtons;
+            if (this.collapsed.length) {
+                this.getButton(MenuButton.id).show(false);
+            }
+        } else if (availableWidth >= totalWidth && this.collapsed.length) {
+            this.collapsed.length = 0;
 
-            this.getButton(MenuButton.id).show(false);
-        } else if (availableWidth >= totalWidth && this.collapsed.length > 0) {
-            this.collapsed.forEach(item => item.uncollapse());
-            this.collapsed = [];
+            this.groups.forEach(group => group.uncollapse());
 
             this.getButton(MenuButton.id).hide(false);
         }
 
-        this.getButton(NavbarCaption.id, false)?.autoSize();
+        if (this.caption) {
+            // check if the caption is the first or last element
+            let foundCaption = false;
+            let elementsBeforeCaption = false;
+            let elementsAfterCaption = false;
+            this.children.forEach((child) => {
+                if (child instanceof NavbarCaption) {
+                    foundCaption = true;
+                } else if (child instanceof NavbarGroup && child.isVisible()) {
+                    if (foundCaption) {
+                        elementsAfterCaption = true;
+                    } else {
+                        elementsBeforeCaption = true;
+                    }
+                }
+            });
+
+            this.caption.autoSize(!elementsBeforeCaption, !elementsAfterCaption);
+        }
     }
 }

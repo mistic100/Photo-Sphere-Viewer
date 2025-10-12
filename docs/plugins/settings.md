@@ -154,14 +154,5 @@ If you use a [custom navbar](../guide/navbar.md) you will need to manually add t
 
 ## SCSS variables
 
-| variable          | default                           | description                               |
-| ----------------- | --------------------------------- | ----------------------------------------- |
-| $font             | core.$caption-font                | Font of settings                          |
-| $text-color       | core.$panel-text-color            | Text color of settings                    |
-| $background       | core.$panel-background            | Background color of settings              |
-| $item-height      | core.$panel-menu-item-height      | Height of each settings item              |
-| $item-padding     | core.$panel-menu-item-padding     | Padding of each settings item             |
-| $hover-background | core.$panel-menu-hover-background | Background color of items on mouse hover  |
-| $badge-font       | 10px / .9 monospace               | Font of the badge displayed on the button |
-| $badge-text-color | white                             | Text color if the badge                   |
-| $badge-background | #111                              | Background color of the badge             |
+Check the main [style](../guide/style.md) documentation if you want to customize the settings style.
+The full list of SCSS variables can be found [in the source code](https://github.com/mistic100/Photo-Sphere-Viewer/blob/main/packages/settings-plugin/src/styles/_vars.scss).

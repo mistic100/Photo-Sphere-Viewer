@@ -1,4 +1,4 @@
-import type { Navbar } from '../components/Navbar';
+import type { NavbarGroup } from '../components/Navbar';
 import { ICONS, IDS } from '../data/constants';
 import { HidePanelEvent, ShowPanelEvent } from '../events';
 import { getClosest } from '../utils';
@@ -6,31 +6,23 @@ import { AbstractButton } from './AbstractButton';
 
 const BUTTON_DATA = 'psvButton';
 
-const MENU_TEMPLATE = (buttons: AbstractButton[], title: string) => `
-<div class="psv-panel-menu psv-panel-menu--stripped">
-  <h1 class="psv-panel-menu-title">${ICONS.menu} ${title}</h1>
-  <ul class="psv-panel-menu-list">
-    ${buttons
-        .map(
-            button => `
+const MENU_TEMPLATE = (buttons: AbstractButton[]) => `
+<ul class="psv-panel-menu">
+${buttons.map(button => `
     <li data-psv-button="${button.id}" class="psv-panel-menu-item" tabindex="0">
-      <span class="psv-panel-menu-item-icon">${button.content}</span>
-      <span class="psv-panel-menu-item-label">${button.title}</span>
+        <span class="psv-panel-menu-item-icon">${button.content}</span>
+        <span class="psv-panel-menu-item-label">${button.title}</span>
     </li>
-    `,
-        )
-        .join('')}
-  </ul>
-</div>
+`).join('')}
+</ul>
 `;
 
 export class MenuButton extends AbstractButton {
     static override readonly id = 'menu';
 
-    constructor(navbar: Navbar) {
-        super(navbar, {
+    constructor(parent: NavbarGroup) {
+        super(parent, {
             className: 'psv-menu-button',
-            hoverScale: true,
             collapsable: false,
             tabbable: true,
             icon: ICONS.menu,
@@ -39,7 +31,7 @@ export class MenuButton extends AbstractButton {
         this.viewer.addEventListener(ShowPanelEvent.type, this);
         this.viewer.addEventListener(HidePanelEvent.type, this);
 
-        super.hide();
+        super.hide(false);
     }
 
     override destroy() {
@@ -81,7 +73,8 @@ export class MenuButton extends AbstractButton {
     private __showMenu() {
         this.viewer.panel.show({
             id: IDS.MENU,
-            content: MENU_TEMPLATE(this.viewer.navbar.collapsed, this.viewer.config.lang.menu),
+            title: `${ICONS.menu} ${this.viewer.config.lang.menu}`,
+            content: MENU_TEMPLATE(this.viewer.navbar.collapsed),
             noMargin: true,
             clickHandler: (target) => {
                 const li = target ? getClosest(target as HTMLElement, '.psv-panel-menu-item') : undefined;

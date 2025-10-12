@@ -7,7 +7,7 @@ import { Navbar } from './components/Navbar';
 import { Notification } from './components/Notification';
 import { Overlay } from './components/Overlay';
 import { Panel } from './components/Panel';
-import { Tooltip, TooltipConfig } from './components/Tooltip';
+import { AttachedTooltip, Tooltip, TooltipConfig } from './components/Tooltip';
 import { Cache } from './data/cache';
 import { CONFIG_PARSERS, DEFAULTS, getViewerConfig, READONLY_OPTIONS } from './data/config';
 import { IDS, VIEWER_DATA } from './data/constants';
@@ -176,7 +176,7 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
                     panoData: this.config.panoData,
                 });
             } else {
-                this.loader.show();
+                this.loader.showUndefined();
             }
         }
     }
@@ -387,7 +387,11 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
 
         this.navbar.setCaption(`<em>${this.config.lang.loading}</em>`);
         if (options.showLoader || !this.state.ready) {
-            this.loader.show();
+            if (this.adapter.supportsLoadingProgress(path)) {
+                this.loader.show();
+            } else {
+                this.loader.showUndefined();
+            }
         }
 
         this.dispatchEvent(new PanoramaLoadEvent(path));
@@ -751,6 +755,14 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
      */
     createTooltip(config: TooltipConfig): Tooltip {
         return new Tooltip(this, config);
+    }
+
+    /**
+     * Attaches a tooltip shown on mouseover of and element
+     * @returns A function to call when the target is removed
+     */
+    attachTooltip(config: Omit<TooltipConfig, 'x' | 'y' | 'offset'>, element: HTMLElement): AttachedTooltip {
+        return new AttachedTooltip(this, config, element);
     }
 
     /**

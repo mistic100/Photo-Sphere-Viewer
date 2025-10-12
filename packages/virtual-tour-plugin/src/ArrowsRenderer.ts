@@ -43,11 +43,11 @@ export class ArrowsRenderer extends AbstractComponent {
 
         this.renderer = this.is3D
             ? new CSS3DRenderer({
-                element: this.container,
-            })
+                    element: this.container,
+                })
             : new CSS2DRenderer({
-                element: this.container,
-            });
+                    element: this.container,
+                });
 
         this.camera = this.is3D ? new PerspectiveCamera(30, 1) : null;
         this.scene = new Scene();
@@ -110,7 +110,7 @@ export class ArrowsRenderer extends AbstractComponent {
             case 'mouseenter': {
                 const link = this.__getTargetLink(utils.getEventTarget(e));
                 if (link) {
-                    this.plugin.__onEnterArrow(link, e as MouseEvent);
+                    this.plugin.__onEnterArrow(link);
                 }
                 break;
             }
@@ -118,13 +118,6 @@ export class ArrowsRenderer extends AbstractComponent {
                 const link = this.__getTargetLink(utils.getEventTarget(e));
                 if (link) {
                     this.plugin.__onLeaveArrow(link);
-                }
-                break;
-            }
-            case 'mousemove': {
-                const link = this.__getTargetLink(utils.getEventTarget(e), true);
-                if (link) {
-                    this.plugin.__onHoverArrow(e as MouseEvent);
                 }
                 break;
             }
@@ -205,7 +198,7 @@ export class ArrowsRenderer extends AbstractComponent {
         }
     }
 
-    addLinkArrow(link: VirtualTourLink, position: Position, depth = 1) {
+    addLinkArrow(link: VirtualTourLink, position: Position, depth = 1): HTMLElement {
         let element = this.__buildArrowElement(link, link.arrowStyle);
         if (!element) {
             element = this.__buildArrowElement(link, this.arrowStyle);
@@ -265,6 +258,8 @@ export class ArrowsRenderer extends AbstractComponent {
 
             this.scene.add(object);
         }
+
+        return element;
     }
 
     private __getTargetLink(target: HTMLElement, closest = false): VirtualTourLink {

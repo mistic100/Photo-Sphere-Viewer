@@ -1,13 +1,18 @@
 @use '../../../core/src/styles/vars' as psv;
 
 $margin: 10px !default;
-$font: psv.$caption-font !default;
-$item-height: psv.$panel-menu-item-height !default;
-$item-padding: psv.$panel-menu-item-padding !default;
-$background: psv.$panel-background !default;
-$shadow: 0 0 5px $background !default;
-$text-color: psv.$panel-text-color !default;
-$hover-background: psv.$panel-menu-hover-background !default;
-$badge-font: 10px / 0.9 monospace !default;
-$badge-background: #111 !default;
-$badge-text-color: white !default;
+$font: 16px var(--psv-font-family) !default;
+$text-color: psv.$buttons-color !default;
+$border: psv.$navbar-border !default;
+$background: psv.$navbar-background !default;
+$filter: psv.$navbar-filter !default;
+$radius: 8px !default;
+$item-height: 1.5em !default;
+$item-padding: 0.5em 1em !default;
+$shadow: 0 0 5px rgb(var(--psv-shadow-color)) !default;
+$hover-background: psv.$buttons-hover-background !default;
+$hover-color: psv.$buttons-hover-color !default;
+$badge-font: 11px / 0.9 monospace !default;
+$badge-background: rgb(var(--psv-bg-color)) !default;
+$badge-text-color: rgb(var(--psv-text-color)) !default;
+$transition: 100ms ease-in-out;

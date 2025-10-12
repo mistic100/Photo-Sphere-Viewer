@@ -5,8 +5,8 @@ import { MarkersListButton } from './MarkersListButton';
 
 DEFAULTS.lang[MarkersButton.id] = 'Markers';
 DEFAULTS.lang[MarkersListButton.id] = 'Markers list';
-registerButton(MarkersButton, 'caption:left');
-registerButton(MarkersListButton, 'caption:left');
+registerButton(MarkersButton, 'download:right');
+registerButton(MarkersListButton, 'markers:right');
 
 export type { Marker } from './markers/Marker';
 export type { MarkerType } from './MarkerType';

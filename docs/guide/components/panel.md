@@ -33,6 +33,7 @@ Open the side panel.
 | option | type |   |
 | ------ | ---- | - |
 | `id` | `string` | Unique identifier of the panel, this will be used to `hide` the panel only if the content has not been replaced by something else. It will be used to store the width defined by the user when using the resize handle. |
+| `title` | `string` | HTML content of the panel title. |
 | `content` (required) | `string` | HTML content of the panel. |
 | `noMargin` (default&nbsp;`false`) | `boolean` | Remove the default margins inside the panel. |
 | `width` (default&nbsp;`400px`) | `string` | Initial width of the panel (example: `100%`, `600px`). |
