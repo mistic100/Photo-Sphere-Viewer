@@ -60,6 +60,15 @@ export abstract class AbstractAdapter<TPanorama, TData, TTexture, TMesh extends 
     }
 
     /**
+     * Indicates that the loading progression can be displayed
+     */
+    // @ts-ignore unused parameter
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    supportsLoadingProgress(panorama: TPanorama): boolean {
+        return false;
+    }
+
+    /**
      * Converts pixel texture coordinates to spherical radians coordinates
      * @throws {@link PSVError} when the current adapter does not support texture coordinates
      */

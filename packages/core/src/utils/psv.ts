@@ -522,3 +522,40 @@ export function mergePanoData(width: number, height: number, newPanoData?: PanoD
 
     return panoData;
 }
+
+/**
+ * Parse a string representation of navbar buttons
+ */
+export function parseNavbar(str: string): Array<string | string[]> {
+    const navbar: Array<string | string[]> = [];
+    let group: string[] = null;
+
+    str.split(/[ ,]/)
+        .filter(item => !!item)
+        .forEach((item) => {
+            if (item.startsWith('[')) {
+                if (group) {
+                    throw new PSVError(`Invalid navbar configuration`);
+                }
+                if (item.endsWith(']')) {
+                    navbar.push([item.slice(1, -1)]);
+                } else {
+                    group = [item.slice(1)];
+                }
+            } else if (item.endsWith(']')) {
+                if (!group) {
+                    throw new PSVError(`Invalid navbar configuration`);
+                }
+                navbar.push([...group, item.slice(0, -1)]);
+                group = null;
+            } else {
+                (group ?? navbar).push(item);
+            }
+        });
+
+    if (group) {
+        throw new PSVError(`Invalid navbar configuration`);
+    }
+
+    return navbar;
+}

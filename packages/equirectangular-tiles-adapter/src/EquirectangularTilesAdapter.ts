@@ -203,6 +203,10 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
         return !!panorama.baseUrl;
     }
 
+    override supportsLoadingProgress(panorama: EquirectangularTilesPanorama | EquirectangularMultiTilesPanorama) {
+        return !!panorama.baseUrl;
+    }
+
     override textureCoordsToSphericalCoords(point: PanoramaPosition, data: EquirectangularTilesPanoData): Position {
         return this.adapter.textureCoordsToSphericalCoords(point, data);
     }

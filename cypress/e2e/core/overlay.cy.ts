@@ -4,6 +4,7 @@ import { NO_LOG, VIEWPORT_MOBILE } from '../../utils/constants';
 
 describe('core: overlay', () => {
     beforeEach(() => {
+        localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/core/base.html');
         waitViewerReady();
         // createBaseSnapshot();

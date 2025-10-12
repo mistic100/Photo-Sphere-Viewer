@@ -9,7 +9,7 @@ export function budgetPlugin(budget: string): Plugin {
         throw new Error('Missing/invalid budget');
     }
 
-    const maxsize = 1024 * parseInt(budget, 10);
+    const maxsize = 1024 * parseInt(budget, 10) + 1023;
 
     return {
         name: 'budget',

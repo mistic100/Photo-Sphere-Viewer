@@ -60,7 +60,7 @@ describe('core: navbar', () => {
     });
 
     it('should hide the caption if not enough space', {
-        viewportWidth: 800,
+        viewportWidth: 700,
         viewportHeight: 900,
     }, () => {
         callViewer('remove description').then(viewer => viewer.setOption('description', null));
@@ -84,7 +84,6 @@ describe('core: navbar', () => {
     it('should display a menu on small screens', VIEWPORT_MOBILE, () => {
         [
             '.psv-caption-content',
-            '.psv-zoom-range',
             '.psv-download-button',
             '.custom-button:eq(0)',
         ].forEach((invisible) => {
@@ -109,7 +108,7 @@ describe('core: navbar', () => {
         cy.get('.psv-panel')
             .should('be.visible')
             .within(() => {
-                cy.get('.psv-panel-menu-title').should('contain.text', 'Menu');
+                cy.get('.psv-panel-header').should('contain.text', 'Menu');
 
                 cy.contains('Download').should('be.visible');
                 cy.contains('Click me').should('be.visible');
@@ -123,16 +122,16 @@ describe('core: navbar', () => {
 
     it('should translate buttons', () => {
         function assertTitles(titles: any) {
-            cy.get('.psv-zoom-button:eq(0)').invoke('attr', 'title').should('eq', titles.zoomOut);
-            cy.get('.psv-zoom-button:eq(1)').invoke('attr', 'title').should('eq', titles.zoomIn);
-            cy.get('.psv-move-button:eq(0)').invoke('attr', 'title').should('eq', titles.moveLeft);
-            cy.get('.psv-move-button:eq(1)').invoke('attr', 'title').should('eq', titles.moveRight);
-            cy.get('.psv-move-button:eq(2)').invoke('attr', 'title').should('eq', titles.moveUp);
-            cy.get('.psv-move-button:eq(3)').invoke('attr', 'title').should('eq', titles.moveDown);
-            cy.get('.psv-download-button').invoke('attr', 'title').should('eq', titles.download);
-            cy.get('.psv-description-button').invoke('attr', 'title').should('eq', titles.description);
-            cy.get('.psv-fullscreen-button').invoke('attr', 'title').should('eq', titles.fullscreen);
-            cy.get('.custom-button:eq(0)').invoke('attr', 'title').should('eq', titles.myButton);
+            cy.get('.psv-zoom-button:eq(0)').invoke('attr', 'aria-label').should('eq', titles.zoomOut);
+            cy.get('.psv-zoom-button:eq(1)').invoke('attr', 'aria-label').should('eq', titles.zoomIn);
+            cy.get('.psv-move-button:eq(0)').invoke('attr', 'aria-label').should('eq', titles.moveLeft);
+            cy.get('.psv-move-button:eq(1)').invoke('attr', 'aria-label').should('eq', titles.moveRight);
+            cy.get('.psv-move-button:eq(2)').invoke('attr', 'aria-label').should('eq', titles.moveUp);
+            cy.get('.psv-move-button:eq(3)').invoke('attr', 'aria-label').should('eq', titles.moveDown);
+            cy.get('.psv-download-button').invoke('attr', 'aria-label').should('eq', titles.download);
+            cy.get('.psv-description-button').invoke('attr', 'aria-label').should('eq', titles.description);
+            cy.get('.psv-fullscreen-button').invoke('attr', 'aria-label').should('eq', titles.fullscreen);
+            cy.get('.custom-button:eq(0)').invoke('attr', 'aria-label').should('eq', titles.myButton);
         }
 
         const en = {
@@ -187,7 +186,7 @@ describe('core: navbar', () => {
             cy.get('.psv-button').then(($buttons) => {
                 const titles = $buttons
                     .filter(':visible')
-                    .map((i, btn) => btn.getAttribute('title'))
+                    .map((i, btn) => btn.getAttribute('aria-label'))
                     .get();
                 expect(titles).to.have.members(expected);
             });
@@ -199,7 +198,7 @@ describe('core: navbar', () => {
 
         cy.get('.psv-navbar').compareScreenshots('update-buttons');
 
-        callNavbar('change buttons via API').then(navbar => navbar.setButtons(['download', 'fullscreen']));
+        callNavbar('change buttons via API').then(navbar => navbar.setButtons([['download', 'fullscreen']]));
 
         assertButtons(['Download', 'Fullscreen']);
     });
@@ -230,15 +229,15 @@ describe('core: navbar', () => {
 
     it('should display a custom element', () => {
         cy.document().then((document) => {
-            callNavbar('set custom element').then(navbar => navbar.setButtons([
+            callNavbar('set custom element').then(navbar => navbar.setButtons([[
                 {
+                    type: 'element',
                     content: document.createElement('custom-navbar-button'),
                 },
-            ]));
+            ]]));
         });
 
-        cy.get('.psv-custom-button')
-            .should('have.class', 'psv-custom-button--no-padding')
+        cy.get('.psv-custom-element')
             .find('custom-navbar-button')
             .shadow()
             .within(() => {
@@ -246,7 +245,7 @@ describe('core: navbar', () => {
                 cy.get('#value').should('have.text', '50');
             });
 
-        cy.get('.psv-custom-button').compareScreenshots('custom-element');
+        cy.get('.psv-navbar-group').compareScreenshots('custom-element');
     });
 
     function callNavbar(log: string): Cypress.Chainable<Navbar> {

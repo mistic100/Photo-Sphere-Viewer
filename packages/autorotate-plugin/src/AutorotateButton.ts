@@ -1,4 +1,4 @@
-import type { Navbar } from '@photo-sphere-viewer/core';
+import type { NavbarGroup } from '@photo-sphere-viewer/core';
 import { AbstractButton } from '@photo-sphere-viewer/core';
 import type { AutorotatePlugin } from './AutorotatePlugin';
 import { AutorotateEvent } from './events';
@@ -10,10 +10,9 @@ export class AutorotateButton extends AbstractButton {
 
     private readonly plugin: AutorotatePlugin;
 
-    constructor(navbar: Navbar) {
-        super(navbar, {
+    constructor(parent: NavbarGroup) {
+        super(parent, {
             className: 'psv-autorotate-button',
-            hoverScale: true,
             collapsable: true,
             tabbable: true,
             icon: icon,

@@ -4,12 +4,29 @@
 
 ## Core buttons
 
-The `navbar` option is an array which can contain the following elements:
+The `navbar` option is a nested-array to configure the content of the navbar, distributed in groups.
+
+```ts:line-numbers
+// default value
+navbar: [
+    ['zoom', 'move'],
+    ['download', 'description'],
+    ['caption'],
+    ['fullscreen', 'menu'],
+]
+```
+
+The option can also be declared as a string and use brackets to declare groups:
+
+```ts
+navbar: '[zoom move] [download description] caption [fullscreen menu]'
+```
+
+The following core elements are available:
 
 -   `zoomOut`
--   `zoomRange`
 -   `zoomIn`
--   `zoom` = `zoomOut` + `zoomRange` + `zoomIn`
+-   `zoom` = `zoomOut` + `zoomIn`
 -   `moveLeft`
 -   `moveRight`
 -   `moveTop`
@@ -19,6 +36,13 @@ The `navbar` option is an array which can contain the following elements:
 -   `description`
 -   `caption`
 -   `fullscreen`
+-   `menu`
+
+::: info Note
+- the `caption` element is always isolated in its own group
+- the `description` button is forced on small screens when there is not enough space to display the caption
+- the `menu` button is forced if needed when the navbar is full
+:::
 
 ## Plugins buttons
 
@@ -30,16 +54,9 @@ You can also add as many custom buttons you want. A custom button is an object w
 
 #### `content` (required)
 
--   type : `string | HTMLElement` & [`NavbarButtonElement`](/api/interfaces/Core.NavbarButtonElement.html){target=_blank}
+-   type : `string`
 
 Content of the button. Preferably a square image or SVG icon.
-
-::: tip Custom navbar elements
-The `content` can be an existing element in a the DOM or a [Web Component](https://developer.mozilla.org/docs/Web/API/Web_components/Using_custom_elements).
-If your component has an `attachViewer()` method it will be called with the instance of the viewer as first parameter.
-
-<DemoButton href="/demos/advanced/navbar-element.html"></DemoButton>
-:::
 
 #### `onClick(viewer)`
 
@@ -86,3 +103,20 @@ The API allows to change the visibility of the button at any time:
 ```js
 viewer.navbar.getButton('my-button').show();
 ```
+
+## Custom elements
+
+You can also add more complex elements to the navbar. Custom elements are defined like custom buttons with the following differences:
+
+#### `type` (required)
+
+Must be equal to `element`.
+
+#### `content` (required)
+
+-   type : `HTMLElement` & [`NavbarButtonElement`](/api/interfaces/Core.NavbarButtonElement.html){target=_blank}
+
+Can be an existing element in a the DOM or a [Web Component](https://developer.mozilla.org/docs/Web/API/Web_components/Using_custom_elements).
+If your component has an `attachViewer()` method it will be called with the instance of the viewer as first parameter.
+
+<DemoButton href="/demos/advanced/navbar-element.html"></DemoButton>

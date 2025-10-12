@@ -12,7 +12,7 @@ const getConfig = utils.getConfigParser<MapPluginConfig, ParsedMapPluginConfig>(
         imageUrl: null,
         center: null,
         rotation: 0,
-        shape: 'round',
+        shape: 'square',
         size: '200px',
         position: ['bottom', 'left'],
         visibleOnLoad: true,
@@ -187,24 +187,6 @@ export class MapPlugin extends AbstractConfigurablePlugin<
      */
     setZoom(level: number) {
         this.component.setZoom(Math.log(level / 100));
-    }
-
-    /**
-     * Closes the map
-     */
-    close() {
-        if (!this.component.collapsed) {
-            this.component.toggleCollapse();
-        }
-    }
-
-    /**
-     * Open the map
-     */
-    open() {
-        if (this.component.collapsed) {
-            this.component.toggleCollapse();
-        }
     }
 
     /**

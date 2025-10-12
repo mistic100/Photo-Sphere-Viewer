@@ -1,4 +1,4 @@
-import type { Navbar } from '@photo-sphere-viewer/core';
+import type { NavbarGroup } from '@photo-sphere-viewer/core';
 import { AbstractButton } from '@photo-sphere-viewer/core';
 import { PlayPauseEvent } from '../events';
 import pauseIcon from '../icons/pause.svg';
@@ -11,10 +11,9 @@ export class PlayPauseButton extends AbstractButton {
 
     private readonly plugin?: VideoPlugin;
 
-    constructor(navbar: Navbar) {
-        super(navbar, {
+    constructor(parent: NavbarGroup) {
+        super(parent, {
             className: 'psv-video-play-button',
-            hoverScale: true,
             collapsable: false,
             tabbable: true,
             icon: playIcon,

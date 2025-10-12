@@ -1,30 +1,32 @@
 @use 'vars' as psv;
 
 .psv-tooltip {
+    --psv-tooltip-arrow-size: #{psv.$tooltip-arrow-size};
+
     position: absolute;
     z-index: psv.$tooltip-zindex;
     box-sizing: border-box;
     max-width: psv.$tooltip-max-width;
     background: psv.$tooltip-background;
+    backdrop-filter: psv.$tooltip-filter;
     border-radius: psv.$tooltip-radius;
     opacity: 0;
+    transition: none psv.$tooltip-animate-delay ease-in-out;
     transition-property: opacity, transform;
-    transition-timing-function: ease-in-out;
-    transition-duration: psv.$tooltip-animate-delay;
+    color: psv.$tooltip-text-color;
+    font: psv.$tooltip-font;
+    text-shadow: psv.$tooltip-text-shadow;
+    padding: psv.$tooltip-padding;
     cursor: default;
 
-    &-content {
-        color: psv.$tooltip-text-color;
-        font: psv.$tooltip-font;
-        text-shadow: psv.$tooltip-text-shadow;
-        padding: psv.$tooltip-padding;
-    }
-
-    &-arrow {
+    &::after {
+        content: '';
         position: absolute;
         height: 0;
         width: 0;
-        border: psv.$tooltip-arrow-size solid transparent;
+        top: var(--psv-tooltip-arrow-top);
+        left: var(--psv-tooltip-arrow-left);
+        border: var(--psv-tooltip-arrow-size) solid transparent;
     }
 
     &--top-left,
@@ -32,7 +34,7 @@
     &--top-right {
         transform: translate3d(0, psv.$tooltip-animate-offset, 0);
 
-        .psv-tooltip-arrow {
+        &::after {
             border-top-color: psv.$tooltip-background;
         }
     }
@@ -42,7 +44,7 @@
     &--bottom-right {
         transform: translate3d(0, -#{psv.$tooltip-animate-offset}, 0);
 
-        .psv-tooltip-arrow {
+        &::after {
             border-bottom-color: psv.$tooltip-background;
         }
     }
@@ -52,7 +54,7 @@
     &--left-bottom {
         transform: translate3d(psv.$tooltip-animate-offset, 0, 0);
 
-        .psv-tooltip-arrow {
+        &::after {
             border-left-color: psv.$tooltip-background;
         }
     }
@@ -62,45 +64,9 @@
     &--right-bottom {
         transform: translate3d(-#{psv.$tooltip-animate-offset}, 0, 0);
 
-        .psv-tooltip-arrow {
+        &::after {
             border-right-color: psv.$tooltip-background;
         }
-    }
-
-    &--left-top,
-    &--top-left {
-        box-shadow: -#{psv.$tooltip-shadow-offset} -#{psv.$tooltip-shadow-offset} 0 psv.$tooltip-shadow-color;
-    }
-
-    &--top-center {
-        box-shadow: 0 -#{psv.$tooltip-shadow-offset} 0 psv.$tooltip-shadow-color;
-    }
-
-    &--right-top,
-    &--top-right {
-        box-shadow: psv.$tooltip-shadow-offset -#{psv.$tooltip-shadow-offset} 0 psv.$tooltip-shadow-color;
-    }
-
-    &--left-bottom,
-    &--bottom-left {
-        box-shadow: -#{psv.$tooltip-shadow-offset} psv.$tooltip-shadow-offset 0 psv.$tooltip-shadow-color;
-    }
-
-    &--bottom-center {
-        box-shadow: 0 psv.$tooltip-shadow-offset 0 psv.$tooltip-shadow-color;
-    }
-
-    &--right-bottom,
-    &--bottom-right {
-        box-shadow: psv.$tooltip-shadow-offset psv.$tooltip-shadow-offset 0 psv.$tooltip-shadow-color;
-    }
-
-    &--center-left {
-        box-shadow: -#{psv.$tooltip-shadow-offset} 0 0 psv.$tooltip-shadow-color;
-    }
-
-    &--center-right {
-        box-shadow: psv.$tooltip-shadow-offset 0 0 psv.$tooltip-shadow-color;
     }
 
     &--visible {

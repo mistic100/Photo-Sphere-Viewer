@@ -4,18 +4,14 @@ import type { PlanComponent } from './PlanComponent';
 
 export class PlanResetButton extends AbstractPlanButton {
     constructor(plan: PlanComponent) {
-        super(plan, ButtonPosition.HORIZONTAL);
+        super(plan, 'mapReset', ButtonPosition.HORIZONTAL);
 
         this.container.innerHTML = reset;
-        this.container.querySelector('svg').style.width = '80%';
+        this.container.querySelector('svg').style.scale = '1.2';
 
         this.container.addEventListener('click', (e) => {
             plan.reset();
             e.stopPropagation();
         });
-    }
-
-    override update() {
-        this.container.title = this.viewer.config.lang['mapReset'];
     }
 }

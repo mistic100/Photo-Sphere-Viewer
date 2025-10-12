@@ -75,7 +75,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue';
 import type { PanoData, Viewer } from '../../../packages/core';
-import { LOADER } from './constants';
 import SliderInput from './SliderInput.vue';
 
 const file = ref<File | null>(null);
@@ -195,7 +194,6 @@ async function apply() {
         viewer = new Viewer({
             panorama: imageData,
             container: 'viewer',
-            loadingImg: LOADER,
             panoData: panoData,
             navbar: ['zoom', 'move', 'fullscreen'],
             size: {

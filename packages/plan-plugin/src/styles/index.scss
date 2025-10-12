@@ -18,35 +18,67 @@
     max-width: calc(100% - #{plan.$margin * 2});
     max-height: calc(100% - #{plan.$margin * 2});
 
-    @at-root .psv--has-navbar & {
-        max-height: calc(100% - #{plan.$margin * 2} - #{psv.$navbar-height});
+    @include psv.has-navbar {
+        max-height: calc(100% - #{plan.$margin * 2} - #{psv.$navbar-height} - #{psv.$navbar-margin});
     }
 
     &__container {
-        position: absolute;
-        top: 0;
-        left: 0;
         width: 100%;
         height: 100%;
         z-index: 0;
         transition: opacity plan.$transition;
     }
 
+    &--collapsed &__button-close {
+        opacity: 1;
+        z-index: 1;
+    }
+
+    &--top-left {
+        top: 0;
+        left: 0;
+    }
+
+    &--top-right {
+        top: 0;
+        right: 0;
+    }
+
+    &--bottom-left {
+        bottom: 0;
+        left: 0;
+    }
+
+    &--bottom-right {
+        bottom: 0;
+        right: 0;
+    }
+
+    &--bottom-left, &--bottom-right {
+        @include psv.has-navbar {
+            bottom: calc(#{psv.$navbar-height} + #{psv.$navbar-margin});
+        }
+    }
+
     &__button {
         position: absolute;
-        width: plan.$button-size;
-        aspect-ratio: 1;
-        line-height: 0;
-        background: plan.$button-background;
         display: flex;
         justify-content: center;
         align-items: center;
         transform-origin: center;
+        width: plan.$button-size;
+        aspect-ratio: 1;
+        padding: plan.$button-padding;
+        background: plan.$button-background;
+        backdrop-filter: plan.$button-filter;
+        border: plan.$button-border;
         color: plan.$button-color;
+        line-height: 0;
         cursor: pointer;
+        transition: all plan.$transition;
 
         svg {
-            width: 60%;
+            width: 100%;
         }
 
         &--top-left {
@@ -74,69 +106,14 @@
         }
     }
 
+    &--collapsed {
+        width: 0 !important;
+        height: 0 !important;
+    }
+
     &--maximized {
         width: calc(100% - #{plan.$margin * 2}) !important;
         height: calc(100% - #{plan.$margin * 2}) !important;
-
-        @at-root .psv--has-navbar & {
-            height: calc(100% - #{psv.$navbar-height} - #{plan.$margin * 2}) !important;
-        }
-
-        @container psv-container (max-width: 500px) {
-            margin: 0;
-            width: 100% !important;
-            height: 100% !important;
-            max-width: none;
-            max-height: none;
-            border-radius: 0;
-
-            @at-root .psv--has-navbar & {
-                height: calc(100% - #{psv.$navbar-height}) !important;
-                max-height: calc(100% - #{psv.$navbar-height});
-            }
-        }
-    }
-
-    &--collapsed {
-        width: plan.$button-size !important;
-        height: plan.$button-size !important;
-
-        & > * {
-            opacity: 0;
-        }
-    }
-
-    &--collapsed &__button-close {
-        opacity: 1;
-        z-index: 1;
-    }
-
-    &--top-left {
-        top: 0;
-        left: 0;
-    }
-
-    &--top-right {
-        top: 0;
-        right: 0;
-    }
-
-    &--bottom-left {
-        bottom: 0;
-        left: 0;
-
-        @at-root .psv--has-navbar & {
-            bottom: #{psv.$navbar-height};
-        }
-    }
-
-    &--bottom-right {
-        bottom: 0;
-        right: 0;
-
-        @at-root .psv--has-navbar & {
-            bottom: #{psv.$navbar-height};
-        }
     }
 
     &__pin, &__spot {

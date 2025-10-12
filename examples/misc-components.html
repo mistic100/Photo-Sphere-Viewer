@@ -12,13 +12,12 @@
         <div id="photosphere"></div>
 
         <script type="text/template" id="panel-content">
-            <h1>Custom panel</h1>
             <p>This panel has a default width of 50%.</p>
             <p>Try to resize the panel and re-open it, the user defined size is preserved.</p>
         </script>
 
         <script type="text/template" id="overlay-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="currentColor">
               <path
                 d="M94.2 19.4a2 2 0 00-1.7-.4 188.1 188.1 0 01-85.1 0 2 2 0 00-1.7.4c-.4.4-.7 1-.7 1.6v58c0 .6.3 1.2.8 1.6.4.4 1.1.5 1.7.4 27.8-6.5 57.3-6.5 85.1 0h.5c.5 0 .9-.2 1.2-.4.5-.4.8-1 .8-1.6V21c-.1-.6-.4-1.2-.9-1.6zM21.9 74.2L34 55.6l7.2 11 3.6 5.5c-7.7.3-15.3.9-22.9 2.1zM50 72.1h-.5l-4.3-6.6L60 41.8l20.1 32.7A189 189 0 0050 72.1zm41 4.4l-5.7-1.1L61.7 37a2 2 0 00-1.7-1 2 2 0 00-1.7.9L42.8 61.8l-7.1-10.9c-.4-.6-1-.9-1.7-.9s-1.3.3-1.7.9L16.5 75 9 76.5v-53c26.9 5.9 55.1 5.9 82 0v53z"/>
               <path
@@ -36,95 +35,130 @@
         </script>
 
         <script type="module">
-            import { Viewer } from '@photo-sphere-viewer/core';
+            import { Viewer, utils } from '@photo-sphere-viewer/core';
             import { CustomNavbarButton } from './scripts/CustomNavbarButton.js';
 
             customElements.define('custom-navbar-button', CustomNavbarButton);
 
             const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
 
+            let loaderAnimation;
+            let loaderUndefined = false;
+
             const viewer = new Viewer({
                 container: 'photosphere',
                 panorama: baseUrl + 'sphere.jpg',
                 caption: 'Parc national du Mercantour <b>&copy; Damien Sorel</b>',
-                loadingImg: baseUrl + 'loader.gif',
                 navbar: [
-                    {
-                        content: 'Loader',
-                        onClick: () => {
-                            viewer.loader.show();
-                            viewer.loader.setProgress(Math.random() * 100);
+                    [
+                        {
+                            content: 'Loader',
+                            onClick: () => {
+                                if (loaderAnimation) {
+                                    loaderAnimation.cancel();
+                                    viewer.loader.hide();
+                                } else {
+                                    loaderUndefined = false;
+                                    viewer.loader.show();
+
+                                    loaderAnimation = new utils.Animation({
+                                        properties: {
+                                            i: { start: 0, end: 100},
+                                        },
+                                        duration: 5000,
+                                        onTick({ i }) {
+                                            viewer.loader.setProgress(i);
+                                        },
+                                    });
+
+                                    loaderAnimation.then((completed) => {
+                                        loaderAnimation = null;
+                                        if (completed) {
+                                            viewer.loader.hide();
+                                        }
+                                    });
+                                }
+                            },
                         },
-                    },
-                    {
-                        content: 'Loader (undefined)',
-                        onClick: () => {
-                            viewer.loader.showUndefined();
+                        {
+                            content: 'Loader (undefined)',
+                            onClick: () => {
+                                if (!loaderUndefined) {
+                                    loaderAnimation?.cancel();
+                                    loaderUndefined = true;
+                                    viewer.loader.showUndefined();
+                                } else {
+                                    loaderUndefined = false;
+                                    viewer.loader.hide();
+                                }
+                            },
                         },
-                    },
-                    {
-                        content: 'Notification',
-                        onClick: () => {
-                            const messages = [
-                                'This is a custom notification',
-                                'This is another notification',
-                                'Yet another notification?',
-                            ];
-                            viewer.notification.show({
-                                content: messages[Math.floor(Math.random() * messages.length)],
-                                timeout: 2000,
-                            });
+                        {
+                            content: 'Notification',
+                            onClick: () => {
+                                const messages = [
+                                    'This is a custom notification',
+                                    'This is another notification',
+                                    'Yet another notification?',
+                                ];
+                                viewer.notification.show({
+                                    content: messages[Math.floor(Math.random() * messages.length)],
+                                    timeout: 2000,
+                                });
+                            },
                         },
-                    },
-                    {
-                        content: 'Overlay',
-                        onClick: () => {
-                            viewer.overlay.show({
-                                id: 'custom',
-                                image: document.getElementById('overlay-icon').innerHTML,
-                                title: 'This is a custom overlay',
-                                text: `Isn't it nice?'`,
-                            });
+                        {
+                            content: 'Overlay',
+                            onClick: () => {
+                                viewer.overlay.show({
+                                    id: 'custom',
+                                    image: document.getElementById('overlay-icon').innerHTML,
+                                    title: 'This is a custom overlay',
+                                    text: `Isn't it nice?'`,
+                                });
+                            },
                         },
-                    },
-                    {
-                        content: 'Panel',
-                        onClick: () => {
-                            viewer.panel.show({
-                                id: 'custom',
-                                width: '50%',
-                                content: document.getElementById('panel-content').innerHTML,
-                            });
+                        {
+                            content: 'Panel',
+                            onClick: () => {
+                                viewer.panel.show({
+                                    id: 'custom',
+                                    width: '50%',
+                                    title: 'Custom panel',
+                                    content: document.getElementById('panel-content').innerHTML,
+                                });
+                            },
                         },
-                    },
-                    {
-                        content: 'Tooltip',
-                        onClick: () => {
-                            const position = [
-                                'top',
-                                'top left',
-                                'top right',
-                                'bottom',
-                                'bottom left',
-                                'bottom right',
-                                'left',
-                                'right',
-                                'left top',
-                                'left bottom',
-                                'right top',
-                                'right bottom',
-                            ][Math.floor(Math.random() * 12)];
-                            viewer.createTooltip({
-                                top: Math.random() * (document.body.offsetHeight - 200) + 100,
-                                left: Math.random() * (document.body.offsetWidth - 200) + 100,
-                                position: position,
-                                content: `Custom tooltip (${position})`,
-                            });
+                        {
+                            content: 'Tooltip',
+                            onClick: () => {
+                                const position = [
+                                    'top',
+                                    'top left',
+                                    'top right',
+                                    'bottom',
+                                    'bottom left',
+                                    'bottom right',
+                                    'left',
+                                    'right',
+                                    'left top',
+                                    'left bottom',
+                                    'right top',
+                                    'right bottom',
+                                ][Math.floor(Math.random() * 12)];
+                                viewer.createTooltip({
+                                    x: Math.random() * (document.body.offsetWidth - 200) + 100,
+                                    y: Math.random() * (document.body.offsetHeight - 200) + 100,
+                                    position: position,
+                                    content: `Custom tooltip (${position})`,
+                                });
+                            },
                         },
-                    },
+                    ],
                     {
                         content: document.createElement('custom-navbar-button'),
                     },
+                    'menu',
                 ],
             });
 

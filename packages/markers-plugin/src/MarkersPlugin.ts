@@ -27,6 +27,7 @@ import {
     ShowMarkersEvent,
     UnselectMarkerEvent,
 } from './events';
+import pinList from './icons/pin-list.svg';
 import { AbstractStandardMarker } from './markers/AbstractStandardMarker';
 import { Marker } from './markers/Marker';
 import { Marker3D } from './markers/Marker3D';
@@ -564,6 +565,7 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
         if (marker.config.content) {
             this.viewer.panel.show({
                 id: ID_PANEL_MARKER,
+                title: marker.getListContent(),
                 content: marker.config.content,
             });
         } else {
@@ -606,7 +608,8 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
 
         this.viewer.panel.show({
             id: ID_PANEL_MARKERS_LIST,
-            content: MARKERS_LIST_TEMPLATE(markers, this.viewer.config.lang[MarkersButton.id]),
+            title: `${pinList} ${this.viewer.config.lang[MarkersButton.id]}`,
+            content: MARKERS_LIST_TEMPLATE(markers),
             noMargin: true,
             clickHandler: (target) => {
                 const li = utils.getClosest(target, '.psv-panel-menu-item');

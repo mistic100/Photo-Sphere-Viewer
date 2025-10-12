@@ -22,10 +22,10 @@ declare global {
 
 Cypress.Commands.add('compareScreenshots', { prevSubject: ['element'] }, (subject, name, options = {}) => {
     if (options.hideViewer !== false) {
-        cy.get('.psv-canvas-container', { log: false }).then(container => container.hide());
+        cy.get('.psv-canvas-container', NO_LOG).then(container => container.hide());
     }
 
-    cy.wrap(subject, { log: false }).compareSnapshot(name, options)
+    cy.wrap(subject, NO_LOG).compareSnapshot(name, options)
         .then((result) => {
             if (result.images.diff) {
                 // @ts-ignore
@@ -37,11 +37,11 @@ Cypress.Commands.add('compareScreenshots', { prevSubject: ['element'] }, (subjec
             }
 
             if (options.hideViewer !== false) {
-                return cy.get('.psv-canvas-container', { log: false }).then(container => container.show());
+                return cy.get('.psv-canvas-container', NO_LOG).then(container => container.show());
             }
         });
 
-    return cy.wrap(subject, { log: false });
+    return cy.wrap(subject, NO_LOG);
 });
 
 Cypress.Commands.add('waitForResources', (...names) => {

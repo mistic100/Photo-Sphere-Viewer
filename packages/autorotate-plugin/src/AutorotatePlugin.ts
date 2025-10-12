@@ -416,8 +416,8 @@ export class AutorotatePlugin extends AbstractConfigurablePlugin<
             this.state.tooltip = this.viewer.createTooltip({
                 content: keypoint.tooltip.content,
                 position: keypoint.tooltip.position,
-                top: position.y,
-                left: position.x,
+                x: position.y,
+                y: position.x,
             });
         } else if (keypoint.markerId) {
             const marker = this.markers.getMarker(keypoint.markerId);

@@ -13,8 +13,8 @@
     cursor: default;
     aspect-ratio: 1;
 
-    @at-root .psv--has-navbar & {
-        margin-bottom: calc(#{psv.$navbar-height} + #{compass.$margin});
+    @include psv.has-navbar {
+        margin-bottom: calc(#{psv.$navbar-height} + #{psv.$navbar-margin} + #{compass.$margin});
     }
 
     canvas,

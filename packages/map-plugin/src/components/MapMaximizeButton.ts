@@ -12,7 +12,7 @@ const ROTATION: Record<string, number> = {
 
 export class MapMaximizeButton extends AbstractMapButton {
     constructor(map: MapComponent) {
-        super(map, ButtonPosition.DIAGONAL);
+        super(map, 'mapMaximize', ButtonPosition.DIAGONAL);
 
         this.container.addEventListener('click', (e) => {
             map.toggleMaximized();
@@ -20,11 +20,11 @@ export class MapMaximizeButton extends AbstractMapButton {
         });
     }
 
-    override update() {
+    override applyConfig(): void {
+        this.langKey = this.map.maximized ? 'mapMinimize' : 'mapMaximize';
+        super.applyConfig();
+
         this.container.innerHTML = this.map.maximized ? minimize : maximize;
         this.container.querySelector('svg').style.transform = `rotate3d(0, 0, 1, ${ROTATION[this.map.config.position.join('-')]}deg)`;
-        this.container.title = this.map.maximized
-            ? this.viewer.config.lang['mapMinimize']
-            : this.viewer.config.lang['mapMaximize'];
     }
 }

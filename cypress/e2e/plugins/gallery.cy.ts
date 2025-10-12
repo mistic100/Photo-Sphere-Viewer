@@ -4,6 +4,7 @@ import { BASE_URL, NO_LOG, VIEWPORT_MOBILE } from '../../utils/constants';
 
 describe('plugin: gallery', () => {
     beforeEach(() => {
+        localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/plugins/gallery.html');
         waitViewerReady();
         cy.waitForResources(
@@ -59,7 +60,7 @@ describe('plugin: gallery', () => {
 
         cy.get('.psv-gallery').should((gallery) => {
             const { x, y, width, height } = gallery[0].getBoundingClientRect();
-            expect({ x, y, width, height }).to.deep.eq({ x: 0, y: 0, width: 400, height: 760 });
+            expect({ x, y, width, height }).to.deep.eq({ x: 0, y: 0, width: 400, height: 800 });
         });
 
         cy.get('.psv-gallery').compareScreenshots('mobile');

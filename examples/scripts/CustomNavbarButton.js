@@ -44,14 +44,10 @@ export class CustomNavbarButton extends HTMLElement {
 
 const STYLE = `
 :host {
+    height: 100%;
     display: flex;
     align-items: center;
-    background: rgba(0, 0, 0, 0.5);
-    padding: 0 10px;
-}
-
-#title {
-    font-weight: bold;
+    padding: 0 5px;
 }
 
 input {

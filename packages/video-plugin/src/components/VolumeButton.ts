@@ -1,4 +1,4 @@
-import type { Navbar } from '@photo-sphere-viewer/core';
+import type { NavbarGroup } from '@photo-sphere-viewer/core';
 import { AbstractButton, events, utils } from '@photo-sphere-viewer/core';
 import { PlayPauseEvent, VolumeChangeEvent } from '../events';
 import volumeIcon from '../icons/volume.svg';
@@ -11,48 +11,46 @@ export class VolumeButton extends AbstractButton {
     private readonly plugin?: VideoPlugin;
 
     private readonly rangeContainer: HTMLElement;
-    private readonly range: HTMLElement;
-    private readonly trackElt: HTMLElement;
     private readonly progressElt: HTMLElement;
     private readonly handleElt: HTMLElement;
 
     private readonly slider: utils.Slider;
 
-    constructor(navbar: Navbar) {
-        super(navbar, {
+    constructor(parent: NavbarGroup) {
+        super(parent, {
             className: 'psv-video-volume-button',
-            hoverScale: true,
             collapsable: false,
             tabbable: true,
             icon: volumeIcon,
+            title: '',
         });
 
         this.plugin = this.viewer.getPlugin('video');
 
         if (this.plugin) {
+            this.container.querySelector('svg').addEventListener('click', () => {
+                this.plugin.setMute();
+            });
+
             this.rangeContainer = document.createElement('div');
-            this.rangeContainer.className = 'psv-video-volume__container';
+            this.rangeContainer.className = 'psv-video-volume';
             this.container.appendChild(this.rangeContainer);
 
-            this.range = document.createElement('div');
-            this.range.className = 'psv-video-volume__range';
-            this.rangeContainer.appendChild(this.range);
-
-            this.trackElt = document.createElement('div');
-            this.trackElt.className = 'psv-video-volume__track';
-            this.range.appendChild(this.trackElt);
+            const trackElt = document.createElement('div');
+            trackElt.className = 'psv-video-volume__track';
+            this.rangeContainer.appendChild(trackElt);
 
             this.progressElt = document.createElement('div');
             this.progressElt.className = 'psv-video-volume__progress';
-            this.range.appendChild(this.progressElt);
+            this.rangeContainer.appendChild(this.progressElt);
 
             this.handleElt = document.createElement('div');
             this.handleElt.className = 'psv-video-volume__handle';
-            this.range.appendChild(this.handleElt);
+            this.rangeContainer.appendChild(this.handleElt);
 
             this.slider = new utils.Slider(
-                this.range,
-                utils.SliderDirection.VERTICAL,
+                this.rangeContainer,
+                utils.SliderDirection.HORIZONTAL,
                 this.__onSliderUpdate.bind(this),
             );
 
@@ -91,7 +89,7 @@ export class VolumeButton extends AbstractButton {
     }
 
     onClick() {
-        this.plugin.setMute();
+        // nothing
     }
 
     private __onSliderUpdate(data: utils.SliderUpdateData) {
@@ -112,7 +110,7 @@ export class VolumeButton extends AbstractButton {
         utils.toggleClass(this.container, 'psv-video-volume-button--2', level === 2);
         utils.toggleClass(this.container, 'psv-video-volume-button--3', level === 3);
 
-        this.handleElt.style.bottom = `${volume * 100}%`;
-        this.progressElt.style.height = `${volume * 100}%`;
+        this.handleElt.style.left = `${volume * 100}%`;
+        this.progressElt.style.width = `${volume * 100}%`;
     }
 }

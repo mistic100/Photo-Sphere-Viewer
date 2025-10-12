@@ -30,6 +30,7 @@ const viewer = new Viewer({
             } else {
                 viewer.panel.show({
                     id: 'help',
+                    title: 'Help',
                     content: document.querySelector('#help-content').innerText,
                 });
             }

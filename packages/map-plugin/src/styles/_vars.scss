@@ -1,14 +1,17 @@
 @use '../../../core/src/styles/vars' as psv;
 
 $margin: 10px !default;
-$radius: 8px !default;
-$shadow: 0 0 5px rgb(0, 0, 0, 0.7) !default;
-$background: rgb(61, 61, 61, 0.7) !default;
-$toolbar-font: 12px sans-serif !default;
-$toolbar-background: #222 !default;
-$toolbar-text-color: white !default;
-$button-size: 34px !default;
-$button-spacing: 3px !default;
+$radius: 10px !default;
+$shadow: 0 0 5px rgb(var(--psv-shadow-color)) !default;
+$background: psv.$panel-background !default;
+$filter: psv.$panel-filter !default;
+$toolbar-font: 12px var(--psv-font-family) !default;
+$toolbar-background: rgb(var(--psv-bg-color), 0.8) !default;
+$toolbar-text-color: rgb(var(--psv-text-color), 1) !default;
+$button-size: 20px !default;
+$button-padding: 7px !default;
 $button-color: psv.$buttons-color !default;
-$button-background: rgb(0, 0, 0, 0.5) !default;
-$transition: ease-in-out 0.3s !default;
+$button-background: psv.$navbar-background !default;
+$button-filter: psv.$navbar-filter !default;
+$button-border: psv.$navbar-border !default;
+$transition: 300ms ease-in-out !default;

@@ -179,7 +179,6 @@
 
             const viewer = new Viewer({
                 container: 'photosphere',
-                loadingImg: baseUrl + 'loader.gif',
                 defaultYaw: '100deg',
                 plugins: [
                     MarkersPlugin,
@@ -208,7 +207,8 @@
                             // rotation: false,
                         },
 
-                        getLinkTooltip(content, link, node) {
+                        async getLinkTooltip(content, link, node) {
+                            await new Promise(r => setTimeout(r, 500));
                             return `${content}<pre>Node #${node.id}</pre>`;
                         },
                         arrowStyle: {

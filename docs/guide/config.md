@@ -149,19 +149,6 @@ lang: {
 
 Various texts used in the viewer.
 
-#### `loadingImg`
-
--   type: `string`
-
-Path to an image displayed in the center of the loader.
-
-#### `loadingTxt`
-
--   type: `string`
--   default: `lang.loading`
-
-Text displayed in the center of the loader, only used if `loadingImg` is not provided.
-
 #### `mousewheel`
 
 -   type: `boolean`

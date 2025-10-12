@@ -1,19 +1,18 @@
-import type { Navbar } from '@photo-sphere-viewer/core';
+import type { NavbarGroup } from '@photo-sphere-viewer/core';
 import { AbstractButton } from '@photo-sphere-viewer/core';
 import { HideMarkersEvent, ShowMarkersEvent } from './events';
-import type { MarkersPlugin } from './MarkersPlugin';
 import pin from './icons/pin.svg';
+import type { MarkersPlugin } from './MarkersPlugin';
 
 export class MarkersButton extends AbstractButton {
     static override readonly id = 'markers';
 
     private readonly plugin: MarkersPlugin;
 
-    constructor(navbar: Navbar) {
-        super(navbar, {
+    constructor(parent: NavbarGroup) {
+        super(parent, {
             className: 'psv-markers-button',
             icon: pin,
-            hoverScale: true,
             collapsable: true,
             tabbable: true,
         });

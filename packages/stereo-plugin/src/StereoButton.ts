@@ -1,4 +1,4 @@
-import type { Navbar } from '@photo-sphere-viewer/core';
+import type { NavbarGroup } from '@photo-sphere-viewer/core';
 import { AbstractButton } from '@photo-sphere-viewer/core';
 import { StereoUpdatedEvent } from './events';
 import stereo from './icons/stereo.svg';
@@ -9,11 +9,10 @@ export class StereoButton extends AbstractButton {
 
     private readonly plugin: StereoPlugin;
 
-    constructor(navbar: Navbar) {
-        super(navbar, {
+    constructor(parent: NavbarGroup) {
+        super(parent, {
             className: 'psv-stereo-button',
             icon: stereo,
-            hoverScale: true,
             collapsable: true,
             tabbable: true,
         });

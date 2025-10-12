@@ -2,9 +2,9 @@ import { MathUtils } from 'three';
 import { PSVError } from '../PSVError';
 import { adapterInterop } from '../adapters/AbstractAdapter';
 import { EquirectangularAdapter } from '../adapters/EquirectangularAdapter';
-import { ParsedViewerConfig, ReadonlyViewerConfig, ViewerConfig } from '../model';
+import { NavbarCustomElement, ParsedViewerConfig, ReadonlyViewerConfig, ViewerConfig } from '../model';
 import { pluginInterop } from '../plugins/AbstractPlugin';
-import { ConfigParsers, clone, getConfigParser, logWarn, parseAngle } from '../utils';
+import { ConfigParsers, clone, getConfigParser, logWarn, parseAngle, parseNavbar } from '../utils';
 import { ACTIONS, KEY_CODES } from './constants';
 
 /**
@@ -19,8 +19,6 @@ export const DEFAULTS: Required<ParsedViewerConfig> = {
     description: null,
     downloadUrl: null,
     downloadName: null,
-    loadingImg: null,
-    loadingTxt: '', // empty string => `lang.loading`
     size: null,
     fisheye: 0,
     minFov: 30,
@@ -47,12 +45,10 @@ export const DEFAULTS: Required<ParsedViewerConfig> = {
     rendererParameters: { alpha: true, antialias: true },
     withCredentials: () => false,
     navbar: [
-        'zoom',
-        'move',
-        'download',
-        'description',
-        'caption',
-        'fullscreen',
+        ['zoom', 'move'],
+        ['download', 'description'],
+        ['caption'],
+        ['fullscreen', 'menu'],
     ],
     lang: {
         zoom: 'Zoom',
@@ -227,13 +223,29 @@ export const CONFIG_PARSERS: ConfigParsers<ViewerConfig, ParsedViewerConfig> = {
             return null;
         }
         if (navbar === true) {
-            // true becomes the default array
-            return clone(DEFAULTS.navbar as string[]);
+            // true becomes the default config
+            return clone(DEFAULTS.navbar as any);
         }
+
         if (typeof navbar === 'string') {
-            // can be a space or coma separated list
-            return navbar.split(/[ ,]/);
+            navbar = parseNavbar(navbar);
         }
+
+        if (!navbar.some(item => Array.isArray(item))) {
+            navbar = [navbar as any];
+        }
+
+        navbar.forEach((item, i) => {
+            if (!Array.isArray(item)) {
+                navbar[i] = [item];
+            }
+            (navbar[i] as Array<string | NavbarCustomElement>).forEach((item) => {
+                if (typeof item === 'object' && !item.type) {
+                    item.type = typeof item.content === 'string' ? 'button' : 'element';
+                }
+            });
+        });
+
         return navbar;
     },
 };

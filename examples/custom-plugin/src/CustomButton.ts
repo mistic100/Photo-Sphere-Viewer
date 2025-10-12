@@ -1,4 +1,4 @@
-import type { Navbar } from '@photo-sphere-viewer/core';
+import type { NavbarGroup } from '@photo-sphere-viewer/core';
 import { AbstractButton } from '@photo-sphere-viewer/core';
 import type { CustomPlugin } from './CustomPlugin';
 import icon from './icon.svg';
@@ -8,8 +8,8 @@ export class CustomButton extends AbstractButton {
 
     private plugin: CustomPlugin;
 
-    constructor(navbar: Navbar) {
-        super(navbar, {
+    constructor(group: NavbarGroup) {
+        super(group, {
             className: 'custom-plugin__button',
             icon: icon,
             collapsable: true,

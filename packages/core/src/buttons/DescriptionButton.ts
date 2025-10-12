@@ -1,4 +1,4 @@
-import type { Navbar } from '../components/Navbar';
+import type { NavbarGroup } from '../components/Navbar';
 import { ICONS, IDS } from '../data/constants';
 import {
     ConfigChangedEvent,
@@ -20,10 +20,9 @@ export class DescriptionButton extends AbstractButton {
 
     private mode = DescriptionButtonMode.NONE;
 
-    constructor(navbar: Navbar) {
-        super(navbar, {
+    constructor(parent: NavbarGroup) {
+        super(parent, {
             className: 'psv-description-button',
-            hoverScale: true,
             collapsable: false,
             tabbable: true,
             icon: ICONS.info,
@@ -48,7 +47,7 @@ export class DescriptionButton extends AbstractButton {
 
     handleEvent(e: Event) {
         if (e instanceof ConfigChangedEvent) {
-            e.containsOptions('description') && this.autoSize(true);
+            e.containsOptions('description') && this.autoHide();
             return;
         }
 
@@ -90,20 +89,17 @@ export class DescriptionButton extends AbstractButton {
     }
 
     /**
-     * This button can only be refreshed from NavbarCaption
      * @internal
      */
-    override autoSize(refresh = false) {
-        if (refresh) {
-            const caption = this.viewer.navbar.getButton('caption', false);
-            const captionHidden = caption && !caption.isVisible();
-            const hasDescription = !!this.viewer.config.description;
+    autoHide() {
+        const caption = this.viewer.navbar.caption;
+        const captionHidden = caption && !caption.isVisible();
+        const hasDescription = !!this.viewer.config.description;
 
-            if (captionHidden || hasDescription) {
-                this.show(false);
-            } else {
-                this.hide(false);
-            }
+        if (captionHidden || hasDescription) {
+            this.show(false);
+        } else {
+            this.hide(false);
         }
     }
 
@@ -126,7 +122,8 @@ export class DescriptionButton extends AbstractButton {
             this.mode = DescriptionButtonMode.PANEL;
             this.viewer.panel.show({
                 id: IDS.DESCRIPTION,
-                content: `${this.viewer.config.caption ? `<p>${this.viewer.config.caption}</p>` : ''}${this.viewer.config.description}`,
+                title: this.viewer.config.caption,
+                content: this.viewer.config.description,
             });
         } else {
             this.mode = DescriptionButtonMode.NOTIF;

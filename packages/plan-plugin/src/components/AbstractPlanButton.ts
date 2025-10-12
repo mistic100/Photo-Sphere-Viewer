@@ -1,4 +1,4 @@
-import { AbstractComponent } from '@photo-sphere-viewer/core';
+import { AbstractComponent, type AttachedTooltip } from '@photo-sphere-viewer/core';
 import { PlanComponent } from './PlanComponent';
 
 export const enum ButtonPosition {
@@ -29,18 +29,29 @@ function getButtonPosition(mapPosition: [string, string], direction: ButtonPosit
 }
 
 export abstract class AbstractPlanButton extends AbstractComponent {
+    private tooltip: AttachedTooltip;
+
     constructor(
         protected plan: PlanComponent,
+        protected langKey: string,
         private position: ButtonPosition,
     ) {
         super(plan, {});
     }
 
-    applyConfig() {
-        this.container.className = `psv-plan__button psv-plan__button--${getButtonPosition(this.plan.config.position, this.position).join('-')}`;
-        this.update();
+    override destroy(): void {
+        this.tooltip?.destroy();
+        super.destroy();
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    update() {}
+    applyConfig() {
+        this.container.className = `psv-plan__button psv-plan__button--${getButtonPosition(this.plan.config.position, this.position).join('-')}`;
+        this.container.setAttribute('aria-label', this.viewer.config.lang[this.langKey]);
+
+        this.tooltip?.destroy();
+        this.tooltip = this.viewer.attachTooltip({
+            position: 'top',
+            content: this.viewer.config.lang[this.langKey],
+        }, this.container);
+    }
 }

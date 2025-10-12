@@ -12,7 +12,6 @@ new Viewer({
         muted: true,
     }),
     caption: 'Dreams of Dalí <b>&copy; The Dalí Museum</b>',
-    loadingImg: baseUrl + 'loader.gif',
     touchmoveTwoFingers: true,
     mousewheelCtrlKey: true,
     navbar: 'video caption settings fullscreen',

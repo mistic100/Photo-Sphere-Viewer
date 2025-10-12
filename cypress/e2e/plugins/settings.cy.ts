@@ -60,7 +60,7 @@ describe('plugin: settings', () => {
         [
             ['caption settings', 'right', '0px'],
             ['settings caption', 'left', '0px'],
-            ['zoom move settings caption', 'left', '290px'],
+            ['move move settings caption', 'left', '270px'],
             ['download settings caption', 'left', '0px'],
             ['caption settings fullscreen', 'right', '0px'],
         ].forEach(([navbar, prop, value]) => {

@@ -72,6 +72,12 @@ export class Overlay extends AbstractComponent {
         this.viewer.addEventListener(KeypressEvent.type, this);
 
         super.hide();
+
+        this.container.addEventListener('transitionend', (e) => {
+            if (e.propertyName === 'opacity' && !this.isVisible()) {
+                super.hide();
+            }
+        });
     }
 
     /**
@@ -130,6 +136,9 @@ export class Overlay extends AbstractComponent {
         this.text.innerHTML = config.text || '';
 
         super.show();
+        setTimeout(() => {
+            this.container.classList.add('psv-overlay--visible');
+        }, 10);
 
         this.viewer.dispatchEvent(new ShowOverlayEvent(this.state.contentId));
     }
@@ -141,7 +150,8 @@ export class Overlay extends AbstractComponent {
         if (this.isVisible(id)) {
             const contentId = this.state.contentId;
 
-            super.hide();
+            this.state.visible = false;
+            this.container.classList.remove('psv-overlay--visible');
 
             this.state.contentId = null;
 

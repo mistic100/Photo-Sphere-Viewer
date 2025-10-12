@@ -102,16 +102,3 @@ panorama: {
   order: ['left', 'right', 'top', 'bottom', 'back', 'front'],
 }
 ```
-
-### Polyhedron net
-
-All faces are in a single file arranged in an horizontal "T" unfolded cube.
-
-![](/images/cubemap-net.png)
-
-```js:line-numbers
-panorama: {
-  type: 'net',
-  path: 'path/to/panorama.jpg',
-}
-```

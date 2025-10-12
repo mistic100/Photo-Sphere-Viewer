@@ -30,22 +30,38 @@ Create a tooltip.
 | option | type |   |
 | ------ | ---- | - |
 | `content` (required)  | `string` | HTML content of the tooltip. |
-| `top` & `left` (required) | `number` | Pixel coordinates of the tooltip relative to the top-left corner of the viewer. |
+| `x` & `y` (required) | `number` | Pixel coordinates of the tooltip relative to the top-left corner of the viewer. |
 | `position` (default `top center`) | `string` | Tooltip position toward it's arrow tip. Accepted values are combinations of `top`, `center`, `bottom` and `left`, `center`, `right`. |
 | `className` | `string` | Additional CSS class added to the tooltip. |
 | `data` | `any` | User data associated to the tooltip (useful for events). |
 
-### `tooltip.move(config)`
+The returned object has the following methods:
+
+#### `tooltip.move(config)`
 
 Updates the position of the tooltip, the parameters are the same `top`, `left` and `position` as above.
 
-### `tooltip.update(content)`
+#### `tooltip.update(content)`
 
 Updates the content of the tooltip.
 
-### `tooltip.hide()`
+#### `tooltip.hide()`
 
 Hide and destroy the tooltip.
+
+---
+
+### `viewer.attachTooltip(config, element)`
+
+Adds event listeners to display a tooltip on mouseover of an element. The configuration is the same as `createTooltip` without `x` and `y`.
+
+#### `attachedTooltip.update(content)`
+
+Updates the tooltip content (while it is displayed or not).
+
+#### `attachedTooltip.destroy()`
+
+Removes the listeners and destroy the tooltip (if currently displayed). The method must be called when the target element is removed.
 
 ## Events
 

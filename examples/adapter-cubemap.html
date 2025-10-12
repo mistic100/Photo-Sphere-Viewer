@@ -69,42 +69,47 @@
                 adapter: CubemapAdapter,
                 panorama: panos[0].url,
                 caption: panos[0].caption,
-                loadingImg: baseUrl + 'loader.gif',
+                downloadUrl: 'javascript:alert("Custom download url")',
                 navbar: [
-                    'zoom',
-                    'move',
-                    {
-                        title: 'Change image',
-                        className: 'custom-button',
-                        content: '🔄',
-                        onClick: (() => {
-                            let i = 0;
-                            return () => {
-                                i = 1 - i;
-                                viewer.setPanorama(panos[i].url, {
-                                    position: {
-                                        yaw: 0,
-                                        pitch: 0,
-                                    },
-                                    zoom: 50,
-                                    caption: panos[i].caption,
-                                });
-                            };
-                        })(),
-                    },
-                    {
-                        title: 'Random position',
-                        className: 'custom-button',
-                        content: '🔀',
-                        onClick: () => {
-                            viewer.animate({
-                                yaw: (Math.random() - 0.5) * 2 * Math.PI,
-                                pitch: (((Math.random() - 0.5) * 3) / 4) * Math.PI,
-                                zoom: Math.random() * 60 + 20,
-                                speed: 1500,
-                            });
+                    [
+                        'zoom',
+                        'move',
+                    ],
+                    [
+                        'download',
+                        {
+                            title: 'Change image',
+                            className: 'custom-button',
+                            content: '🔄',
+                            onClick: (() => {
+                                let i = 0;
+                                return () => {
+                                    i = 1 - i;
+                                    viewer.setPanorama(panos[i].url, {
+                                        position: {
+                                            yaw: 0,
+                                            pitch: 0,
+                                        },
+                                        zoom: 50,
+                                        caption: panos[i].caption,
+                                    });
+                                };
+                            })(),
                         },
-                    },
+                        {
+                            title: 'Random position',
+                            className: 'custom-button',
+                            content: '🔀',
+                            onClick: () => {
+                                viewer.animate({
+                                    yaw: (Math.random() - 0.5) * 2 * Math.PI,
+                                    pitch: (((Math.random() - 0.5) * 3) / 4) * Math.PI,
+                                    zoom: Math.random() * 60 + 20,
+                                    speed: 1500,
+                                });
+                            },
+                        },
+                    ],
                     'caption',
                     'fullscreen',
                 ],

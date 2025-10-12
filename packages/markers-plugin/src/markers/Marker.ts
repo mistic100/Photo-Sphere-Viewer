@@ -212,23 +212,20 @@ export abstract class Marker {
                     pointerEvents: this.state.staticTooltip ? 'auto' : 'none',
                 },
                 data: this,
-                top: 0,
-                left: 0,
+                x: 0,
+                y: 0,
             };
 
             if (this.isPoly() || this.is3d() || this.isCss3d()) {
                 if (clientX || clientY) {
                     const viewerPos = utils.getPosition(this.viewer.container);
-                    config.top = clientY - viewerPos.y + 10;
-                    config.left = clientX - viewerPos.x;
-                    config.box = {
-                        // separate the tooltip from the cursor
-                        width: 20,
-                        height: 20,
-                    };
+                    config.x = clientX - viewerPos.x;
+                    config.y = clientY - viewerPos.y + 10;
+                    // separate the tooltip from the cursor
+                    config.offset = { x: 10, y: 10 };
                 } else {
-                    config.top = this.state.position2D.y;
-                    config.left = this.state.position2D.x;
+                    config.x = this.state.position2D.x;
+                    config.y = this.state.position2D.y;
                 }
             } else {
                 // note: state.position2D already has the anchor applied with the default size
@@ -242,9 +239,9 @@ export abstract class Marker {
                     height *= this.config.hoverScale.amount;
                 }
 
-                config.top = position.y - height * this.state.anchor.y + height / 2;
-                config.left = position.x - width * this.state.anchor.x + width / 2;
-                config.box = { width, height };
+                config.x = position.x - width * this.state.anchor.x + width / 2;
+                config.y = position.y - height * this.state.anchor.y + height / 2;
+                config.offset = { x: width / 2, y: height / 2 };
             }
 
             if (this.tooltip) {

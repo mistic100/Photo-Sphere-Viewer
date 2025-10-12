@@ -164,6 +164,10 @@ export class CubemapTilesAdapter extends AbstractAdapter<
         return !!panorama.baseUrl;
     }
 
+    override supportsLoadingProgress(panorama: CubemapTilesPanorama | CubemapMultiTilesPanorama) {
+        return !!panorama.baseUrl;
+    }
+
     override textureCoordsToSphericalCoords(point: PanoramaPosition, data: CubemapTilesPanoData): Position {
         return this.adapter.textureCoordsToSphericalCoords(point, data);
     }
