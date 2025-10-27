@@ -104,7 +104,7 @@ jobs:
         run: node ./build/generate-coverage-summary.mjs >> $GITHUB_STEP_SUMMARY
 
       - name: report artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
           name: e2e-report-${{ env.REF_NAME_SLUG }}-${{ env.SHORT_SHA }}
