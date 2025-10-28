@@ -330,9 +330,15 @@ keyboardActions: {
 }
 ```
 
-Configure keyboard actions. It is a map defining key code->action. (all the available actions are listed above)
+Configure keyboard actions. It is a map defining key code->action. The key can include modifiers like `Ctrl`, `Shift`, `Alt` or `Meta` separated with a `+` symbol.
 
-You can also configure an arbitrary callback to any key (including modifiers `Ctrl`,`Shift`,`Alt`,`Meta`), it receives the viewer itself and the original keyboard event as parameters.
+::: tip
+Use [Key.js](https://keyjs.dev/) wbesite to determine exact combination of a keystroke.
+
+_Note:_ Use `Plus` instead of `+` when configuring the plus key with a modifier, for example `Shift+Plus`.
+:::
+
+You can also configure an arbitrary callback to any key, it receives the viewer itself and the original keyboard event as parameters.
 
 ```js:line-numbers
 import { DEFAULTS } from '@photo-sphere-viewer/core';

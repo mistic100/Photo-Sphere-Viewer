@@ -217,6 +217,9 @@ export function keyPressMatch(e: KeyboardEvent, pattern: string) {
                 case 'Meta':
                     meta = true;
                     break;
+                case 'Space':
+                    key = ' ';
+                    break;
                 case 'Plus':
                     key = '+';
                     break;
