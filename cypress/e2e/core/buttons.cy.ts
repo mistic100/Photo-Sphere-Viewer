@@ -6,7 +6,6 @@ describe('core: buttons', () => {
         localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/core/navbar.html');
         waitViewerReady();
-        // createBaseSnapshot();
     });
 
     // does not work in headless mode

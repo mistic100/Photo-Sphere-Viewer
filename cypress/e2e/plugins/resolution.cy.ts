@@ -7,7 +7,6 @@ describe('plugin: resolution', () => {
         localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/plugins/resolution.html');
         waitViewerReady();
-        // createBaseSnapshot();
     });
 
     it('should destroy', () => {

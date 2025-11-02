@@ -1,13 +1,8 @@
 .nyc_output
 .tmp
 .turbo
-cypress/screenshots
-cypress/snapshots/diff
 dist
-docs/.vitepress/.temp
-docs/.vitepress/cache
 node_modules
-public
-!docs/public
 reports
+/public
 yarn-error.log

@@ -117,19 +117,17 @@ export class NavbarGroup extends AbstractComponent {
         });
 
         const style = window.getComputedStyle(this.container);
-        this.state.margins = parseFloat(style.marginLeft) + parseFloat(style.marginRight) + parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+        this.state.margins = parseFloat(style.marginLeft) + parseFloat(style.marginRight)
+            + parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
     }
 
     override toggle() {
         // noop
     }
 
-    override isVisible(): boolean {
-        return this.children.some((child) => {
-            return child.isVisible();
-        });
-    }
-
+    /**
+     * Returns the width of all visible items (including collapsed ones) + margins
+     */
     getWidth(): number {
         return this.children.reduce((total, child) => {
             if (child instanceof AbstractButton && child.isVisible()) {
@@ -140,6 +138,9 @@ export class NavbarGroup extends AbstractComponent {
         }, this.state.margins);
     }
 
+    /**
+     * Collapses all collapsable items
+     */
     collapse(): AbstractButton[] {
         const collapsed: AbstractButton[] = [];
         this.children.forEach((child) => {
@@ -152,6 +153,9 @@ export class NavbarGroup extends AbstractComponent {
         return collapsed;
     }
 
+    /**
+     * Uncollapse all items
+     */
     uncollapse() {
         this.children.forEach((child) => {
             if (child instanceof AbstractButton && child.collapsable) {
@@ -161,6 +165,9 @@ export class NavbarGroup extends AbstractComponent {
         this.autoHide();
     }
 
+    /**
+     * Automatically hides the container if no items are visible
+     */
     autoHide() {
         const hasVisibleItems = this.children.some((child) => {
             if (child instanceof AbstractButton) {
@@ -186,16 +193,25 @@ export class Navbar extends AbstractComponent {
      */
     collapsed: AbstractButton[] = [];
 
+    /**
+     * @internal
+     */
     caption?: NavbarCaption;
 
+    /**
+     * @internal
+     */
     get groups(): NavbarGroup[] {
         return this.children
             .filter(child => child instanceof NavbarGroup);
     }
 
+    /**
+     * @internal
+     */
     get buttons(): AbstractButton[] {
-        return this.groups
-            .flatMap(group => group.children)
+        return this.children
+            .flatMap(child => child.children)
             .filter(child => child instanceof AbstractButton);
     }
 
@@ -317,12 +333,10 @@ export class Navbar extends AbstractComponent {
     }
 
     /**
-     * Automatically collapses buttons
+     * Automatically collapses buttons and adapt the caption
      * @internal
      */
     autoSize() {
-        this.caption?.autoSize();
-
         const availableWidth = this.container.offsetWidth;
 
         const totalWidth = this.groups.reduce((total, group) => {
@@ -332,10 +346,6 @@ export class Navbar extends AbstractComponent {
                 return total;
             }
         }, 0);
-
-        if (totalWidth === 0) {
-            return;
-        }
 
         if (availableWidth < totalWidth) {
             this.collapsed = this.groups.flatMap(group => group.collapse());
@@ -351,6 +361,24 @@ export class Navbar extends AbstractComponent {
             this.getButton(MenuButton.id).hide(false);
         }
 
-        this.caption?.autoSize();
+        if (this.caption) {
+            // check if the caption is the first or last element
+            let foundCaption = false;
+            let elementsBeforeCaption = false;
+            let elementsAfterCaption = false;
+            this.children.forEach((child) => {
+                if (child instanceof NavbarCaption) {
+                    foundCaption = true;
+                } else if (child instanceof NavbarGroup && child.isVisible()) {
+                    if (foundCaption) {
+                        elementsAfterCaption = true;
+                    } else {
+                        elementsBeforeCaption = true;
+                    }
+                } 
+            });
+
+            this.caption.autoSize(!elementsBeforeCaption, !elementsAfterCaption);
+        }
     }
 }

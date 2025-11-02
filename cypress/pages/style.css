@@ -5,3 +5,10 @@
 .psv-container {
     background: white !important;
 }
+
+*,
+*::before,
+*::after {
+    transition: none !important;
+    animation: none !important;
+}

@@ -4,7 +4,6 @@ describe('core: loader', () => {
     beforeEach(() => {
         localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/core/loader.html');
-        // createBaseSnapshot();
     });
 
     it('should have a loader', () => {

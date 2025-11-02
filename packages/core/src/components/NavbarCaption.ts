@@ -49,9 +49,20 @@ export class NavbarCaption extends AbstractComponent {
 
     /**
      * Toggles content and icon depending on available space
+     * @internal
      */
-    autoSize() {
+    autoSize(atStart?: boolean, atEnd?: boolean) {
         this.toggle(this.container.offsetWidth >= this.contentWidth);
-        (this.viewer.navbar.getButton(DescriptionButton.id, false) as DescriptionButton)?.autoHide();
+        (this.viewer.navbar.getButton(DescriptionButton.id, false) as DescriptionButton).autoHide();
+
+        if (atStart !== undefined && atEnd !== undefined) {
+            if (atStart && !atEnd) {
+                this.container.style.justifyContent = 'flex-start';
+            } else if (!atStart && atEnd) {
+                this.container.style.justifyContent = 'flex-end';
+            } else {
+                this.container.style.justifyContent = 'center';
+            }
+        }
     }
 }

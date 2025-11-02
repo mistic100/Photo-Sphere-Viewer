@@ -9,7 +9,6 @@ describe('plugin: compass', () => {
         localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/plugins/compass.html');
         waitViewerReady();
-        // createBaseSnapshot();
     });
 
     it('should destroy', () => {

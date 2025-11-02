@@ -1,5 +1,5 @@
 import { type Overlay } from '@photo-sphere-viewer/core';
-import { callViewer, checkEventHandler, listenViewerEvent, triggerWindowKeydown, waitViewerReady } from '../../utils';
+import { callViewer, checkEventHandler, listenViewerEvent, triggerWindowKeydown, waitForResources, waitViewerReady } from '../../utils';
 import { NO_LOG, VIEWPORT_MOBILE } from '../../utils/constants';
 
 describe('core: overlay', () => {
@@ -7,7 +7,6 @@ describe('core: overlay', () => {
         localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/core/base.html');
         waitViewerReady();
-        // createBaseSnapshot();
     });
 
     it('should show/hide the overlay', () => {
@@ -93,7 +92,7 @@ describe('core: overlay', () => {
             image: '<img src=https://photo-sphere-viewer.js.org/favicon.png>',
         }));
 
-        cy.waitForResources('favicon.png');
+        waitForResources('favicon.png');
 
         cy.get('.psv-overlay').compareScreenshots('desktop');
 

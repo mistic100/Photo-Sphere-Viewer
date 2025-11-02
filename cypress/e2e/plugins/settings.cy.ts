@@ -13,7 +13,6 @@ describe('plugin: settings', () => {
         localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/plugins/settings.html');
         waitViewerReady();
-        // createBaseSnapshot();
 
         toggleSetting = withToggleSetting();
         optionSetting = withOptionsSetting();

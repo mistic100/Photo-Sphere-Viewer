@@ -7,7 +7,6 @@ describe('core: panel', () => {
         localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/core/base.html');
         waitViewerReady();
-        // createBaseSnapshot();
     });
 
     it('should show panel with title and content', () => {

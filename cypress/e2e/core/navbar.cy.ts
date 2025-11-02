@@ -7,7 +7,6 @@ describe('core: navbar', () => {
         localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/core/navbar.html');
         waitViewerReady();
-        // createBaseSnapshot();
     });
 
     it('should have a navbar', () => {
@@ -204,15 +203,15 @@ describe('core: navbar', () => {
     });
 
     it('should hide a button', () => {
-        callNavbar('hide fullscreen button').then(navbar => navbar.getButton('fullscreen').hide());
+        callNavbar('hide download button').then(navbar => navbar.getButton('download').hide());
 
-        cy.get('.psv-fullscreen-button').should('not.be.visible');
+        cy.get('.psv-download-button').should('not.be.visible');
 
         cy.get('.psv-navbar').compareScreenshots('hide-button');
 
-        callNavbar('show fullscreen button').then(navbar => navbar.getButton('fullscreen').show());
+        callNavbar('show download button').then(navbar => navbar.getButton('download').show());
 
-        cy.get('.psv-fullscreen-button').should('be.visible');
+        cy.get('.psv-download-button').should('be.visible');
     });
 
     it('should disable a button', () => {
@@ -246,6 +245,19 @@ describe('core: navbar', () => {
             });
 
         cy.get('.psv-navbar-group').compareScreenshots('custom-element');
+    });
+
+    it('should align the caption', () => {
+        callViewer('clear description').then(viewer => viewer.setOption('description', null));
+
+        callViewer('set caption only').then(viewer => viewer.setOption('navbar', 'caption'));
+        cy.get('.psv-navbar').compareScreenshots('caption-center');
+
+        callViewer('set caption + button').then(viewer => viewer.setOption('navbar', 'caption fullscreen'));
+        cy.get('.psv-navbar').compareScreenshots('caption-left');
+
+        callViewer('set button + caption').then(viewer => viewer.setOption('navbar', 'fullscreen caption'));
+        cy.get('.psv-navbar').compareScreenshots('caption-right');
     });
 
     function callNavbar(log: string): Cypress.Chainable<Navbar> {

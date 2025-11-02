@@ -1,5 +1,5 @@
 import type { GalleryPlugin } from '@photo-sphere-viewer/gallery-plugin';
-import { callPlugin, callViewer, checkPanorama, setPanorama, waitViewerReady } from '../../utils';
+import { callPlugin, callViewer, checkPanorama, setPanorama, waitForResources, waitViewerReady } from '../../utils';
 import { BASE_URL, NO_LOG, VIEWPORT_MOBILE } from '../../utils/constants';
 
 describe('plugin: gallery', () => {
@@ -7,13 +7,12 @@ describe('plugin: gallery', () => {
         localStorage.photoSphereViewer_touchSupport = 'false';
         cy.visit('e2e/plugins/gallery.html');
         waitViewerReady();
-        cy.waitForResources(
+        waitForResources(
             'key-biscayne-1-thumb.jpg',
             'key-biscayne-2-thumb.jpg',
             'key-biscayne-3-thumb.jpg',
             'key-biscayne-4-thumb.jpg',
         );
-        // createBaseSnapshot();
     });
 
     it('should destroy', () => {
@@ -204,7 +203,7 @@ describe('plugin: gallery', () => {
     }
 
     function waitForAllThumbnails() {
-        cy.waitForResources(
+        waitForResources(
             'key-biscayne-5-thumb.jpg',
             'key-biscayne-6-thumb.jpg',
             'key-biscayne-7-thumb.jpg',
