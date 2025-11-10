@@ -5426,10 +5426,10 @@ thenify-all@^1.0.0:
   dependencies:
     any-promise "^1.0.0"
 
-three@^0.179.0:
-  version "0.179.1"
-  resolved "https://registry.yarnpkg.com/three/-/three-0.179.1.tgz#6c0b43e046eaad0f42b163143517a44ae44ed446"
-  integrity sha512-5y/elSIQbrvKOISxpwXCR4sQqHtGiOI+MKLc3SsBdDXA2hz3Mdp3X59aUp8DyybMa34aeBwbFTpdoLJaUDEWSw==
+three@^0.181.1:
+  version "0.181.1"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.181.1.tgz#7c33995f097b8d42eda209b8dd49e2fb648cc53f"
+  integrity sha512-bz9xZUQMw3pJbjKy7roiwXWgAp+oVUa+4k5o0oBAQ+IFJuru1xzvtk63h6k72XZanXS/SgoEhV6927Vgazyq2w==
 
 throttleit@^1.0.0:
   version "1.0.1"
