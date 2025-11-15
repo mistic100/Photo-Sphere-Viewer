@@ -21,6 +21,8 @@ describe('core: loader', () => {
 
         cy.get('.psv-loader').should('not.be.visible');
 
+        cy.wait(100);
+
         callViewer('show loader').then(viewer => viewer.loader.show());
 
         cy.get('.psv-loader').should('be.visible');

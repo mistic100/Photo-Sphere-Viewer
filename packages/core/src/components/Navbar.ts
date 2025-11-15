@@ -42,7 +42,7 @@ const AVAILABLE_GROUPS: Record<string, ButtonConstructor[]> = {};
  *    - `[id]:before` (new group)
  * @throws {@link PSVError} if the button constructor has no "id"
  */
-export function registerButton(button: ButtonConstructor, defaultPosition?: string) {
+export function registerButton(button: ButtonConstructor, ...defaultPositions: string[]) {
     if (!button.id) {
         throw new PSVError('Button id is required');
     }
@@ -53,18 +53,18 @@ export function registerButton(button: ButtonConstructor, defaultPosition?: stri
         (AVAILABLE_GROUPS[button.groupId] = AVAILABLE_GROUPS[button.groupId] || []).push(button);
     }
 
-    if (defaultPosition) {
-        const navbar = DEFAULTS.navbar as string[][];
+    const navbar = DEFAULTS.navbar as string[][];
+    defaultPositions.some((defaultPosition) => {
         switch (defaultPosition) {
             case 'start':
                 navbar.unshift([button.id]);
-                break;
+                return true;
             case 'end':
                 navbar.push([button.id]);
-                break;
+                return true;
             default: {
                 const [id, pos] = defaultPosition.split(':');
-                navbar.some((group, i) => {
+                return navbar.some((group, i) => {
                     const idx = group.indexOf(id);
                     if (idx !== -1) {
                         switch (pos) {
@@ -86,7 +86,7 @@ export function registerButton(button: ButtonConstructor, defaultPosition?: stri
                 });
             }
         }
-    }
+    });
 }
 
 [
@@ -375,7 +375,7 @@ export class Navbar extends AbstractComponent {
                     } else {
                         elementsBeforeCaption = true;
                     }
-                } 
+                }
             });
 
             this.caption.autoSize(!elementsBeforeCaption, !elementsAfterCaption);

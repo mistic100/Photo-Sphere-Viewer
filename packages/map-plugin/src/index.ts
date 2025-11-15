@@ -7,7 +7,7 @@ DEFAULTS.lang['mapMaximize'] = 'Maximize';
 DEFAULTS.lang['mapMinimize'] = 'Minimize';
 DEFAULTS.lang['mapNorth'] = 'Go to north';
 DEFAULTS.lang['mapReset'] = 'Reset';
-registerButton(MapButton, 'fullscreen:left');
+registerButton(MapButton, 'plan:left', 'start');
 
 export { MapPlugin } from './MapPlugin';
 export * from './model';

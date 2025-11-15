@@ -7,7 +7,7 @@ DEFAULTS.lang['mapMaximize'] = 'Maximize';
 DEFAULTS.lang['mapMinimize'] = 'Minimize';
 DEFAULTS.lang['mapReset'] = 'Reset';
 DEFAULTS.lang['mapLayers'] = 'Base layer';
-registerButton(PlanButton, 'fullscreen:left');
+registerButton(PlanButton, 'map:right', 'start');
 
 export { PlanPlugin } from './PlanPlugin';
 export * from './model';

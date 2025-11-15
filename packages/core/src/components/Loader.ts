@@ -68,6 +68,7 @@ export class Loader extends AbstractComponent {
 
     override hide(): void {
         this.state.visible = false;
+        this.container.classList.remove('psv-loader--undefined');
         this.container.classList.remove('psv-loader-container--visible');
 
         // watchdog in case the "transitionend" event is not received

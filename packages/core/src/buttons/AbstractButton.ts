@@ -3,7 +3,7 @@ import type { NavbarGroup } from '../components/Navbar';
 import { AttachedTooltip } from '../components/Tooltip';
 import { KEY_CODES } from '../data/constants';
 import { ResolvableBoolean } from '../model';
-import { getConfigParser, resolveBoolean, toggleClass } from '../utils';
+import { getConfigParser, getStyleProperty, resolveBoolean, toggleClass } from '../utils';
 
 /**
  * Configuration for {@link AbstractButton}
@@ -122,6 +122,9 @@ export abstract class AbstractButton extends AbstractComponent {
             this.state.tooltip = this.viewer.attachTooltip({
                 position: 'top',
                 content: this.state.title,
+                style: {
+                    zIndex: 1 + getStyleProperty(this.viewer.navbar.container, 'z-index'),
+                },
             }, this.container);
         }
 

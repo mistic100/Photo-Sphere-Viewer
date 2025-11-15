@@ -120,11 +120,11 @@ $hud-zindex: 10 !default;
 $polygon-marker-zindex: 20 !default;
 $marker-zindex: 30 !default;
 $ui-zindex: 40 !default;
-$loader-zindex: 50 !default;
-$panel-zindex: 60 !default;
-$notification-zindex: 70 !default;
-$navbar-zindex: 80 !default;
-$tooltip-zindex: 90 !default;
+$tooltip-zindex: 50 !default;
+$loader-zindex: 60 !default;
+$panel-zindex: 70 !default;
+$notification-zindex: 80 !default;
+$navbar-zindex: 90 !default;
 $overlay-zindex: 100 !default;
 
 @mixin has-navbar {

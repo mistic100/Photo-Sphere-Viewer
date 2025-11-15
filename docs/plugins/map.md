@@ -391,7 +391,7 @@ This plugin adds buttons to the default navbar:
 
 -   `map` allows to toggle the map widget
 
-If you use a [custom navbar](../guide/navbar.md) you will need to manually add the buttons to the list.
+If you use a [custom navbar](../guide/navbar.md) you will need to manually add the button to the list.
 
 ## SCSS variables
 
