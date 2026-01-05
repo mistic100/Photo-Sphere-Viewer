@@ -112,10 +112,38 @@ export const ICONS = {
 };
 
 /**
+ * String dentifiers for easing functions
+ * @internal
+ */
+export type EASING =
+  | "linear"
+  | "inQuad"
+  | "outQuad"
+  | "inOutQuad"
+  | "inCubic"
+  | "outCubic"
+  | "inOutCubic"
+  | "inQuart"
+  | "outQuart"
+  | "inOutQuart"
+  | "inQuint"
+  | "outQuint"
+  | "inOutQuint"
+  | "inSine"
+  | "outSine"
+  | "inOutSine"
+  | "inExpo"
+  | "outExpo"
+  | "inOutExpo"
+  | "inCirc"
+  | "outCirc"
+  | "inOutCirc";
+
+/**
  * Collection of easing functions
  * @see https://gist.github.com/frederickk/6165768
  */
-export const EASINGS: Record<string, (t: number) => number> = {
+export const EASINGS: Record<EASING, (t: number) => number> = {
     linear: (t: number) => t,
 
     inQuad: (t: number) => t * t,
