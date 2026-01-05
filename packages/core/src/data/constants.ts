@@ -112,32 +112,32 @@ export const ICONS = {
 };
 
 /**
- * String dentifiers for easing functions
+ * String identifiers for easing functions
  * @internal
  */
 export type EASING =
-  | "linear"
-  | "inQuad"
-  | "outQuad"
-  | "inOutQuad"
-  | "inCubic"
-  | "outCubic"
-  | "inOutCubic"
-  | "inQuart"
-  | "outQuart"
-  | "inOutQuart"
-  | "inQuint"
-  | "outQuint"
-  | "inOutQuint"
-  | "inSine"
-  | "outSine"
-  | "inOutSine"
-  | "inExpo"
-  | "outExpo"
-  | "inOutExpo"
-  | "inCirc"
-  | "outCirc"
-  | "inOutCirc";
+  | 'linear'
+  | 'inQuad'
+  | 'outQuad'
+  | 'inOutQuad'
+  | 'inCubic'
+  | 'outCubic'
+  | 'inOutCubic'
+  | 'inQuart'
+  | 'outQuart'
+  | 'inOutQuart'
+  | 'inQuint'
+  | 'outQuint'
+  | 'inOutQuint'
+  | 'inSine'
+  | 'outSine'
+  | 'inOutSine'
+  | 'inExpo'
+  | 'outExpo'
+  | 'inOutExpo'
+  | 'inCirc'
+  | 'outCirc'
+  | 'inOutCirc'
 
 /**
  * Collection of easing functions
