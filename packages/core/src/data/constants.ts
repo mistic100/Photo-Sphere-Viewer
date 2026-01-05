@@ -113,7 +113,6 @@ export const ICONS = {
 
 /**
  * String identifiers for easing functions
- * @internal
  */
 export type EASING =
   | 'linear'
