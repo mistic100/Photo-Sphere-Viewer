@@ -1,4 +1,4 @@
-import { EASINGS } from '../data/constants';
+import { type EASING, EASINGS } from '../data/constants';
 
 /**
  * Options for {@link Animation}
@@ -18,10 +18,10 @@ export type AnimationOptions<T> = {
      */
     delay?: number;
     /**
-     * interpoaltion function, see {@link CONSTANTS.EASINGS}
+     * interpolation function, see {@link EASINGS}
      * @default 'linear'
      */
-    easing?: string | ((t: number) => number);
+    easing?: EASING | ((t: number) => number);
     /**
      * function called for each frame
      */
@@ -35,7 +35,7 @@ type PropertyValues = AnimationOptions<any>['properties']['k'];
  *
  * Implements the Promise API with an additional "cancel" method.
  * The promise is resolved with `true` when the animation is completed and `false` if the animation is cancelled.
- * @template T the type of interpoalted properties
+ * @template T the type of interpolated properties
  *
  * @example
  * ```ts
