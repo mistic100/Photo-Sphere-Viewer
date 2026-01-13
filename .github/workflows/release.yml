@@ -6,6 +6,27 @@ on:
     tags:
       - '*'
 
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version
+        required: true
+      tag:
+        description: NPM tag
+        default: beta
+        required: true
+      dry:
+        description: Dry run
+        default: false
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  RELEASE_VERSION: ${{ github.event.inputs.version || github.ref_name }}
+  RELEASE_TAG: ${{ github.event.inputs.tag || 'latest' }}
+
 jobs:
   release:
     if: ${{ github.repository == 'mistic100/Photo-Sphere-Viewer' }}
@@ -24,10 +45,11 @@ jobs:
 
       - name: build
         run: |
-          yarn ci:version ${{ github.ref_name }}
+          yarn ci:version ${{ env.RELEASE_VERSION }}
           yarn ci:build
 
       - name: package
+        if: github.ref_type == 'tag'
         run: |
           PREVIOUS_TAG=$(git tag --sort=-committerdate | sed -n '2 p')
           echo '📂 prepare'
@@ -38,6 +60,7 @@ jobs:
           git log --pretty=format:"%s" $PREVIOUS_TAG...${{ github.ref_name }} | node ./build/generate-changelog.mjs $PREVIOUS_TAG ${{ github.ref_name }} > dist/changelog_${{ github.ref_name }}.md
 
       - name: create release
+        if: github.ref_type == 'tag'
         uses: softprops/action-gh-release@v2
         with:
           draft: true
@@ -46,12 +69,12 @@ jobs:
 
       - name: npm publish
         run: |
-          yarn ci:publish
+          yarn ci:publish ${{ github.event.inputs.dry && '--dry-run' || '' }}
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-          NPM_TAG: latest
+          NPM_TAG: ${{ env.RELEASE_TAG }}
 
       - name: update issue templates
+        if: github.ref_type == 'tag'
         run: |
           git fetch origin main --depth 1
           git checkout main

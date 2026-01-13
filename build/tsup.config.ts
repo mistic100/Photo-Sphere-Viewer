@@ -39,7 +39,6 @@ ${
                 scssBundlePlugin(),
                 assetsPlugin({
                     'LICENSE': license(),
-                    '.npmrc': npmrc(),
                     'README.md': readme(pkg),
                     'package.json': packageJson(pkg),
                 }),
