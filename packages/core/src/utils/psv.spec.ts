@@ -602,6 +602,24 @@ describe('utils:psv:mergePanoData', () => {
             croppedY: 0,
         });
     });
+
+    it('should resize data if image is smaller', () => {
+        assertDeepEqualLenient(mergePanoData(8192, 4096, {
+            fullWidth: 10000,
+            fullHeight: 5000,
+            croppedWidth: 10000,
+            croppedHeight: 4000,
+            croppedX: 0,
+            croppedY: 500,
+        } satisfies PanoData), {
+            fullWidth: 8192,
+            fullHeight: 4096,
+            croppedWidth: 8192,
+            croppedHeight: 3277,
+            croppedX: 0,
+            croppedY: 410,
+        });
+    });
 });
 
 describe('utils:psv:getConfigParser', () => {

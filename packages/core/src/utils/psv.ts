@@ -468,8 +468,8 @@ export function mergePanoData(width: number, height: number, newPanoData?: PanoD
         isEquirectangular: true,
         fullWidth: firstNonNull(newPanoData?.fullWidth, xmpPanoData?.fullWidth),
         fullHeight: firstNonNull(newPanoData?.fullHeight, xmpPanoData?.fullHeight),
-        croppedWidth: width,
-        croppedHeight: height,
+        croppedWidth: firstNonNull(newPanoData?.croppedWidth, xmpPanoData?.croppedWidth, width),
+        croppedHeight: firstNonNull(newPanoData?.croppedHeight, xmpPanoData?.croppedHeight, height),
         croppedX: firstNonNull(newPanoData?.croppedX, xmpPanoData?.croppedX),
         croppedY: firstNonNull(newPanoData?.croppedY, xmpPanoData?.croppedY),
         poseHeading: firstNonNull(newPanoData?.poseHeading, xmpPanoData?.poseHeading, 0),
@@ -480,9 +480,26 @@ export function mergePanoData(width: number, height: number, newPanoData?: PanoD
         initialFov: xmpPanoData?.initialFov,
     };
 
+    // resize data if necessary
+    if (panoData.croppedWidth !== width) {
+        const ratio = width / panoData.croppedWidth;
+        ([
+            'fullWidth',
+            'fullHeight',
+            'croppedWidth',
+            'croppedHeight',
+            'croppedX',
+            'croppedY',
+        ] satisfies Array<keyof PanoData>).forEach((key) => {
+            if (panoData[key]) {
+                panoData[key] = Math.round(panoData[key] * ratio);
+            }
+        });
+    }
+
     // construct missing data
     if (!panoData.fullWidth && !panoData.fullHeight) {
-        panoData.fullWidth = Math.max(width, height * 2);
+        panoData.fullWidth = Math.max(panoData.croppedWidth, panoData.croppedHeight * 2);
         panoData.fullHeight = Math.round(panoData.fullWidth / 2);
     }
     if (!panoData.fullWidth) {
