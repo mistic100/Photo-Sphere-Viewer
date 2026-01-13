@@ -6,7 +6,6 @@ import { budgetPlugin } from './plugins/esbuild-plugin-budget';
 import { mapFixPlugin } from './plugins/esbuild-plugin-map-fix';
 import { scssBundlePlugin } from './plugins/esbuild-plugin-scss-bundle';
 import { license } from './templates/license';
-import { npmrc } from './templates/npmrc';
 import { packageJson } from './templates/package';
 import { readme } from './templates/readme';
 

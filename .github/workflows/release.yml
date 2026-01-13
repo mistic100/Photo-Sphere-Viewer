@@ -18,6 +18,7 @@ on:
       dry:
         description: Dry run
         default: false
+        type: boolean
 
 permissions:
   id-token: write
@@ -49,7 +50,7 @@ jobs:
           yarn ci:build
 
       - name: package
-        if: github.ref_type == 'tag'
+        if: ${{ github.ref_type == 'tag' }}
         run: |
           PREVIOUS_TAG=$(git tag --sort=-committerdate | sed -n '2 p')
           echo '📂 prepare'
@@ -60,7 +61,7 @@ jobs:
           git log --pretty=format:"%s" $PREVIOUS_TAG...${{ github.ref_name }} | node ./build/generate-changelog.mjs $PREVIOUS_TAG ${{ github.ref_name }} > dist/changelog_${{ github.ref_name }}.md
 
       - name: create release
-        if: github.ref_type == 'tag'
+        if: ${{ github.ref_type == 'tag' }}
         uses: softprops/action-gh-release@v2
         with:
           draft: true
@@ -74,7 +75,7 @@ jobs:
           NPM_TAG: ${{ env.RELEASE_TAG }}
 
       - name: update issue templates
-        if: github.ref_type == 'tag'
+        if: ${{ github.ref_type == 'tag' }}
         run: |
           git fetch origin main --depth 1
           git checkout main
