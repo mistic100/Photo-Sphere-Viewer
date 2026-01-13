@@ -349,9 +349,9 @@ Changes the image of the map.
 mapPlugin.setImage('map2.jpg', { x: 500, y: 500 });
 ```
 
-#### `setCenter(center)`
+#### `setCenter(center, resetView=true)`
 
-Changes the position of the panorama on the map.
+Changes the position of the panorama on the map. If `resetView` is false, the component will not move the map, only the center pin.
 
 ```js
 mapPlugin.setCenter({ x: 500, y: 500 });

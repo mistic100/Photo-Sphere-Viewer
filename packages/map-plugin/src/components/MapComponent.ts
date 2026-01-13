@@ -388,6 +388,15 @@ export class MapComponent extends AbstractComponent {
     }
 
     /**
+     * Increase the offset
+     */
+    addOffset(offset: Point) {
+        this.state.offset.x += offset.x;
+        this.state.offset.y += offset.y;
+        this.update();
+    }
+
+    /**
      * Switch collapsed mode
      */
     toggleCollapse() {

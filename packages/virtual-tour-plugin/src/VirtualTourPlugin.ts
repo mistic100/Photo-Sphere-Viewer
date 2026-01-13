@@ -83,6 +83,9 @@ const getConfig = utils.getConfigParser<VirtualTourPluginConfig>(
                     utils.logWarn('VirtualTourPlugin: configuring the map requires at least "imageUrl"');
                     return null;
                 }
+                if (!('recenter' in map)) {
+                    map.recenter = true;
+                }
             }
             return map;
         },
@@ -397,7 +400,7 @@ export class VirtualTourPlugin extends AbstractConfigurablePlugin<
                 if (this.map) {
                     // if the node is not visible in the map, we don't know where to center the map
                     // so we keep the current center
-                    this.map.setCenter(this.__getNodeMapPosition(node) ?? this.map.config.center);
+                    this.map.setCenter(this.__getNodeMapPosition(node) ?? this.map.config.center, this.config.map.recenter);
                 }
                 this.plan?.setCoordinates(node.gps);
 

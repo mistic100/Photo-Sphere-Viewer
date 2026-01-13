@@ -243,9 +243,17 @@ export class MapPlugin extends AbstractConfigurablePlugin<
     /**
      * Changes the position on the map
      */
-    setCenter(center: Point) {
+    setCenter(center: Point, resetView = true) {
+        const previousCenter = this.config.center;
         this.config.center = center;
-        this.component.recenter();
+        if (resetView || !previousCenter) {
+            this.component.recenter();
+        } else {
+            this.component.addOffset({
+                x: previousCenter.x - center.x,
+                y: previousCenter.y - center.y,
+            });
+        }
     }
 
     /**

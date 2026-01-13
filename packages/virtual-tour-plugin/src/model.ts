@@ -275,5 +275,9 @@ export type VirtualTourPluginConfig = {
          * bounds of the map in GPS coordinates (minX, minY, maxX, maxY)
          */
         extent?: [number, number, number, number];
+        /**
+         * automatically recenter the map when changing node
+         */
+        recenter?: boolean;
     };
 };
