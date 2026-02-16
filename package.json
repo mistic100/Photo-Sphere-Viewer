@@ -33,7 +33,7 @@
     "watch": "node ./build/liveserver.mjs"
   },
   "devDependencies": {
-    "@cypress/code-coverage": "^3.14.0",
+    "@cypress/code-coverage": "^4.0.0",
     "@eslint/js": "^9.39.2",
     "@lcov-viewer/istanbul-report": "^1.4.0",
     "@stylistic/eslint-plugin": "^5.8.0",
