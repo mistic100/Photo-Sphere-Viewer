@@ -13,7 +13,7 @@ export const enum MoveButtonDirection {
 }
 
 function getIcon(value: MoveButtonDirection): string {
-    let angle = 0;
+    let angle: number;
     switch (value) {
         case MoveButtonDirection.UP: angle = 90; break;
         case MoveButtonDirection.DOWN: angle = -90; break;

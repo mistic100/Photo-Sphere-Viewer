@@ -646,7 +646,6 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
 
         Object.values(this.markers).forEach((marker) => {
             let isVisible = marker.config.visible;
-            let visibilityChanged = false;
             let position: Point = null;
 
             if (isVisible) {
@@ -654,7 +653,7 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
                 isVisible = !!position;
             }
 
-            visibilityChanged = marker.state.visible !== isVisible;
+            const visibilityChanged = marker.state.visible !== isVisible;
             marker.state.visible = isVisible;
             marker.state.position2D = position;
 
