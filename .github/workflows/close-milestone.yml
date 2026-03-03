@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - id: close
-        uses: Akkjon/close-milestone@main
+        uses: Akkjon/close-milestone@v2
         with:
           milestone_name: ${{ github.ref_name }}
           crash_on_missing: false

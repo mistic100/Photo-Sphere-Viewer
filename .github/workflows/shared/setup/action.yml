@@ -3,50 +3,25 @@ name: setup
 inputs:
   turbo-cache:
     default: 'true'
-  cache-readonly:
-    default: 'false'
 
 runs:
   using: composite
 
   steps:
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v6
       with:
         node-version: '24'
+        cache: 'yarn'
 
     - name: env
       shell: bash
       run: |
-        echo "YARN_CACHE_DIR=$(yarn cache dir)" >> $GITHUB_ENV
         echo "SHORT_SHA=`echo ${{ github.sha }} | cut -c1-8`" >> $GITHUB_ENV
         echo "REF_NAME_SLUG=${GITHUB_REF_NAME////_}" >> $GITHUB_ENV
 
-    - name: yarn cache
-      uses: actions/cache@v4
-      if: ${{ inputs.cache-readonly != 'true' && !startsWith(github.ref_name, 'dependabot') }}
-      with:
-        key: yarn-${{ hashFiles('yarn.lock') }}
-        path: ${{ env.YARN_CACHE_DIR }}
-
-    - name: yarn cache ro
-      uses: actions/cache/restore@v4
-      if: ${{ inputs.cache-readonly == 'true' || startsWith(github.ref_name, 'dependabot') }}
-      with:
-        key: yarn-${{ hashFiles('yarn.lock') }}
-        path: ${{ env.YARN_CACHE_DIR }}
-
     - name: turbo cache
-      uses: actions/cache@v4
-      if: ${{ inputs.turbo-cache == 'true' && !inputs.cache-readonly != 'true' && !startsWith(github.ref_name, 'dependabot') }}
-      with:
-        path: .turbo
-        key: turbo-${{ github.sha }}
-        restore-keys: |
-          turbo-
-
-    - name: turbo cache ro
-      uses: actions/cache/restore@v4
-      if: ${{ inputs.turbo-cache == 'true' && (inputs.cache-readonly == 'true' || startsWith(github.ref_name, 'dependabot')) }}
+      uses: actions/cache@v5
+      if: ${{ inputs.turbo-cache == 'true' && !startsWith(github.ref_name, 'dependabot') }}
       with:
         path: .turbo
         key: turbo-${{ github.sha }}

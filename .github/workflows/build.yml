@@ -84,7 +84,6 @@ jobs:
       - name: setup
         uses: ./.github/workflows/shared/setup
         with:
-          cache-readonly: 'true'
           turbo-cache: 'false'
 
       - name: e2e
@@ -104,7 +103,7 @@ jobs:
         run: node ./build/generate-coverage-summary.mjs >> $GITHUB_STEP_SUMMARY
 
       - name: report artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: e2e-report-${{ env.REF_NAME_SLUG }}-${{ env.SHORT_SHA }}
@@ -135,7 +134,6 @@ jobs:
       - name: setup
         uses: ./.github/workflows/shared/setup
         with:
-          cache-readonly: 'true'
           turbo-cache: 'false'
 
       - name: build
