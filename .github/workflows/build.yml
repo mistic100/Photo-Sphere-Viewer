@@ -49,7 +49,7 @@ jobs:
   build:
     needs: changes
 
-    if: ${{ needs.changes.outputs.build == 'true' || needs.changes.outputs.src == 'true' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.build == 'true' || needs.changes.outputs.src == 'true' }}
 
     runs-on: ubuntu-latest
 
@@ -74,7 +74,7 @@ jobs:
   e2e:
     needs: [changes, build]
 
-    if: ${{ always() && !contains(needs.*.result, 'failure') && !startsWith(github.head_ref, 'dependabot') && (needs.changes.outputs.build == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.e2e == 'true') }}
+    if: ${{ always() && !contains(needs.*.result, 'failure') && !startsWith(github.head_ref, 'dependabot') && (github.event_name == 'workflow_dispatch' || needs.changes.outputs.build == 'true' || needs.changes.outputs.src == 'true' || needs.changes.outputs.e2e == 'true') }}
 
     runs-on: ubuntu-latest
 
@@ -124,7 +124,7 @@ jobs:
   docs:
     needs: [changes, build]
 
-    if: ${{ always() && !contains(needs.*.result, 'failure') && !startsWith(github.head_ref, 'dependabot') && (needs.changes.outputs.build == 'true' || needs.changes.outputs.docs == 'true') }}
+    if: ${{ always() && !contains(needs.*.result, 'failure') && !startsWith(github.head_ref, 'dependabot') && (github.event_name == 'workflow_dispatch' || needs.changes.outputs.build == 'true' || needs.changes.outputs.docs == 'true') }}
 
     runs-on: ubuntu-latest
 
