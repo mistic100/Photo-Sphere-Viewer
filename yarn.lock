@@ -6210,10 +6210,10 @@ vue@^3.5.18, vue@^3.5.21:
     "@vue/server-renderer" "3.5.21"
     "@vue/shared" "3.5.21"
 
-vuetify@^3.12.1:
-  version "3.12.1"
-  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-3.12.1.tgz#c5937d96ea5b53544d4419cd8769787b4206804f"
-  integrity sha512-JDHDzs1e195YJ9L3X4nWQySGSMyTxr0BefIY4+l/CpAgTd9pPV5F6oZzI8ZLuikMxS4HhfSGHteOAe6u/zh4vQ==
+vuetify@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-4.0.1.tgz#cc0369b4487526c69ed8824cbdc21162e0ab3fbc"
+  integrity sha512-0z0lKd1r6KmVK4YliDb4w2k9Yk7Z83V5kxpn9z5glipIcFJEizJK+LfFBzy3G2tMxuhSZHU4DmQ4qxfpvLhjQg==
 
 webidl-conversions@^4.0.2:
   version "4.0.2"
