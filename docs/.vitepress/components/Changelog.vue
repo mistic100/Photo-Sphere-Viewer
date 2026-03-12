@@ -118,60 +118,63 @@ function formatRelease(release: any, marked: any): Changelog {
 /**
  * Loader
  * http://codepen.io/fox_hover/pen/YZxGed
+ * The layer is here to break vitepress reduced-motion override
  */
-.spinner {
-    position: relative;
-    display: inline-block;
-    width: 1em;
-    height: 1em;
-}
-
-.spinner::before,
-.spinner::after {
-    content: '';
-    display: block;
-    position: absolute;
-    border: 0.05em solid currentcolor;
-    border-radius: 50%;
-}
-
-.spinner::before {
-    width: 0.936em;
-    height: 0.936em;
-    border-top-color: rgba(33, 33, 33, 0);
-    border-left-color: rgba(33, 33, 33, 0);
-    top: 0;
-    left: 0;
-    animation: rotate-animation 1s linear 0s infinite !important;
-}
-
-.spinner::after {
-    width: 0.6552em;
-    height: 0.6552em;
-    border-top-color: rgba(33, 33, 33, 0);
-    border-left-color: rgba(33, 33, 33, 0);
-    top: 0.1404em;
-    left: 0.1404em;
-    animation: anti-rotate-animation 0.85s linear 0s infinite !important;
-}
-
-@keyframes rotate-animation {
-    0% {
-        transform: rotateZ(0deg);
+@layer __vitepress_base {
+    .spinner {
+        position: relative;
+        display: inline-block;
+        width: 1em;
+        height: 1em;
     }
 
-    100% {
-        transform: rotateZ(360deg);
+    .spinner::before,
+    .spinner::after {
+        content: '';
+        display: block;
+        position: absolute;
+        border: 0.05em solid currentcolor;
+        border-radius: 50%;
     }
-}
 
-@keyframes anti-rotate-animation {
-    0% {
-        transform: rotateZ(0deg);
+    .spinner::before {
+        width: 0.936em;
+        height: 0.936em;
+        border-top-color: rgba(33, 33, 33, 0);
+        border-left-color: rgba(33, 33, 33, 0);
+        top: 0;
+        left: 0;
+        animation: rotate-animation 1s linear 0s infinite !important;
     }
 
-    100% {
-        transform: rotateZ(-360deg);
+    .spinner::after {
+        width: 0.6552em;
+        height: 0.6552em;
+        border-top-color: rgba(33, 33, 33, 0);
+        border-left-color: rgba(33, 33, 33, 0);
+        top: 0.1404em;
+        left: 0.1404em;
+        animation: anti-rotate-animation 0.85s linear 0s infinite !important;
+    }
+
+    @keyframes rotate-animation {
+        0% {
+            transform: rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateZ(360deg);
+        }
+    }
+
+    @keyframes anti-rotate-animation {
+        0% {
+            transform: rotateZ(0deg);
+        }
+
+        100% {
+            transform: rotateZ(-360deg);
+        }
     }
 }
 </style>
