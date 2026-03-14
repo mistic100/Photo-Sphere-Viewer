@@ -168,7 +168,7 @@ export class VideoPlugin extends AbstractConfigurablePlugin<
             this.video.removeEventListener('waiting', this);
         }
 
-        this.video = (textureData as TextureData<Texture>).texture.image;
+        this.video = (textureData as TextureData<Texture<HTMLVideoElement>>).texture.image;
         this.state.waiting = false;
 
         this.video.addEventListener('play', this);

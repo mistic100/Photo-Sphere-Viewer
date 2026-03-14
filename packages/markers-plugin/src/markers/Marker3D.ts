@@ -31,7 +31,7 @@ export class Marker3D extends Marker {
 
     override get video(): HTMLVideoElement {
         if (this.type === MarkerType.videoLayer) {
-            return this.threeMesh.material.map.image;
+            return this.threeMesh.material.map.image as HTMLVideoElement;
         } else {
             return null;
         }
