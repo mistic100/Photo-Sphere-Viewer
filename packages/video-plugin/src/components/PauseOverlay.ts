@@ -39,6 +39,7 @@ export class PauseOverlay extends AbstractComponent {
                 utils.toggleClass(this.button, 'psv-video-bigbutton--pause', !this.plugin.isPlaying());
                 break;
             case 'click':
+                (e.currentTarget as HTMLElement).blur();
                 this.plugin.playPause();
                 break;
         }
