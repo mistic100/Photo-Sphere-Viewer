@@ -62,7 +62,7 @@ jobs:
 
       - name: create release
         if: ${{ github.ref_type == 'tag' }}
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           draft: true
           body_path: dist/changelog_${{ github.ref_name }}.md
