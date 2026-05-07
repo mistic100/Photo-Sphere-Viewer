@@ -63,7 +63,7 @@ jobs:
         run: yarn ci:build
 
       - name: test summary
-        uses: phoenix-actions/test-reporting@v15
+        uses: phoenix-actions/test-reporting@v16
         if: ${{ !cancelled() }}
         with:
           name: build
@@ -90,7 +90,7 @@ jobs:
         run: yarn ci:e2e
 
       - name: test summary
-        uses: phoenix-actions/test-reporting@v15
+        uses: phoenix-actions/test-reporting@v16
         if: ${{ !cancelled() }}
         with:
           name: e2e
