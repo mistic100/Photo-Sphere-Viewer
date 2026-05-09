@@ -1,0 +1,8 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "extends": ["../../typedoc.json"],
+  "entryPoints": ["src/index.ts"],
+  "entryPointStrategy": "resolve",
+  "name": "EquirectangularRaycastAdapter",
+  "readme": "./.tmp/typedoc/README.md"
+}

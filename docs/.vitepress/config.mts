@@ -44,6 +44,8 @@ const adapters = [
     { text: 'Equirectangular', link: '/equirectangular' },
     { text: 'Equirectangular tiles', link: '/equirectangular-tiles' },
     { text: 'Equirectangular video', link: '/equirectangular-video' },
+    { text: 'Equirectangular raycast', link: '/equirectangular-raycast' },
+    { text: 'Equirectangular raycast video', link: '/equirectangular-raycast-video' },
     { text: 'Cubemap', link: '/cubemap' },
     { text: 'Cubemap tiles', link: '/cubemap-tiles' },
     { text: 'Cubemap video', link: '/cubemap-video' },

@@ -1,0 +1,26 @@
+{
+  "name": "@photo-sphere-viewer/equirectangular-raycast-video-adapter",
+  "version": "0.0.0",
+  "description": "Photo Sphere Viewer adapter that renders equirectangular videos with a fragment shader to eliminate polar UV distortion.",
+  "homepage": "https://photo-sphere-viewer.js.org/guide/adapters/equirectangular-raycast-video.html",
+  "license": "MIT",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@photo-sphere-viewer/core": "0.0.0",
+    "@photo-sphere-viewer/equirectangular-raycast-adapter": "0.0.0",
+    "@photo-sphere-viewer/video-plugin": "0.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "instrument": "nyc instrument dist/index.module.js .",
+    "lint": "tsc --noEmit && eslint . --fix",
+    "publish-dist": "cd dist && npm publish --tag=$NPM_TAG --access=public",
+    "npm-link": "cd dist && npm link"
+  },
+  "psv": {
+    "title": "Photo Sphere Viewer / Equirectangular Raycast Video Adapter",
+    "budget": "10kb"
+  }
+}
