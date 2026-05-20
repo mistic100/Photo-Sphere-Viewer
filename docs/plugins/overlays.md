@@ -68,7 +68,7 @@ Automatically remove all overlays when the panorama changes.
 -   default: `true`
 -   updatable: no
 
-Applies the global [`sphereCorrection`](../guide/config.md#spherecorrection) to each overlay.
+Applies the [global `sphereCorrection`](../guide/config.md#spherecorrection) to each overlay. It can be overriden per overlay with its [`sphereCorrection`](#sphereCorrection) property.
 
 ### Overlays
 
@@ -90,6 +90,13 @@ Used to remove the overlay with `removeOverlay()` method.
 
 -   type: `number`
 -   default: `0`
+
+#### `sphereCorrection`
+
+-   type: `{ pan: double | string, tilt: double | string, roll: double | string }`
+-   defaut: `null`
+
+Sphere correction applied to this overlay. If defined, it overrides the global [`inheritSphereCorrection`](#inheritspherecorrection) setting.
 
 #### Spherical overlays
 

@@ -113,7 +113,7 @@ export class OverlaysPlugin extends AbstractConfigurablePlugin<
             }
         } else if (e instanceof events.ConfigChangedEvent) {
             if (e.containsOptions('sphereCorrection')) {
-                this.__applySphereCorrection();
+                this.__applyGlobalSphereCorrection();
             }
         }
     }
@@ -186,7 +186,7 @@ export class OverlaysPlugin extends AbstractConfigurablePlugin<
         adapter.setTexture(mesh, textureData);
         adapter.setTextureOpacity(mesh, config.opacity);
         mesh.material.transparent = true;
-        this.__applySphereCorrection(mesh);
+        this.__applySphereCorrection(mesh, config);
 
         this.state.overlays[config.id] = { config, mesh };
 
@@ -215,7 +215,7 @@ export class OverlaysPlugin extends AbstractConfigurablePlugin<
         adapter.setTexture(mesh, textureData);
         adapter.setTextureOpacity(mesh, config.opacity);
         mesh.material.forEach(m => m.transparent = true);
-        this.__applySphereCorrection(mesh);
+        this.__applySphereCorrection(mesh, config);
 
         this.state.overlays[config.id] = { config, mesh };
 
@@ -223,15 +223,21 @@ export class OverlaysPlugin extends AbstractConfigurablePlugin<
         this.viewer.needsUpdate();
     }
 
-    private __applySphereCorrection(mesh?: Mesh) {
+    private __applySphereCorrection(mesh: Mesh, config: OverlayConfig) {
+        if (config.sphereCorrection) {
+            this.viewer.renderer.setSphereCorrection(config.sphereCorrection, mesh);
+        } else if (this.config.inheritSphereCorrection) {
+            this.viewer.renderer.setSphereCorrection(this.viewer.config.sphereCorrection, mesh);
+        }
+    }
+
+    private __applyGlobalSphereCorrection() {
         if (this.config.inheritSphereCorrection) {
-            if (mesh) {
-                this.viewer.renderer.setSphereCorrection(this.viewer.config.sphereCorrection, mesh);
-            } else {
-                Object.values(this.state.overlays).forEach(({ mesh }) => {
+            Object.values(this.state.overlays).forEach(({ config, mesh }) => {
+                if (!config.sphereCorrection) {
                     this.viewer.renderer.setSphereCorrection(this.viewer.config.sphereCorrection, mesh);
-                });
-            }
+                }
+            });
         }
     }
 
