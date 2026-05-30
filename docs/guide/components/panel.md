@@ -42,6 +42,8 @@ Open the side panel.
 After openning, the first focusable element (`a`, `button` or anything with `tabindex`) will be focused, allowing the user to navigate with the Tab key and activate the `clickHandler` with the `Enter` key.
 :::
 
+_**Note:** the content is rendered as HTML. If your content may include untrusted input it should be sanitized before being passed to `content`._
+
 ### `hide([id])`
 
 Hide the panel, without condition if `id` is not provided, or only if the last `show` was called with the same `id`.

@@ -166,6 +166,8 @@ HTML content of the marker. It is recommended to define th `size`.
 }
 ```
 
+_**Note:** the content is rendered as HTML. If your content may include untrusted input it should be sanitized before being passed to `html`._
+
 #### `element`
 
 -   type: `HTMLElement` & [`MarkerElement`](/api/interfaces/MarkersPlugin.MarkerElement.html){target=_blank}

@@ -33,6 +33,8 @@ Show the overlay.
 | `image` | `string` | SVG icon or image displayed above the text. |
 | `dismissible` | `boolean` | If the overlay can be hidden by click or Escape key (default: `true`). |
 
+_**Note:** the content is rendered as HTML. If your content may include untrusted input it should be sanitized before being passed to `title`, `text` or `image`._
+
 ### `hide([id])`
 
 Hide the overlay, without condition if `id` is not provided, or only if the last `show` was called with the same `id`.

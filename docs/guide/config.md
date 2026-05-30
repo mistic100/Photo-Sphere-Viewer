@@ -40,13 +40,17 @@ List of enabled [plugins](../plugins/).
 
 -   type: `string`
 
-A text displayed in the navbar. If the navbar is disabled, the caption won't be visible. HTML is allowed.
+A text displayed in the navbar. If the navbar is disabled, the caption won't be visible.
+
+_**Note:** the content is rendered as HTML. If your content may include untrusted input it should be sanitized before being passed to `caption`._
 
 #### `description`
 
 -   type: `string`
 
 A text displayed in the side panel when the user clicks the "i" button. HTML is allowed.
+
+_**Note:** the content is rendered as HTML. If your content may include untrusted input it should be sanitized before being passed to `description`._
 
 #### `downloadUrl`
 

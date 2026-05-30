@@ -298,6 +298,8 @@ Allow to override the default `spotStyle`.
 
 -   type: `string | { content: string, className: string }`
 -   default: `null`
+  
+_**Note:** the content is rendered as HTML. If your content may include untrusted input it should be sanitized before being passed to `tooltip`._
 
 
 ## Methods

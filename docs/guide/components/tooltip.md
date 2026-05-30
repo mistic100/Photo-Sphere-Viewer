@@ -35,6 +35,8 @@ Create a tooltip.
 | `className` | `string` | Additional CSS class added to the tooltip. |
 | `data` | `any` | User data associated to the tooltip (useful for events). |
 
+_**Note:** the content is rendered as HTML. If your content may include untrusted input it should be sanitized before being passed to `content`._
+
 ### `tooltip.move(config)`
 
 Updates the position of the tooltip, the parameters are the same `top`, `left` and `position` as above.

@@ -41,6 +41,8 @@ If your component has an `attachViewer()` method it will be called with the inst
 <DemoButton href="/demos/advanced/navbar-element.html"></DemoButton>
 :::
 
+_**Note:** the content is rendered as HTML. If your content may include untrusted input it should be sanitized before being passed to `content`._
+
 #### `onClick(viewer)`
 
 -   type : `function(Viewer)`
