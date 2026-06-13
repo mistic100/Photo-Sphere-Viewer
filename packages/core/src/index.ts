@@ -4,7 +4,7 @@ import * as events from './events';
 
 export type { AdapterConstructor } from './adapters/AbstractAdapter';
 export type { DualFisheyeAdapterConfig } from './adapters/DualFisheyeAdapter';
-export type { EquirectangularAdapterConfig, EquirectangularMesh, EquirectangularTextureData } from './adapters/EquirectangularAdapter';
+export type { EquirectangularAdapterConfig } from './adapters/EquirectangularAdapter';
 export type { ButtonConfig, ButtonConstructor } from './buttons/AbstractButton';
 export type { Tooltip, TooltipConfig, TooltipPosition } from './components/Tooltip';
 export type { Loader } from './components/Loader';

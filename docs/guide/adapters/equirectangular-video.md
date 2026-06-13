@@ -57,6 +57,13 @@ Automatically starts the video on load.
 
 Mute the video by default.
 
+#### `shader`
+
+-   type: `boolean`
+-   default: `false`
+
+Use a raycasting shader to render the panorama, this eliminates the distortion visible on the poles. **This will be enabled by default in a future version.**
+
 #### `resolution`
 
 See the [equirectangular adapter configuration](./equirectangular.md#resolution).

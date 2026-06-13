@@ -43,7 +43,7 @@
         </script>
 
         <script type="module">
-            import { Viewer, DEFAULTS } from '@photo-sphere-viewer/core';
+            import { Viewer, DEFAULTS, EquirectangularAdapter } from '@photo-sphere-viewer/core';
 
             const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
 
@@ -66,6 +66,10 @@
                 caption: panos[0].caption,
                 description: panos[0].description,
                 loadingImg: baseUrl + 'loader.gif',
+                adapter: EquirectangularAdapter.withConfig({
+                    shader: true,
+                    // resolution: 128,
+                }),
                 // minFov: 10,
                 // fisheye: true,
                 // mousemove: false,

@@ -10,6 +10,12 @@ export type EquirectangularVideoPanorama = AbstractVideoPanorama & {
 
 export type EquirectangularVideoAdapterConfig = AbstractVideoAdapterConfig & {
     /**
+     * use a raycasting shader for better quality on poles
+     * @default false
+     */
+    shader?: boolean;
+    /**
+     * (only if `shader=false`)
      * number of faces of the sphere geometry, higher values may decrease performances
      * @default 64
      */

@@ -43,6 +43,7 @@
             const viewer = new Viewer({
                 container: 'photosphere',
                 adapter: EquirectangularVideoAdapter.withConfig({
+                    shader: true,
                     autoplay: false,
                     muted: true,
                 }),

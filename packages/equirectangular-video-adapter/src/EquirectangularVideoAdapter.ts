@@ -1,13 +1,14 @@
 import type { AdapterConstructor, PanoData, PanoramaPosition, Position, TextureData, Viewer } from '@photo-sphere-viewer/core';
 import { EquirectangularAdapter, utils } from '@photo-sphere-viewer/core';
-import { Mesh, MeshBasicMaterial, SphereGeometry, VideoTexture } from 'three';
+import { Mesh, MeshBasicMaterial, ShaderMaterial, SphereGeometry, VideoTexture } from 'three';
 import { AbstractVideoAdapter } from '../../shared/AbstractVideoAdapter';
 import { EquirectangularVideoAdapterConfig, EquirectangularVideoPanorama } from './model';
 
-type EquirectangularVideoMesh = Mesh<SphereGeometry, MeshBasicMaterial>;
+type EquirectangularVideoMesh = Mesh<SphereGeometry, MeshBasicMaterial | ShaderMaterial>;
 type EquirectangularVideoTextureData = TextureData<VideoTexture, EquirectangularVideoPanorama, PanoData>;
 
 const getConfig = utils.getConfigParser<EquirectangularVideoAdapterConfig>({
+    shader: false,
     resolution: 64,
     autoplay: false,
     muted: false,
@@ -38,6 +39,7 @@ export class EquirectangularVideoAdapter extends AbstractVideoAdapter<
         this.config = getConfig(config);
 
         this.adapter = new EquirectangularAdapter(this.viewer, {
+            shader: this.config.shader,
             resolution: this.config.resolution,
         });
     }
@@ -83,8 +85,20 @@ export class EquirectangularVideoAdapter extends AbstractVideoAdapter<
     }
 
     setTexture(mesh: EquirectangularVideoMesh, { texture }: EquirectangularVideoTextureData) {
-        mesh.material.map = texture;
+        if (this.config.shader) {
+            (mesh.material as ShaderMaterial).uniforms.map.value = texture;
+        } else {
+            (mesh.material as MeshBasicMaterial).map = texture;
+        }
 
         this.switchVideo(texture);
+    }
+
+    override setTextureOpacity(mesh: EquirectangularVideoMesh, opacity: number): void {
+        if (this.config.shader) {
+            (mesh.material as ShaderMaterial).uniforms.opacity.value = opacity;
+        } else {
+            super.setTextureOpacity(mesh, opacity);
+        }
     }
 }

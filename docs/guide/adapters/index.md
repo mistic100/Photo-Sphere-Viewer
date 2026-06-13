@@ -7,8 +7,6 @@ The supported adapters are:
 -   [equirectangular](equirectangular.md): the default adapter, used to load full or partial equirectangular panoramas
 -   [equirectangular tiles](equirectangular-tiles.md): used to load tiled equirectangular panoramas
 -   [equirectangular video](equirectangular-video.md): used to load equirectangular videos
--   [equirectangular raycast](equirectangular-raycast.md): renders equirectangular panoramas with a fragment shader to remove polar distortion
--   [equirectangular raycast video](equirectangular-raycast-video.md): renders equirectangular videos with a fragment shader to remove polar distortion
 -   [cubemap](cubemap.md): used to load cubemaps projections (six textures)
 -   [cubemap tiles](cubemap-tiles.md): used to load tiled cubemap panoramas
 -   [cubemap video](cubemap-video.md): used to load cubemap video

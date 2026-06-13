@@ -1,4 +1,4 @@
-import { MathUtils, Mesh, MeshBasicMaterial, SphereGeometry, Texture } from 'three';
+import { MathUtils, Mesh, MeshBasicMaterial, ShaderMaterial, SphereGeometry, Texture, Vector2 } from 'three';
 import { PSVError } from '../PSVError';
 import type { Viewer } from '../Viewer';
 import { SPHERE_RADIUS } from '../data/constants';
@@ -7,11 +7,20 @@ import { EquirectangularPanorama, PanoData, PanoDataProvider, PanoramaPosition, 
 import { createTexture, getConfigParser, getXMPValue, isNil, mergePanoData } from '../utils';
 import { AbstractAdapter, AdapterConstructor } from './AbstractAdapter';
 
+import equirectangularFragment from './shaders/equirectangular.fragment.glsl';
+import equirectangularVertex from './shaders/equirectangular.vertex.glsl';
+
 /**
  * Configuration for {@link EquirectangularAdapter}
  */
 export type EquirectangularAdapterConfig = {
     /**
+     * use a raycasting shader for better quality on poles
+     * @default false
+     */
+    shader?: boolean;
+    /**
+     * (only if `shader=false`)
      * number of faces of the sphere geometry, higher values may decrease performances
      * @default 64
      */
@@ -28,11 +37,20 @@ export type EquirectangularAdapterConfig = {
     blur?: boolean;
 };
 
-export type EquirectangularMesh = Mesh<SphereGeometry, MeshBasicMaterial>;
+export type EquirectangularMesh = Mesh<SphereGeometry, MeshBasicMaterial | ShaderMaterial>;
 export type EquirectangularTextureData = TextureData<Texture, string | EquirectangularPanorama, PanoData>;
+
+type ShaderUniforms = {
+    map: { value: Texture };
+    opacity: { value: number };
+    radius: { value: number };
+    uvOffset: { value: Vector2 };
+    uvScale: { value: Vector2 };
+};
 
 const getConfig = getConfigParser<EquirectangularAdapterConfig>(
     {
+        shader: true,
         resolution: 64,
         useXmpData: true,
         blur: false,
@@ -231,34 +249,79 @@ export class EquirectangularAdapter extends AbstractAdapter<string | Equirectang
     }
 
     createMesh(panoData: PanoData): EquirectangularMesh {
-        const hStart = (panoData.croppedX / panoData.fullWidth) * 2 * Math.PI;
-        const hLength = (panoData.croppedWidth / panoData.fullWidth) * 2 * Math.PI;
-        const vStart = (panoData.croppedY / panoData.fullHeight) * Math.PI;
-        const vLength = (panoData.croppedHeight / panoData.fullHeight) * Math.PI;
+        if (this.config.shader) {
+            // Minimum tessellation that still wraps the sphere and is compatible with extreme fisheye values
+            const geometry = new SphereGeometry(SPHERE_RADIUS, 32, 16).scale(-1, 1, 1);
 
-        // The middle of the panorama is placed at yaw=0
-        const geometry = new SphereGeometry(
-            SPHERE_RADIUS,
-            Math.round((this.SPHERE_SEGMENTS / (2 * Math.PI)) * hLength),
-            Math.round((this.SPHERE_HORIZONTAL_SEGMENTS / Math.PI) * vLength),
-            -Math.PI / 2 + hStart,
-            hLength,
-            vStart,
-            vLength,
-        ).scale(-1, 1, 1);
+            const uniforms: ShaderUniforms = {
+                map: { value: null },
+                opacity: { value: 1.0 },
+                radius: { value: SPHERE_RADIUS },
+                uvOffset: {
+                    value: new Vector2(
+                        panoData.croppedX / panoData.fullWidth,
+                        // V is computed bottom-up in the shader (north pole = 1), so
+                        // the offset is the distance from the bottom of the full pano
+                        // to the bottom of the cropped region, not the top.
+                        (panoData.fullHeight - panoData.croppedY - panoData.croppedHeight) / panoData.fullHeight,
+                    ),
+                },
+                uvScale: {
+                    value: new Vector2(
+                        panoData.croppedWidth / panoData.fullWidth,
+                        panoData.croppedHeight / panoData.fullHeight,
+                    ),
+                },
+            };
 
-        const material = new MeshBasicMaterial({ depthTest: false, depthWrite: false });
+            const material = new ShaderMaterial({
+                uniforms,
+                vertexShader: equirectangularVertex,
+                fragmentShader: equirectangularFragment,
+                depthTest: false,
+                depthWrite: false,
+                transparent: true,
+            });
 
-        return new Mesh(geometry, material);
+            return new Mesh(geometry, material);
+        } else {
+            const hStart = (panoData.croppedX / panoData.fullWidth) * 2 * Math.PI;
+            const hLength = (panoData.croppedWidth / panoData.fullWidth) * 2 * Math.PI;
+            const vStart = (panoData.croppedY / panoData.fullHeight) * Math.PI;
+            const vLength = (panoData.croppedHeight / panoData.fullHeight) * Math.PI;
+
+            // The middle of the panorama is placed at yaw=0
+            const geometry = new SphereGeometry(
+                SPHERE_RADIUS,
+                Math.round((this.SPHERE_SEGMENTS / (2 * Math.PI)) * hLength),
+                Math.round((this.SPHERE_HORIZONTAL_SEGMENTS / Math.PI) * vLength),
+                -Math.PI / 2 + hStart,
+                hLength,
+                vStart,
+                vLength,
+            ).scale(-1, 1, 1);
+
+            const material = new MeshBasicMaterial({ depthTest: false, depthWrite: false });
+
+            return new Mesh(geometry, material);
+        }
     }
 
     setTexture(mesh: EquirectangularMesh, textureData: EquirectangularTextureData) {
-        mesh.material.map = textureData.texture;
+        if (this.config.shader) {
+            (mesh.material as ShaderMaterial).uniforms.map.value = textureData.texture;
+        } else {
+            (mesh.material as MeshBasicMaterial).map = textureData.texture;
+        }
     }
 
     setTextureOpacity(mesh: EquirectangularMesh, opacity: number) {
-        mesh.material.opacity = opacity;
-        mesh.material.transparent = opacity < 1;
+        if (this.config.shader) {
+            (mesh.material as ShaderMaterial).uniforms.opacity.value = opacity;
+        } else {
+            mesh.material.opacity = opacity;
+            mesh.material.transparent = opacity < 1;
+        }
     }
 
     disposeTexture({ texture }: EquirectangularTextureData) {

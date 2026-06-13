@@ -131,6 +131,7 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
         this.config = getConfig(config);
 
         this.adapter = new EquirectangularAdapter(this.viewer, {
+            shader: false,
             resolution: this.config.resolution,
             blur: this.config.baseBlur,
         });

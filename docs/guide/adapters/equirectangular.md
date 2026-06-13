@@ -26,6 +26,13 @@ const viewer = new Viewer({
 
 Read real image size from XMP data, must be kept `true` if the panorama has been cropped after shot. This is used for [cropped panorama](#cropped-panorama).
 
+#### `shader`
+
+-   type: `boolean`
+-   default: `false`
+
+Use a raycasting shader to render the panorama, this eliminates the distortion visible on the poles. **This will be enabled by default in a future version.**
+
 #### `resolution`
 
 -   type: `number`
