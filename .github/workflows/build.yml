@@ -6,11 +6,13 @@ on:
       - '*'
     paths-ignore:
       - 'examples/**'
+      - 'README.md'
   pull_request:
     branches:
       - main
     paths-ignore:
       - 'examples/**'
+      - 'README.md'
   workflow_dispatch: {}
 
 jobs:

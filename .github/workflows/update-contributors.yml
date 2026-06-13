@@ -1,0 +1,23 @@
+name: update-contributors
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths-ignore:
+      - 'README.md'
+
+jobs:
+  contrib-readme:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    if: ${{ github.repository == 'mistic100/Photo-Sphere-Viewer' }}
+
+    steps:
+        - uses: akhilmhdh/contributors-readme-action@v2.3.11
+          env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

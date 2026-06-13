@@ -15,3 +15,8 @@ Forked from [JeremyHeleine/Photo-Sphere-Viewer](https://github.com/JeremyHeleine
 ## License
 
 This library is available under the MIT license.
+
+## Contributors
+
+<!-- readme: contributors,web-flow/- -start -->
+<!-- readme: contributors,web-flow/- -end -->
