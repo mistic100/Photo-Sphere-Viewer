@@ -175,7 +175,7 @@ export const CONFIG_PARSERS: ConfigParsers<ViewerConfig, ParsedViewerConfig> = {
         } else if (fisheye === false) {
             return 0;
         }
-        return fisheye;
+        return MathUtils.clamp(fisheye, 0, 2);
     },
     requestHeaders: (requestHeaders) => {
         if (requestHeaders && typeof requestHeaders === 'object') {
