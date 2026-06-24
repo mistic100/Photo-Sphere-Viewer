@@ -176,6 +176,13 @@ This library is available under the MIT license.
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/notlion">
+                    <img src="https://avatars.githubusercontent.com/u/27721?v=4" width="100;" alt="notlion"/>
+                    <br />
+                    <sub><b>Ryan Alexander</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/gausie">
                     <img src="https://avatars.githubusercontent.com/u/179758?v=4" width="100;" alt="gausie"/>
                     <br />
@@ -189,6 +196,8 @@ This library is available under the MIT license.
                     <sub><b>Stephan Muller</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/linfulongnet">
                     <img src="https://avatars.githubusercontent.com/u/23325671?v=4" width="100;" alt="linfulongnet"/>
@@ -196,8 +205,6 @@ This library is available under the MIT license.
                     <sub><b>linfulong</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/ThomasKeil">
                     <img src="https://avatars.githubusercontent.com/u/1055202?v=4" width="100;" alt="ThomasKeil"/>
