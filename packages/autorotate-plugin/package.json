@@ -18,7 +18,7 @@
     "watch": "tsup --watch",
     "instrument": "nyc instrument dist/index.module.js .",
     "lint": "tsc --noEmit && eslint . --fix",
-    "publish-dist": "cd dist && npm publish --tag=$NPM_TAG --access=public",
+    "publish-dist": "cd dist && npm publish --tag=$NPM_TAG",
     "npm-link": "cd dist && npm link"
   },
   "psv": {

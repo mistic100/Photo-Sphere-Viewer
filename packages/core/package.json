@@ -15,7 +15,7 @@
     "instrument": "nyc instrument dist/index.module.js .",
     "lint": "tsc --noEmit && eslint . --fix && stylelint \"src/**/*.scss\" --fix",
     "test": "mocha -r ts-node/register \"src/**/*.spec.ts\"",
-    "publish-dist": "cd dist && npm publish --tag=$NPM_TAG --access=public",
+    "publish-dist": "cd dist && npm publish --tag=$NPM_TAG",
     "npm-link": "cd dist && npm link"
   },
   "psv": {

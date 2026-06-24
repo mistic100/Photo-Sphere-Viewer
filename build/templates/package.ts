@@ -23,10 +23,19 @@ export const packageJson = (pkg: any) => {
             type: 'git',
             url: 'git://github.com/mistic100/Photo-Sphere-Viewer.git',
         },
+        bugs: {
+            url: 'https://github.com/mistic100/Photo-Sphere-Viewer/issues',
+        },
         author: {
             name: `Damien 'Mistic' Sorel`,
             email: 'contact@git.strangeplanet.fr',
-            homepage: 'https://www.strangeplanet.fr',
+            homepage: 'https://strangeplanet.fr',
+        },
+        funding: 'https://github.com/sponsors/mistic100',
+        publishConfig: {
+            registry: 'https://registry.npmjs.org',
+            access: 'public',
+            provenance: true,
         },
         keywords: ['photosphere', 'panorama', 'threejs', ...(pkg.keywords || [])],
         dependencies: _.pickBy(pkg.dependencies, (val, key) => !key.startsWith('@photo-sphere-viewer')),
