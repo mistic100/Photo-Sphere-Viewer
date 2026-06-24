@@ -22,7 +22,7 @@ on:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 env:
   RELEASE_VERSION: ${{ github.event.inputs.version || github.ref_name }}
