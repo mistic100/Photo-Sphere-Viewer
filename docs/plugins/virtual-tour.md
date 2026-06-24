@@ -156,7 +156,7 @@ Definition of the links of this node. [See below](#links).
 GPS coordinates of this node as an array of two or three values (`[longitude, latitude, altitude?]`).
 
 ::: warning Projection system
-Only the [ESPG:4326 projection](https://epsg.io/4326) is supported.
+Only the [EPSG:4326 projection](https://epsg.io/4326) is supported.
 :::
 
 #### `name`
