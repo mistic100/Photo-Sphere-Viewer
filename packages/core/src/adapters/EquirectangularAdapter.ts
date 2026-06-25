@@ -50,7 +50,7 @@ type ShaderUniforms = {
 
 const getConfig = getConfigParser<EquirectangularAdapterConfig>(
     {
-        shader: true,
+        shader: false,
         resolution: 64,
         useXmpData: true,
         blur: false,
