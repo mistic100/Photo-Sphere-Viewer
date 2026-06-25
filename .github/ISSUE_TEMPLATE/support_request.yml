@@ -29,6 +29,7 @@ body:
     attributes:
       label: Photo Sphere Viewer version
       options:
+        - 5.14.3
         - 5.14.2
         - 5.14.1
         - 5.14.0
@@ -38,7 +39,6 @@ body:
         - 5.13.1
         - 5.12.1
         - 5.12.0
-        - 5.11.5
         - other
     validations:
       required: true
