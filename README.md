@@ -88,6 +88,13 @@ This library is available under the MIT license.
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/notlion">
+                    <img src="https://avatars.githubusercontent.com/u/27721?v=4" width="100;" alt="notlion"/>
+                    <br />
+                    <sub><b>Ryan Alexander</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/smcyr">
                     <img src="https://avatars.githubusercontent.com/u/664920?v=4" width="100;" alt="smcyr"/>
                     <br />
@@ -101,6 +108,8 @@ This library is available under the MIT license.
                     <sub><b>Alexey Kalinin</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/venmax">
                     <img src="https://avatars.githubusercontent.com/u/4507022?v=4" width="100;" alt="venmax"/>
@@ -108,8 +117,6 @@ This library is available under the MIT license.
                     <sub><b>Axiu</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/gp187">
                     <img src="https://avatars.githubusercontent.com/u/3019963?v=4" width="100;" alt="gp187"/>
@@ -145,6 +152,8 @@ This library is available under the MIT license.
                     <sub><b>Lukas Drgon</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/mkubdev">
                     <img src="https://avatars.githubusercontent.com/u/50140834?v=4" width="100;" alt="mkubdev"/>
@@ -152,8 +161,6 @@ This library is available under the MIT license.
                     <sub><b>Maxime Kubik</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/NikitaZhidovKarelics">
                     <img src="https://avatars.githubusercontent.com/u/119501254?v=4" width="100;" alt="NikitaZhidovKarelics"/>
@@ -173,13 +180,6 @@ This library is available under the MIT license.
                     <img src="https://avatars.githubusercontent.com/u/818887?v=4" width="100;" alt="PierreHourdille"/>
                     <br />
                     <sub><b>Pierre Hourdille</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/notlion">
-                    <img src="https://avatars.githubusercontent.com/u/27721?v=4" width="100;" alt="notlion"/>
-                    <br />
-                    <sub><b>Ryan Alexander</b></sub>
                 </a>
             </td>
             <td align="center">
