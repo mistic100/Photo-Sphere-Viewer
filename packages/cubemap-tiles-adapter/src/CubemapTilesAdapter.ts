@@ -1,6 +1,6 @@
 import type { AdapterConstructor, PanoramaPosition, Position, TextureData, Viewer } from '@photo-sphere-viewer/core';
 import { AbstractAdapter, CONSTANTS, PSVError, events, utils } from '@photo-sphere-viewer/core';
-import { CubemapAdapter, CubemapData, CubemapFaces } from '@photo-sphere-viewer/cubemap-adapter';
+import { CubemapAdapter, CubemapData, CubemapFaces, CubemapNet, CubemapSeparate, CubemapStripe, cubemapUtils } from '@photo-sphere-viewer/cubemap-adapter';
 import { BoxGeometry, BufferAttribute, Group, Mesh, MeshBasicMaterial, Texture, Vector3 } from 'three';
 import { Queue, Task } from '../../shared/Queue';
 import { buildDebugTexture, buildErrorMaterial, createWireFrame } from '../../shared/tiles-utils';
@@ -51,7 +51,6 @@ const getConfig = utils.getConfigParser<CubemapTilesAdapterConfig>({
     showErrorTile: true,
     baseBlur: true,
     antialias: true,
-    blur: false,
     debug: false,
 });
 
@@ -99,9 +98,7 @@ export class CubemapTilesAdapter extends AbstractAdapter<
             throw new PSVError('CubemapTilesAdapter requires CubemapAdapter');
         }
 
-        this.adapter = new CubemapAdapter(this.viewer, {
-            blur: this.config.baseBlur,
-        });
+        this.adapter = new CubemapAdapter(this.viewer);
 
         if (this.viewer.config.requestHeaders) {
             utils.logWarn(
@@ -186,7 +183,21 @@ export class CubemapTilesAdapter extends AbstractAdapter<
         };
 
         if (panorama.baseUrl) {
-            const textureData = await this.adapter.loadTexture(panorama.baseUrl, loader);
+            let cleanBase: CubemapSeparate | CubemapStripe | CubemapNet;
+            if (Array.isArray(panorama.baseUrl) || cubemapUtils.isCubemap(panorama.baseUrl)) {
+                cleanBase = {
+                    type: 'separate',
+                    paths: panorama.baseUrl,
+                    blur: this.config.baseBlur,
+                };
+            } else {
+                cleanBase = {
+                    ...panorama.baseUrl,
+                    blur: this.config.baseBlur,
+                };
+            }
+
+            const textureData = await this.adapter.loadTexture(cleanBase, loader);
 
             return {
                 panorama,

@@ -22,6 +22,11 @@ export type CubemapSeparate = {
      * @default false
      */
     flipTopBottom?: boolean;
+    /**
+     * used for cubemap tiles adapter
+     * @internal
+     */
+    blur?: boolean;
 };
 
 /**
@@ -40,6 +45,11 @@ export type CubemapStripe = {
      * @default 'left, front, right, back, top, bottom'
      */
     order?: CubemapFaces[];
+    /**
+     * used for cubemap tiles adapter
+     * @internal
+     */
+    blur?: boolean;
 };
 
 /**
@@ -48,6 +58,11 @@ export type CubemapStripe = {
 export type CubemapNet = {
     type: 'net';
     path: string;
+    /**
+     * used for cubemap tiles adapter
+     * @internal
+     */
+    blur?: boolean;
 };
 
 /**
@@ -64,10 +79,4 @@ export type CubemapData = {
     faceSize: number;
 };
 
-export type CubemapAdapterConfig = {
-    /**
-     * used for cubemap tiles adapter
-     * @internal
-     */
-    blur?: boolean;
-};
+export type CubemapAdapterConfig = unknown;

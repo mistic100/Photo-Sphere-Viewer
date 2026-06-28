@@ -3,6 +3,7 @@ import { type Viewer } from '../Viewer';
 import { SPHERE_RADIUS } from '../data/constants';
 import { EquirectangularAdapter, EquirectangularMesh, EquirectangularTextureData } from './EquirectangularAdapter';
 import { AdapterConstructor } from './AbstractAdapter';
+import { logWarn } from '../utils';
 
 export type DualFisheyeAdapterConfig = {
     /**
@@ -13,7 +14,7 @@ export type DualFisheyeAdapterConfig = {
 };
 
 /**
- * @see https://github.com/acalcutt/Gear360_html5_viewer
+ * @deprecated Use the "@photo-sphere-viewer/dual-fisheye-adapter" package
  */
 export class DualFisheyeAdapter extends EquirectangularAdapter {
     static override readonly id: string = 'dual-fisheye';
@@ -28,6 +29,8 @@ export class DualFisheyeAdapter extends EquirectangularAdapter {
             resolution: config?.resolution ?? 64,
             useXmpData: false,
         });
+
+        logWarn(`"DualFisheyeAdapter" must be imported from "@photo-sphere-viewer/dual-fisheye-adapter" package`);
     }
 
     override async loadTexture(panorama: string, loader?: boolean): Promise<EquirectangularTextureData> {

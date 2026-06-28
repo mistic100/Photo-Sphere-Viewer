@@ -2,9 +2,8 @@ import { MathUtils, Mesh, MeshBasicMaterial, ShaderMaterial, SphereGeometry, Tex
 import { PSVError } from '../PSVError';
 import type { Viewer } from '../Viewer';
 import { SPHERE_RADIUS } from '../data/constants';
-import { SYSTEM } from '../data/system';
 import { EquirectangularPanorama, PanoData, PanoDataProvider, PanoramaPosition, Position, TextureData } from '../model';
-import { createTexture, getConfigParser, getXMPValue, isNil, mergePanoData } from '../utils';
+import { createSizedTexture, getConfigParser, getXMPValue, isNil, mergePanoData } from '../utils';
 import { AbstractAdapter, AdapterConstructor } from './AbstractAdapter';
 
 import equirectangularFragment from './shaders/equirectangular.fragment.glsl';
@@ -30,11 +29,6 @@ export type EquirectangularAdapterConfig = {
      * @default true
      */
     useXmpData?: boolean;
-    /**
-     * used for equirectangular tiles adapter
-     * @internal
-     */
-    blur?: boolean;
 };
 
 export type EquirectangularMesh = Mesh<SphereGeometry, MeshBasicMaterial | ShaderMaterial>;
@@ -53,7 +47,6 @@ const getConfig = getConfigParser<EquirectangularAdapterConfig>(
         shader: false,
         resolution: 64,
         useXmpData: true,
-        blur: false,
     },
     {
         resolution: (resolution) => {
@@ -166,7 +159,7 @@ export class EquirectangularAdapter extends AbstractAdapter<string | Equirectang
 
         const panoData = mergePanoData(img.width, img.height, cleanPanorama.data, xmpPanoData);
 
-        const texture = this.createEquirectangularTexture(img);
+        const texture = createSizedTexture(img, cleanPanorama.blur ? { factor: 2048 } : null)
 
         return {
             panorama,
@@ -223,29 +216,6 @@ export class EquirectangularAdapter extends AbstractAdapter<string | Equirectang
             reader.onerror = reject;
             reader.readAsText(blob);
         });
-    }
-
-    /**
-     * Creates the final texture from image and panorama data
-     */
-    private createEquirectangularTexture(img: HTMLImageElement): Texture {
-        if (this.config.blur || img.width > SYSTEM.maxTextureWidth) {
-            const ratio = Math.min(1, SYSTEM.maxCanvasWidth / img.width);
-
-            const buffer = new OffscreenCanvas(Math.floor(img.width * ratio), Math.floor(img.height * ratio));
-
-            const ctx = buffer.getContext('2d');
-
-            if (this.config.blur) {
-                ctx.filter = `blur(${buffer.width / 2048}px)`;
-            }
-
-            ctx.drawImage(img, 0, 0, buffer.width, buffer.height);
-
-            return createTexture(buffer);
-        }
-
-        return createTexture(img);
     }
 
     createMesh(panoData: PanoData): EquirectangularMesh {

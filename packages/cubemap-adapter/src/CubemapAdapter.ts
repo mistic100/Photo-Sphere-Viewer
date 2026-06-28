@@ -16,11 +16,8 @@ import { cleanCubemap, cleanCubemapArray, isCubemap } from './utils';
 type CubemapMesh = Mesh<BoxGeometry, MeshBasicMaterial[]>;
 type CubemapTextureData = TextureData<Texture[], CubemapPanorama, CubemapData>;
 
-const getConfig = utils.getConfigParser<CubemapAdapterConfig>({
-    blur: false,
-});
-
 const EPS = 0.000001;
+const BLUR_FACTOR = 512;
 const ORIGIN = new Vector3();
 
 /**
@@ -31,16 +28,12 @@ export class CubemapAdapter extends AbstractAdapter<CubemapPanorama, CubemapData
     static override readonly VERSION = PKG_VERSION;
     static override readonly supportsDownload = false;
 
-    private readonly config: CubemapAdapterConfig;
-
     static withConfig(config: CubemapAdapterConfig): [AdapterConstructor, any] {
         return [CubemapAdapter, config];
     }
 
-    constructor(viewer: Viewer, config: CubemapAdapterConfig) {
+    constructor(viewer: Viewer) {
         super(viewer);
-
-        this.config = getConfig(config);
     }
 
     override supportsTransition() {
@@ -221,7 +214,13 @@ export class CubemapAdapter extends AbstractAdapter<CubemapPanorama, CubemapData
                                 : null,
                             cacheKey,
                         )
-                        .then(img => this.createCubemapTexture(img)),
+                        .then((img) => {
+                            if (img.width !== img.height) {
+                                utils.logWarn('Invalid cubemap image, the width should equal the height');
+
+                                return utils.createSizedTexture(img, panorama.blur ? { factor: BLUR_FACTOR } : null);
+                            }
+                        }),
                 );
             }
         }
@@ -231,31 +230,6 @@ export class CubemapAdapter extends AbstractAdapter<CubemapPanorama, CubemapData
             cacheKey,
             flipTopBottom: panorama.flipTopBottom ?? false,
         };
-    }
-
-    private createCubemapTexture(img: HTMLImageElement): Texture {
-        if (img.width !== img.height) {
-            utils.logWarn('Invalid cubemap image, the width should equal the height');
-        }
-
-        // resize image
-        if (this.config.blur || img.width > SYSTEM.maxTextureWidth) {
-            const ratio = Math.min(1, SYSTEM.maxCanvasWidth / img.width);
-
-            const buffer = new OffscreenCanvas(Math.floor(img.width * ratio), Math.floor(img.height * ratio));
-
-            const ctx = buffer.getContext('2d');
-
-            if (this.config.blur) {
-                ctx.filter = `blur(${buffer.width / 512}px)`;
-            }
-
-            ctx.drawImage(img, 0, 0, buffer.width, buffer.height);
-
-            return utils.createTexture(buffer);
-        }
-
-        return utils.createTexture(img);
     }
 
     private async loadTexturesStripe(panorama: CubemapStripe, loader: boolean) {
@@ -284,8 +258,8 @@ export class CubemapAdapter extends AbstractAdapter<CubemapPanorama, CubemapData
 
             const ctx = buffer.getContext('2d');
 
-            if (this.config.blur) {
-                ctx.filter = `blur(${buffer.width / 512}px)`;
+            if (panorama.blur) {
+                ctx.filter = `blur(${buffer.width / BLUR_FACTOR}px)`;
             }
 
             ctx.drawImage(
@@ -337,8 +311,8 @@ export class CubemapAdapter extends AbstractAdapter<CubemapPanorama, CubemapData
 
             const ctx = buffer.getContext('2d');
 
-            if (this.config.blur) {
-                ctx.filter = `blur(${buffer.width / 512}px)`;
+            if (panorama.blur) {
+                ctx.filter = `blur(${buffer.width / BLUR_FACTOR}px)`;
             }
 
             ctx.drawImage(

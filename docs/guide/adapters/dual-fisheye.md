@@ -3,17 +3,41 @@
 ::: module
 "Dual fisheye" is the raw file format used by many 360 cameras brands.
 
-This adapter is available in the main `@photo-sphere-viewer/core` package.
+This adapter is available in the [@photo-sphere-viewer/dual-fisheye-adapter](https://www.npmjs.com/package/@photo-sphere-viewer/dual-fisheye-adapter) package.
 :::
 
+:::: tabs
+
+::: tab Panorama
+
 ```js
-import { DualFisheyeAdapter } from '@photo-sphere-viewer/core';
+import { DualFisheyeAdapter } from '@photo-sphere-viewer/dual-fisheye-adapter';
 
 const viewer = new Viewer({
     adapter: DualFisheyeAdapter,
     panorama: 'path/panorama.jpg',
 });
 ```
+
+:::
+
+::: tab Video
+
+```js
+import { DualFisheyeVideoAdapter } from '@photo-sphere-viewer/dual-fisheye-adapter';
+
+const viewer = new Viewer({
+    adapter: DualFisheyeVideoAdapter,
+    panorama: {
+        source: 'path/video.mp4',
+    },
+    plugins: [VideoPlugin],
+});
+```
+
+:::
+
+::::
 
 ## Example
 
@@ -34,13 +58,20 @@ This adapter is currently only tested for raw files of the Ricoh Theta Z1, it mi
 to support other cameras. Feel free to open an issue with some examples files.
 :::
 
-## Configuration
+## Panorama options
 
-#### `resolution`
+The panorama is expected to have the two fisheye images side by side.
 
--   type: `number`
--   default: `64`
+![](/images/dualfisheye.jpg)
 
-The number of faces of the sphere geometry used to display the panorama, higher values can reduce deformations on straight lines at the cost of performances.
+::: tip Video files
+If you have two separate `insv` files, this ffmpeg command can be used to combine them into a single video file (adjust scale, codec and quality as desired).
 
-_Note: the actual number of faces is `resolution² / 2`._
+```
+ffmpeg -i input_left.insv -i input_right.insv \
+    -filter_complex "[0:v][1:v]hstack=inputs=2,scale=4096:-1,vflip[v];[0:a][1:a]amerge=inputs=2[a]" \
+    -map "[v]" -map "[a]" \
+    -c:v libsvtav1 -crf 25 \
+    output.mp4
+```
+:::
