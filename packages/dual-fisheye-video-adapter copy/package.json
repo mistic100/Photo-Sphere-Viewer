@@ -1,0 +1,25 @@
+{
+  "name": "@photo-sphere-viewer/dual-fisheye-video-adapter",
+  "version": "0.0.0",
+  "description": "Photo Sphere Viewer adapter to display dual-fisheye videos.",
+  "homepage": "https://photo-sphere-viewer.js.org/guide/adapters/dual-fisheye-video.html",
+  "license": "MIT",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@photo-sphere-viewer/core": "0.0.0",
+    "@photo-sphere-viewer/video-plugin": "0.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "instrument": "nyc instrument dist/index.module.js .",
+    "lint": "tsc --noEmit && eslint . --fix",
+    "publish-dist": "cd dist && npm publish --tag=$NPM_TAG",
+    "npm-link": "cd dist && npm link"
+  },
+  "psv": {
+    "title": "Photo Sphere Viewer / DualFisheye Video Adapter",
+    "budget": "10kb"
+  }
+}
