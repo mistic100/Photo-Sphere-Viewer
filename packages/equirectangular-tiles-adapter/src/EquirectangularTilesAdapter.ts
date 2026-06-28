@@ -1,4 +1,4 @@
-import type { AdapterConstructor, PanoData, PanoramaPosition, Position, TextureData, Viewer } from '@photo-sphere-viewer/core';
+import type { AdapterConstructor, EquirectangularPanorama, PanoData, PanoramaPosition, Position, TextureData, Viewer } from '@photo-sphere-viewer/core';
 import { AbstractAdapter, CONSTANTS, EquirectangularAdapter, events, utils } from '@photo-sphere-viewer/core';
 import { BufferAttribute, Group, Mesh, MeshBasicMaterial, SphereGeometry, Texture, Vector3 } from 'three';
 import { Queue, Task } from '../../shared/Queue';
@@ -133,7 +133,6 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
         this.adapter = new EquirectangularAdapter(this.viewer, {
             shader: false,
             resolution: this.config.resolution,
-            blur: this.config.baseBlur,
         });
 
         this.SPHERE_SEGMENTS = this.config.resolution;
@@ -233,7 +232,13 @@ export class EquirectangularTilesAdapter extends AbstractAdapter<
         };
 
         if (panorama.baseUrl) {
-            const textureData = await this.adapter.loadTexture(panorama.baseUrl, loader, panorama.basePanoData, true);
+            const cleanBase: EquirectangularPanorama = {
+                path: panorama.baseUrl,
+                data: panorama.basePanoData,
+                blur: this.config.baseBlur,
+            };
+
+            const textureData = await this.adapter.loadTexture(cleanBase, loader, null, true);
 
             return {
                 panorama,

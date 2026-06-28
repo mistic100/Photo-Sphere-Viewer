@@ -93,12 +93,4 @@ export class EquirectangularVideoAdapter extends AbstractVideoAdapter<
 
         this.switchVideo(texture);
     }
-
-    override setTextureOpacity(mesh: EquirectangularVideoMesh, opacity: number): void {
-        if (this.config.shader) {
-            (mesh.material as ShaderMaterial).uniforms.opacity.value = opacity;
-        } else {
-            super.setTextureOpacity(mesh, opacity);
-        }
-    }
 }

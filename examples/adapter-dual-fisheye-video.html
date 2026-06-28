@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PhotoSphereViewer - dual fisheye video demo</title>
+
+        <link rel="stylesheet" href="/dist/core/index.css" />
+        <link rel="stylesheet" href="/dist/settings-plugin/index.css" />
+        <link rel="stylesheet" href="/dist/video-plugin/index.css" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="photosphere"></div>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "/node_modules/three/build/three.module.js",
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/dual-fisheye-adapter": "/dist/dual-fisheye-adapter/index.module.js",
+                    "@photo-sphere-viewer/resolution-plugin": "/dist/resolution-plugin/index.module.js",
+                    "@photo-sphere-viewer/settings-plugin": "/dist/settings-plugin/index.module.js",
+                    "@photo-sphere-viewer/video-plugin": "/dist/video-plugin/index.module.js"
+                }
+            }
+        </script>
+
+        <script type="module">
+            import { Viewer } from '@photo-sphere-viewer/core';
+            import { DualFisheyeVideoAdapter } from '@photo-sphere-viewer/dual-fisheye-adapter';
+            import { ResolutionPlugin } from '@photo-sphere-viewer/resolution-plugin';
+            import { SettingsPlugin } from '@photo-sphere-viewer/settings-plugin';
+            import { VideoPlugin } from '@photo-sphere-viewer/video-plugin';
+
+            const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
+
+            const viewer = new Viewer({
+                container: 'photosphere',
+                adapter: DualFisheyeVideoAdapter.withConfig({
+                    autoplay: false,
+                    muted: true,
+                }),
+                caption: '<b>&copy; AntVil</b>',
+                loadingImg: baseUrl + 'loader.gif',
+                navbar: 'video zoom move caption settings fullscreen',
+                sphereCorrection: { roll: Math.PI, pan: Math.PI },
+                plugins: [
+                    VideoPlugin.withConfig({
+                        progressbar: true,
+                        bigbutton: true,
+                    }),
+                    SettingsPlugin,
+                    ResolutionPlugin.withConfig({
+                        defaultResolution: 'HD',
+                        resolutions: [
+                            {
+                                id: 'UHD',
+                                label: 'Ultra high',
+                                panorama: { source: baseUrl + 'dual-fisheye-video/lake_UHD.webm' },
+                            },
+                            {
+                                id: 'HD',
+                                label: 'High',
+                                panorama: { source: baseUrl + 'dual-fisheye-video/lake_HD.webm' },
+                            },
+                        ],
+                    }),
+                ],
+            });
+
+            window.viewer = viewer;
+        </script>
+    </body>
+</html>

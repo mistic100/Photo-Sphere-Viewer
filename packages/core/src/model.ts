@@ -98,6 +98,11 @@ export type AnimateOptions = Partial<ExtendedPosition> & {
 export type EquirectangularPanorama = {
     path: string;
     data?: PanoData | PanoDataProvider;
+    /**
+     * used for equirectangular tiles adapter
+     * @internal
+     */
+    blur?: boolean;
 };
 
 /**

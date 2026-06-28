@@ -353,6 +353,9 @@ export class Viewer extends TypedEventTarget<ViewerEvents> {
         if (!options.panoData && typeof this.config.panoData === 'function') {
             options.panoData = this.config.panoData;
         }
+        if (options.sphereCorrection === undefined) {
+            options.sphereCorrection = this.config.sphereCorrection;
+        }
 
         this.hideError();
         this.resetIdleTimer();

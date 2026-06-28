@@ -31,4 +31,5 @@ These are the various photos and videos used across the demos:
 - equirectangular-video: [Mettle Communications](https://www.mettle.com/360vr-master-series-free-360-downloads-page)
 - cubemap-video: [The Dalí Museum](https://www.youtube.com/watch?v=zQ2-oJOkTKc)
 - tour : Pixexid (dead link)
-- dualfisheye: [Jonna Luostari](https://jonnaluostari.com)
+- dual-fisheye: [Jonna Luostari](https://jonnaluostari.com)
+- dual-fisheye-video: [AntVil](https://antvil.github.io)

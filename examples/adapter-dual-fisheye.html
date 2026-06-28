@@ -15,13 +15,15 @@
             {
                 "imports": {
                     "three": "/node_modules/three/build/three.module.js",
-                    "@photo-sphere-viewer/core": "/dist/core/index.module.js"
+                    "@photo-sphere-viewer/core": "/dist/core/index.module.js",
+                    "@photo-sphere-viewer/dual-fisheye-adapter": "/dist/dual-fisheye-adapter/index.module.js"
                 }
             }
         </script>
 
         <script type="module">
-            import { Viewer, DualFisheyeAdapter } from '@photo-sphere-viewer/core';
+            import { Viewer } from '@photo-sphere-viewer/core';
+            import { DualFisheyeAdapter } from '@photo-sphere-viewer/dual-fisheye-adapter';
 
             const baseUrl = 'https://photo-sphere-viewer-data.netlify.app/assets/';
 

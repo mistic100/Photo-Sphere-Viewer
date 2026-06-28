@@ -113,9 +113,8 @@ export abstract class AbstractVideoAdapter<
         }
     }
 
-    setTextureOpacity(mesh: TMesh, opacity: number) {
-        mesh.material.opacity = opacity;
-        mesh.material.transparent = opacity < 1;
+    setTextureOpacity() {
+        // noop
     }
 
     disposeTexture({ texture }: AbstractVideoTextureData) {

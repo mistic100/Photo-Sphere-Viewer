@@ -10,7 +10,7 @@ The supported adapters are:
 -   [cubemap](cubemap.md): used to load cubemaps projections (six textures)
 -   [cubemap tiles](cubemap-tiles.md): used to load tiled cubemap panoramas
 -   [cubemap video](cubemap-video.md): used to load cubemap video
--   [dual fisheye](dual-fisheye.md): used to display raw files of 360 cameras like the Ricoh Theta Z1
+-   [dual fisheye](dual-fisheye.md): used to display raw files of 360 cameras like the Ricoh Theta or Insta360 (stills &amp; videos)
 
 ## Import an adapter
 
