@@ -8,7 +8,6 @@ type DualFisheyeVideoMesh = Mesh<SphereGeometry, MeshBasicMaterial | ShaderMater
 type DualFisheyeVideoTextureData = TextureData<VideoTexture, DualFisheyeVideoPanorama, PanoData>;
 
 const getConfig = utils.getConfigParser<DualFisheyeVideoAdapterConfig>({
-    shader: false,
     resolution: 64,
     autoplay: false,
     muted: false,
@@ -39,7 +38,6 @@ export class DualFisheyeVideoAdapter extends AbstractVideoAdapter<
         this.config = getConfig(config);
 
         this.adapter = new DualFisheyeAdapter(this.viewer, {
-            shader: this.config.shader,
             resolution: this.config.resolution,
         });
     }
@@ -85,20 +83,12 @@ export class DualFisheyeVideoAdapter extends AbstractVideoAdapter<
     }
 
     setTexture(mesh: DualFisheyeVideoMesh, { texture }: DualFisheyeVideoTextureData) {
-        if (this.config.shader) {
-            (mesh.material as ShaderMaterial).uniforms.map.value = texture;
-        } else {
-            (mesh.material as MeshBasicMaterial).map = texture;
-        }
+        (mesh.material as MeshBasicMaterial).map = texture;
 
         this.switchVideo(texture);
     }
 
     override setTextureOpacity(mesh: DualFisheyeVideoMesh, opacity: number): void {
-        if (this.config.shader) {
-            (mesh.material as ShaderMaterial).uniforms.opacity.value = opacity;
-        } else {
-            super.setTextureOpacity(mesh, opacity);
-        }
+        super.setTextureOpacity(mesh, opacity);
     }
 }
