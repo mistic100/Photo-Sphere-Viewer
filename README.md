@@ -74,6 +74,13 @@ This library is available under the MIT license.
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/damiensorel-sglk">
+                    <img src="https://avatars.githubusercontent.com/u/300380529?v=4" width="100;" alt="damiensorel-sglk"/>
+                    <br />
+                    <sub><b>damiensorel-sglk</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/TheBox193">
                     <img src="https://avatars.githubusercontent.com/u/220755?v=4" width="100;" alt="TheBox193"/>
                     <br />
@@ -101,6 +108,8 @@ This library is available under the MIT license.
                     <sub><b>Samuel Marineau-Cyr</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/sonniydsgn">
                     <img src="https://avatars.githubusercontent.com/u/72299738?v=4" width="100;" alt="sonniydsgn"/>
@@ -108,8 +117,6 @@ This library is available under the MIT license.
                     <sub><b>Alexey Kalinin</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/venmax">
                     <img src="https://avatars.githubusercontent.com/u/4507022?v=4" width="100;" alt="venmax"/>
@@ -145,6 +152,8 @@ This library is available under the MIT license.
                     <sub><b>Juan Morais</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/LukasDrgon">
                     <img src="https://avatars.githubusercontent.com/u/15611832?v=4" width="100;" alt="LukasDrgon"/>
@@ -152,8 +161,6 @@ This library is available under the MIT license.
                     <sub><b>Lukas Drgon</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/mkubdev">
                     <img src="https://avatars.githubusercontent.com/u/50140834?v=4" width="100;" alt="mkubdev"/>
@@ -189,6 +196,8 @@ This library is available under the MIT license.
                     <sub><b>Samuel Gaus</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/stephanmullerNL">
                     <img src="https://avatars.githubusercontent.com/u/1608051?v=4" width="100;" alt="stephanmullerNL"/>
@@ -196,8 +205,6 @@ This library is available under the MIT license.
                     <sub><b>Stephan Muller</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/linfulongnet">
                     <img src="https://avatars.githubusercontent.com/u/23325671?v=4" width="100;" alt="linfulongnet"/>
