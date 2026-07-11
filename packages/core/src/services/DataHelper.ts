@@ -357,8 +357,8 @@ export class DataHelper extends AbstractService {
             options = {
                 ...options,
                 position: {
-                    yaw: parseAngle(panoData.initialHeading),
-                    pitch: parseAngle(panoData.initialPitch, true),
+                    yaw: MathUtils.degToRad(panoData.initialHeading),
+                    pitch: MathUtils.degToRad(panoData.initialPitch),
                 },
             };
         }

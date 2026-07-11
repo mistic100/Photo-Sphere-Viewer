@@ -26,6 +26,7 @@ You will need [Node.js 22](https://nodejs.org/).
 These are the various photos and videos used across the demos:
 
 - sphere, sphere-tiles, cubemap, cubemap-tiles: [Damien Sorel (me!)](https://galerie.strangeplanet.fr/picture.php?/1802/category/81)
+- sphere-test, cubemap-test: [Rodrigo Polo](https://github.com/rodrigopolo/360GPanoReference)
 - sphere-tiles-24k, cubemap-tiles-24k: [Greg Zaal](https://polyhaven.com/a/cannon)
 - artist-workshop: [Oliksiy Yakovlyev](https://polyhaven.com/a/artist_workshop)
 - equirectangular-video: [Mettle Communications](https://www.mettle.com/360vr-master-series-free-360-downloads-page)

@@ -217,9 +217,9 @@ export class CubemapAdapter extends AbstractAdapter<CubemapPanorama, CubemapData
                         .then((img) => {
                             if (img.width !== img.height) {
                                 utils.logWarn('Invalid cubemap image, the width should equal the height');
-
-                                return utils.createSizedTexture(img, panorama.blur ? { factor: BLUR_FACTOR } : null);
                             }
+
+                            return utils.createSizedTexture(img, panorama.blur ? { factor: BLUR_FACTOR } : null);
                         }),
                 );
             }

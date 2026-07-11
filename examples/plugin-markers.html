@@ -85,16 +85,6 @@
                 <pattern id="dots" x="10" y="10" width="30" height="30" patternUnits="userSpaceOnUse">
                     <circle cx="10" cy="10" r="10" style="stroke: none; fill: rgba(255, 0, 0, 0.4)" />
                 </pattern>
-                <pattern id="points" x="10" y="10" width="15" height="15" patternUnits="userSpaceOnUse">
-                    <circle cx="10" cy="10" r="0.8" style="stroke: none; fill: red" />
-                </pattern>
-                <pattern id="image" x="256" y="256" width="512" height="512" patternUnits="userSpaceOnUse">
-                    <rect x="0" y="0" width="512" height="512" fill="#8DC73F" />
-                    <image
-                        href="https://photo-sphere-viewer-data.netlify.app/assets/cubemap-test/2.png"
-                        x="128" y="128" width="256" height="256"
-                    />
-                </pattern>
             </defs>
         </svg>
 
@@ -234,7 +224,7 @@ tellus est malesuada tellus, at luctus turpis elit sit amet quam. Vivamus pretiu
                                     [3438, 1538], [3241, 1543], [3041, 1555],
                                 ],
                                 svgStyle: {
-                                    fill: 'url(#image)',
+                                    fill: 'url(#dots)',
                                     fillOpacity: '0.5',
                                     stroke: 'rgba(255, 0, 50, 0.8)',
                                     strokeWidth: '2px',
