@@ -350,9 +350,11 @@ export class Renderer extends AbstractService {
         this.scene.add(tempContainer);
 
         // make sure the new texture is transfered to the GPU before starting the animation
-        this.renderer.setRenderTarget(new WebGLRenderTarget<any>());
+        const warmupTarget = new WebGLRenderTarget<any>();
+        this.renderer.setRenderTarget(warmupTarget);
         this.renderer.render(this.scene, this.camera);
         this.renderer.setRenderTarget(null);
+        warmupTarget.dispose();
 
         const { duration, properties } = this.viewer.dataHelper.getAnimationProperties(
             transition.speed,
