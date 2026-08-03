@@ -63,7 +63,7 @@
     "turbo": "^2.10.7",
     "typedoc": "^0.28.20",
     "typedoc-plugin-no-inherit": "^1.6.1",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.65.0"
   },
   "resolutions": {
