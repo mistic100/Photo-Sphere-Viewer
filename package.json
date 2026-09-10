@@ -46,9 +46,9 @@
     "cypress-on-fix": "^1.1.0",
     "cypress-visual-regression": "^5.3.0",
     "esbuild-sass-plugin": "^3.7.0",
-    "eslint": "^10.8.0",
+    "eslint": "^10.10.0",
     "glob": "^10.4.5",
-    "globals": "^17.7.0",
+    "globals": "^17.12.0",
     "mocha": "^11.7.6",
     "mocha-junit-reporter": "^2.2.1",
     "nyc": "^18.0.0",
@@ -64,7 +64,7 @@
     "typedoc": "^0.28.20",
     "typedoc-plugin-no-inherit": "^1.6.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.65.0"
+    "typescript-eslint": "^8.70.0"
   },
   "resolutions": {
     "yargs": "^17.7.3",
