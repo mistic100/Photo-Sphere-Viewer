@@ -44,7 +44,7 @@
     "cypress": "^15.19.0",
     "cypress-mochawesome-reporter": "^4.0.2",
     "cypress-on-fix": "^1.1.0",
-    "cypress-visual-regression": "^5.3.0",
+    "cypress-visual-regression": "^6.0.1",
     "esbuild-sass-plugin": "^3.7.0",
     "eslint": "^10.10.0",
     "glob": "^10.4.5",
