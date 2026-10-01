@@ -2,6 +2,7 @@ import { inject, Ref } from 'vue';
 
 export type PsvDocData = {
     latestVersion: Ref<string>;
+    stargazersCount: Ref<number>;
 };
 
 export const DataSymbol = Symbol();

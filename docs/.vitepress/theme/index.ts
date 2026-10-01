@@ -50,6 +50,7 @@ import tabs from '../plugins/tabs/enhanceApp';
 
 import { DataSymbol, PsvDocData } from './data';
 import './style.scss';
+import { LocalCache } from './LocalCache.ts';
 
 const vuetify = createVuetify({
     ssr: true,
@@ -161,16 +162,31 @@ export default {
         tabs(app);
 
         const latestVersion = ref<string>('');
-        app.provide(DataSymbol, { latestVersion } satisfies PsvDocData);
+        const stargazersCount = ref<number>(0);
+        app.provide(DataSymbol, { latestVersion, stargazersCount } satisfies PsvDocData);
 
         if (!import.meta.env.SSR) {
-            (async () => {
-                const response = await fetch('https://registry.npmjs.org/@photo-sphere-viewer%2Fcore');
-                if (response.ok) {
-                    const data = await response.json();
-                    latestVersion.value = data['dist-tags']['latest'];
-                }
-            })();
+            LocalCache.getOrFetch(
+                'homeData',
+                3600 * 1000,
+                async () => {
+                    const [npm, github] = await Promise.all([
+                        fetch('https://registry.npmjs.org/@photo-sphere-viewer%2Fcore').then(r => r.json()),
+                        fetch('https://api.github.com/repos/mistic100/photo-sphere-viewer').then(r => r.json()),
+                    ]);
+
+                    return {
+                        latestVersion: npm['dist-tags']['latest'],
+                        stargazersCount: github['stargazers_count'],
+                    };
+                },
+            )
+                .then(result => {
+                    if (result) {
+                        latestVersion.value = result.latestVersion;
+                        stargazersCount.value = result.stargazersCount;
+                    }
+                });
         }
     },
 } satisfies Theme;

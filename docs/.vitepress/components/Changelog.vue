@@ -20,6 +20,7 @@
 <script setup lang="ts">
 import { kebabCase } from 'lodash-es';
 import { onMounted, ref } from 'vue';
+import { LocalCache } from '../theme/LocalCache';
 
 type Changelog = {
     id: string;
@@ -35,30 +36,25 @@ const showLoader = ref(true);
 const changelog = ref<Changelog[]>([]);
 
 onMounted(async () => {
-    const result = await fetchReleases();
-    const { marked } = await import('marked');
-    changelog.value = result.map(r => formatRelease(r, marked));
-    showLoader.value = false;
-});
-
-async function fetchReleases(): Promise<any[]> {
-    const cache = localStorage.releasesCache;
-    const cacheDate = localStorage.releasesCacheDate;
-
-    if (cache && cacheDate && (Date.now() - new Date(cacheDate).getTime() < 1000 * 3600)) {
-        return JSON.parse(cache);
-    } else {
-        const response = await fetch('/.netlify/functions/releases');
-        if (response.ok) {
-            const data = await response.json();
-            localStorage.releasesCacheDate = new Date().toISOString();
-            localStorage.releasesCache = JSON.stringify(data);
-            return data;
-        } else {
-            throw new Error(response.statusText);
+    const result = await LocalCache.getOrFetch<any[]>(
+        'releases',
+        1000 * 3600,
+        async () => {
+            const response = await fetch('/.netlify/functions/releases');
+            if (response.ok) {
+                return await response.json();
+            } else {
+                return null;
+            }
         }
+    );
+
+    if (result) {
+        const { marked } = await import('marked');
+        changelog.value = result.map(r => formatRelease(r, marked));
+        showLoader.value = false;
     }
-}
+});
 
 function formatRelease(release: any, marked: any): Changelog {
     // Convert markdown to html

@@ -16,6 +16,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { LocalCache } from '../theme/LocalCache';
 
 type Announcement = {
     title: string;
@@ -28,29 +29,23 @@ const dateFormat = new Intl.DateTimeFormat('en-US', { dateStyle: 'long' });
 const announcements = ref<Announcement[]>([]);
 
 onMounted(async () => {
-    const result = await fetchAnnouncements();
-    const { marked } = await import('marked');
-    announcements.value = result.map(r => formatAnnouncement(r, marked));
-});
-
-async function fetchAnnouncements(): Promise<any[]> {
-    const cache = localStorage.announcementsCache;
-    const cacheDate = localStorage.announcementsCacheDate;
-
-    if (cache && cacheDate && (Date.now() - new Date(cacheDate).getTime() < 1000 * 3600)) {
-        return JSON.parse(cache);
-    } else {
-        const response = await fetch('/.netlify/functions/announcements');
-        if (response.ok) {
-            const data = await response.json();
-            localStorage.announcementsCacheDate = new Date().toISOString();
-            localStorage.announcementsCache = JSON.stringify(data);
-            return data;
-        } else {
-            throw new Error(response.statusText);
+    const result = await LocalCache.getOrFetch<any[]>(
+        'announcements',
+        1000 * 3600,
+        async () => {
+            const response = await fetch('/.netlify/functions/announcements');
+            if (response.ok) {
+                return await response.json();
+            } else {
+                return null;
+            }
         }
+    );
+    if (result) {
+        const { marked } = await import('marked');
+        announcements.value = result.map(r => formatAnnouncement(r, marked));
     }
-}
+});
 
 function formatAnnouncement(announcement: any, marked: any): Announcement {
     let body = marked.parseInline(announcement.body.split('\r\n')[0], { breaks: true });

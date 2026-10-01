@@ -5,6 +5,7 @@
 <script setup lang="ts">
 import { VPTeamMembers } from 'vitepress/theme';
 import { onMounted, ref } from 'vue';
+import { LocalCache } from '../theme/LocalCache';
 
 const sponsors = ref<any[]>([]);
 
@@ -24,26 +25,21 @@ onMounted(async () => {
         sponsors.value = [...props.data, newSponsor];
     }
 
-    const result = await fetchSponsors();
-    sponsors.value = [...result, newSponsor];
-});
-
-async function fetchSponsors(): Promise<any[]> {
-    const cache = localStorage.sponsorsCache;
-    const cacheDate = localStorage.sponsorsCacheDate;
-
-    if (cache && cacheDate && (Date.now() - new Date(cacheDate).getTime() < 1000 * 3600)) {
-        return JSON.parse(cache);
-    } else {
-        const response = await fetch('/.netlify/functions/sponsors');
-        if (response.ok) {
-            const data = await response.json();
-            localStorage.sponsorsCacheDate = new Date().toISOString();
-            localStorage.sponsorsCache = JSON.stringify(data);
-            return data;
-        } else {
-            throw new Error(response.statusText);
+    const result = await LocalCache.getOrFetch<any[]>(
+        'sponsors',
+        1000 * 3600,
+        async () => {
+            const response = await fetch('/.netlify/functions/sponsors');
+            if (response.ok) {
+                return await response.json();
+            } else {
+                return null;
+            }
         }
+    );
+
+    if (result) {
+        sponsors.value = [...result, newSponsor];
     }
-}
+});
 </script>
