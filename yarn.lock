@@ -2205,10 +2205,10 @@ comma-separated-tokens@^2.0.0:
   resolved "https://registry.npmjs.org/comma-separated-tokens/-/comma-separated-tokens-2.0.3.tgz#4e89c9458acb61bc8fef19f4529973b2392839ee"
   integrity sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==
 
-commander@^10.0.1:
-  version "10.0.1"
-  resolved "https://registry.npmjs.org/commander/-/commander-10.0.1.tgz#881ee46b4f77d1c1dccc5823433aa39b022cbe06"
-  integrity sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==
+commander@^15.0.0:
+  version "15.0.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-15.0.0.tgz#96f3961f12adac1799ef3fbd8bc61d40572d1b11"
+  integrity sha512-z67u4ZhzCL/Tydu1lJARtEZYWbWaN7oYLHbsuzocr6y4N6WZAagG3RQ4FW61V1/0+jImpj293XfrcYnd1qxtPg==
 
 commander@^4.0.0:
   version "4.1.1"
@@ -2325,16 +2325,15 @@ csstype@^3.2.3:
   resolved "https://registry.npmjs.org/csstype/-/csstype-3.2.3.tgz#ec48c0f3e993e50648c86da559e2610995cf989a"
   integrity sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==
 
-cypress-mochawesome-reporter@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.npmjs.org/cypress-mochawesome-reporter/-/cypress-mochawesome-reporter-4.0.2.tgz#9013d9dba0987ab70a63b9842d1352b3a5e76e80"
-  integrity sha512-a51v+hjIcbPzKrzSW/PAbFzTcUKTuIUr2ntQn/VXQSYkPOmedZ731XInN6T9u2Yyb3/UyApfXiq4dQAj6GezJQ==
+cypress-mochawesome-reporter@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/cypress-mochawesome-reporter/-/cypress-mochawesome-reporter-5.0.0.tgz#6d5cb28725f9a4225a0f636087ebefa1e68105b7"
+  integrity sha512-1S2LML2oe8Rsargfcopk0Yt8/693zv6OVGhvJ/U/mLUGLmzSF8tV3ElkLdgzJTPwg/d+JgqTBh58zW63VXZRMg==
   dependencies:
-    commander "^10.0.1"
-    fs-extra "^11.3.0"
-    mochawesome "^7.1.3"
-    mochawesome-merge "^5.0.0"
-    mochawesome-report-generator "^6.2.0"
+    commander "^15.0.0"
+    fs-extra "^11.4.0"
+    mochawesome "^8.0.0"
+    mochawesome-report-generator "^6.3.2"
 
 cypress-on-fix@^1.1.0:
   version "1.1.0"
@@ -2505,9 +2504,9 @@ devlop@^1.0.0:
   dependencies:
     dequal "^2.0.0"
 
-diff@^5.0.0:
+diff@^5.2.0:
   version "5.2.2"
-  resolved "https://registry.npmjs.org/diff/-/diff-5.2.2.tgz#0a4742797281d09cfa699b79ea32d27723623bad"
+  resolved "https://registry.yarnpkg.com/diff/-/diff-5.2.2.tgz#0a4742797281d09cfa699b79ea32d27723623bad"
   integrity sha512-vtcDfH3TOjP8UekytvnHH1o1P4FcUdt4eQ1Y+Abap1tk/OB2MWQvcwS2ClCd1zuIhc3JKOx6p3kod8Vfys3E+A==
 
 diff@^7.0.0:
@@ -3081,9 +3080,9 @@ fs-extra@^10.0.0:
     jsonfile "^6.0.1"
     universalify "^2.0.0"
 
-fs-extra@^11.3.0:
+fs-extra@^11.4.0:
   version "11.4.0"
-  resolved "https://registry.npmjs.org/fs-extra/-/fs-extra-11.4.0.tgz#f88ed6d180ac9e14b61b08e679468f0b1b6b4730"
+  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-11.4.0.tgz#f88ed6d180ac9e14b61b08e679468f0b1b6b4730"
   integrity sha512-EQsFzMUJkCKGr1ePqlYADkIUmHW1s3ZXr5Yqy6wbGrfUCphpl2maM/kyOIRA2HpP3AaFQTZXD4ldjek+nccddA==
   dependencies:
     graceful-fs "^4.2.0"
@@ -3204,7 +3203,7 @@ glob@^10.4.5:
     package-json-from-dist "^1.0.0"
     path-scurry "^1.11.1"
 
-glob@^13.0.1, glob@^13.0.3, glob@^13.0.6:
+glob@^13.0.3, glob@^13.0.6:
   version "13.0.6"
   resolved "https://registry.npmjs.org/glob/-/glob-13.0.6.tgz#078666566a425147ccacfbd2e332deb66a2be71d"
   integrity sha512-Wjlyrolmm8uDpm/ogGyXZXb1Z+Ca2B8NbJwqBVg0axK9GbBeoS7yGV6vjXnYdGm6X53iehEuxxbyiKp8QmN4Vw==
@@ -3945,25 +3944,10 @@ lodash.flattendeep@^4.4.0:
   resolved "https://registry.npmjs.org/lodash.flattendeep/-/lodash.flattendeep-4.4.0.tgz#fb030917f86a3134e5bc9bec0d69e0013ddfedb2"
   integrity sha512-uHaJFihxmJcEX3kT4I23ABqKKalJ/zDrDg0lsFtc1h+3uw49SIJ5beyhx5ExVRti3AvKoOJngIj7xz3oylPdWQ==
 
-lodash.isempty@^4.4.0:
-  version "4.4.0"
-  resolved "https://registry.npmjs.org/lodash.isempty/-/lodash.isempty-4.4.0.tgz#6f86cbedd8be4ec987be9aaf33c9684db1b31e7e"
-  integrity sha512-oKMuF3xEeqDltrGMfDxAPGIVMSSRv8tbRSODbrs4KGsRRLEhrW8N8Rd4DRgB2+621hY8A8XwwrTVhXWpxFvMzg==
-
 lodash.isfunction@^3.0.9:
   version "3.0.9"
   resolved "https://registry.npmjs.org/lodash.isfunction/-/lodash.isfunction-3.0.9.tgz#06de25df4db327ac931981d1bdb067e5af68d051"
   integrity sha512-AirXNj15uRIMMPihnkInB4i3NHeb4iBtNg9WRWuK2o31S+ePwwNmDPaTL3o7dTJ+VXNZim7rFs4rxN4YU1oUJw==
-
-lodash.isobject@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.npmjs.org/lodash.isobject/-/lodash.isobject-3.0.2.tgz#3c8fb8d5b5bf4bf90ae06e14f2a530a4ed935e1d"
-  integrity sha512-3/Qptq2vr7WeJbB4KHUSKlq8Pl7ASXi3UG6CMbBm8WRtXi8+GHm7mKaU3urfpSEzWe2wCIChs6/sdocUsTKJiA==
-
-lodash.isstring@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.npmjs.org/lodash.isstring/-/lodash.isstring-4.0.1.tgz#d527dfb5456eca7cc9bb95d5daeaf88ba54a5451"
-  integrity sha512-0wJxfxH1wgO3GrbuP+dTTk7op+6L41QCXbGINEmD+ny/G/eCqGzxyCsh7159S+mgDDcoarnBw6PC1PS5+wUGgw==
 
 lodash.once@^4.1.1:
   version "4.1.1"
@@ -4301,18 +4285,9 @@ mocha@^11.7.6:
     yargs-parser "^21.1.1"
     yargs-unparser "^2.0.0"
 
-mochawesome-merge@^5.0.0:
-  version "5.1.1"
-  resolved "https://registry.npmjs.org/mochawesome-merge/-/mochawesome-merge-5.1.1.tgz#4987b595b0ce2f0ba03d7f6e278a52f133bcc1ce"
-  integrity sha512-dmhhDu6y1xoVv0Kn6hJrwCgVPEUcA1ktEbjetkeMgva+R0+b5J+YBNMwiz77W9JxW7vn6crNcluLF5gfRs5f5g==
-  dependencies:
-    fs-extra "^11.3.0"
-    glob "^13.0.1"
-    yargs "^17.7.2"
-
-mochawesome-report-generator@^6.2.0, mochawesome-report-generator@^6.3.0:
+mochawesome-report-generator@^6.3.2:
   version "6.3.2"
-  resolved "https://registry.npmjs.org/mochawesome-report-generator/-/mochawesome-report-generator-6.3.2.tgz#a628c120eeeba05a2e38c74583c4302068c291c5"
+  resolved "https://registry.yarnpkg.com/mochawesome-report-generator/-/mochawesome-report-generator-6.3.2.tgz#a628c120eeeba05a2e38c74583c4302068c291c5"
   integrity sha512-iB6iyOUMyMr8XOUYTNfrqYuZQLZka3K/Gr2GPc6CHPe7t2ZhxxfcoVkpMLOtyDKnWbY1zgu1/7VNRsigrvKnOQ==
   dependencies:
     chalk "^4.1.2"
@@ -4327,21 +4302,14 @@ mochawesome-report-generator@^6.2.0, mochawesome-report-generator@^6.3.0:
     tcomb-validation "^3.3.0"
     yargs "^17.2.1"
 
-mochawesome@^7.1.3:
-  version "7.1.4"
-  resolved "https://registry.npmjs.org/mochawesome/-/mochawesome-7.1.4.tgz#169f662fb856b08d2162c877b31fb31f4b0096bb"
-  integrity sha512-fucGSh8643QkSvNRFOaJ3+kfjF0FhA/YtvDncnRAG0A4oCtAzHIFkt/+SgsWil1uwoeT+Nu5fsAnrKkFtnPcZQ==
+mochawesome@^8.0.0:
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/mochawesome/-/mochawesome-8.1.1.tgz#f52d0b3588315f8f239feb6db6bf1fe360021c58"
+  integrity sha512-4CXdjYoxqO3RMAAZfP8kwNTQqYaYdTHfLM2WLrLYncDei8yScXnjJhKG5CkAcH+VCXY5Wkvk9XVTCROH2vk8Fw==
   dependencies:
-    chalk "^4.1.2"
-    diff "^5.0.0"
+    diff "^5.2.0"
     json-stringify-safe "^5.0.1"
-    lodash.isempty "^4.4.0"
-    lodash.isfunction "^3.0.9"
-    lodash.isobject "^3.0.2"
-    lodash.isstring "^4.0.1"
-    mochawesome-report-generator "^6.3.0"
-    strip-ansi "^6.0.1"
-    uuid "^8.3.2"
+    mochawesome-report-generator "^6.3.2"
 
 morgan@^1.10.0:
   version "1.11.0"
