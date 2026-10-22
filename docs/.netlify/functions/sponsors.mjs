@@ -87,6 +87,10 @@ query {
             };
 
             if (sponsor.websiteUrl) {
+                if (!sponsor.websiteUrl.startWith('http')) {
+                    sponsor.websiteUrl = 'https://' + sponsor.websiteUrl;
+                }
+
                 niceSponsor.links.push(
                     { icon: 'googlehome', link: sponsor.websiteUrl },
                 );

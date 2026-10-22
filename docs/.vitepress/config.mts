@@ -61,6 +61,13 @@ export default defineConfig({
         ['link', { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@mdi/font@7/css/materialdesignicons.min.css' }],
     ],
 
+    icons: {
+        include: [
+            'simple-icons:github',
+            'simple-icons:googlehome',
+        ],
+    },
+
     themeConfig: {
         logo: '/favicon.png',
         aside: true,
