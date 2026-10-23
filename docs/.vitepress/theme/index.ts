@@ -49,8 +49,8 @@ import gallery from '../plugins/gallery/enhanceApp';
 import tabs from '../plugins/tabs/enhanceApp';
 
 import { DataSymbol, PsvDocData } from './data';
-import './style.scss';
 import { LocalCache } from './LocalCache.ts';
+import './style.scss';
 
 const vuetify = createVuetify({
     ssr: true,
@@ -181,7 +181,7 @@ export default {
                     };
                 },
             )
-                .then(result => {
+                .then((result) => {
                     if (result) {
                         latestVersion.value = result.latestVersion;
                         stargazersCount.value = result.stargazersCount;

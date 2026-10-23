@@ -379,10 +379,10 @@ export class MarkersPlugin extends AbstractConfigurablePlugin<
      * Returns the internal marker object for a marker id
      * @throws {@link PSVError} when the marker cannot be found
      */
-    getMarker(markerId: string | MarkerConfig): Marker {
+    getMarker(markerId: string | MarkerConfig, throwNotFound = true): Marker {
         const id = typeof markerId === 'object' ? markerId.id : markerId;
 
-        if (!this.markers[id]) {
+        if (!this.markers[id] && throwNotFound) {
             throw new PSVError(`cannot find marker "${id}"`);
         }
 
