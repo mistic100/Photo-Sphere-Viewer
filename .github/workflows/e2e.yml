@@ -16,7 +16,11 @@ jobs:
           turbo-cache: 'false'
 
       - name: e2e
-        run: yarn ci:e2e
+        uses: cypress-io/github-action@v7
+        with:
+          install: false
+          build: yarn ci:build:e2e
+          start: yarn watch --e2e
 
       - name: test summary
         uses: phoenix-actions/test-reporting@v16

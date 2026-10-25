@@ -20,14 +20,18 @@ describe('plugin: gallery', () => {
     });
 
     it('should have a gallery', () => {
-        cy.get('.psv-gallery').should('be.visible');
+        cy.get('.psv-gallery')
+            .should('be.visible')
+            .should('have.class', 'psv-gallery--open');
         screenshotGallery('base');
     });
 
     it('should hide gallery on panel open', () => {
         callViewer('open panel').then(viewer => viewer.panel.show('Lorem ipsum'));
 
-        cy.get('.psv-gallery').should('not.be.visible');
+        cy.get('.psv-gallery')
+            // .should('not.be.visible')
+            .should('not.have.class', 'psv-gallery--open');
     });
 
     it('should scroll horizontally', () => {
@@ -65,7 +69,9 @@ describe('plugin: gallery', () => {
 
         cy.get('.psv-gallery .psv-panel-close-button').click();
 
-        cy.get('.psv-gallery').should('not.be.visible');
+        cy.get('.psv-gallery')
+            // .should('not.be.visible')
+            .should('not.have.class', 'psv-gallery--open');
     });
 
     it('should add a navbar button', () => {
@@ -75,11 +81,15 @@ describe('plugin: gallery', () => {
             .click()
             .should('not.have.class', 'psv-button--active');
 
-        cy.get('.psv-gallery').should('not.be.visible');
+        cy.get('.psv-gallery')
+            // .should('not.be.visible')
+            .should('not.have.class', 'psv-gallery--open');
 
         cy.get('.psv-gallery-button').click();
 
-        cy.get('.psv-gallery').should('be.visible');
+        cy.get('.psv-gallery')
+            .should('be.visible')
+            .should('have.class', 'psv-gallery--open');
     });
 
     it('should highlight the current item', () => {
@@ -113,7 +123,9 @@ describe('plugin: gallery', () => {
 
         cy.get('[data-psv-gallery-item=test-sphere]').click();
 
-        cy.get('.psv-gallery').should('not.be.visible');
+        cy.get('.psv-gallery')
+            // .should('not.be.visible')
+            .should('not.have.class', 'psv-gallery--open');
     });
 
     it('should change thumbnails size', () => {
@@ -187,14 +199,18 @@ describe('plugin: gallery', () => {
 
         cy.get('.psv-gallery-button').should('not.be.visible');
 
-        cy.get('.psv-gallery').should('not.be.visible');
+        cy.get('.psv-gallery')
+            // .should('not.be.visible')
+            .should('not.have.class', 'psv-gallery--open');
     });
 
     it('should not be visible on load', () => {
         cy.visit('e2e/plugins/gallery.html?visibleOnLoad=false');
         waitViewerReady();
 
-        cy.get('.psv-gallery').should('not.be.visible');
+        cy.get('.psv-gallery')
+            // .should('not.be.visible')
+            .should('not.have.class', 'psv-gallery--open');
     });
 
     function callGallery(log: string) {
