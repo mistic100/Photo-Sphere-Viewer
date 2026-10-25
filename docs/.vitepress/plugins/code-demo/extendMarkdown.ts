@@ -23,16 +23,13 @@ export default function extendMarkdown(md: MarkdownIt) {
                 };
 
                 for (let index = idx; index < tokens.length; index++) {
-                    const { type, content, info, src } = tokens[index];
-                    if (type === `container_${BLOCK_NAME}_close`) {
-                        break;
-                    }
+                    const { type, content, info, meta } = tokens[index];
                     if (type === 'fence') {
                         const lang = info.split(/[{[:]/)[0].trim();
                         if (lang === 'yaml' || lang === 'yml') {
                             Object.assign(config, parseYaml(content));
-                        } else if (src) {
-                            config[lang] += fs.readFileSync(src[0], 'utf-8');
+                        } else if (meta?.src) {
+                            config[lang] += fs.readFileSync(meta.src, 'utf-8');
                         } else {
                             config[lang] += content;
                         }
