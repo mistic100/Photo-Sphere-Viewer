@@ -24,6 +24,9 @@ export default function extendMarkdown(md: MarkdownIt) {
 
                 for (let index = idx; index < tokens.length; index++) {
                     const { type, content, info, meta } = tokens[index];
+                    if (type === `container_${BLOCK_NAME}_close`) {
+                        break;
+                    }
                     if (type === 'fence') {
                         const lang = info.split(/[{[:]/)[0].trim();
                         if (lang === 'yaml' || lang === 'yml') {
