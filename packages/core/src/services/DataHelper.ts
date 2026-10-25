@@ -26,7 +26,7 @@ import {
 import { AbstractService } from './AbstractService';
 
 const vector3 = new Vector3();
-const EULER_ZERO = new Euler(0, 0, 0, 'ZXY');
+const EULER_ZERO = new Euler(0, 0, 0, 'YXZ');
 
 /**
  * Collections of data converters for the viewer
