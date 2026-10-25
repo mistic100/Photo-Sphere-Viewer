@@ -19,7 +19,7 @@ This library is available under the MIT license.
 
 ## Contributors
 
-<!-- readme: contributors,AntVil,PabloAraya6,web-flow/- -start -->
+<!-- readme: contributors,AntVil,PabloAraya6,web-flow/-,damiensorel-sglk/- -start -->
 <table>
 	<tbody>
 		<tr>
@@ -260,4 +260,4 @@ This library is available under the MIT license.
 		</tr>
 	<tbody>
 </table>
-<!-- readme: contributors,AntVil,PabloAraya6,web-flow/- -end -->
+<!-- readme: contributors,AntVil,PabloAraya6,web-flow/-,damiensorel-sglk/- -end -->
