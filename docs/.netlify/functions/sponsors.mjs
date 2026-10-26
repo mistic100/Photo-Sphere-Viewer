@@ -87,7 +87,7 @@ query {
             };
 
             if (sponsor.websiteUrl) {
-                if (!sponsor.websiteUrl.startWith('http')) {
+                if (!sponsor.websiteUrl.startsWith('http')) {
                     sponsor.websiteUrl = 'https://' + sponsor.websiteUrl;
                 }
 
