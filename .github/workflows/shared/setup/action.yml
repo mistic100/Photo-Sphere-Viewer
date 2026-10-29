@@ -8,7 +8,7 @@ runs:
   using: composite
 
   steps:
-    - uses: actions/setup-node@v6
+    - uses: actions/setup-node@v7
       with:
         node-version: '24'
         cache: 'yarn'
@@ -21,7 +21,7 @@ runs:
         echo "REF_NAME_SLUG=${GITHUB_REF_NAME////_}" >> $GITHUB_ENV
 
     - name: turbo cache
-      uses: actions/cache@v5
+      uses: actions/cache@v6
       if: ${{ inputs.turbo-cache == 'true' && !startsWith(github.ref_name, 'dependabot') }}
       with:
         path: .turbo
