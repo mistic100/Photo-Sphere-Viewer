@@ -12,7 +12,6 @@ runs:
       with:
         node-version: '24'
         cache: 'yarn'
-        registry-url: 'https://registry.npmjs.org'
 
     - name: env
       shell: bash
