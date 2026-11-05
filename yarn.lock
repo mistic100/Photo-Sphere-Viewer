@@ -199,10 +199,10 @@
   resolved "https://registry.npmjs.org/@csstools/selector-specificity/-/selector-specificity-5.0.0.tgz#037817b574262134cabd68fc4ec1a454f168407b"
   integrity sha512-PCqQV3c4CoVm3kdPhyeZ07VmBRdH2EpMFA/pd9OASpOEC3aXNGoqPDAZ80D0cLpMBxnmk0+yNhGsEx31hq7Gtw==
 
-"@cypress/code-coverage@^4.0.3":
-  version "4.0.3"
-  resolved "https://registry.npmjs.org/@cypress/code-coverage/-/code-coverage-4.0.3.tgz#0dc543537b77ed6bed4765abd9bfa69412a65f8a"
-  integrity sha512-Dsx95C6rPJrN7ruRyyh3xOy39iAmrLBclHdF+yiC7f8O1SIAOojplveBdFGj0EHf2I2ieNw7ZZpT3Qy1Fju0aA==
+"@cypress/code-coverage@^4.1.3":
+  version "4.1.3"
+  resolved "https://registry.npmjs.org/@cypress/code-coverage/-/code-coverage-4.1.3.tgz#3353b7059e4b36a348b8f315cc7e82cf1e2605d5"
+  integrity sha512-uilG7KpQHsGzp3BL54001GZMfaZXSottYfXyET8JMTS71HmJFqMZz1XyV/loznVZf3QGXc5qKqD3St2uFBMcgA==
   dependencies:
     "@cypress/webpack-preprocessor" "^6.0.0"
     chalk "4.1.2"
@@ -481,7 +481,7 @@
   dependencies:
     "@humanfs/types" "^0.15.0"
 
-"@humanfs/node@^0.16.6":
+"@humanfs/node@^0.16.8":
   version "0.16.8"
   resolved "https://registry.npmjs.org/@humanfs/node/-/node-0.16.8.tgz#8f800cccc13f4f8cd3116e2d9c0a94939da3e3ed"
   integrity sha512-gE1eQNZ3R++kTzFUpdGlpmy8kDZD/MLyHqDwqjkVQI0JMdI1D51sy1H958PNXYkM2rAac7e5/CnIKZrHtPh3BQ==
@@ -1917,10 +1917,10 @@ bluebird@^3.7.2:
   resolved "https://registry.npmjs.org/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
   integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
 
-brace-expansion@^5.0.5:
-  version "5.0.8"
-  resolved "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.8.tgz#135ad0d8d808eb18eb5e0ec9a21f3a0b92ef18cf"
-  integrity sha512-JZyDyq3D4AUifKTPOB7DELf6XsB3WdPuNxCtob1vFXPsSXhdAiHBWJ/tJ8HAc9aH84BK+5JFZLNkJKx3G9kzQg==
+brace-expansion@^5.0.8:
+  version "5.0.12"
+  resolved "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.12.tgz#995fbb4750a77c4d16a7dc942ff2ca6ef8e675ec"
+  integrity sha512-YovQ3rzhaLMIrDjNDMkNS01tea93qhEhG5xy8f6+R0l+dw3Ki+5sCoIoI942iuLZTHWogWktgwVDhU09iNEimQ==
   dependencies:
     balanced-match "^4.0.2"
 
@@ -2690,10 +2690,10 @@ eslint-visitor-keys@^5.0.0, eslint-visitor-keys@^5.0.1:
   resolved "https://registry.npmjs.org/eslint-visitor-keys/-/eslint-visitor-keys-5.0.1.tgz#9e3c9489697824d2d4ce3a8ad12628f91e9f59be"
   integrity sha512-tD40eHxA35h0PEIZNeIjkHoDR4YjjJp34biM0mDvplBe//mB+IHCqHDGV7pxF+7MklTvighcCPPZC7ynWyjdTA==
 
-eslint@^10.13.0:
-  version "10.13.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-10.13.0.tgz#a8a4742648c0fa9131f429b509de5407682d4864"
-  integrity sha512-UohDjD4zSzEwhf58M3O7vc/ycc8O1I7dNlhtD0WxE8Px8EHNJKtUwzBqrzeGhisRuv2ag4sAYswszCJRgKXYUg==
+eslint@^10.14.0:
+  version "10.14.0"
+  resolved "https://registry.npmjs.org/eslint/-/eslint-10.14.0.tgz#b7574df08d11d9eaa04222f09606674a0ea51db9"
+  integrity sha512-T0pNsxkb9IKmtQjhpK3d7nWOpFv+YHuMbTJnSVMoQblF0onvXfErrtp4V1jHtsQPan7dKaGVD0q1WCXnzMF31A==
   dependencies:
     "@eslint-community/eslint-utils" "^4.8.0"
     "@eslint-community/regexpp" "^4.12.2"
@@ -2701,7 +2701,7 @@ eslint@^10.13.0:
     "@eslint/config-helpers" "^0.7.0"
     "@eslint/core" "^1.2.1"
     "@eslint/plugin-kit" "^0.7.3"
-    "@humanfs/node" "^0.16.6"
+    "@humanfs/node" "^0.16.8"
     "@humanwhocodes/module-importer" "^1.0.1"
     "@humanwhocodes/retry" "^0.4.2"
     "@types/estree" "^1.0.6"
@@ -2722,7 +2722,7 @@ eslint@^10.13.0:
     imurmurhash "^0.1.4"
     is-glob "^4.0.0"
     json-stable-stringify-without-jsonify "^1.0.1"
-    minimatch "^10.2.5"
+    minimatch "^10.2.6"
     natural-compare "^1.4.0"
     optionator "^0.9.3"
 
@@ -3184,10 +3184,10 @@ global-prefix@^3.0.0:
     kind-of "^6.0.2"
     which "^1.3.1"
 
-globals@^17.13.0:
-  version "17.13.0"
-  resolved "https://registry.yarnpkg.com/globals/-/globals-17.13.0.tgz#ab2134b5ededbf2fbe2831dd0acc36f4f1ddeac5"
-  integrity sha512-RwMTC61u7hrG3ZJMkZQOK4JLJrKS8QtoTii63EmWvFXHqycY9FObBJQCbsLxSO8kjKhWE5kV1GC+Vb1g3RI0Zg==
+globals@^17.14.0:
+  version "17.14.0"
+  resolved "https://registry.npmjs.org/globals/-/globals-17.14.0.tgz#5bbbe515622ba24229bd94d4a7c441740e1b50dd"
+  integrity sha512-UtdkTVyAJePQv0J2M9Xe4L0ruNSDV314XiIJsADI2Zf40bcdAonE/D/OhAU8AT99oij9mhLByb+NvA3QWZYgCg==
 
 globby@^11.1.0:
   version "11.1.0"
@@ -4101,12 +4101,12 @@ mimic-function@^5.0.0:
   resolved "https://registry.npmjs.org/mimic-function/-/mimic-function-5.0.1.tgz#acbe2b3349f99b9deaca7fb70e48b83e94e67076"
   integrity sha512-VP79XUPxV2CigYP3jWwAUFSku2aKqBH7uTAapFWCBqutsbmDo96KY5o8uh6U+/YSIn5OxJnXp73beVkpqMIGhA==
 
-minimatch@^10.2.2, minimatch@^10.2.4, minimatch@^10.2.5:
-  version "10.2.5"
-  resolved "https://registry.npmjs.org/minimatch/-/minimatch-10.2.5.tgz#bd48687a0be38ed2961399105600f832095861d1"
-  integrity sha512-MULkVLfKGYDFYejP07QOurDLLQpcjk7Fw+7jXS2R2czRQzR56yHRveU5NDJEOviH+hETZKSkIk5c+T23GjFUMg==
+minimatch@^10.2.2, minimatch@^10.2.4, minimatch@^10.2.5, minimatch@^10.2.6:
+  version "10.2.6"
+  resolved "https://registry.npmjs.org/minimatch/-/minimatch-10.2.6.tgz#fd956bbe0b77241e9f15ac5dccb1c638060968ef"
+  integrity sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==
   dependencies:
-    brace-expansion "^5.0.5"
+    brace-expansion "^5.0.8"
 
 minimist@^1.2.8:
   version "1.2.8"
