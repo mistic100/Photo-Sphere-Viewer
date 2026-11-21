@@ -200,10 +200,10 @@ This library is available under the MIT license.
 		</tr>
 		<tr>
             <td align="center">
-                <a href="https://github.com/stephanmullerNL">
-                    <img src="https://avatars.githubusercontent.com/u/1608051?v=4" width="100;" alt="stephanmullerNL"/>
+                <a href="https://github.com/bukkai">
+                    <img src="https://avatars.githubusercontent.com/u/1608051?v=4" width="100;" alt="bukkai"/>
                     <br />
-                    <sub><b>Stephan Muller</b></sub>
+                    <sub><b>Stephan</b></sub>
                 </a>
             </td>
             <td align="center">
