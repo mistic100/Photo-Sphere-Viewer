@@ -1,6 +1,7 @@
 .nyc_output
 .tmp
 .turbo
+.yarn
 cypress/screenshots
 cypress/snapshots/diff
 dist

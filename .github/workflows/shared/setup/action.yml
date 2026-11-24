@@ -8,10 +8,15 @@ runs:
   using: composite
 
   steps:
+    - name: Enable Corepack
+      shell: bash
+      run: corepack enable
+
     - uses: actions/setup-node@v7
       with:
         node-version: '24'
         cache: 'yarn'
+        cache-dependency-path: yarn.lock
 
     - name: env
       shell: bash

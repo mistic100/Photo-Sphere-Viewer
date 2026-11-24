@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
-  "packageManager": "yarn@1.22.22",
+  "packageManager": "yarn@4.19.0",
   "engines": {
     "node": ">=24"
   },
@@ -59,7 +59,7 @@
     "tsc": "^2.0.4",
     "tsup": "^8.5.1",
     "tsx": "^4.23.1",
-    "turbo": "^2.10.7",
+    "turbo": "^2.11.13",
     "typedoc": "^0.28.20",
     "typedoc-plugin-no-inherit": "^1.6.1",
     "typescript": "^5.9.3",

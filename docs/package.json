@@ -9,6 +9,7 @@
     "serve-doc": "vitepress dev"
   },
   "devDependencies": {
+    "@vueuse/core": "^14.4.0",
     "lodash-es": "^4.18.1",
     "markdown-it-container": "^4.0.0",
     "vitepress": "^2.0.0-alpha.20",
