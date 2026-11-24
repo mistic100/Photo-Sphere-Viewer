@@ -3,10 +3,10 @@
 Photo Sphere Viewer is developped in [TypeScript](https://www.typescriptlang.org/) and [SASS](https://sass-lang.com/).
 The repository is a [Turborepo](https://turbo.build/repo) mono-repo containing the core package as well as official adapters and plugins.
 The building process is based on [tsup](https://tsup.egoist.dev/) (toolkit based on esbuild) with a bunch of customizations.
-The documentation is created with [VitePress](https://vitepress.dev/) and [TypeDoc](https://typedoc.org/).
+The documentation is created with [VitePress](https://vitepress.dev/) with [Vuetify](https://vuetifyjs.com/) and [TypeDoc](https://typedoc.org/).
 Files are linted with [ESLint](https://eslint.org/) and [Stylelint](https://stylelint.io/).
-Tests are executed with [Mocha](https://mochajs.org/) and [Cypress](https://www.cypress.io/).
-You will need [Node.js 22](https://nodejs.org/).
+Tests are executed with [Mocha](https://mochajs.org/) and [Cypress](https://www.cypress.io/), code coverage is comuted with [istanbul](https://istanbul.js.org/).
+You will need [Node.js 24](https://nodejs.org/).
 
 ## Commands
 
@@ -21,11 +21,11 @@ You will need [Node.js 22](https://nodejs.org/).
 -   build all the packages with `npm run build`
 -   build the documentation with `npm run doc:build`
 
-## Credits
+# Credits
 
 These are the various photos and videos used across the demos:
 
-- sphere, sphere-tiles, cubemap, cubemap-tiles: [Damien Sorel (me!)](https://galerie.strangeplanet.fr/picture.php?/1802/category/81)
+- sphere, sphere-tiles, cubemap, cubemap-tiles: [Damien Sorel (me!)](https://photos.strangeplanet.fr/picture.php?/1802/category/81)
 - sphere-test, cubemap-test: [Rodrigo Polo](https://github.com/rodrigopolo/360GPanoReference)
 - sphere-tiles-24k, cubemap-tiles-24k: [Greg Zaal](https://polyhaven.com/a/cannon)
 - artist-workshop: [Oliksiy Yakovlyev](https://polyhaven.com/a/artist_workshop)

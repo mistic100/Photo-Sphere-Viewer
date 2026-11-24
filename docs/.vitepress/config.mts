@@ -139,7 +139,7 @@ export default defineConfig({
                                 { text: 'Tooltip', link: '/tooltip' },
                             ],
                         },
-                        { text: 'Frameworks / Integrations', link: '/frameworks' },
+                        { text: 'Frameworks & Integrations', link: '/frameworks' },
                     ],
                 },
                 { text: 'Changelog', link: '/guide/changelog' },
